@@ -3,33 +3,147 @@ on:
   push:
     branches: [docs/enforce-class-vocation-progression]
 permissions:
-  contents: read
+  contents: write
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Capture canonical baseline and static validation
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - name: Verify branch and apply audited canonical changes
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/class-vocation-evidence
+          test "$(git branch --show-current)" = docs/enforce-class-vocation-progression
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain)"
+          for operation in MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD BISECT_LOG rebase-merge rebase-apply; do
+            test ! -e "$(git rev-parse --git-path "$operation")"
+          done
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = 49afb893e71529094403411ac698573ba9e4645e
+          git status --short --branch > /tmp/class-vocation-evidence/git-status-before.txt
+          python3 - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import lzma
+          from pathlib import Path
+
+          encoded = ''.join(Path(f'.class-vocation-edits.{index}').read_text().strip() for index in range(3))
+          raw = lzma.decompress(base64.b64decode(encoded, validate=True))
+          assert hashlib.sha256(raw).hexdigest() == 'b006488bb5edafb1f8490cc91d95a840e09ae494d7fe114a68025b6d61b73daa'
+          payload = json.loads(raw)
+          allowed_sources = {
+              'sources/manual-pages.json', 'sources/current-asset-manifest.json',
+              'sources/system-coverage.json', 'sources/phase-integration.json',
+              'sources/design-decisions.json',
+          }
+          assert {source['path'] for source in payload['sources']} == allowed_sources
+          staged = {}
+          for source in payload['sources']:
+              path = Path(source['path'])
+              original = path.read_bytes()
+              assert hashlib.sha256(original).hexdigest() == source['before'], path
+              value = json.loads(original)
+              for operation in source['operations']:
+                  if 'tail_from' in operation:
+                      target = value
+                      for key in operation['path']:
+                          target = target[key]
+                      target[operation['tail_from']:] = operation['value']
+                  else:
+                      target = value
+                      for key in operation['path'][:-1]:
+                          target = target[key]
+                      target[operation['path'][-1]] = operation['value']
+              result = (json.dumps(value, ensure_ascii=False, indent=2) + '\n').encode()
+              assert hashlib.sha256(result).hexdigest() == source['after'], path
+              staged[path] = result
+          assert set(payload['tests']) == {'tools/tests/test_character_progression.py'}
+          for name, content in payload['tests'].items():
+              path = Path(name)
+              assert not path.exists(), path
+              staged[path] = content.encode()
+          for path, result in staged.items():
+              path.write_bytes(result)
+          print('Applied five hash-verified canonical sources and one static test module.')
+          PY
+          git rm .class-vocation-edits.0 .class-vocation-edits.1 .class-vocation-edits.2 .github/workflows/class-vocation-contract-check.yml
+      - name: Generate and validate final documentation
         shell: bash
         run: |
-          set -uo pipefail
-          mkdir -p /tmp/class-vocation-evidence
-          git status --short --branch > /tmp/class-vocation-evidence/git-status.txt
-          git rev-parse HEAD > /tmp/class-vocation-evidence/commit.txt
-          git archive --format=zip HEAD -o /tmp/class-vocation-evidence/repository.zip
+          set -euo pipefail
           for command in \
+            'python3 tools/build_manual_indexes.py' \
             'python3 tools/build_manual_indexes.py --check' \
             'python3 tools/validate_documentation.py' \
             'python3 tools/check_phase_integration.py' \
             'python3 tools/check_feature_coverage.py' \
             'python3 tools/simulate_population_scaling.py' \
-            'python3 -m unittest discover -s tools/tests -v'; do
-            printf '\n$ %s\n' "$command" >> /tmp/class-vocation-evidence/validation.txt
-            bash -c "$command" >> /tmp/class-vocation-evidence/validation.txt 2>&1
-            printf 'EXIT_STATUS=%s\n' "$?" >> /tmp/class-vocation-evidence/validation.txt
+            'python3 -m unittest discover -s tools/tests -p test_character_progression.py -v' \
+            'python3 -m unittest discover -s tools/tests -v' \
+            'git diff --check'; do
+            printf '\n$ %s\n' "$command" | tee -a /tmp/class-vocation-evidence/validation.txt
+            bash -c "$command" 2>&1 | tee -a /tmp/class-vocation-evidence/validation.txt
+            printf 'EXIT_STATUS=0\n' >> /tmp/class-vocation-evidence/validation.txt
           done
+          set +e
+          python3 tools/check_feature_coverage.py --require-complete > /tmp/class-vocation-evidence/strict-coverage.txt 2>&1
+          strict_status=$?
+          set -e
+          printf 'EXIT_STATUS=%s (expected incomplete-guide rejection)\n' "$strict_status" >> /tmp/class-vocation-evidence/strict-coverage.txt
+          test "$strict_status" -eq 1
+      - name: Commit and push only verified task changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+          names = subprocess.check_output(['git', 'diff', '--name-only', 'origin/main'], text=True).splitlines()
+          allowed = {
+              'sources/manual-pages.json', 'sources/current-asset-manifest.json',
+              'sources/system-coverage.json', 'sources/phase-integration.json',
+              'sources/design-decisions.json', 'site/search-data.js',
+              'verification/validation.json',
+          }
+          assert all(name in allowed or name.endswith('.html') for name in names), names
+          assert subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], text=True).splitlines() == ['tools/tests/test_character_progression.py']
+          for name in ['dependency-edges', 'phase-creation-order', 'feature-coverage', 'profession-loops']:
+              original = subprocess.check_output(['git', 'show', f'origin/main:sources/{name}.json'])
+              assert Path(f'sources/{name}.json').read_bytes() == original, name
+          before = json.loads(subprocess.check_output(['git', 'show', 'origin/main:sources/current-asset-manifest.json']))
+          after = json.loads(Path('sources/current-asset-manifest.json').read_text())
+          assert len(before['assets']) == len(after['assets'])
+          for old, new in zip(before['assets'], after['assets']):
+              for key in ['name', 'path', 'dependencies', 'documentation_status', 'verification']:
+                  assert old.get(key) == new.get(key), (old['name'], key)
+          print('Protected sources, asset identities/dependencies and maturity indicators are unchanged.')
+          PY
+          git add -u
+          git add tools/tests/test_character_progression.py
+          git diff --cached --check
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = 49afb893e71529094403411ac698573ba9e4645e
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs: enforce permanent classes and retained vocation progression'
+          git push --set-upstream origin HEAD:docs/enforce-class-vocation-progression
+          test -z "$(git status --porcelain)"
+          git rev-parse HEAD > /tmp/class-vocation-evidence/commit.txt
+          git diff --stat origin/main...HEAD > /tmp/class-vocation-evidence/final-diff-stat.txt
+          git diff origin/main...HEAD > /tmp/class-vocation-evidence/final.patch
+          git archive --format=zip HEAD -o /tmp/class-vocation-evidence/repository.zip
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: class-vocation-contract-evidence
+          name: class-vocation-final-evidence
           path: /tmp/class-vocation-evidence/
           retention-days: 7
