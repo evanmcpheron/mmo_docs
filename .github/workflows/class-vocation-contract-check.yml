@@ -1,0 +1,35 @@
+name: Class vocation contract verification
+on:
+  push:
+    branches: [docs/enforce-class-vocation-progression]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Capture canonical baseline and static validation
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p /tmp/class-vocation-evidence
+          git status --short --branch > /tmp/class-vocation-evidence/git-status.txt
+          git rev-parse HEAD > /tmp/class-vocation-evidence/commit.txt
+          git archive --format=zip HEAD -o /tmp/class-vocation-evidence/repository.zip
+          for command in \
+            'python3 tools/build_manual_indexes.py --check' \
+            'python3 tools/validate_documentation.py' \
+            'python3 tools/check_phase_integration.py' \
+            'python3 tools/check_feature_coverage.py' \
+            'python3 tools/simulate_population_scaling.py' \
+            'python3 -m unittest discover -s tools/tests -v'; do
+            printf '\n$ %s\n' "$command" >> /tmp/class-vocation-evidence/validation.txt
+            bash -c "$command" >> /tmp/class-vocation-evidence/validation.txt 2>&1
+            printf 'EXIT_STATUS=%s\n' "$?" >> /tmp/class-vocation-evidence/validation.txt
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: class-vocation-contract-evidence
+          path: /tmp/class-vocation-evidence/
+          retention-days: 7
