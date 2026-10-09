@@ -1,0 +1,610 @@
+{
+  "scope": "initial contracts, not complete implementation manuals",
+  "systems": [
+    {
+      "id": "identity",
+      "title": "Accounts, character creation and vocation selection",
+      "phase": 5,
+      "source": "7.1",
+      "intro": "Create one validated character with exactly one primary vocation. Appearance and vocation are separate choices; combat discipline is a third, independent progression choice. Character creation is an atomic durable operation, not the act of spawning a Pawn.",
+      "definition": "UAppearanceCatalog and UVocationDefinition list permitted IDs. AccountPolicy fixes character-slot and name rules; none of these definitions contains a player password or current inventory.",
+      "runtime": "ABriarwakeGameMode admits a verified character-session lease. ABriarwakePlayerController routes owned commands. A newly spawned ABriarwakeCharacter is only the current body.",
+      "storage": "The persistence boundary writes Record_Account and Record_Character together with Record_CommandReceipt. It reserves the normalized display-name key and grants the starting kit once.",
+      "projection": "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Public name, vocation and permitted appearance replicate; account identity, inventory and authentication tokens do not become public PlayerState fields.",
+      "editor": [
+        "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back.",
+        "In DA_GameCatalog assign all available vocation definitions and the allowed appearance catalog. Before Phase 20/21, mark Woodwright and Apothecary unavailable rather than presenting nonfunctional choices.",
+        "Configure the server default map separately from the client frontend. Phase 05 may use an explicitly disposable test account fixture; activate durable creation and duplicate-login prevention at Phase 06."
+      ],
+      "flow": [
+        "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
+        "Normalize the name with a pinned Unicode policy, validate length and forbidden characters, then acquire account-slot and name constraints in one transaction.",
+        "Create CharacterId, chosen vocation, zeroed independent XP ledgers, starting-zone position and starter-kit receipt. Reusing the request returns the same CharacterId.",
+        "Reserve a session lease before admitting the body. Bind the local view to the admitted CharacterId and pull its snapshot.",
+        "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+      ],
+      "fixture": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
+      "solo": "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+      "duo": "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
+      "load": "At 30 simulated admissions measure name-constraint conflicts, admission latency and lease cleanup. These are future connected-client tests, not results from this package.",
+      "failures": "No vocation → VocationRequired. Unsupported cosmetic ID → AppearanceUnavailable. Full slots → CharacterLimit. Duplicate normalized name → NameUnavailable. A provider failure must not leave a half-created character.",
+      "art": "No archive was available. The character preview must use explicitly audited combinations before it can be accepted; do not infer skins from vocation names.",
+      "scope": "Authentication-provider selection, password recovery implementation and jurisdiction-specific retention policy remain unresolved. Do not build an ad hoc password store in Unreal.",
+      "refs": [
+        "UE-NET",
+        "UE-DEDICATED"
+      ]
+    },
+    {
+      "id": "movement",
+      "title": "Eight-way movement, hop, swimming and input",
+      "phase": 3,
+      "source": "7.2",
+      "intro": "Movement is on a flat X/Y gameplay plane. Eight input sectors are supported, but only four sprite facings are promised initially. Sprint, dodge, a bounded low-obstacle hop and authored-water swimming are distinct server-validated action states; there is no climbing.",
+      "definition": "UMovementProfile stores speeds, stamina costs, hop distance/duration, eligible obstacle tags and water-entry rules. UZoneDefinition identifies walkable cells, low obstacles, water and exits.",
+      "runtime": "UBriarwakeMovementComponent controls collision and movement. The autonomous client may predict movement after the movement integration is verified; the server rejects impossible paths. UActionExecutionComponent arbitrates exclusive actions.",
+      "storage": "Record_Character saves safe zone/checkpoint and committed transition state. Do not persist every animation frame or treat a client position as a durable checkpoint.",
+      "projection": "Input Action IA_Move supplies a normalized Vector2D. UCharacterAppearanceComponent projects velocity or aim onto four available facings. WBP_HUD shows stamina and water/hop restrictions without calculating authority.",
+      "editor": [
+        "Use a Paper2D map transformed into the X/Y plane and a non-rendered collision floor compatible with CharacterMovement. Keep the capsule upright. Orient the sprite plane toward the fixed orthographic camera; do not rotate the camera at runtime.",
+        "Create IMC_Gameplay with keyboard and controller bindings. Normalize diagonals before mapping to world axes. Disable orient-to-movement rotation for the visual root; select sprite facing instead.",
+        "Mark one low fence as hop-eligible and one deep pool as swim-eligible in the Thornmere fixture. Give both explicit exit cells; a water texture alone cannot authorize swimming. Exact custom movement-mode integration is an engine verification gate."
+      ],
+      "flow": [
+        "IA_Move → owning controller → character movement input; UI focus may suppress local gameplay input but never pauses the server.",
+        "The server checks action state, speed budget, collision and legal water transitions. Hop requests include a candidate direction, never an authoritative landing point.",
+        "Sweep the proposed hop corridor and landing footprint; reject unmarked walls, occupied landings and wrong water states. Reserve or revalidate a landing to resolve simultaneous hops.",
+        "Advance the authoritative action window and collision policy. Cosmetic sprite lift must not move the authoritative capsule or change hit range.",
+        "Replicate action state and facing. Restore normal movement only after a valid landing or a server-selected recovery cell."
+      ],
+      "fixture": "In L_ThornmereVillage place a 32-unit test tile grid, fence.low.01, wall.solid.01 and water.safe.01. Use 160 units/s walk and 240 sprint solely as tuning examples.",
+      "solo": "Walk cardinally and diagonally for an equal interval, hop the low fence but not the solid wall, enter and leave eligible water, and recover after an interrupted dodge.",
+      "duo": "Two clients observe identical facing/action states. Race for a hop landing and reject a spoofed distant landing; neither body is allowed into a blocked cell.",
+      "load": "At 1/2/5/10/30 clients record correction frequency, movement bandwidth and crowded-door recovery, including packet loss and delayed input.",
+      "failures": "Out-of-range hop → InvalidLanding. Swim outside eligible water → WaterRequired. Dodge during committed crafting → ActionBusy. Disconnection cancels uncommitted actions and retains the last safe recoverable position.",
+      "art": "Sprint may temporarily reuse walk at an explicitly labeled rate. Hop/swim poses are unverified; temporary visuals do not prove those animations exist.",
+      "scope": "Click-to-move is deferred. Grid pathfinding for AI is custom planned work; no claim is made that Paper2D automatically creates a usable navigation mesh.",
+      "refs": [
+        "UE-PAPER2D",
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "presentation",
+      "title": "Paper2D, PaperZD and layered appearance",
+      "phase": 1,
+      "source": "3.2",
+      "intro": "A logical equipment slot is not a guaranteed visible sprite overlay. Playback uses one authoritative pose clock for body, outfit, hair, headwear, cloak and tool layers. Visuals may fail or be replaced without granting an item, hit or completed action.",
+      "definition": "UAppearanceCatalog maps AppearanceId × ActionId × Facing to audited frame sets, layer order, pivots and compatibility fallbacks. Exact source paths remain null until the paid archive is inspected.",
+      "runtime": "UCharacterAppearanceComponent resolves the current visual key and synchronizes layers. PaperZD is a third-party presentation integration, not the owner of combat costs or catches.",
+      "storage": "Record_Character stores allowlisted appearance IDs and equipped ItemInstanceIds. Import-profile and content-version identifiers permit future migration without storing texture pointers in a database.",
+      "projection": "WBP_CharacterCreate and WBP_Equipment use the same catalog as remote avatars. Unsupported outfit/action combinations display a declared fallback rather than silently removing clothing.",
+      "editor": [
+        "Enable Paper2D through Edit → Plugins and restart. Import only a locally licensed source sheet into Content/Game/Art/Characters after recording archive and file hashes.",
+        "Inspect sheet dimensions and author guides before choosing grid extraction dimensions. Apply pixel-art filtering, consistent pixels-per-unit and shared foot pivots. Do not hard-code a frame size from a screenshot or a pack name.",
+        "In a verified installed PaperZD release, create the animation source and sequences and assign the project AnimBP to the chosen component/character arrangement. The exact native parent and multi-layer synchronization API must be checked against that release before compilation."
+      ],
+      "flow": [
+        "Receive server-approved appearance IDs, action type, facing and action start time.",
+        "Resolve a complete compatible pose set from UAppearanceCatalog; check every required layer before replacing the visible outfit.",
+        "Drive all layers from the same frame/time sample, including late-joining characters. Missing ornamental layers may be hidden only where the fallback policy explicitly permits it.",
+        "Select idle facing from the last stable direction. Diagonal ties prefer the previous valid facing; initial ties use horizontal priority, with hysteresis to prevent rapid switching.",
+        "Play cosmetic notifications only. Stopping playback, suppressing notifies or hiding the character cannot change authoritative rewards."
+      ],
+      "fixture": "L_BriarwakePreview contains one body, one outfit and each independently supported optional layer, viewed from North/East/South/West. Source sheets and frame counts are currently unavailable.",
+      "solo": "Verify every catalogued action and facing, texture edges, foot pivot and equipment fallback in the preview map before enabling that appearance in the creator.",
+      "duo": "Equip on one client and observe on the other; rejoin halfway through an action. Pose/time and permitted appearance must converge without duplicate action execution.",
+      "load": "At 30 visible avatars measure sprite-component cost, overdraw, animation update cost and appearance bandwidth. Compare culling without changing server gameplay.",
+      "failures": "Unknown appearance → safe catalog fallback plus actionable error. A missing mandatory outfit pose blocks that combination. Out-of-order appearance revisions must not restore an old weapon.",
+      "art": "The prompt reports p1/p2/p3/p4 and 0bas/1out/2clo/4har/5hat/6tla/7tlb naming. These are source-reported leads, not independently verified inventory.",
+      "scope": "True six- or eight-facing artwork is not generated by mirroring or interpolation. Future direction expansion requires a complete body/equipment/action compatibility pass.",
+      "refs": [
+        "UE-PAPER2D",
+        "UE-FLIPBOOK",
+        "PAPERZD"
+      ]
+    },
+    {
+      "id": "combat",
+      "title": "Combat, GAS, disciplines and talents",
+      "phase": 9,
+      "source": "7.3",
+      "intro": "Combat combines server-resolved melee and projectiles with optional soft targeting for abilities and healing. Vanguard, Ranger, Arcanist and Warden are independent of the five vocations. Every discipline must have a viable solo path.",
+      "definition": "UCombatDisciplineDefinition, UTalentDefinition and authored GameplayAbility/GameplayEffect classes define available actions, costs, cooldowns and branch prerequisites. Tuning is authored data, not widget logic.",
+      "runtime": "The PlayerState-associated AbilitySystemComponent and UCombatAttributeSet own runtime ability/attribute behavior. ABriarwakeCharacter is the current avatar. Server traces and target validation decide hits; PaperZD observes action state.",
+      "storage": "Record_Character persists purchased talent IDs, independent combat XP and build revision. Reconstruct derived attributes and granted abilities from validated content on login; do not persist raw component pointers.",
+      "projection": "WBP_HUD displays health/stamina/mana, cooldowns and action errors; WBP_Talents requests purchases. Keyboard and controller can select the same valid targets.",
+      "editor": [
+        "Enable GameplayAbilities and verify GameplayTags/GameplayTasks module dependencies in the future game. Add the AbilitySystemComponent on the selected replicated owner and document its owner/avatar initialization on possession and respawn.",
+        "Author GA_BasicMelee, GA_BasicShot and GE_BasicDamage as planned native-derived assets. At Phase 09 assign the two fixture abilities through a server-owned basic-ability list. Full discipline definitions activate at Phase 12; no ability grant belongs in a widget.",
+        "Place BP_TrainingDummy on the connected Elderwood route. Start with one trace shape and one projectile; disable visual damage notifies to prove rules remain server-driven."
+      ],
+      "flow": [
+        "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+        "Commit permitted runtime cost once and open the authored hit window. The server chooses collision results and line-of-sight eligibility.",
+        "Apply damage/healing through the selected GAS effects. Track legitimate support and damage participation for rewards.",
+        "On a durable reward, request the persistence transaction using encounter/reward identity; do not award XP in the damage widget.",
+        "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
+      ],
+      "fixture": "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
+      "solo": "Activate five valid hits with sufficient stamina, reject a sixth hit outside range, and verify disabled animation notifies do not alter damage.",
+      "duo": "Both clients attack the same server target. A fabricated target, duplicate activation or late hit after death cannot apply another cost/reward outcome.",
+      "load": "Profile 30 clients casting into an encounter under declared latency/loss conditions, tracking target checks, replication and server frame time.",
+      "failures": "No resource → InsufficientStamina/Mana. Blocked target → NoLineOfSight. Stale body after transfer → LeaseExpired. Interrupt channels through authoritative action cancellation, not widget closure.",
+      "art": "Sword, shield, bow, spear, dual-blade and magic coverage must be audited separately. Unavailable spell/healing poses require named art tasks and readable temporary cues.",
+      "scope": "GAS is the recommended initial choice, subject to installed-version validation. It does not provide character persistence, quest state, trade escrow or realm allocation.",
+      "refs": [
+        "UE-GAS",
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "enemies",
+      "title": "Enemy behavior, encounters, death and loot credit",
+      "phase": 10,
+      "source": "7.3",
+      "intro": "Enemies patrol authored routes, detect eligible targets, leash to safe encounter bounds and reset under explicit rules. Death is a server state transition. Reward eligibility includes declared healing/support contribution and must not depend on the last hit.",
+      "definition": "UEncounterDefinition supplies enemy family, spawn sites, perception/range, leash, telegraph and solo/group mechanic variants. ULootTableDefinition supplies bounded weighted outcomes.",
+      "runtime": "ABriarwakeEnemy and ABriarwakeAIController execute behavior on the zone server. An encounter coordinator within the zone owns the current EncounterInstanceId and reward-eligible participants.",
+      "storage": "Record_CommandReceipt and character reward records commit encounter rewards. Record_Region stores persistent danger milestones; ordinary transient enemy positions need not be durable.",
+      "projection": "Remote enemies replicate position, action/telegraph and health presentation. WBP_Loot shows each character’s authorized results; the corpse is not the inventory owner.",
+      "editor": [
+        "Author a short patrol and a leash polygon on L_ElderwoodRoad, using the same 2D walkability grid as movement validation.",
+        "Assign DA_Encounter_RoadAmbush to a spawn marker and give it one clear wind-up, one avoidable attack and one reset path.",
+        "Configure the reward eligibility window and support contribution rules explicitly. Start with personal loot; do not infer party rights from proximity alone."
+      ],
+      "flow": [
+        "Create a server-owned encounter ID at spawn; route perception decisions through eligible cell and line-of-sight checks.",
+        "Engage targets and accumulate bounded participation facts. Damage and support events are attributed to validated character IDs.",
+        "On health reaching zero, atomically transition the encounter from Alive to RewardPending; repeated death callbacks see the existing transition.",
+        "Commit each eligible character reward under (EncounterInstanceId, CharacterId, RewardVersion). Reconcile pending grants after a lost response.",
+        "Present death/loot and schedule authored respawn. A respawn uses a new encounter identity; reopening an old corpse cannot create a new one."
+      ],
+      "fixture": "encounter.elderwood.road-ambush.01 spawns two briar-struck sentries, with an accessible solo alternative to simultaneous switches. Reward fixture is 25 combat XP and one eligible loot roll.",
+      "solo": "Defeat the ambush, recover at the Thornmere checkpoint on death, and confirm quest/project progress survives both death and restart.",
+      "duo": "A damage dealer and a supporting healer receive credit under the declared participation rule. Replaying the death event grants neither player twice.",
+      "load": "Test 30 contenders entering/leaving leash range, disconnecting during telegraphs and looting after reconnect. Record AI update time and reward queue depth.",
+      "failures": "Leash reset removes temporary combat state but not already committed rewards. Disconnection is not an instant invulnerability exploit; use a short published server-controlled retreat policy with a safe recovery checkpoint.",
+      "art": "Enemy families, hit, telegraph and death sprites are not proven present. Use labeled development silhouettes only until original licensed art is supplied.",
+      "scope": "Mechanics variants must be authored; multiplying health is not a substitute for solo-compatible encounter mechanics.",
+      "refs": [
+        "UE-NET",
+        "UE-GAS"
+      ]
+    },
+    {
+      "id": "items",
+      "title": "Items, equipment, rarity and inventory",
+      "phase": 11,
+      "source": "7.4",
+      "intro": "Item definitions describe kinds of things; owned item instances describe a specific character’s possessions. Equipment references item instance IDs, not copied item objects. A full inventory must produce a lossless rejection or an explicitly designed pending-claim result.",
+      "definition": "UItemDefinition specifies stack limit, logical slot, bind rules, allowed affixes, equipment requirements and visual keys. ULootTableDefinition contains weighted entries with bounded roll counts.",
+      "runtime": "UCharacterStateComponent holds owner-only server-approved projections. Gameplay equip commands revalidate requirements and request the persistence boundary; derived GAS equipment effects are rebuilt from the committed loadout.",
+      "storage": "Record_Inventory stores ItemInstanceId, DefinitionId, quantity, durability, affixes, binding and inventory revision. Equipment references owned instance IDs in Record_Character.",
+      "projection": "WBP_Inventory and WBP_Equipment display one shared projection; neither stores an independent authoritative bag. WBP_Loot requests authorized claims and reports inventory-capacity errors.",
+      "editor": [
+        "Create DA_Item_IronOre, DA_Item_WatchFitting, DA_Item_FieldLoaf and DA_Item_StarterSword with bounded stacks and stable IDs. Assign them in DA_GameCatalog.",
+        "Configure the logical slots Head, Chest, Legs, Hands, Feet, Waist, Shoulders, Cloak, MainHand, OffHand, Necklace, Ring1, Ring2, Trinket1 and Trinket2.",
+        "Assign an appearance policy to equipment. Chest/Legs correspond to legacy Top/Pants logically; a combined outfit fallback is permitted where individual overlays do not exist."
+      ],
+      "flow": [
+        "Request MoveStack, EquipItem or UseItem with exact instance ID, amount and expected inventory revision.",
+        "Validate ownership, amount, slot, binding, class-independent requirements and one/two-hand conflict on the server/service.",
+        "Commit the inventory/loadout mutation once. Reject the whole operation if capacity or currency would become invalid.",
+        "Publish the new revision to the owning player, and only permitted cosmetic/loadout summaries to other players.",
+        "Rebuild equipment effects from the committed loadout, clearing old effect handles. Reopen the widget to pull the same state."
+      ],
+      "fixture": "char-bw-forge owns 8 ore in one stack, one starter sword and a 12-slot test bag. A two-handed test item conflicts with OffHand; ring slots remain distinct instance references.",
+      "solo": "Loot, split a stack, equip, consume and reconnect; quantities and derived attributes must agree with the canonical record.",
+      "duo": "Race an equip request against an offered trade for the same instance. At most one current-revision ownership mutation can succeed.",
+      "load": "At 30 clients compare owner-only inventory bytes with public appearance bytes and test simultaneous claims against a limited shared reward.",
+      "failures": "Wrong owner → ItemNotOwned. Zero/negative quantity → InvalidQuantity. Bag full → InventoryFull without debit. Unknown content version → ContentMismatch; do not silently destroy the item.",
+      "art": "The fifteen logical slots do not imply fifteen sprite overlays. The visual compatibility matrix must explicitly identify combined outfits, optional layers and missing art.",
+      "scope": "Common through Legendary rarity is a committed vocabulary; actual affix pools and drop percentages are tuning examples. No arbitrary unlimited affix generation.",
+      "refs": [
+        "UE-GAS",
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "gathering",
+      "title": "Random resource sites, forestry and salvage",
+      "phase": 14,
+      "source": "7.5",
+      "intro": "The server chooses among authored eligible sites rather than inventing arbitrary coordinates. All vocations have basic gathering access. Specialists gain evaluation, route and outcome choices without monopolizing essential raw materials.",
+      "definition": "UResourceSiteDefinition stores SiteId, zone, eligible tags/cells, material grades, cap, spacing, respawn policy and permitted tool/action. Spawn selection uses an auditable seed plus content version.",
+      "runtime": "AResourceSite exposes a replicated state projection and the zone service validates claims. UActionExecutionComponent controls the timed gathering action and cancellation.",
+      "storage": "ResourceSiteRecord holds generation, depleted/available state and next eligible respawn time. Accepted harvest and character grants share a durable receipt; counters cannot diverge on crash.",
+      "projection": "The node shows a readable resource type, contested/busy state and depletion. The gathering widget displays progress and errors only.",
+      "editor": [
+        "Place eligible site markers away from doors, water exits and required paths. Assign permanent SiteIds; do not generate an ID anew each time a map loads.",
+        "In DA_Resource_ThornmereOre set an initial active-site cap and minimum spacing. Validate candidate cells against collision before selecting sites.",
+        "Choose an explicit contention policy: the first prototype vein uses an exclusive short claim with expiry; common plants may use bounded per-character quotas. Never mix policies silently."
+      ],
+      "flow": [
+        "Request BeginHarvest(SiteId, Generation, ToolInstanceId). Validate range, line of sight, tool, state and current session lease.",
+        "Acquire the exclusive claim with expiry and server action ID. A second claimant receives SiteBusy, not a second animation-based entitlement.",
+        "On valid completion, check the claim and generation again, then debit wear and grant material/mastery once in the shared transaction.",
+        "Apply depleted state and the committed respawn timestamp to the loaded actor. A cosmetic disappearing animation cannot deplete or grant.",
+        "After reload/restart, hydrate the same SiteId and generation from durable state. Allocate a new generation only for the authorized respawn."
+      ],
+      "fixture": "site.elderwood.ore.01 grants 3 common ore once for the winning claim; 6 nearby candidate sites are eligible, of which 3 may be active in the tuning fixture.",
+      "solo": "Find a legal site, harvest, salvage a ruin cache and return to forge. Essential material access must not depend on another vocation or on a long idle respawn.",
+      "duo": "Send two simultaneous claims for the exclusive vein. Exactly one wins and only that action can yield its 3 ore; the loser gets an alternative nearby opportunity.",
+      "load": "Run 30 clients at the same vein and across all candidates. Measure claim latency, starvation and route blockage; tune alternatives rather than merely multiplying scarcity.",
+      "failures": "Missing tool, full inventory, expired claim, movement cancellation and stale generation cause explicit rejection. Once a grant commits, a disconnect cannot refund wear while retaining material.",
+      "art": "Mining, woodcutting and action pages are source-reported; ore/tree/plant world sprites remain unverified and likely need a separate environment-content audit.",
+      "scope": "No unrestricted terrain destruction. Replanting and sustainability operate through authored grove states, not a simulated global ecosystem.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "fishing",
+      "title": "Fishing, catches and accessible timing",
+      "phase": 16,
+      "source": "7.6",
+      "intro": "Fishing combines site selection, cast placement, bite recognition and a catch decision. The player can use a forgiving accessible mode without letting the client declare a successful catch. Short varied sessions replace compulsory idle waiting.",
+      "definition": "UFishSpeciesDefinition and fishing-water data define species weights, allowed biomes, bait, water polygons and accessible timing policy. Seasons use the realm clock, not the client wall clock.",
+      "runtime": "AFishingWater validates cast intersections. UActionExecutionComponent owns the one active CastId, server timing and cancellation state.",
+      "storage": "The catch transaction writes inventory, vocation XP and a receipt keyed by CharacterId/CastId. Pending catch outcomes can be queried after a lost confirmation.",
+      "projection": "WBP_Fishing displays visual and audio bite cues, reel choices and remaining timing window. UCharacterAppearanceComponent shows audited rod and p3 poses when available.",
+      "editor": [
+        "Add water.safe.01 with an explicit cast polygon and safe bank cells on L_ThornmereVillage. A painted water tile is not sufficient.",
+        "Assign DA_Fish_Reedfin and a bait requirement to the water definition. Set small bounded wait/timing fixtures and expose the accessible mode in settings.",
+        "Provide the same cast/cancel/reel actions for keyboard and controller. A text cue must duplicate each sound cue; timing color is not the only signal."
+      ],
+      "flow": [
+        "BeginCast validates character, water polygon, range, equipment and action eligibility; the server allocates CastId.",
+        "The server schedules bite state and sends a window to the owning client. The client sends a reaction/reel choice, not a rolled species or catch quantity.",
+        "Validate the command against server timing with a declared bounded latency policy and the selected accessibility mode.",
+        "Commit one authorized species/quantity and vocation XP under the cast receipt. If capacity is unavailable, keep or reject the pending catch under the published policy; never silently discard it.",
+        "Movement, combat, death or zone departure cancels pre-commit casting. Late bite messages cannot revive a cancelled CastId."
+      ],
+      "fixture": "pool.thornmere.reedbank.01 permits Reedfin; cast fixture requests a 2-second bite cue and 3-second response window. These numbers are accessibility/playtest inputs, not measured pacing.",
+      "solo": "Catch once, bake with the fish, then repeat using accessible timing and controller input. Both modes must preserve server validation and viable progression.",
+      "duo": "Two players fish in the same eligible pool under a declared per-character catch policy. Replayed reel commands for one CastId produce only its original result.",
+      "load": "At 30 concurrent casts profile timers, command rate and server catch transactions. Cancel half the casts through zone departure and verify no stale grants.",
+      "failures": "No eligible water → InvalidCast. Old bite → CastExpired. Busy character → ActionBusy. InventoryFull must not also debit a consumed catch item or emit vocation XP.",
+      "art": "p3 fishing and rod layers are reported in the brief only. Bobber, water animation and cast/reel/catch frames require actual archive paths before visual acceptance.",
+      "scope": "No real-world-time story lock. Seasonal fish needed for mandatory progression receive an authored substitute or predictable in-game window.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "farming",
+      "title": "Personal plots, crops and food production",
+      "phase": 17,
+      "source": "7.7",
+      "intro": "Personal or leased plots have explicit permissions. Crops progress through authored states without dying merely because the owner logged out. Farming supplies expedition cooking rather than becoming a mandatory daily maintenance schedule.",
+      "definition": "UCropDefinition specifies seed, growth stages, yield, bounded soil/weather choices and permitted products. FarmPlotDefinition establishes ownership and eligible cells.",
+      "runtime": "AFarmPlot projects the current crop state. The zone validates planting, tending and harvesting permissions; only the durable boundary commits seed debit and harvest grants.",
+      "storage": "Record_FarmPlot stores owner, crop ID, planted/growth timestamps, decisions, harvest generation and revision. Mature state remains harvestable across absence and restart.",
+      "projection": "WBP_FarmPlot shows plot ownership, next authored action and accessible progress. Tile overlays select seedling/growing/mature states; loading a mature visual grants nothing.",
+      "editor": [
+        "Assign plot.thornmere.001 to char-bw-hearth in the fixture. Set private harvest permission by default and show it visibly on the interaction panel.",
+        "Create DA_Crop_Goldenroot with three authored visual stages and a non-punitive mature state. Growth timing is a tuning value, not a daily-login obligation.",
+        "Connect Goldenroot and Reedfin to DA_Recipe_FieldLoaf and the oven service so farm output has an immediate expedition purpose."
+      ],
+      "flow": [
+        "Plant requests plot/crop IDs and expected plot/inventory revisions. Validate lease, owner, empty plot, soil compatibility and seed count.",
+        "Commit seed debit and planted state together. Derive future growth from the authoritative clock and the saved authored choices.",
+        "Tending makes one meaningful recipe/yield tradeoff; repeated clicking cannot become the main XP source.",
+        "Harvest validates mature state and current generation, then commits output, mastery and harvested state exactly once.",
+        "Rejoin after absence; the crop remains in a valid saved stage with no offline deletion."
+      ],
+      "fixture": "plot.thornmere.001 starts empty with two Goldenroot seeds. A mature fixture yields two ingredients; growth-duration tests use a controllable realm clock, not waiting days.",
+      "solo": "Plant, complete a fishing outing, harvest or use the mature test state, bake a provision and submit it to the caravan board.",
+      "duo": "A second player attempts to harvest the first player’s plot; reject without changes. Test an explicit shared-garden permission separately.",
+      "load": "At 30 owners measure snapshot load and timestamp-derived growth. Do not tick every crop every frame or simulate years of absence one second at a time.",
+      "failures": "Not owner → PlotPermissionDenied. Duplicate harvest → original receipt/no new yield. Inventory full → preserve mature crop. Invalid migration → quarantine with recovery rather than deleting crops.",
+      "art": "Seedling, mature plant, soil, water and oven stages are not proven in the character archive. Each requires an environment art reference or a labeled placeholder.",
+      "scope": "Shared town gardens are optional permissioned content. Expiration/spoilage is not part of the initial food baseline; introducing it requires a separate non-punitive policy.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "crafting",
+      "title": "Recipes, forging, baking, carpentry and alchemy",
+      "phase": 15,
+      "source": "7.8",
+      "intro": "All five vocations use the same recipe validation and transaction machinery. Differences belong in ingredients, techniques, choices, station requirements and authored outputs, not five independent inventory systems.",
+      "definition": "URecipeDefinition specifies exact ingredients, permitted substitutions, station tag, vocation/mastery requirement, known outcome, optional quality choice and unlock conditions.",
+      "runtime": "ACraftingStation advertises service definitions; UActionExecutionComponent checks action eligibility. UDurableStateClient submits server-validated operations to the one persistence boundary.",
+      "storage": "Record_CraftReservation is used only when timed crafting requires durable reserved inputs. Record_Inventory, Record_Character and Record_CommandReceipt change atomically at completion.",
+      "projection": "WBP_Crafting shows ingredient availability, output preview, applicable specialization and pending state. Closing the panel neither consumes inputs nor cancels a committed result.",
+      "editor": [
+        "Create recipes for WatchFitting, FieldLoaf, BridgeSupport and BlightRemedy. Assign item IDs and exact quantities through DA_GameCatalog.",
+        "Place forge, oven, carpenter bench and alchemy bench service instances in the authored hub as their vocation phases activate.",
+        "For the first recipe choose immediate atomic crafting. Add timed reservations only after cancellation/refund tests exist; do not invent partial-consumption rules in animation graphs."
+      ],
+      "flow": [
+        "Submit Craft(RecipeId, SelectedTechniqueId, Count, RequestId, ExpectedInventoryRevision). Validate station range, learned recipe, active vocation permissions and stack totals.",
+        "Plan an all-or-nothing material/currency debit and output placement. Reject before mutation if output cannot fit.",
+        "Commit input debit, server-created output instance, vocation advancement and receipt in one transaction.",
+        "Return the committed revision and immutable outcome. Repeated requests with the same identity return that outcome; a new identity must still meet remaining inventory constraints.",
+        "Refresh equipment/recipe views from the committed snapshot; presentation may now play forge/cook feedback."
+      ],
+      "fixture": "recipe.watch-fitting uses 3 IronOre and 1 SalvagePlate to produce 1 WatchFitting. Start with 6 ore and 2 plates; two distinct valid crafts may legitimately succeed, but replaying one request cannot make a third.",
+      "solo": "Complete a Forgekeeper outing, forge the fitting, equip the usable result where applicable and contribute the fitting to the watchtower without a human service.",
+      "duo": "Race two different requests against inputs sufficient for only one craft, then disconnect after the winning commit. One output and one debit remain after reconnect.",
+      "load": "At 30 clients sharing a station, verify station policy, material isolation, command latency and contention. Avoid a global lock for independent character inventories.",
+      "failures": "Missing station → StationRequired. Locked advanced technique → VocationRequired. Stale revision → refresh. Reservation cancellation follows a published refund policy and cannot both refund inputs and retain output.",
+      "art": "Forge/cook/alchemy-specific animation coverage is unverified. A shared interact pose may be a temporary visual, not evidence of vocation-exclusive art.",
+      "scope": "NPC commissions provide essential cross-vocation goods with fair bounded costs. Specialists offer variants and control, not a monopoly over mandatory progression.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "quests",
+      "title": "Quests, dialogue, NPC services and factions",
+      "phase": 13,
+      "source": "7.9",
+      "intro": "A quest is a versioned authored objective graph, not a widget containing counters. Conversations select options from validated state and may restrict local input, but the shared world continues running.",
+      "definition": "UQuestDefinition, UNpcServiceDefinition and faction data specify prerequisite IDs, objective types, branching decisions, rewards, repeatability and localization-ready text keys.",
+      "runtime": "ANpcServiceActor composes dialogue, merchant, trainer and project services. The zone validates interaction range and routes objective events from authoritative gameplay results.",
+      "storage": "QuestProgressRecord and faction reputation are written by the persistence boundary with unique objective/reward receipts. Personal progress and realm stage changes remain different records.",
+      "projection": "WBP_Dialogue lists currently legal choices; WBP_QuestJournal shows objective state and alternatives. Old options are revalidated on selection, including after a region-stage change.",
+      "editor": [
+        "Author quest.thornmere.first-supplies with Talk → Gather/Fish alternative → Produce or Commission → Deliver. Its alternatives must be achievable by each initial vocation.",
+        "Assign the same UNpcServiceDefinition to the mentor actor and its UI route; do not create competing NPC parent hierarchies for every service.",
+        "Add localization keys and explicit completion IDs. Wire authoritative craft/catch/combat receipts into objective evaluation, not sprite notifies."
+      ],
+      "flow": [
+        "Interact with an NPC; validate lease, distance and service availability at the current regional revision.",
+        "Present a state-derived dialogue projection. On selection, validate the actual option against current conditions again.",
+        "Advance eligible objectives from accepted gameplay receipts and preserve the personal/global distinction.",
+        "Commit quest reward and completion flag together; a repeated delivery cannot create a second reward.",
+        "Refresh dialogue, journal and relevant region board. Party sharing checks each recipient’s eligibility and never copies completed rewards."
+      ],
+      "fixture": "mentor.vesa offers the First Supplies chain. One recipe output or an NPC-commission voucher satisfies its production objective, so no required story step demands another player vocation.",
+      "solo": "Complete the introductory chain using the non-specialist alternative, then reopen dialogue after a watchtower stage change and verify the correct service options.",
+      "duo": "Share an eligible quest with another character midway through the chain. Each character receives only their own validated objective progress and reward receipt.",
+      "load": "At 30 conversations and shared objective events, measure conditional lookups and reward commits. Conversations cannot pause enemies or the realm clock.",
+      "failures": "Expired option → DialogueChanged with a refreshed list. Duplicate delivery → existing receipt. Broken prerequisite graph → content validation failure before release. Missing localization text → visible fallback key in development.",
+      "art": "NPC idle/walk appearance combinations are authored and audited; unrestricted NPC randomization is deferred until compatibility is proven.",
+      "scope": "Factions use bounded reputation and authored benefits, not unrestricted political simulation. Main progress always has a viable alternative route.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "economy",
+      "title": "Currency, merchants, commissions, banks and trade",
+      "phase": 25,
+      "source": "7.10",
+      "intro": "Currency uses signed-range-checked integer smallest units. Basic NPC supplies and commissions exist even with one player online. Secure direct trade adds choice but never becomes a main-story prerequisite.",
+      "definition": "UEconomyPolicy and merchant service definitions specify stock, integer prices, buyback, repair, commission recipes and trade restrictions. A preview price is not permission to spend.",
+      "runtime": "ANpcServiceActor validates local service access. The persistence boundary owns balances, stock, escrow, bank transfers and final trade commits.",
+      "storage": "Record_Inventory, currency balance, MerchantStockRecord and TradeEscrowRecord update within durable transactions. The service locks records in a deterministic order and validates offer revision/hash.",
+      "projection": "WBP_Merchant, WBP_Bank and WBP_Trade show current revisions, all offered items/currency and explicit two-sided confirmation. Any offer change invalidates both confirmations.",
+      "editor": [
+        "Introduce a limited basic-supplies merchant at Phase 13 for Slice B; full stock, bank and trade security become active at Phase 25.",
+        "Assign fixed fixture prices and a non-specialist repair/commission option to the Thornmere quartermaster. Protect essential stock from server-wide depletion by using a baseline personal purchase entitlement.",
+        "In trade UI separate Offer, Review and Confirm. Show the exact item instance properties and both balances; never auto-confirm after a revision refresh."
+      ],
+      "flow": [
+        "Request a service operation with item IDs, quantity, expected price/stock/offer revision and stable RequestId.",
+        "Validate permissions, ownership, bind restrictions, balances, capacity, stock and integer overflow before mutation.",
+        "For trade, hold offered assets in escrow and require both parties to confirm the identical immutable offer revision.",
+        "Commit both item/currency transfers together, or commit none. A disconnect before commit releases valid escrow through a receipt-backed cancellation.",
+        "After unknown outcome, query TradeId/RequestId and display its terminal state. Reconfirming cannot commit a completed trade again."
+      ],
+      "fixture": "char-bw-wayfinder starts with 100 copper, buys one 20-copper repair kit, sells a 5-copper surplus and commissions an essential fitting for an affordable fixture fee.",
+      "solo": "Earn funds through the starter quest, obtain repair and cross-vocation goods from NPCs, bank an item and finish the route with no human market.",
+      "duo": "Trade two items and currency, then mutate an offer after one confirmation. Both confirmations must reset; duplicate final confirmations transfer once.",
+      "load": "Run 30 clients buying scarce optional stock and baseline essential stock. Record lock contention and ensure critical supplies remain solo-accessible.",
+      "failures": "Negative/overflow amount → InvalidAmount. Stale quote → PriceChanged. Escrowed item cannot be equipped/sold. Full recipient inventory aborts the whole final trade without partial loss.",
+      "art": "Merchant icons and bank/trade UI assets are not included by implication. Use text labels and accessible placeholder icons during implementation.",
+      "scope": "Auction house and player storefronts are deferred. Taxes, conquest and player political governance are outside the committed scope.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "exploration",
+      "title": "Exploration, cartography and the six-region world",
+      "phase": 19,
+      "source": "7.11",
+      "intro": "Exploration rewards interpreting clues, finding safe routes and discovering useful world facts. Personal discoveries remain available to later players even after a shared route has been opened by someone else.",
+      "definition": "UZoneDefinition and discovery/landmark data describe connected maps, arrival cells, fog cells, hidden routes, clue requirements and personal/shared discovery scope.",
+      "runtime": "AZoneGate validates departures. The zone evaluates proximity, clues and route eligibility; the Wayfinder specializes in investigation but all characters retain a viable discovery route.",
+      "storage": "CharacterDiscoveryRecord stores personal knowledge. Record_Region stores shared discoveries and unlocked routes with distinct receipts; first-arrival recognition is not a monopoly on progression.",
+      "projection": "WBP_WorldMap and WBP_Minimap distinguish unexplored, personally discovered and publicly opened locations. Shared map notes are permissioned and redact undiscovered private facts.",
+      "editor": [
+        "Connect Thornmere Basin → Elderwood Frontier → Siltfen Reach, with a second branch to Cairnstep Heights → Hollowpeak Depths → Galehaven Coast.",
+        "Give every connection an explicit destination ZoneId and safe SpawnId. Validate both outward and return routes before decorating.",
+        "Place a track sequence on Elderwood Road that reveals an optional safe path. Non-Wayfinders can learn the route through an NPC investigation contract."
+      ],
+      "flow": [
+        "Inspect an authored clue or enter an eligible landmark trigger; the server validates state and position.",
+        "Advance a personal clue sequence and commit its once-only discovery reward.",
+        "When a shared route milestone is met, commit the realm discovery revision separately from each participant’s journal.",
+        "Update map/minimap and gate presentation from that revision; later arrivals can still complete their personal clue journey.",
+        "At a zone boundary, use the fenced transfer protocol rather than whole-server travel. Preserve personal fog and route state across reconnect."
+      ],
+      "fixture": "discovery.elderwood.willow-cut connects the road camp to the ruined watchtower. Three clues provide a safe-route choice; a direct skirmish route remains available.",
+      "solo": "Track, fight or use the calmer authored alternative, report the route and use the shortcut. Repeat after reentry without another discovery reward.",
+      "duo": "One player opens the shared shortcut while another still lacks personal discovery. The second receives correct public access and can independently earn personal knowledge.",
+      "load": "At 30 clients crossing fog cells and gates, measure compact discovery deltas and transfer queue behavior; do not replicate all map tiles per player.",
+      "failures": "Unknown destination → RouteUnavailable. Invalid clue sequence → PrerequisiteMissing. Client-forged discovered cells are ignored. Return travel must never depend on an online party member.",
+      "art": "All six biome families are original design targets, not existing maps or acquired environment packs. Terrain, interiors, creatures, VFX and UI remain in the art backlog.",
+      "scope": "No endless procedural TileMap. Ordinary expansion is authored data and content validation, with code changes only for genuinely new mechanics.",
+      "refs": [
+        "UE-TRAVEL",
+        "UE-PAPER2D"
+      ]
+    },
+    {
+      "id": "regions",
+      "title": "Living Regions: development, danger and discovery",
+      "phase": 22,
+      "source": "5.2",
+      "intro": "Regions persist three separate axes: settlement development, regional danger and discoveries. Permanent construction never decays simply because everyone logged out. Repeated threats are bounded authored events, not arbitrary destruction of historical progress.",
+      "definition": "URegionDefinition and UConstructionProjectDefinition list stable stage IDs, contribution objectives, visual variants, route/service effects and solo alternatives.",
+      "runtime": "ARegionProjectionActor and ABriarwakeGameState publish public stage snapshots. Runtime tile overlays and props consume committed stage IDs; they cannot complete projects themselves.",
+      "storage": "Record_Region, ProjectContributionRecord and Record_CommandReceipt are written by one persistence boundary. A material contribution debits inventory and advances the stage in the same commit.",
+      "projection": "WBP_RegionBoard displays essential progress, optional enhancements, contribution choices and remaining personal effort. New arrivals receive an authoritative revision before applying deltas.",
+      "editor": [
+        "Begin the small watchtower objective contract at Phase 15; evolve that same schema at Phase 22 rather than introducing an incompatible second project owner.",
+        "For project.elderwood.north-road author Blocked → Supplied → Repaired visual states and a separate recurring danger event. Essential route access changes only on a committed stage.",
+        "Bind the board, gate, merchant and map consumers to the shared region projection. Subscribe, pull a snapshot, then apply only newer contiguous deltas."
+      ],
+      "flow": [
+        "Submit Contribution(ProjectId, StageId, ObjectiveId, MaterialInstances or validated achievement receipt, RequestId).",
+        "Validate the currently active objective, permissible source, sufficient inventory, character lease and expected region revision.",
+        "Commit material debit, contribution receipt, progress and any resulting stage transition once.",
+        "Publish a compact revisioned snapshot/delta through an outbox. The visual bridge, road and merchant service now change together.",
+        "On reload or missed revisions, fetch a fresh snapshot. A stage presentation replay does not replay the transaction."
+      ],
+      "fixture": "project.elderwood.north-road has 12 essential units and explicit base-skill/NPC alternatives for all categories. Optional reinforcement uses the frozen population model described separately.",
+      "solo": "One character completes the essential road repair using available base skills and commissions. Restart both zones; the road and merchant remain unlocked.",
+      "duo": "Join at 70% completion in a separately seeded fixture, then race the final contribution. Show one stage transition, retained credit and no double material debit.",
+      "load": "Test 1/2/5/10/30 contributors, simultaneous final objectives, hot rejoin and regional service changes. Measure backend commits and snapshot size, not editable tile replication.",
+      "failures": "Stale stage → ProjectChanged; no debit. Repeated contribution → original receipt. An outbox delay shows PendingSave/Syncing instead of granting client-side completion.",
+      "art": "Every stage requires an authored tile/prop variant. No environment stages have been verified in the missing ZIP.",
+      "scope": "No universal ecological simulation, freeform terrain editing or offline punishment. Population scaling may never revoke credited progress or essential access.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "social",
+      "title": "Parties, friends, guilds, chat and moderation",
+      "phase": 27,
+      "source": "7.12",
+      "intro": "Human cooperation adds tactical variety, convenience and community recognition. Social actions naturally need other humans, but required story, profession mastery, essential recipes and critical region stages do not.",
+      "definition": "SocialPolicy defines party capacity, invitations, chat scopes, guild ranks/permissions, block behavior and contribution-board privacy. Dungeon capacity is independent of the 30-client zone test target.",
+      "runtime": "The zone owns local proximity membership; a shared social responsibility inside the same initial service handles durable membership and cross-zone routing. Do not duplicate character identity records.",
+      "storage": "Record_SocialMembership stores friends/block/guild roles and permission revisions. Invitations expire and are single-use; moderation actions have restricted audit records.",
+      "projection": "WBP_Social, WBP_Chat and WBP_Party display scoped information. Blocking affects permitted chat/invites; inventory and private journal facts do not leak into presence.",
+      "editor": [
+        "Create local, party and guild channels with explicit recipients. Global chat remains separately rate-limited and permissioned.",
+        "Expose invite, leave, block, report and guild-rank actions in controller-accessible menus. Require confirmation for permission-changing operations.",
+        "Connect party participation to the existing encounter reward rule. Party membership alone does not authorize remote idle reward farming."
+      ],
+      "flow": [
+        "Submit a scoped social command from the authenticated character/session context.",
+        "Validate membership, invite state, block rules and current permission revision.",
+        "Commit durable membership or moderation changes where applicable; transient chat routes through rate-limited delivery without granting gameplay items.",
+        "Publish only to authorized recipients. Reconnect resolves current membership instead of replaying expired invitations.",
+        "Revalidate ranks/permissions at the action boundary; an old guild UI cannot spend or edit shared resources after demotion."
+      ],
+      "fixture": "party.bw.001 contains a Vanguard Hearthkeeper and Ranger Forgekeeper. guild.bw.wardens has owner/member roles and an optional public contribution board.",
+      "solo": "Play the same starter route and dungeon without social membership. No required quest may ask for a successful player trade, guild or party invitation.",
+      "duo": "Invite, accept, share an eligible quest, support in combat, trade and block. Expired invitations and revoked permissions fail cleanly.",
+      "load": "At 30 players mix local/party/guild messages and region contributions. Measure fan-out, rate limits and privacy boundaries across two zones.",
+      "failures": "Not authorized → PermissionDenied. Blocked invitation → NotAvailable without disclosing unnecessary account details. Flooding is rate-limited and auditable; moderation access is not available to ordinary clients.",
+      "art": "Guild crests, emotes and chat icons need separate approved assets. Text-first UI is a valid development fallback.",
+      "scope": "PvP, taxation, political elections, conquest, player housing and massive mandatory raids remain deferred optional extensions.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "dungeons",
+      "title": "Solo/group dungeons, companions and instance recovery",
+      "phase": 28,
+      "source": "7.3",
+      "intro": "A solo character can achieve the same critical narrative/world milestone as a party. Group encounters add coordination; they do not hold essential progression hostage. NPC allies fill specific authored mechanic roles, not autonomous farming jobs.",
+      "definition": "UDungeonDefinition and UEncounterDefinition declare entry, safe exit, checkpoint, solo/duo/small-party mechanics variants, companion roles and reward policy.",
+      "runtime": "The dedicated instance server owns encounter progress and active participation. Companions follow constrained server AI with explicit assistance tasks and no separate player economy.",
+      "storage": "InstanceRecord stores resumable checkpoint and eligible reward receipts. Character and region milestones commit through the existing persistence boundary.",
+      "projection": "WBP_DungeonEntry shows variant, expected roles, available NPC aid and recovery policy. WBP_Party clearly distinguishes NPC helpers from human participants.",
+      "editor": [
+        "Author the Bellroot Vault beneath Elderwood with a safe entry room, two encounters, a checkpoint and return gate.",
+        "For the solo bell mechanism let one NPC hold an exposed lever while the player fights; the helper retreats if the player stops active participation. Group variant uses voluntary role coordination.",
+        "Define wipe/reconnect timeouts and checkpoint restoration before adding boss drops. Entry/exit must use the same transfer contract as biome travel."
+      ],
+      "flow": [
+        "Validate entry eligibility and reserve instance capacity without requiring a minimum human group.",
+        "Select an authored mechanic variant at an encounter boundary. Do not instantly change the rules during a boss cast when somebody joins.",
+        "Track player actions, assistance and encounter eligibility. Helpers cannot independently earn loot while a player is idle.",
+        "Commit the critical milestone once and optional variant rewards under separate explicit policies.",
+        "On crash or disconnect, recover to a known safe checkpoint and reconcile pending receipts before reopening the encounter."
+      ],
+      "fixture": "dungeon.bellroot-vault has one critical milestone unlock.bellroot-road. The same milestone is available at human populations 1, 2 and 5.",
+      "solo": "Enter with permitted NPC aid, complete the lever/guardian mechanics, obtain the milestone and exit safely. Repeat while idle to verify assistance cannot farm completion.",
+      "duo": "Run the cooperative variant, disconnect one human during a boundary transition, and apply the documented fallback or checkpoint reset without duplicate drops.",
+      "load": "The zone test population is 30, not a required 30-person dungeon. Run multiple bounded instances and profile allocation, recovery and shared persistence contention.",
+      "failures": "Destination full → wait/cancel with no item debit. Instance loss → checkpoint recovery. Reused reward token → original receipt. A helper cannot authorize party-only item transfers.",
+      "art": "Dungeon tiles, guardian sprite, boss telegraphs and companion poses are design requirements; none is claimed acquired.",
+      "scope": "Maximum human party size is a tuning decision; use 5 as the initial fixture. No raid-only item essential to the main route.",
+      "refs": [
+        "UE-NET",
+        "UE-TRAVEL"
+      ]
+    },
+    {
+      "id": "ux",
+      "title": "UI, accessibility, audio, VFX and localization",
+      "phase": 30,
+      "source": "7.13",
+      "intro": "Every screen is an observer and request surface. Removing the HUD must not remove the rules. Readable focus, remapping, text scaling, reduced motion and alternatives to timing/audio/color-only signals belong in the first functional slice, not a final cosmetic pass.",
+      "definition": "UUiScreenCatalog lists screen routes, input contexts, focus entry/return targets, text keys and error mappings. Feedback definitions identify visual and audio equivalents.",
+      "runtime": "ABriarwakePlayerController owns local widget lifetime and input focus. Gameplay continues on the server while menus are open; private data is pulled from approved projections.",
+      "storage": "Local preferences use local configuration, separate from MMO persistence. Account-backed preferences require an explicit privacy/versioning contract if added later.",
+      "projection": "Frontend, HUD, map/minimap, equipment, inventory/bank, vendor, loot, journal, vocation/crafting, fishing/farm, region, dialogue, social/chat/trade and recovery screens share consistent pending/error states.",
+      "editor": [
+        "Create keyboard/controller focus order and return focus on each modal. Bind observers once, immediately pull state, and unbind on teardown.",
+        "Add text-size and reduced-motion settings; duplicate sound-only bite/attack alerts with visible text/shape cues and distinguish statuses without relying on color.",
+        "Use stable localization keys for dialogue, quests, item names and error messages. Test long translated strings and a narrow viewport instead of hard-coded pixel assumptions."
+      ],
+      "flow": [
+        "Open a screen through the controller and subscribe to its state projection.",
+        "Render a snapshot, then apply newer revisions. Disable conflicting pending actions without freezing unrelated game controls.",
+        "Submit only the chosen operation and required identifiers; never send a desired new balance or awarded item.",
+        "Display the terminal result or unknown-outcome recovery message. Keep a clear retry path that preserves RequestId where required.",
+        "Close/reopen or destroy the widget and verify the same state and commands still exist."
+      ],
+      "fixture": "The First Supplies route is completed once with keyboard/mouse, once with controller, once with large text/reduced motion and once with fishing’s accessible timing mode.",
+      "solo": "Complete all essential route interactions without audio and without precise reaction timing. Closing a widget never loses committed progress.",
+      "duo": "With one HUD destroyed, repeat authoritative commands on both clients through the ordinary controller route and verify persistence/rewards remain correct.",
+      "load": "At 30 clients report network indicators without flooding UI events. Measure event-driven updates rather than ticking every widget against the database.",
+      "failures": "Show ZoneFull, TransferFailed, StaleRevision, ServiceUnavailable, InventoryFull, NotAuthorized, PendingSave, TradeExpired and Disconnected with an action appropriate to each state.",
+      "art": "Fonts, SFX, music, VFX and UI icons need provenance. This documentation package includes no paid artwork, third-party audio or invented game screenshots.",
+      "scope": "Screen-reader integration and platform accessibility APIs require actual platform testing. Text alternatives in the design are not proof of native assistive-technology support.",
+      "refs": [
+        "UE-NET"
+      ]
+    },
+    {
+      "id": "operations",
+      "title": "Deployment, security, profiling and recovery",
+      "phase": 31,
+      "source": "7.13",
+      "intro": "The first operational baseline is one controlled persistence service/store, a small realm directory and dedicated zone processes. It is not an unmeasured fleet of microservices. Security and recovery are tested at the boundaries that move durable value.",
+      "definition": "Environment configuration separates development/staging credentials, build/content/schema versions, ports, capacity, logging policy and backup schedules.",
+      "runtime": "Dedicated zones validate gameplay commands and use server-only credentials. The persistence boundary applies lease fencing, transactions, authorization and audit controls.",
+      "storage": "Versioned durable records, backups and restricted audit logs are separate from disposable runtime actors. Secrets and bearer tokens never enter the public docs, client package or normal logs.",
+      "projection": "Operational dashboards show aggregate latency, errors, contention, replication, crashes and progression stalls. Player-facing UI shows maintenance and recovery states without leaking internal credentials.",
+      "editor": [
+        "Record the source-engine build, compiler, operating system, plugin hashes and packaged build IDs before testing. Create future server/client targets in the game repository, not this documentation repository.",
+        "Configure the server default map and cook the required zone maps and dependencies. Follow the official dedicated-server procedure, replacing sample names with Briarwake and validating exact target paths.",
+        "Test one dedicated process plus two external clients before using the 30-client fixture. PIE-only success is insufficient for provider, packaging or process-isolation claims."
+      ],
+      "flow": [
+        "Deploy matched server/client/content/schema versions into a nonproduction environment.",
+        "Admit an authenticated character through an active lease; rate-limit and validate every value-changing command.",
+        "Inject zone crash, response loss, database timeout and duplicate request at named transaction boundaries.",
+        "Restore a backup into an isolated environment, reconcile receipts/outbox and validate that the restored world has one canonical state.",
+        "Publish measured results with environment and raw evidence. Mark unsupported platform/provider/version cases Not run rather than passing them by assumption."
+      ],
+      "fixture": "Matrix: populations 1/2/5/10/30; baseline and 80/150 ms illustrative RTT; 0/1/3% illustrative packet loss; quiet route and shared-node hotspot. Hardware/budgets remain to be measured.",
+      "solo": "Complete the route, commit an item/project change, crash the zone, reconnect and compare durable receipts and inventory.",
+      "duo": "During a trade and zone transfer kill one process at each protocol step. Confirm no duplicate active body, item ownership or finalized trade.",
+      "load": "Measure server frame time, CPU/RAM, relevant actors, bytes/client/s, RPC rate, service p50/p95/p99, database contention and pending-outbox depth at every population.",
+      "failures": "Fail closed on invalid identity or fencing token. A storage outage rejects new durable mutations or keeps a precisely recorded pending state; it does not silently fall back to local SaveGame truth.",
+      "art": "Packaging checks exclude paid source ZIPs, plugin source/binaries without rights, development accounts and unlicensed previews from documentation distribution.",
+      "scope": "No Unreal binary, service deployment, database instance, provider session or performance result was produced in this documentation task.",
+      "refs": [
+        "UE-DEDICATED",
+        "UE-NET",
+        "UE-STEAM"
+      ]
+    }
+  ]
+}

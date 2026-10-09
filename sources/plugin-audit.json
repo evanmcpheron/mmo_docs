@@ -1,0 +1,88 @@
+{
+  "archive_available": false,
+  "archive_sha256": null,
+  "source_verification": "blocked",
+  "issues": [
+    {
+      "topic": "Scope",
+      "brief_report": "Sessions subsystem and menu, not a durable MMO backend",
+      "proposed_fix": "Keep identity, inventories, regions, transfer and social records outside the session adapter.",
+      "test": "Admit a character only after the service issues a valid lease.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Empty lifecycle methods",
+      "brief_report": "StartSession and OnStartSessionComplete reportedly empty",
+      "proposed_fix": "Inspect exact methods; implement a tested lifecycle or report unsupported operations.",
+      "test": "Call start twice and simulate provider failure; one terminal result per operation.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Destroy/create race",
+      "brief_report": "CreateSession reportedly continues after asynchronous DestroySession",
+      "proposed_fix": "Wait for successful destroy completion before creating. Serialize host operations; reset pending intent on every failure.",
+      "test": "Host with an existing session; delayed destroy must not overlap create.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Listen-only menu",
+      "brief_report": "Reported ?listen suffix and sample ThirdPersonCPP lobby",
+      "proposed_fix": "Use authored Briarwake maps for prototype; separate dedicated-server advertisement from local menu creation.",
+      "test": "A headless server starts without a local player or listen URL.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Join result/address",
+      "brief_report": "Reported missing successful-result/valid-address travel gate",
+      "proposed_fix": "Travel only after successful join and a resolved valid destination. Recover join button on failure/no matches.",
+      "test": "Search returns zero, join fails, address is empty: no travel and usable retry UI.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Local identity assumptions",
+      "brief_report": "Reported local player / network ID dereferences",
+      "proposed_fix": "Validate local objects on clients; use a distinct provider-supported dedicated identity/advertisement path.",
+      "test": "Run with no local player; no crash or forged client identity.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Provider coupling",
+      "brief_report": "Reported OnlineSubsystemSteam dependencies",
+      "proposed_fix": "Audit Build.cs and .uplugin before a Null/LAN test; independently verify Steam configuration and dedicated support.",
+      "test": "Two external clients join the intended provider/session, not unrelated lobby results.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Delegate lifetime",
+      "brief_report": "Repeated MenuSetup and callback teardown need inspection",
+      "proposed_fix": "Bind once per operation/lifecycle; clear delegate handles on completion/destruction. Recover every button/error state.",
+      "test": "Open/close the menu repeatedly while search is outstanding; no late call into destroyed UI.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    },
+    {
+      "topic": "Licensing and compatibility",
+      "brief_report": "No actual license/build evidence is available here",
+      "proposed_fix": "Keep source/binaries out of this repository. Record hash, exact lines, installed versions, compiler and packaging results when provided.",
+      "test": "A license decision and real build log exist before redistribution or compatibility acceptance.",
+      "source_path": null,
+      "source_lines": null,
+      "status": "reported_in_brief_not_independently_verified"
+    }
+  ]
+}

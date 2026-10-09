@@ -1,0 +1,1077 @@
+{
+  "schema_version": 1,
+  "phases": [
+    {
+      "phase": 0,
+      "build_target": "Source/asset/plugin audit, Unreal engine evidence, rights, development environment, authoritative registries and C++/Blueprint rules",
+      "required_proof": "Document all known/unverified dependencies; develop an actual import/build verification checklist and no false pass claims",
+      "title": "Evidence, rights and environment",
+      "editor_steps": "Inventory the original prompt, exact ZIP hashes and license statements before authoring imports. Record the source-engine version, toolchain and installed plugin descriptors in sources/verification.json. Missing inputs stop their dependent verification, not unrelated documentation work.",
+      "native_contract": "This phase establishes evidence and naming only. Do not create every gameplay class now. Keep Source/Briarwake as the future native module path and Content/Game as the content-domain root.",
+      "reopen_consumers": "sources/current-asset-manifest.json; sources/design-decisions.json; sources/plugin-audit.json",
+      "run_now": "Read the requirements and audit screens. On the future development machine, inspect Help → About Unreal Editor and the installed engine Build.version. Hash both local archives and inspect creator guidance without publishing their files.",
+      "rejection": "Reject a verified status without a file/build/log reference; reject an archive with unsafe paths. Record unavailable ZIPs and an untested PaperZD release as blockers.",
+      "regression": "No game fixture exists yet. Static guide tests are separate from all future Unreal tests.",
+      "creates": [
+        "Briarwake"
+      ],
+      "activates": [
+        "Briarwake"
+      ],
+      "dependencies": [],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 1,
+      "build_target": "Four-direction Mana Seed character preview, layered sprite import, directional PaperZD test and paper-doll compatibility",
+      "required_proof": "One character with hair/hat/outfit/tool renders all supported poses; art gaps reported rather than hidden",
+      "title": "Four-facing character and paper-doll preview",
+      "editor_steps": "Enable Paper2D and the separately verified PaperZD release, restart, and import one audited sheet. Record its measured frame size and pivot before extracting frames. Assemble the four idle/walk flipbooks and test every layer combination in L_BriarwakePreview.",
+      "native_contract": "UCharacterAppearanceComponent resolves a shared pose/frame/time across compatible layers. A missing hat may use an authored fallback; a missing outfit must not silently expose an unintended body. PaperZD methods remain version-gated.",
+      "reopen_consumers": "DA_GameCatalog; BP_BriarwakePreview; DA_AppearanceCatalog",
+      "run_now": "Open L_BriarwakePreview. Select each cardinal facing and each audited action, then scrub/restart playback and swap a supported outfit. Inspect pivots, cropping, transparent margins and tool alignment.",
+      "rejection": "Select an absent pose or invalid combination: show the named fallback/blocker. No sprite import is accepted on the basis of filename convention alone.",
+      "regression": "Repeat the full preview after any extraction or catalog edit; do not claim that the source has diagonal art.",
+      "creates": [
+        "Fixture_presentation",
+        "L_BriarwakePreview",
+        "EFacing4",
+        "UGameCatalog",
+        "DA_GameCatalog",
+        "UAppearanceCatalog",
+        "DA_AppearanceCatalog",
+        "UCharacterAppearanceComponent",
+        "ABP_BriarwakeCharacter",
+        "AS_BriarwakeCharacter",
+        "BP_BriarwakePreview",
+        "T_CharacterBody_P1",
+        "FB_Body_Idle_East",
+        "FB_Body_Idle_North",
+        "FB_Body_Idle_South",
+        "FB_Body_Idle_West",
+        "FB_Body_Walk_East",
+        "FB_Body_Walk_North",
+        "FB_Body_Walk_South",
+        "FB_Body_Walk_West"
+      ],
+      "activates": [
+        "EFacing4",
+        "UAppearanceCatalog",
+        "DA_AppearanceCatalog",
+        "UGameCatalog",
+        "DA_GameCatalog",
+        "UCharacterAppearanceComponent",
+        "BP_BriarwakePreview",
+        "L_BriarwakePreview",
+        "T_CharacterBody_P1",
+        "AS_BriarwakeCharacter",
+        "ABP_BriarwakeCharacter",
+        "FB_Body_Idle_North",
+        "FB_Body_Walk_North",
+        "FB_Body_Idle_East",
+        "FB_Body_Walk_East",
+        "FB_Body_Idle_South",
+        "FB_Body_Walk_South",
+        "FB_Body_Idle_West",
+        "FB_Body_Walk_West",
+        "Fixture_presentation"
+      ],
+      "dependencies": [
+        0
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 2,
+      "build_target": "2D top-down tiles, collisions, occlusion, scene sorting, fixed zoom camera and starter village map",
+      "required_proof": "Move around trees/roofs/water without collision or sorting failures; no 3D landscape appears",
+      "title": "2D village, collision, camera and sorting",
+      "editor_steps": "Create L_ThornmereVillage with separate ground, obstacle and overhead layers. Orient art to the X/Y gameplay plane, use a fixed downward orthographic camera, and provide a non-rendered collision floor for the chosen movement mode. Place square, bank, forge location, low fence and road exit.",
+      "native_contract": "The authored navigation/collision contract must distinguish walkable, blocked, low-obstacle and water cells. Rendering depth is derived from foot Y plus bounded visual layer offsets; gameplay position and collision never derive from cosmetic offsets.",
+      "reopen_consumers": "L_ThornmereVillage; DA_Movement_Default; BP_BriarwakePreview",
+      "run_now": "Inspect behind/in front of a tree, roof, bridge and tall prop at multiple zoom levels. Compare visible blockers to the navigation export and collision view. Ground tiles must not hide feet.",
+      "rejection": "Reject a walkability map that disagrees with collision, a roof layer that blocks all interaction, or a cosmetic sort offset that moves the capsule.",
+      "regression": "Rerun Phase 01 poses at the chosen scale and zoom. Environment art remains a separate missing-input gate.",
+      "creates": [
+        "DA_ThornmereNavigation",
+        "L_ThornmereVillage",
+        "TM_ThornmereGround",
+        "TM_ThornmereOverhead",
+        "TS_Thornmere",
+        "UMovementProfile",
+        "DA_Movement_Default"
+      ],
+      "activates": [
+        "UMovementProfile",
+        "DA_Movement_Default",
+        "L_ThornmereVillage",
+        "TS_Thornmere",
+        "TM_ThornmereGround",
+        "TM_ThornmereOverhead",
+        "DA_ThornmereNavigation"
+      ],
+      "dependencies": [
+        1
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 3,
+      "build_target": "Eight-way control input and four-facing presentation, sprint/dodge/interact, damage-independent animation states, controller input",
+      "required_proof": "Keyboard/controller reach all walkable tile paths; diagonal speed, hop collision, water transitions and dodge interruption are consistent",
+      "title": "Input, sprint, dodge, low-obstacle hop and water",
+      "editor_steps": "Create input actions and IMC_Gameplay, then assign keyboard/controller bindings. Configure BP_BriarwakeCharacter with the movement/appearance components and movement profile. Connect each input once through the local controller fixture; reserve UI-only input modes for menus.",
+      "native_contract": "UBriarwakeMovementComponent normalizes X/Y input and validates custom hop/swim transitions. Define action entry, allowed interruption and landing/water exit explicitly. A hop is not a side-view platformer jump.",
+      "reopen_consumers": "BP_BriarwakeCharacter; UCharacterAppearanceComponent; L_ThornmereVillage; WBP_Settings",
+      "run_now": "Traverse the village with keyboard and controller. Compare diagonal/cardinal distance, sprint resource use, dodge cancellation, eligible fence hop and legal water entry/exit. Try each while a menu owns focus.",
+      "rejection": "Solid-wall hop, no valid landing, false water request and repeated dodge during cooldown must reject. These local fixtures are not remote-authority proof until Phase 04.",
+      "regression": "Retest sorting/pivots during movement, missing hop/swim fallback art, camera zoom limits and controller focus restoration.",
+      "creates": [
+        "Fixture_movement",
+        "IA_Dodge",
+        "IA_Hop",
+        "IA_Interact",
+        "IA_MenuCancel",
+        "IA_MenuConfirm",
+        "IA_Move",
+        "IA_Sprint",
+        "WBP_Settings",
+        "IMC_Gameplay",
+        "UBriarwakeMovementComponent",
+        "ABriarwakeCharacter",
+        "BP_BriarwakeCharacter"
+      ],
+      "activates": [
+        "UBriarwakeMovementComponent",
+        "ABriarwakeCharacter",
+        "BP_BriarwakeCharacter",
+        "IA_Move",
+        "IA_Sprint",
+        "IA_Dodge",
+        "IA_Hop",
+        "IA_Interact",
+        "IA_MenuConfirm",
+        "IA_MenuCancel",
+        "IMC_Gameplay",
+        "WBP_Settings",
+        "Fixture_movement"
+      ],
+      "dependencies": [
+        2
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 4,
+      "build_target": "Supplied sessions-plugin bridge decision, host/join prototype and actual dedicated server with two separate clients",
+      "required_proof": "Two clients see a server-owned avatar and cannot modify authoritative location/state; plugin gaps remain visible",
+      "title": "Session adapter and dedicated two-client baseline",
+      "editor_steps": "Audit the supplied plugin before adaptation. Configure exactly one UConnectionSubsystem route. Set the server map and GameMode/PlayerController/PlayerState/Character classes, build and cook future dedicated/client targets, and launch two separate clients against a headless server.",
+      "native_contract": "The zone owns gameplay state; a listen-host prototype is a separate test mode. Delegate callbacks carry an operation generation, and a join travels only after a successful provider result plus a valid resolved address.",
+      "reopen_consumers": "ABriarwakeGameMode; ABriarwakeGameState; BP_BriarwakeCharacter; ABriarwakePlayerController; WBP_HUD",
+      "run_now": "After actual builds exist, start BriarwakeServer on port 7777 and two BriarwakeClient processes. Move each independently and inspect server logs, replicated identity and remote four-facing presentation.",
+      "rejection": "Test no matching sessions, provider unavailable, host-while-destroying, failed address resolution and a dedicated process without a local player. UI controls recover; no null dereference or unvalidated travel.",
+      "regression": "Rerun village traversal on both clients. Record the plugin ZIP unavailable here; no source fixes, Steam or network proof are claimed.",
+      "creates": [
+        "WBP_ConnectionError",
+        "WBP_HUD",
+        "ABriarwakeGameState",
+        "ABriarwakePlayerState",
+        "UConnectionSubsystem",
+        "ABriarwakePlayerController",
+        "ABriarwakeGameMode"
+      ],
+      "activates": [
+        "ABriarwakePlayerController",
+        "ABriarwakeGameMode",
+        "ABriarwakeGameState",
+        "ABriarwakePlayerState",
+        "UConnectionSubsystem",
+        "WBP_HUD",
+        "WBP_ConnectionError"
+      ],
+      "dependencies": [
+        3
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 5,
+      "build_target": "Login/character creation/selection, required vocation choice, appearance/layer preview, introductory combat-style setup",
+      "required_proof": "Create Forgekeeper/Hearthkeeper/Wayfinder prototype record; invalid/duplicate choice and names rejected",
+      "title": "Character creation and one required vocation",
+      "editor_steps": "Build login, selection and creation screens. Assign DA_Vocation_Forgekeeper/Hearthkeeper/Wayfinder and the audited appearance catalog. Display unavailable later vocations explicitly. Use a disposable Phase 05 account fixture before durable wiring in Phase 06.",
+      "native_contract": "The server validates one active VocationId and all appearance IDs. Character identity is separate from the Pawn. Combat discipline is not the vocation; do not silently combine them into one class selector.",
+      "reopen_consumers": "WBP_Login; WBP_CharacterSelect; WBP_CharacterCreate; ABriarwakeGameMode",
+      "run_now": "Create one character in each prototype vocation through the ordinary UI. Enter Thornmere with the correct starter presentation and repeat using controller navigation.",
+      "rejection": "No vocation, duplicate normalized name, invalid body/outfit or excessive character slots reject before spawn. A failed creation leaves no half-record; durable proof is gated on Phase 06.",
+      "regression": "Verify both remote appearance and the existing movement loop. Phase 05 fixture resets must be visibly labeled disposable.",
+      "creates": [
+        "Fixture_identity",
+        "WBP_CharacterCreate",
+        "WBP_CharacterSelect",
+        "WBP_Login",
+        "UVocationDefinition",
+        "DA_Vocation_Forgekeeper",
+        "DA_Vocation_Hearthkeeper",
+        "DA_Vocation_Wayfinder"
+      ],
+      "activates": [
+        "UVocationDefinition",
+        "DA_Vocation_Forgekeeper",
+        "DA_Vocation_Hearthkeeper",
+        "DA_Vocation_Wayfinder",
+        "WBP_Login",
+        "WBP_CharacterSelect",
+        "WBP_CharacterCreate",
+        "Fixture_identity"
+      ],
+      "dependencies": [
+        4
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 6,
+      "build_target": "Durable character/realm models, ID and transaction ledger, schema versions, reconnect and server restart",
+      "required_proof": "Solo character and second client preserve identical canonical progression without duplication",
+      "title": "Durable records, receipts and reconnect",
+      "editor_steps": "Define and implement the future server persistence endpoint and versioned account/character/inventory/receipt/lease records. Wire UDurableStateClient on the server only. Replace disposable character fixtures with service-backed creation and one active fenced lease.",
+      "native_contract": "Commit aggregate changes with receipt and payload digest in the same transaction. UCharacterStateComponent publishes one owner-only projection. The service is the canonical writer; GameInstance does not become a shared database.",
+      "reopen_consumers": "ABriarwakeGameMode; UCharacterStateComponent; WBP_CharacterSelect; ABriarwakePlayerState",
+      "run_now": "Create a character, record IDs/revisions, disconnect after an acknowledged commit, restart the zone and reconnect. Retry the same request after dropping only its response.",
+      "rejection": "Duplicate login, stale epoch, changed payload under the same RequestId and unsupported schema reject. An unknown outcome must query/replay the original request, not issue an untracked second grant.",
+      "regression": "Repeat both prototype vocations and remote avatar observation. Confirm no credentials or private inventory appear in public replication/logs.",
+      "creates": [
+        "Record_Account",
+        "Record_Character",
+        "Record_CommandReceipt",
+        "Record_Inventory",
+        "Record_SessionLease",
+        "UCharacterStateComponent",
+        "UDurableStateClient"
+      ],
+      "activates": [
+        "UDurableStateClient",
+        "UCharacterStateComponent",
+        "Record_Account",
+        "Record_Character",
+        "Record_Inventory",
+        "Record_CommandReceipt",
+        "Record_SessionLease"
+      ],
+      "dependencies": [
+        5
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 7,
+      "build_target": "Two connected 2D biomes with loading screen, persistent identifiers and per-player zone migration",
+      "required_proof": "One character transfers while another stays; retries/failures preserve one authoritative character",
+      "title": "Two zones and fenced per-character travel",
+      "editor_steps": "Author L_ElderwoodRoad and both UZoneDefinition instances. Start Thornmere and Elderwood in separate dedicated processes with distinct ports. Configure paired gates and safe arrival IDs; wire the directory/reservation/lease protocol before showing travel as complete.",
+      "native_contract": "The persistence boundary fences old ownership and consumes a single-use transfer ticket. Only the selected character reconnects; source ServerTravel is not a zone-crossing solution.",
+      "reopen_consumers": "AZoneGate; ABriarwakeGameMode; UConnectionSubsystem; WBP_Loading; DA_GameCatalog",
+      "run_now": "Leave client B in Thornmere while client A crosses to Elderwood and back. Observe identical inventory/appearance/vocation and one active lease for A throughout terminal recovery.",
+      "rejection": "Expire/replay a transfer token, lose the destination after reservation and disconnect after fencing. No source body may accept a late transaction under its old epoch.",
+      "regression": "Run Phase 06 retry/restart tests on both sides. Never recover by blindly restoring the old source snapshot after destination activation.",
+      "creates": [
+        "L_ElderwoodRoad",
+        "Record_Transfer",
+        "WBP_Loading",
+        "UZoneDefinition",
+        "AZoneGate",
+        "DA_Zone_Elderwood",
+        "DA_Zone_Thornmere"
+      ],
+      "activates": [
+        "Record_Transfer",
+        "UZoneDefinition",
+        "AZoneGate",
+        "L_ElderwoodRoad",
+        "DA_Zone_Thornmere",
+        "DA_Zone_Elderwood",
+        "WBP_Loading"
+      ],
+      "dependencies": [
+        6
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 8,
+      "build_target": "Interaction routing and safe action arbitration: NPC, item, gather, object, water; UMG requests/observes",
+      "required_proof": "Client cannot activate an out-of-range/busy/expired interaction; one player can interact end-to-end",
+      "title": "Interaction routing and action arbitration",
+      "editor_steps": "Attach UInteractionComponent and UActionExecutionComponent to the character. Add one NPC, world object, gathering marker and water target to the route as nonrewarding fixtures until their systems activate. Assign stable target IDs and permitted action tags.",
+      "native_contract": "The owning controller routes one command envelope; the server rechecks lease, range, line of sight, target generation, state and permissions. Only one conflicting timed action can hold the character action slot.",
+      "reopen_consumers": "ABriarwakePlayerController; BP_BriarwakeCharacter; WBP_HUD; AZoneGate",
+      "run_now": "Use ordinary Interact input on an in-range valid target, then move away, open/close the prompt and repeat. Observe accepted/busy/error states rather than firing actor methods from the widget.",
+      "rejection": "Out-of-range, destroyed/expired target, unsupported action, duplicate begin and cancellation after transfer reject without granting progress.",
+      "regression": "Rerun movement, water/hop eligibility and zone travel with an active interaction. Teardown clears listeners and pending local prompts.",
+      "creates": [
+        "BriarwakeGameplayTags",
+        "UActionExecutionComponent",
+        "UInteractionComponent"
+      ],
+      "activates": [
+        "UInteractionComponent",
+        "UActionExecutionComponent",
+        "BriarwakeGameplayTags"
+      ],
+      "dependencies": [
+        7
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 9,
+      "build_target": "Hybrid melee/ranged combat, resources, target validation, cooldown/cast, GAS/animation integration",
+      "required_proof": "Solo and two-client player attacks affect server-owned dummy once; latency/missing-notify regressions",
+      "title": "GAS-backed basic combat",
+      "editor_steps": "Verify GameplayAbilities/GameplayTags/GameplayTasks in the future build. Initialize the chosen AbilitySystemComponent owner/avatar on possession and bind UCombatAttributeSet. Assign one melee and one ranged ability and place BP_TrainingDummy on Elderwood Road.",
+      "native_contract": "Server-authorized ability activation pays resources and determines hits. Native hit windows do not depend on client animation notifies. Maintain one attribute/cooldown framework, not parallel GAS and custom copies.",
+      "reopen_consumers": "ABriarwakePlayerState; ABriarwakeCharacter; UActionExecutionComponent; WBP_HUD",
+      "run_now": "Attack the dummy with one client and then two. Disable damage notifies, introduce latency and verify the same server result. The fixture deals 20 damage per valid hit against 100 health.",
+      "rejection": "No stamina, stale target, blocked line of sight, double activation and a late hit from an old avatar are rejected under the defined command identity.",
+      "regression": "Rerun action arbitration: attacks cancel or reject fishing/interaction only according to policy. Movement and zone handoff must not duplicate ability grants.",
+      "creates": [
+        "Fixture_combat",
+        "IA_Ability1",
+        "IA_PrimaryAttack",
+        "IA_SecondaryAttack",
+        "IA_TargetCycle",
+        "ACombatProjectile",
+        "UCombatAttributeSet",
+        "BP_TrainingDummy",
+        "GA_BasicMelee",
+        "GA_BasicShot",
+        "GE_BasicDamage"
+      ],
+      "activates": [
+        "IA_PrimaryAttack",
+        "IA_SecondaryAttack",
+        "IA_Ability1",
+        "IA_TargetCycle",
+        "UCombatAttributeSet",
+        "GA_BasicMelee",
+        "GA_BasicShot",
+        "GE_BasicDamage",
+        "ACombatProjectile",
+        "BP_TrainingDummy",
+        "Fixture_combat"
+      ],
+      "dependencies": [
+        8
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 10,
+      "build_target": "Enemy AI, aggro/leash, death/respawn, kill rewards and combat XP",
+      "required_proof": "Solo and two-client battle with real enemy grants XP once; no reward replay after restart",
+      "title": "Enemy, encounter death and XP",
+      "editor_steps": "Add ABriarwakeEnemy/AIController with the shared 2D walkability contract. Assign DA_Encounter_RoadAmbush, leash and telegraph data. Add a once-only XP reward through the existing durable receipt path; full item loot activates in Phase 11.",
+      "native_contract": "An encounter instance changes Alive → RewardPending → Rewarded. Participation is server-derived; support and damage credit use published eligibility, not last-hit ownership.",
+      "reopen_consumers": "L_ElderwoodRoad; ABriarwakeGameMode; UCombatAttributeSet; UCharacterStateComponent",
+      "run_now": "Defeat the road ambush alone and with two clients. Check 25 fixture XP once per eligible character; reconnect and reenter without repeating the old reward.",
+      "rejection": "Repeated death callback, late projectile, leash reset and disconnect during reward confirmation do not mint duplicate XP. Wipe recovery retains durable quest/project state.",
+      "regression": "Run Slice A only after all Phase 00–10 gates are actually passed: creator, village, second zone, combat, remote appearance, reconnect and durable XP.",
+      "creates": [
+        "Fixture_enemies",
+        "UEncounterDefinition",
+        "ABriarwakeAIController",
+        "DA_Encounter_RoadAmbush",
+        "ABriarwakeEnemy"
+      ],
+      "activates": [
+        "UEncounterDefinition",
+        "ABriarwakeEnemy",
+        "ABriarwakeAIController",
+        "DA_Encounter_RoadAmbush",
+        "Fixture_enemies"
+      ],
+      "dependencies": [
+        9
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 11,
+      "build_target": "Item definitions, bags, equipment, paper-doll rendering, random weighted loot and consumables",
+      "required_proof": "Loot, equip/unequip, appearance, stat rebuild and reconnect work with no duplicate item instances",
+      "title": "Inventory, equipment and weighted loot",
+      "editor_steps": "Create the item/loot definitions and fifteen-slot enum, then wire inventory/equipment/loot screens to UCharacterStateComponent. Assign starter item definitions through DA_GameCatalog. Add owned instance IDs and explicit one/two-hand conflict rules.",
+      "native_contract": "Inventory and loadout revisions commit together where required. Item definitions are immutable; equipped slot values reference owned instances. Rebuild GAS equipment effects from the committed loadout.",
+      "reopen_consumers": "WBP_HUD; WBP_Inventory; WBP_Equipment; UCharacterAppearanceComponent; RoadAmbush reward consumer",
+      "run_now": "Loot, stack, split, equip, use and reconnect. Compare public appearance with private inventory and inspect weighted drop frequencies in a separate deterministic test harness.",
+      "rejection": "Full bag, wrong slot, negative amount, unowned instance and duplicate corpse claim fail without partial loss. An unsupported overlay uses the documented whole-outfit fallback.",
+      "regression": "Retest combat costs and damage after repeated equip/unequip and reconnect; no accumulated duplicate effect handles.",
+      "creates": [
+        "Fixture_items",
+        "IA_Inventory",
+        "IA_UseItem",
+        "WBP_Equipment",
+        "WBP_Inventory",
+        "WBP_Loot",
+        "EEquipmentSlot",
+        "GE_EquipmentStats",
+        "UItemDefinition",
+        "DA_Item_IronOre",
+        "DA_Item_SalvagePlate",
+        "DA_Item_StarterSword",
+        "ULootTableDefinition"
+      ],
+      "activates": [
+        "IA_Inventory",
+        "IA_UseItem",
+        "GE_EquipmentStats",
+        "UItemDefinition",
+        "EEquipmentSlot",
+        "ULootTableDefinition",
+        "DA_Item_IronOre",
+        "DA_Item_SalvagePlate",
+        "DA_Item_StarterSword",
+        "WBP_Equipment",
+        "WBP_Inventory",
+        "WBP_Loot",
+        "Fixture_items"
+      ],
+      "dependencies": [
+        10
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 12,
+      "build_target": "Combat disciplines and talents, vocation model/mastery and initial vocation UI/skill trees",
+      "required_proof": "Valid skill purchase persists; class and vocation XP remain separate; dead-end prerequisite rejected",
+      "title": "Combat talents and vocation mastery",
+      "editor_steps": "Author discipline definitions and talent branches, keeping combat XP, vocation XP and reputation distinct. Add profession/talent screens and prerequisite validation. Bind the three prototype vocations to starter/mastery objectives; later vocation routes activate at 20/21.",
+      "native_contract": "Skill purchases are service-backed transactions over authored prerequisites and point budgets. Animation counts do not infer mastery. Respec preserves critical content access.",
+      "reopen_consumers": "WBP_CharacterCreate; WBP_Professions; WBP_Talents; UCharacterStateComponent; GAS grant consumer",
+      "run_now": "Purchase a valid talent, reconnect, change loadout and verify the same build. Compare a Hearthkeeper Vanguard and Forgekeeper Ranger to prove the axes are independent.",
+      "rejection": "Overspend, mutually exclusive branches, cyclic prerequisites, duplicate purchase and old-vocation advanced crafting permission reject.",
+      "regression": "Rerun baseline combat with each art-supported starting discipline. Arcanist/Warden art gaps remain explicit rather than disappearing from scope.",
+      "creates": [
+        "IA_Professions",
+        "WBP_Professions",
+        "WBP_Talents",
+        "UCombatDisciplineDefinition",
+        "DA_Discipline_Arcanist",
+        "DA_Discipline_Ranger",
+        "DA_Discipline_Vanguard",
+        "DA_Discipline_Warden",
+        "UTalentDefinition"
+      ],
+      "activates": [
+        "IA_Professions",
+        "UCombatDisciplineDefinition",
+        "UTalentDefinition",
+        "DA_Discipline_Vanguard",
+        "DA_Discipline_Ranger",
+        "DA_Discipline_Arcanist",
+        "DA_Discipline_Warden",
+        "WBP_Talents",
+        "WBP_Professions"
+      ],
+      "dependencies": [
+        11
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 13,
+      "build_target": "NPC dialogue, quest objectives/journal, starter quest chain, vocation mentor contracts",
+      "required_proof": "Character completes one multi-step quest alone; joining mid-quest never double-grants reward",
+      "title": "Starter quests, mentors and baseline NPC commerce",
+      "editor_steps": "Author First Supplies and Mentor Vesa using composable NPC service definitions. Add journal/dialogue observers. Introduce only fixed baseline repair/supply/commission services needed for the starter slice; retain Phase 25 for full stock, bank and secure trade.",
+      "native_contract": "Quest objectives consume authoritative gameplay receipts, not widgets. NPC services share the existing command route. Personal completion and global stage change are different facts.",
+      "reopen_consumers": "ANpcServiceActor; WBP_Dialogue; WBP_QuestJournal; WBP_Merchant; DA_GameCatalog",
+      "run_now": "Accept the starter chain, complete its currently active steps, deliver once and reopen the journal. Confirm each vocation has a base-skill/NPC alternative for required production.",
+      "rejection": "Stale dialogue option, ineligible shared quest, duplicate delivery and unavailable service show an explicit reason without replaying a reward.",
+      "regression": "Run combat → loot → vendor → journal from the normal route. A conversation may limit local input but must not pause the server.",
+      "creates": [
+        "Fixture_quests",
+        "IA_Journal",
+        "MerchantStockRecord",
+        "QuestProgressRecord",
+        "WBP_Dialogue",
+        "WBP_Merchant",
+        "WBP_QuestJournal",
+        "ANpcServiceActor",
+        "UEconomyPolicy",
+        "UNpcServiceDefinition",
+        "UQuestDefinition",
+        "DA_Economy_Baseline",
+        "DA_NPC_MentorVesa",
+        "DA_Quest_FirstSupplies",
+        "DA_Item_RepairKit"
+      ],
+      "activates": [
+        "IA_Journal",
+        "QuestProgressRecord",
+        "MerchantStockRecord",
+        "DA_Item_RepairKit",
+        "UQuestDefinition",
+        "UNpcServiceDefinition",
+        "ANpcServiceActor",
+        "UEconomyPolicy",
+        "DA_Quest_FirstSupplies",
+        "DA_NPC_MentorVesa",
+        "DA_Economy_Baseline",
+        "WBP_Dialogue",
+        "WBP_QuestJournal",
+        "WBP_Merchant",
+        "Fixture_quests"
+      ],
+      "dependencies": [
+        12
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 14,
+      "build_target": "Eligible randomized ore/tree/plant/salvage sites, server harvest and respawn",
+      "required_proof": "Solo gather progresses; two clients cannot both claim exclusive site; dense-region spawn remains walkable",
+      "title": "Eligible resource sites and harvest races",
+      "editor_steps": "Place authored ore/tree/plant/salvage candidates with stable IDs, spacing and collision checks. Assign UResourceSiteDefinition policies and persist depletion/generation. Connect gathering through UActionExecutionComponent and the existing inventory/receipt transaction.",
+      "native_contract": "Acquire a bounded claim, validate again at completion, and atomically grant material/mastery plus depletion state. The client sends target/action intent, not a desired resource count.",
+      "reopen_consumers": "L_ElderwoodRoad; UActionExecutionComponent; UCharacterStateComponent; WBP_Professions",
+      "run_now": "Harvest a valid vein solo, then race two clients against the exclusive fixture. At most one current-generation claim succeeds; reconnect before respawn and inspect unchanged depletion.",
+      "rejection": "Invalid tool, expired claim, blocked site, full bag and rapid repeated commands reject. Ensure a losing contender receives a viable alternative route rather than indefinite starvation.",
+      "regression": "Rerun path/collision tests after randomized selection and verify essential doors/water exits remain clear.",
+      "creates": [
+        "Fixture_gathering",
+        "ResourceSiteRecord",
+        "AResourceSite",
+        "UResourceSiteDefinition",
+        "DA_Resource_ThornmereOre"
+      ],
+      "activates": [
+        "ResourceSiteRecord",
+        "UResourceSiteDefinition",
+        "AResourceSite",
+        "DA_Resource_ThornmereOre",
+        "Fixture_gathering"
+      ],
+      "dependencies": [
+        13
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 15,
+      "build_target": "Forgekeeper complete mini-loop: prospect, recover salvage, smelt/forge, repair, defend",
+      "required_proof": "Solo plays Forgekeeper outing plus one world-project material, gear usable and restart-safe",
+      "title": "Forgekeeper outing and first durable project contribution",
+      "editor_steps": "Add WatchFitting recipe and forge service. Build the small North Road project schema, board and record now because this phase requires a real repair outcome. Connect prospect → salvage encounter → harvest → forge → watchtower contribution.",
+      "native_contract": "Crafting and contribution share receipt/transaction primitives. The early project is not a debug counter: debit inputs, record contribution and publish stage once. Expand this same owner/schema at 22/23.",
+      "reopen_consumers": "WBP_Crafting; WBP_RegionBoard; ARegionProjectionActor; DA_Project_NorthRoad; DA_Quest_FirstSupplies",
+      "run_now": "As a solo Forgekeeper obtain 3 ore and 1 salvage plate, forge one fitting and contribute it. Inspect inventory debit, mastery and region receipt; restart and observe the repair state.",
+      "rejection": "Double-click craft, replay contribution, lose response after commit and fill inventory all have explicit outcomes. No animation completion may grant fitting or stage credit.",
+      "regression": "Rerun vendor alternatives so another vocation can acquire essential fittings without a human blacksmith. Maintain the same catalog/region identities through later phases.",
+      "creates": [
+        "Fixture_crafting",
+        "IA_Craft",
+        "ProjectContributionRecord",
+        "Record_CraftReservation",
+        "Record_Region",
+        "WBP_Crafting",
+        "WBP_RegionBoard",
+        "ACraftingStation",
+        "ARegionProjectionActor",
+        "UConstructionProjectDefinition",
+        "URecipeDefinition",
+        "URegionDefinition",
+        "DA_Project_NorthRoad",
+        "DA_Recipe_WatchFitting",
+        "DA_Region_Elderwood",
+        "DA_Item_WatchFitting"
+      ],
+      "activates": [
+        "IA_Craft",
+        "Record_Region",
+        "ProjectContributionRecord",
+        "Record_CraftReservation",
+        "DA_Item_WatchFitting",
+        "URecipeDefinition",
+        "ACraftingStation",
+        "UConstructionProjectDefinition",
+        "URegionDefinition",
+        "ARegionProjectionActor",
+        "DA_Recipe_WatchFitting",
+        "DA_Project_NorthRoad",
+        "DA_Region_Elderwood",
+        "WBP_Crafting",
+        "WBP_RegionBoard",
+        "Fixture_crafting"
+      ],
+      "dependencies": [
+        14
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 16,
+      "build_target": "Fishing water/pools, bite/catch/cancel, species tables and actual p3 sprite states",
+      "required_proof": "Solo catches fish exactly once per cast and animation/zone reset never duplicates catch",
+      "title": "Fishing and one catch per cast",
+      "editor_steps": "Author Reedbank pool and Reedfin species data, cast geometry, bite/reel states and accessible timing mode. Assign audited p3/rod poses only after source inspection. Connect cast intent through the shared action component.",
+      "native_contract": "The server owns CastId, bite timing, eligible outcome and catch receipt. Input accessibility changes the permitted interaction policy, not the writer of fish/XP.",
+      "reopen_consumers": "AFishingWater; WBP_Fishing; UCharacterAppearanceComponent; UActionExecutionComponent; DA_GameCatalog",
+      "run_now": "Catch a Reedfin, interrupt a second cast by movement and a third by zone transfer. Reconnect after a lost success response and observe one catch only.",
+      "rejection": "Stale bite, fake water, duplicate reel, dead character and full bag do not grant fish. Controller/audio-disabled modes retain a usable cue.",
+      "regression": "Rerun gathering and combat arbitration. A late fish timer cannot reopen an action after combat/transfer cancellation.",
+      "creates": [
+        "Fixture_fishing",
+        "IA_FishCast",
+        "IA_FishReel",
+        "WBP_Fishing",
+        "AFishingWater",
+        "UFishSpeciesDefinition",
+        "DA_Fish_Reedfin",
+        "DA_Item_Reedfin"
+      ],
+      "activates": [
+        "IA_FishCast",
+        "IA_FishReel",
+        "DA_Item_Reedfin",
+        "UFishSpeciesDefinition",
+        "AFishingWater",
+        "DA_Fish_Reedfin",
+        "WBP_Fishing",
+        "Fixture_fishing"
+      ],
+      "dependencies": [
+        15
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 17,
+      "build_target": "Personal farming plots, planting/growth/harvest, ingredient production and cooked/baked food",
+      "required_proof": "Solo plants, fishes, bakes an expedition food item; no offline crop deletion or rival harvesting exploit",
+      "title": "Personal farm, ingredients and baking",
+      "editor_steps": "Assign one private plot, Goldenroot seed/crop and growth stages. Add the oven and FieldLoaf recipe linking fish and farm ingredients. Use a controlled test clock to inspect growth; ordinary UI actions still plant and harvest the plot.",
+      "native_contract": "Planting commits seed debit and plot state; harvesting commits yield and generation. Mature crops remain valid during absence. Timed visuals derive from server state.",
+      "reopen_consumers": "AFarmPlot; WBP_FarmPlot; ACraftingStation; WBP_Crafting; WBP_Fishing",
+      "run_now": "Plant, complete a fishing outing, harvest the ready test crop, bake FieldLoaf and reconnect. Repeat after a simulated server downtime interval.",
+      "rejection": "Rival harvest, duplicate planting, full inventory at harvest and unsupported crop migration preserve consistent ownership and ingredients.",
+      "regression": "Rerun Forgekeeper crafting and region debit tests because food now uses the same recipe/transaction machinery.",
+      "creates": [
+        "Fixture_farming",
+        "Record_FarmPlot",
+        "WBP_FarmPlot",
+        "AFarmPlot",
+        "UCropDefinition",
+        "DA_Crop_Goldenroot",
+        "DA_Recipe_FieldLoaf",
+        "DA_Item_FieldLoaf",
+        "DA_Item_Goldenroot",
+        "DA_Item_GoldenrootSeed"
+      ],
+      "activates": [
+        "Record_FarmPlot",
+        "DA_Item_GoldenrootSeed",
+        "DA_Item_Goldenroot",
+        "DA_Item_FieldLoaf",
+        "UCropDefinition",
+        "AFarmPlot",
+        "DA_Crop_Goldenroot",
+        "DA_Recipe_FieldLoaf",
+        "WBP_FarmPlot",
+        "Fixture_farming"
+      ],
+      "dependencies": [
+        16
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 18,
+      "build_target": "Hearthkeeper full mini-loop, food provisioning contracts and variation",
+      "required_proof": "Solo reaches vocation advancement by mixing water/field/kitchen and an expedition objective",
+      "title": "Complete Hearthkeeper supply expedition",
+      "editor_steps": "Extend the mentor contract with fish → field → kitchen → caravan provisioning. Offer a menu choice between travel endurance and healing supplies. The calmer route provisions volunteers; the risk route accompanies the caravan defense.",
+      "native_contract": "Hearthkeeper mastery records accepted diverse objectives and production receipts, not repeated watering clicks. The project accepts the provision category without requiring another vocation online.",
+      "reopen_consumers": "DA_Vocation_Hearthkeeper; DA_Quest_FirstSupplies; WBP_Professions; WBP_RegionBoard",
+      "run_now": "Play the full loop as one human from login through provision credit, using at least three interaction types and a meaningful recipe decision. Reconnect after delivery.",
+      "rejection": "A duplicate delivery or reused fish catch cannot advance mastery twice. The NPC alternative prevents a missing weather ingredient from blocking the story.",
+      "regression": "Rerun the Forgekeeper route and map/merchant prerequisites. Slice B is deliberately not accepted until Wayfinder cartography at Phase 19.",
+      "creates": [],
+      "activates": [],
+      "dependencies": [
+        17
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 19,
+      "build_target": "Wayfinder exploration/cartography, tracks, hidden routes and skirmish encounters",
+      "required_proof": "Solo scout discovers route and threat, fights, reports it, gains personal/shared discovery once",
+      "title": "Wayfinder cartography and revised Slice B checkpoint",
+      "editor_steps": "Add personal discovery cells, track/clue definitions, hidden Willow Cut and a shared shortcut state. Wire map/minimap, the route NPC report and skirmish/safer investigation alternatives.",
+      "native_contract": "Personal discovery, optional first-arrival recognition and shared route access are separate transactions/scopes. Revealing a public shortcut does not consume another character’s personal reward.",
+      "reopen_consumers": "DA_Vocation_Wayfinder; WBP_WorldMap; WBP_Minimap; AZoneGate; ARegionProjectionActor",
+      "run_now": "Inspect three clues, choose a route, overcome its challenge, report and use the shortcut. Rejoin and replay triggers without another reward. Now run all three Slice B vocation routes.",
+      "rejection": "Client-forged discovery, wrong clue order, invalid gate and duplicate report reject. A later-arriving character can still complete the personal route.",
+      "regression": "Revised Slice B is after Phase 19, not 18. Its merchant/board minimum was introduced at 13/15; full economy and regional extensions remain later.",
+      "creates": [
+        "CharacterDiscoveryRecord",
+        "Fixture_exploration",
+        "IA_Map",
+        "WBP_Minimap",
+        "WBP_WorldMap"
+      ],
+      "activates": [
+        "IA_Map",
+        "CharacterDiscoveryRecord",
+        "WBP_WorldMap",
+        "WBP_Minimap",
+        "Fixture_exploration"
+      ],
+      "dependencies": [
+        18
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 20,
+      "build_target": "Woodwright timber management, carpentry, replanting, defense assets and quests",
+      "required_proof": "Solo sources eligible timber, crafts a bridge support and restores an authored forest/road state",
+      "title": "Woodwright timber, carpentry and grove restoration",
+      "editor_steps": "Activate DA_Vocation_Woodwright, BridgeSupport recipe and mentor route. Use existing sites for eligible mature timber, authored replant/restore states and defense objectives. Add necessary tool/art fallbacks transparently.",
+      "native_contract": "The Woodwright composes shared gathering, crafting, quest and project systems. Sustainable selection and support design change the outcome; no independent logging inventory subsystem.",
+      "reopen_consumers": "WBP_CharacterCreate; DA_GameCatalog; WBP_Professions; WBP_Crafting; WBP_RegionBoard",
+      "run_now": "Create a Woodwright through the normal creator, identify timber, craft support, defend/repair the road and restore a grove stage alone with normal gear.",
+      "rejection": "Protected sapling harvest, rival restoration overwrite, duplicate support contribution and an unlicensed/missing tool pose must not pass silently.",
+      "regression": "Run the three earlier vocations after activating the fourth. Character creation still requires exactly one active primary vocation.",
+      "creates": [
+        "DA_Recipe_BridgeSupport",
+        "DA_Vocation_Woodwright",
+        "DA_Item_BridgeSupport"
+      ],
+      "activates": [
+        "DA_Vocation_Woodwright",
+        "DA_Item_BridgeSupport",
+        "DA_Recipe_BridgeSupport"
+      ],
+      "dependencies": [
+        19
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 21,
+      "build_target": "Apothecary herb discovery, field research, alchemy and support/curative quests",
+      "required_proof": "Solo collects safe reagents, solves regional illness challenge and crafts a useful antidote",
+      "title": "Apothecary investigation, alchemy and cure",
+      "editor_steps": "Activate DA_Vocation_Apothecary, reagent and BlightRemedy recipe. Author a clue-based plant diagnosis, hazard expedition and regional cure objective. Add a safe accessible alternative to precision timing.",
+      "native_contract": "Field research unlocks permitted formula choices; server-validated ingredient/technique selection determines the result. Healing effects and regional cure receipts have different owners.",
+      "reopen_consumers": "WBP_CharacterCreate; DA_GameCatalog; WBP_Crafting; WBP_QuestJournal; UActionExecutionComponent",
+      "run_now": "Create the fifth vocation, identify a reagent, resolve an encounter or safe route, craft remedy and cure the local condition. Verify useful solo progression with no specialist partner.",
+      "rejection": "Wrong formula, missing research, repeated cure and interrupted craft produce explicit outcomes without consuming ingredients twice.",
+      "regression": "Run all five creators and short-session routes. Apothecary fallback animations remain on the art backlog until verified.",
+      "creates": [
+        "DA_Recipe_BlightRemedy",
+        "DA_Vocation_Apothecary",
+        "DA_Item_BlightReagent",
+        "DA_Item_BlightRemedy"
+      ],
+      "activates": [
+        "DA_Vocation_Apothecary",
+        "DA_Item_BlightReagent",
+        "DA_Item_BlightRemedy",
+        "DA_Recipe_BlightRemedy"
+      ],
+      "dependencies": [
+        20
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 22,
+      "build_target": "Living Regions schema: durable development/danger/discovery records, snapshot/delta presentation, UI boards",
+      "required_proof": "Solo and a newly joined second client see the same staged region state after restart",
+      "title": "Full Living Region projection and persistence",
+      "editor_steps": "Extend the Phase 15 region schema to independent development/danger/discovery axes and versioned snapshot/delta publication. Add late-join hydration, revision-gap detection and migration fixtures.",
+      "native_contract": "ARegionProjectionActor observes durable region records; GameState replicates public summaries. One outbox event may have many idempotent consumers, none of which grants the project again.",
+      "reopen_consumers": "ARegionProjectionActor; ABriarwakeGameState; WBP_RegionBoard; WBP_WorldMap; ANpcServiceActor",
+      "run_now": "Commit a stage, restart the server, join with a new client and verify the same route, services, dialogue and minimap state. Drop a delta and require a full snapshot refresh.",
+      "rejection": "Out-of-order revisions, unknown stage/content version and duplicated outbox delivery cannot regress the visible world or repeat a reward.",
+      "regression": "Migrate the existing North Road record rather than creating a second project system. Preserve all earlier vocation contribution receipts.",
+      "creates": [
+        "Fixture_regions"
+      ],
+      "activates": [
+        "Fixture_regions"
+      ],
+      "dependencies": [
+        21
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 23,
+      "build_target": "Shared construction objectives, alternative solo contribution routes, NPC visual/service/world transitions",
+      "required_proof": "Solo repairs a bridge through available methods; 2/5/10/30 cannot duplicate contributions",
+      "title": "Construction, solo alternatives and visible services",
+      "editor_steps": "Author the full North Road objective alternatives and staged bridge/watchtower visuals. Bind route collision, merchant activation, dialogue and map markers to the same committed stage. Display personal effort and optional enhancements separately.",
+      "native_contract": "Contribution validation checks current stage, allowed source and both inventory/region revisions in one transaction. A player never loses credit because someone else logs in.",
+      "reopen_consumers": "DA_Project_NorthRoad; WBP_RegionBoard; AZoneGate; ANpcServiceActor; World stage visual consumers",
+      "run_now": "Complete the essential project with one human, then with 2/5/10/30 in future fixtures. Separately seed a 70-of-100 progress display fixture for a mid-stage join and validate its revision.",
+      "rejection": "Race the last two contributions and reject stale stage commands without debit. Duplicate outbox application changes visuals once and awards nothing.",
+      "regression": "Rerun every vocation’s distinct contribution and the non-specialist NPC route. Main construction remains permanent through inactivity/restart.",
+      "creates": [],
+      "activates": [],
+      "dependencies": [
+        22
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 24,
+      "build_target": "Region danger, enemy camp escalation, clue-driven legendary hunts, patrol and NPC reaction events",
+      "required_proof": "One human can resolve essential threat; group roles add tactical variety; danger resets by authored policy",
+      "title": "Regional danger and clue-driven legendary hunt",
+      "editor_steps": "Author bounded threat bands, camp stages, patrol changes and a regional leader encounter. Connect Wayfinder clues, Apothecary blight research and supply/repair contributions to distinct eligible threat objectives.",
+      "native_contract": "Danger events are server-authorized state transitions with transparent renewal rules. They may change patrols/services temporarily but do not destroy permanent construction because players were absent.",
+      "reopen_consumers": "DA_Region_Elderwood; UEncounterDefinition; ABriarwakeAIController; WBP_RegionBoard; WBP_QuestJournal",
+      "run_now": "Investigate clues, resolve a camp, defeat the leader under the solo mechanic variant with permitted aid and observe the merchant route change. Repeat with a cooperative group.",
+      "rejection": "Repeated leader-death receipt, client-forged threat reduction and an unbounded absence penalty reject. An interrupted event restores only its authored repeatable state.",
+      "regression": "Rerun permanent bridge state after threat renewal. Verify main-story access remains viable when no other human is online.",
+      "creates": [],
+      "activates": [],
+      "dependencies": [
+        23
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 25,
+      "build_target": "NPC merchants, currency, buy/sell/repair/bank, trade escrow, player-vocation market relevance",
+      "required_proof": "Solo provisions without player trade; two clients trade securely; stale balances and retries fail cleanly",
+      "title": "Economy hardening, bank and secure player trade",
+      "editor_steps": "Extend the early baseline merchant with stock, buyback, repair, bank and commissions. Add two-sided offer-revision trade escrow and atomic transfer. UI must show exact instance properties and clear both confirmations when an offer changes.",
+      "native_contract": "Currency uses checked integers; service mutations cover balances, stock and item ownership together. Reserve escrowed assets against equip/sell/craft conflicts. A lost final response is queried, not interpreted as cancellation.",
+      "reopen_consumers": "WBP_Merchant; WBP_Bank; WBP_Trade; UCharacterStateComponent; ANpcServiceActor",
+      "run_now": "As a solo Wayfinder buy repairs, earn/sell/commission and complete the story route. With two clients trade items/currency, alter offers and disconnect at each commit boundary.",
+      "rejection": "Negative funds, overflow, stale quote, bound item, full recipient bag and duplicated confirmation must produce a lossless rejection or the original terminal receipt.",
+      "regression": "Retest all NPC alternatives and recipe/quest supply chains. Human trade improves choice but is never a required production dependency.",
+      "creates": [
+        "Fixture_economy",
+        "TradeEscrowRecord",
+        "WBP_Bank",
+        "WBP_Trade"
+      ],
+      "activates": [
+        "TradeEscrowRecord",
+        "WBP_Bank",
+        "WBP_Trade",
+        "Fixture_economy"
+      ],
+      "dependencies": [
+        24
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 26,
+      "build_target": "Deep solo-to-30 balance, scalable encounters/projects, hireling NPCs and world-content parity",
+      "required_proof": "Automated/controlled tests at 1,2,5,10,30; core PvE never requires a human group and scaling avoids goal oscillation",
+      "title": "Solo-to-30 model and constrained NPC help",
+      "editor_steps": "Implement the frozen optional-enhancement model, fixed solo-reachable essential quota and per-player visible effort. Store the activation snapshot and policy version. Author companion assistance for missing mechanics with active-player checks.",
+      "native_contract": "Population is measured over a bounded engaged-account window, not instantaneous logins. Essential goals/credit never change. Optional targets never decrease when population increases, and a project stage never retunes while active.",
+      "reopen_consumers": "UConstructionProjectDefinition; UEncounterDefinition; WBP_RegionBoard; NPC assistance consumer",
+      "run_now": "Run the offline arithmetic simulation in this package, then separately run actual 1/2/5/10/30 clients. Measure personal time-to-value, solo route completion, stalls, rewards and assistance abuse.",
+      "rejection": "Login churn, alt inflation, mid-stage recount, repeated helper rewards and AFK companion completion must not lower essential work or mint rewards.",
+      "regression": "Slice C requires all five solo routes, durable shared stages, late join/restart, a resolved threat and real population evidence where infrastructure permits.",
+      "creates": [],
+      "activates": [],
+      "dependencies": [
+        25
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 27,
+      "build_target": "Party/group XP and loot, chat/friends/block, guild contributions, social boards and permissions",
+      "required_proof": "Solo remains fully playable; a group can coordinate without griefing or duplicating credit",
+      "title": "Party, chat, friends, block and guild permissions",
+      "editor_steps": "Wire social screens to scoped membership/presence and chat routes. Add expiring single-use invitations, friends/block and guild roles with permission revisions. Integrate party reward credit with the existing encounter policy.",
+      "native_contract": "Social persistence belongs to one shared service responsibility, not a duplicate account store. The zone decides local proximity; only authorized recipients receive messages or private state.",
+      "reopen_consumers": "WBP_Social; WBP_Party; WBP_Chat; Encounter participation consumer; WBP_RegionBoard",
+      "run_now": "Invite, accept, share eligible quests, support in combat, trade, block and revoke a guild permission with two players. Repeat the entire solo route without membership.",
+      "rejection": "Expired invite, blocked message, stale guild rank and spam are rejected/rate-limited. An old UI cannot retain permission after demotion.",
+      "regression": "Verify guild presence does not become a crafting/dungeon/story gate and ordinary 30-client zone population is not treated as required dungeon group size.",
+      "creates": [
+        "Fixture_social",
+        "IA_Chat",
+        "Record_SocialMembership",
+        "WBP_Chat",
+        "WBP_Party",
+        "WBP_Social"
+      ],
+      "activates": [
+        "IA_Chat",
+        "Record_SocialMembership",
+        "WBP_Social",
+        "WBP_Party",
+        "WBP_Chat",
+        "Fixture_social"
+      ],
+      "dependencies": [
+        26
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 28,
+      "build_target": "Dungeons, regional bosses, cooperative expeditions, companion substitution and instance recovery",
+      "required_proof": "Same critical milestone obtainable with one human and with parties; boss variants validated",
+      "title": "Bellroot Vault solo/group dungeon",
+      "editor_steps": "Author the Bellroot Vault entry, checkpoint, guardian and exit with the solo helper/lever variant and voluntary group role variant. Set a five-human initial party fixture separately from the thirty-client region load case.",
+      "native_contract": "Instance ownership, active participation, checkpoints and reward receipts survive planned recovery. Helpers perform bounded mechanic tasks and cannot complete encounters while the player is idle.",
+      "reopen_consumers": "UDungeonDefinition; WBP_DungeonEntry; AZoneGate; UEncounterDefinition; WBP_Party",
+      "run_now": "Obtain unlock.bellroot-road with 1, 2 and 5 humans through the appropriate variants. Crash/reconnect before and after boss reward commitment and verify checkpoint/receipt behavior.",
+      "rejection": "Instance full, source/destination loss, expired entry, duplicate boss reward and inactive-player helper farming fail under documented policies.",
+      "regression": "Retest field combat, zone transfer and permanent region stage after dungeon exit. Essential narrative rewards remain available solo.",
+      "creates": [
+        "Fixture_dungeons",
+        "InstanceRecord",
+        "WBP_DungeonEntry",
+        "UDungeonDefinition",
+        "DA_Dungeon_BellrootVault"
+      ],
+      "activates": [
+        "InstanceRecord",
+        "UDungeonDefinition",
+        "DA_Dungeon_BellrootVault",
+        "WBP_DungeonEntry",
+        "Fixture_dungeons"
+      ],
+      "dependencies": [
+        27
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 29,
+      "build_target": "Six-biome authored content factory, end-to-end original quest arcs, fast travel/route coherence, weather/day-night",
+      "required_proof": "New biome with authored tiles, content IDs, spawn rules, map, loading return path and solo route added without code rewrite",
+      "title": "Six-biome content factory, clock and weather",
+      "editor_steps": "Expand the validated Thornmere/Elderwood content pattern into Siltfen, Cairnstep, Hollowpeak and Galehaven. For each add approved tile art, collision/navigation, services, resources, fish, clue route, danger/project stages, return gate and map entries.",
+      "native_contract": "Definitions and runtime instances use stable IDs/content versions. A realm-owned epoch and weather schedule determine coherent regional effects; client visual tints never decide eligibility.",
+      "reopen_consumers": "DA_GameCatalog; UZoneDefinition; WBP_WorldMap; AZoneGate; Resource/fishing/NPC/crop definitions",
+      "run_now": "Add one new biome using existing schemas, load it with one and two clients, return to Thornmere and verify personal/shared state. Test weather windows using controlled server time.",
+      "rejection": "Missing return route, mismatched content hash, inaccessible story weather window and invalid gathering cell block content acceptance before release.",
+      "regression": "Run all earlier vocation and transfer loops against the new content version. Ordinary content must not require another global C++ manager.",
+      "creates": [
+        "L_CairnstepHeights",
+        "L_GalehavenCoast",
+        "L_HollowpeakDepths",
+        "L_SiltfenReach",
+        "DA_Zone_Cairnstep",
+        "DA_Zone_Galehaven",
+        "DA_Zone_Hollowpeak",
+        "DA_Zone_Siltfen"
+      ],
+      "activates": [
+        "L_SiltfenReach",
+        "DA_Zone_Siltfen",
+        "L_CairnstepHeights",
+        "DA_Zone_Cairnstep",
+        "L_HollowpeakDepths",
+        "DA_Zone_Hollowpeak",
+        "L_GalehavenCoast",
+        "DA_Zone_Galehaven"
+      ],
+      "dependencies": [
+        28
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 30,
+      "build_target": "Full UI/UX and accessibility, controller navigation, audio/VFX, localization, content balance and quality-of-life",
+      "required_proof": "All real game features reachable from screens that do not own rules; screen-independent regression passes",
+      "title": "Full screens, accessibility and audiovisual feedback",
+      "editor_steps": "Complete every screen route and controller focus path. Add localization keys, scalable readable text, reduced motion and visual equivalents for audio/timing cues. Assign licensed audio/VFX only after provenance checks.",
+      "native_contract": "Controller owns widget lifetime. Widgets read projections and send commands; none implements inventory, skills, world stages, merchant stock or quest completion.",
+      "reopen_consumers": "All WBP_ assets; UUiScreenCatalog; ABriarwakePlayerController; UCharacterAppearanceComponent",
+      "run_now": "Run the starter routes and dungeon with controller, large text, reduced motion and audio disabled. Destroy/recreate the HUD and merchant/crafting widgets while repeating authoritative actions.",
+      "rejection": "Missing focus return, inaccessible timing, lost pending-state recovery and a rule available only inside a widget fail acceptance. Screen-reader support needs actual platform evidence.",
+      "regression": "Recheck every system after UI replacement; gameplay outcomes and receipts must be unchanged.",
+      "creates": [
+        "Fixture_ux",
+        "UUiScreenCatalog",
+        "DA_UI_Screens"
+      ],
+      "activates": [
+        "UUiScreenCatalog",
+        "DA_UI_Screens",
+        "Fixture_ux"
+      ],
+      "dependencies": [
+        29
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    },
+    {
+      "phase": 31,
+      "build_target": "Security/ops/anti-cheat, deployment, performance/packet-loss, package proof, backup/recovery, content migrations and doc audits",
+      "required_proof": "Truthful packaged server/client validation at populations 1/2/5/10/30 (where environment permits), failures named explicitly",
+      "title": "Packaging, security, restore and truthful evidence",
+      "editor_steps": "Package matched future client/server builds and run the deployment matrix in a nonproduction environment. Test secrets separation, rate limits, moderation permissions, crash/timeout/replay, schema migration and isolated backup restoration.",
+      "native_contract": "Publish environment, exact commands, source/build hashes and raw observed results. Static HTML/schema tests cannot be substituted for Blueprint compilation, network tests or actual 30-client performance.",
+      "reopen_consumers": "All runtime consumers; sources/verification.json; operations runbook; feature and asset registries",
+      "run_now": "Run Slice D: original biome route, solo/party dungeon, secure trade/social flow, durable region changes and end-to-end recovery. Profile 1/2/5/10/30 with declared hardware/latency/loss.",
+      "rejection": "Fail acceptance for unknown transaction outcomes without a receipt query, duplicated character ownership, unrecoverable backup, exposed token or any invented passing build/runtime record.",
+      "regression": "Rerun all four slices. Record remaining art/provider/platform/version blockers and leave the guide/game completion status incomplete where requirements remain unproven.",
+      "creates": [
+        "Fixture_operations"
+      ],
+      "activates": [
+        "Fixture_operations"
+      ],
+      "dependencies": [
+        30
+      ],
+      "status": "planned",
+      "runtime_test": "not_run"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+BRIARWAKE DOCUMENTATION CHECKS — executed 2026-10-09
+
+Runtime game/Unreal/provider tests: NOT RUN.
+Earlier browser command: python3 tools/browser_checks.py
+Observed exit 1: file:// navigation blocked by administrator policy. See browser-file-protocol.json.
+Earlier browser command: python3 tools/browser_checks.py --serve-local
+Observed exit 1: local HTTP navigation blocked by administrator policy. See browser-local-http.json.
+Isolated render checks below are narrower and do not replace those blocked tests.
+
+$ python3 tools/build_manual_indexes.py
+Built 320 HTML pages and one offline search index.
+Exit: 0; expected: 0; seconds: 1.174
+
+$ python3 tools/build_manual_indexes.py --check
+PASS: generated files are current; 320 HTML pages and one offline search index.
+Exit: 0; expected: 0; seconds: 1.43
+
+$ python3 tools/validate_documentation.py
+{
+  "status": "pass",
+  "scope": "Internal integrity of present documentation only; not full editorial coverage or game validation",
+  "html_pages": 320,
+  "registered_assets": 205,
+  "local_link_occurrences_checked": 14187,
+  "external_reference_occurrences_not_network_checked": 9,
+  "orphan_pages": 0,
+  "source_art_files_inventoried": 0,
+  "errors": [],
+  "game_runtime": "not_run"
+}
+Exit: 0; expected: 0; seconds: 2.171
+
+$ python3 tools/check_phase_integration.py
+{
+  "status": "pass",
+  "phases": 32,
+  "scope": "Structure and present-registry integration accounting, not exhaustive Editor instructions or runtime integration",
+  "errors": []
+}
+Exit: 0; expected: 0; seconds: 0.957
+
+$ python3 tools/check_feature_coverage.py
+{
+  "status": "pass",
+  "mode": "source-block-accounting",
+  "requirement_blocks": 46,
+  "incomplete_blocks": 46,
+  "full_guide_complete": false,
+  "scope": "Grouped requirements preserve source text; accounting does not certify atomic-feature completeness",
+  "errors": []
+}
+Exit: 0; expected: 0; seconds: 0.959
+
+$ python3 tools/check_feature_coverage.py --require-complete
+{
+  "status": "fail",
+  "mode": "strict-completion",
+  "requirement_blocks": 46,
+  "incomplete_blocks": 46,
+  "full_guide_complete": false,
+  "scope": "Grouped requirements preserve source text; accounting does not certify atomic-feature completeness",
+  "errors": [
+    "Full master-prompt coverage is incomplete: 46 initial-contract source blocks plus blocked source audits and editorial gaps."
+  ]
+}
+Exit: 1; expected: 1; seconds: 0.917
+
+$ python3 tools/simulate_population_scaling.py
+{
+  "status": "pass",
+  "model": "Proposed arithmetic only",
+  "population_cases": [
+    {
+      "engaged_at_activation": 1,
+      "essential": 12,
+      "optional": 10,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 2,
+      "essential": 12,
+      "optional": 12,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 5,
+      "essential": 12,
+      "optional": 14,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 10,
+      "essential": 12,
+      "optional": 16,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 30,
+      "essential": 12,
+      "optional": 18,
+      "policy_version": 1
+    }
+  ],
+  "checks": [
+    "Fixed essential goal",
+    "Expected optional values",
+    "Monotonic optional effort",
+    "Frozen existing goals",
+    "Credited progress retained",
+    "Input clamp"
+  ],
+  "runtime_or_fun_measurement": false,
+  "network_clients_connected": 0
+}
+Exit: 0; expected: 0; seconds: 1.044
+
+$ python3 -m unittest discover -s tools/tests -v
+test_dependency_cycle_rejected (test_documentation.DocumentationTests.test_dependency_cycle_rejected) ... ok
+test_duplicate_identity_rejected (test_documentation.DocumentationTests.test_duplicate_identity_rejected) ... ok
+test_heading_ids_disambiguated (test_documentation.DocumentationTests.test_heading_ids_disambiguated) ... ok
+test_html_parser_collects_link_targets (test_documentation.DocumentationTests.test_html_parser_collects_link_targets) ... ok
+test_later_creation_dependency_rejected (test_documentation.DocumentationTests.test_later_creation_dependency_rejected) ... ok
+test_missing_link_and_duplicate_html_id_rejected (test_documentation.DocumentationTests.test_missing_link_and_duplicate_html_id_rejected) ... ok
+test_nested_relative_link (test_documentation.DocumentationTests.test_nested_relative_link) ... ok
+test_population_policy (test_documentation.DocumentationTests.test_population_policy) ... ok
+test_registry_baseline (test_documentation.DocumentationTests.test_registry_baseline) ... ok
+test_reverse_dependency_rejected (test_documentation.DocumentationTests.test_reverse_dependency_rejected) ... ok
+test_source_accounting_passes_but_completion_fails (test_documentation.DocumentationTests.test_source_accounting_passes_but_completion_fails) ... ok
+test_text_and_link_are_escaped (test_documentation.DocumentationTests.test_text_and_link_are_escaped) ... ok
+test_unknown_asset_rejected (test_documentation.DocumentationTests.test_unknown_asset_rejected) ... ok
+test_unproven_verified_status_rejected (test_documentation.DocumentationTests.test_unproven_verified_status_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.438s
+
+OK
+Exit: 0; expected: 0; seconds: 2.392
+
+$ node --check site/app.js
+Exit: 0; expected: 0; seconds: 0.043
+
+$ python3 tools/render_checks.py --screenshots /mnt/data/briarwake-preview
+{
+  "status": "pass",
+  "browser": "Chromium 144.0.7559.96",
+  "mode": "In-memory HTML/CSS/JavaScript injection; no URL navigation",
+  "checks": [
+    "Eight representative page layouts render without page-width overflow at 1440px.",
+    "Theme changes the in-memory page; persistence not tested.",
+    "Search results, multiple terms and no-results state work with the packaged index in memory.",
+    "Name, type and status asset filters work in memory.",
+    "Checklist changes, exported JSON Blob content, invalid import rejection and confirmed replacement import work in memory. Actual download and persistence not verified.",
+    "Five layouts fit 390px; mobile menu opens and Escape closes it."
+  ],
+  "javascript_errors": [],
+  "not_verified": [
+    "file:// operation",
+    "HTTP page navigation",
+    "Real localStorage persistence",
+    "Actual exported-file download",
+    "Full accessibility/browser matrix",
+    "All game/runtime behavior"
+  ]
+}
+Exit: 0; expected: 0; seconds: 6.489
+
+$ python3 tools/build_manual_indexes.py --check
+PASS: generated files are current; 320 HTML pages and one offline search index.
+Exit: 0; expected: 0; seconds: 1.1
+
