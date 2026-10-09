@@ -4,14 +4,14 @@
     {
       "path": "systems/identity.html",
       "title": "Accounts, character creation and vocation selection",
-      "summary": "Create one validated character with exactly one primary vocation. Appearance and vocation are separate choices; combat discipline is a third, independent progression choice. Character creation is an atomic durable operation, not the act of spawning a Pawn.",
+      "summary": "Every new character selects one permanent FactionId, one permanent CombatDisciplineId (combat class), and one changeable primary VocationId. These identities are independent; every available combat discipline supports every available vocation. Character creation is an atomic durable operation, not the act of spawning a Pawn.",
       "category": "System",
       "maturity": "Initial implementation contract",
       "sections": [
         {
           "title": "Player mechanic and scope",
           "paragraphs": [
-            "Create one validated character with exactly one primary vocation. Appearance and vocation are separate choices; combat discipline is a third, independent progression choice. Character creation is an atomic durable operation, not the act of spawning a Pawn.",
+            "Every new character selects one permanent FactionId, one permanent CombatDisciplineId (combat class), and one changeable primary VocationId. These identities are independent; every available combat discipline supports every available vocation. Character creation is an atomic durable operation, not the act of spawning a Pawn.",
             "Committed requirement: one-human core progression remains available. Recommended initial choices below are design work, not compiled engine behavior."
           ]
         },
@@ -26,7 +26,7 @@
             "rows": [
               [
                 "Definition",
-                "UAppearanceCatalog and UVocationDefinition list permitted IDs. AccountPolicy fixes character-slot and name rules; none of these definitions contains a player password or current inventory."
+                "UAppearanceCatalog, UCombatDisciplineDefinition and UVocationDefinition resolve permitted stable IDs through DA_GameCatalog. FactionId must resolve through the approved faction specification, independently of class/vocation and reputation. AccountPolicy retains character-slot and name rules; definitions hold no player inventory or credentials."
               ],
               [
                 "Runtime",
@@ -34,11 +34,11 @@
               ],
               [
                 "Durable value",
-                "The persistence boundary writes Record_Account and Record_Character together with Record_CommandReceipt. It reserves the normalized display-name key and grants the starting kit once."
+                "The persistence boundary writes Record_Account, Record_Character and Record_CommandReceipt atomically with the normalized name reservation and unique starter kit. Record_Character owns permanent FactionId/CombatDisciplineId, active VocationId and independent Progression.Combat / Progression.Vocations histories; its Revision versions the complete progression/build projection."
               ],
               [
                 "Projection",
-                "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Public name, vocation and permitted appearance replicate; account identity, inventory and authentication tokens do not become public PlayerState fields."
+                "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Publish only the permitted public identity/appearance subset. UCharacterStateComponent exposes owner-only committed progression, including inactive vocation histories; raw records, account identity and authentication tokens are never public PlayerState fields."
               ]
             ]
           }
@@ -47,9 +47,9 @@
           "title": "Editor and configuration recipe",
           "paragraphs": [],
           "steps": [
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back.",
-            "In DA_GameCatalog assign all available vocation definitions and the allowed appearance catalog. Before Phase 20/21, mark Woodwright and Apothecary unavailable rather than presenting nonfunctional choices.",
-            "Configure the server default map separately from the client frontend. Phase 05 may use an explicitly disposable test account fixture; activate durable creation and duplicate-login prevention at Phase 06."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation.",
+            "Assign available discipline/vocation definitions and the allowed appearance catalog in DA_GameCatalog; connect the approved faction selection catalog without class/vocation filters. Keep Woodwright and Apothecary unavailable before their existing Phase 20/21 activation. Required choices cannot be omitted because a definition is unavailable.",
+            "Configure the server map separately from the client frontend. Phase 05 uses disposable identity fixtures; Phase 06 exercises durable transactions with isolated fixtures. Real character creation stays blocked until the approved faction catalog and Phase 12 discipline definitions are integrated. Do not silently choose a class or retain disposable fixtures as player characters."
           ]
         },
         {
@@ -64,17 +64,17 @@
           "title": "Wire the actual player flow",
           "paragraphs": [],
           "steps": [
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
             "Normalize the name with a pinned Unicode policy, validate length and forbidden characters, then acquire account-slot and name constraints in one transaction.",
-            "Create CharacterId, chosen vocation, zeroed independent XP ledgers, starting-zone position and starter-kit receipt. Reusing the request returns the same CharacterId.",
+            "After independent catalog/availability checks, atomically create CharacterId, permanent FactionId/CombatDisciplineId, active VocationId, initial Progression.Combat and exactly one keyed Progression.Vocations entry. Initialize validated Level-1 XP, name reservation, safe starting position and the unique starter-kit outcome/receipt together. A matching request returns the original CharacterId, not another kit.",
             "Reserve a session lease before admitting the body. Bind the local view to the admitted CharacterId and pull its snapshot.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ]
         },
         {
           "title": "Configured route fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
             "Use L_ThornmereVillage and L_ElderwoodRoad as the repeated route. The isolated L_BriarwakePreview exists only to prove imported visuals. Field values below are fixtures, not production balance."
           ]
         },
@@ -90,7 +90,7 @@
             "rows": [
               [
                 "One human",
-                "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+                "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
                 "Not run in Unreal"
               ],
               [
@@ -109,14 +109,14 @@
         {
           "title": "Rejected commands, disconnect and restart",
           "paragraphs": [
-            "No vocation → VocationRequired. Unsupported cosmetic ID → AppearanceUnavailable. Full slots → CharacterLimit. Duplicate normalized name → NameUnavailable. A provider failure must not leave a half-created character.",
+            "Missing combat discipline → CombatDisciplineRequired; unsupported/unavailable discipline → CombatDisciplineUnavailable. Missing vocation → VocationRequired; unsupported/unavailable vocation → VocationUnavailable. Missing/invalid faction → FactionRequired/FactionUnavailable; absent approved catalog → IdentityCatalogUnavailable. Unsupported cosmetic → AppearanceUnavailable; full slots → CharacterLimit; duplicate normalized name → NameUnavailable. Reject before any name/item/identity mutation.",
             "Persist the operation receipt in the same transaction as its effects. On a lost response, query or retry the same request identity. A successful receipt returns the original result; a changed payload under that identity is rejected. A UI timeout is not proof of a database rollback."
           ]
         },
         {
           "title": "UI, animation and accessibility",
           "paragraphs": [
-            "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Public name, vocation and permitted appearance replicate; account identity, inventory and authentication tokens do not become public PlayerState fields.",
+            "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Publish only the permitted public identity/appearance subset. UCharacterStateComponent exposes owner-only committed progression, including inactive vocation histories; raw records, account identity and authentication tokens are never public PlayerState fields.",
             "Bind observers, pull the current snapshot, and unbind on teardown. Preserve controller focus, localized error text and an accessible alternative to timing-only or sound-only cues. A widget’s disappearance is not a gameplay commit."
           ]
         },
@@ -137,6 +137,50 @@
             "[[sources-verification.html|UE-NET, UE-DEDICATED]]",
             "[[asset-index.html|Planned assets and fields]]",
             "[[feature-coverage.html|Requirement-by-requirement gaps]]"
+          ]
+        },
+        {
+          "title": "Required selections and permanent identity guards",
+          "paragraphs": [
+            "Committed requirement: faction, combat class (the existing combat discipline) and vocation are three independent identities. Appearance remains a separate cosmetic choice. Validate each selection against its own approved available definitions; do not create faction/class/vocation combination restrictions.",
+            "After successful creation, every durable mutation compares permanent FactionId and CombatDisciplineId with the stored values. A client-supplied replacement, generic record patch or unauthorized server-side mutation returns PermanentIdentityLocked before any write. No class-change operation, token, alternate active class or multiclass record is permitted. Controlled legacy completion below is not a gameplay class-change API.",
+            "Creation reserves the name and account slot, writes the complete identities and initial progression, grants the starter kit under the existing domain uniqueness guard, and commits the original-result receipt/outbox in one transaction. Reject malformed/missing/unavailable fields before reserving anything. A different payload under the same RequestId returns RequestIdentityConflict. No Pawn or UI can finalize partial creation."
+          ],
+          "table": {
+            "headers": [
+              "Field",
+              "Required validation",
+              "Stable rejection"
+            ],
+            "rows": [
+              [
+                "FactionId",
+                "Exactly one approved, available permanent allegiance; independent of reputation, class and vocation",
+                "FactionRequired / FactionUnavailable / IdentityCatalogUnavailable"
+              ],
+              [
+                "CombatDisciplineId",
+                "Exactly one available UCombatDisciplineDefinition.DefinitionId; permanent after creation",
+                "CombatDisciplineRequired / CombatDisciplineUnavailable"
+              ],
+              [
+                "VocationId",
+                "Exactly one available UVocationDefinition.VocationId; initialize its keyed history once",
+                "VocationRequired / VocationUnavailable"
+              ]
+            ]
+          },
+          "links": [
+            "[[asset:Record_Character]]",
+            "[[asset:Fixture_identity]]",
+            "[[design/vocational-identity.html|Authoritative trainer change]]"
+          ]
+        },
+        {
+          "title": "Content readiness without roadmap reordering",
+          "paragraphs": [
+            "The audited main contains generic faction reputation prose but no approved permanent-allegiance catalog/creation specification. Supply that existing faction work as a compatibility prerequisite; this change does not invent faction IDs, starting regions or lore. An absent catalog returns IdentityCatalogUnavailable; never default allegiance or drop the required field.",
+            "Phase 05 retains disposable selection fixtures and Phase 06 isolated persistence tests. UCombatDisciplineDefinition and its four data assets still activate at Phase 12 (ADR-004); re-open character creation then with approved faction content. Earlier fixture success is not production admission readiness. Real characters cannot be created until every required selected definition is integrated and available."
           ]
         }
       ],
@@ -457,7 +501,7 @@
               ],
               [
                 "Durable value",
-                "Record_Character persists purchased talent IDs, independent combat XP and build revision. Reconstruct derived attributes and granted abilities from validated content on login; do not persist raw component pointers."
+                "Record_Character.CombatDisciplineId is permanent after creation. Progression.Combat stores independent TotalXP, DefinitionVersion, PurchasedTalentIds and UnspentTalentPoints. Record_Character.Revision is also the progression/build revision; derive level and rebuild abilities from validated definitions without replaying rewards. Vocation changes preserve this entire combat record and its grants; talent respec remains within the chosen discipline."
               ],
               [
                 "Projection",
@@ -487,7 +531,7 @@
           "title": "Wire the actual player flow",
           "paragraphs": [],
           "steps": [
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Commit permitted runtime cost once and open the authored hit window. The server chooses collision results and line-of-sight eligibility.",
             "Apply damage/healing through the selected GAS effects. Track legitimate support and damage participation for rewards.",
             "On a durable reward, request the persistence transaction using encounter/reward identity; do not award XP in the damage widget.",
@@ -1477,7 +1521,7 @@
             "Interact with an NPC; validate lease, distance and service availability at the current regional revision.",
             "Present a state-derived dialogue projection. On selection, validate the actual option against current conditions again.",
             "Advance eligible objectives from accepted gameplay receipts and preserve the personal/global distinction.",
-            "Commit quest reward and completion flag together; a repeated delivery cannot create a second reward.",
+            "Commit quest reward and completion flag together; a repeated delivery cannot create a second reward. Authored CombatXP and VocationXP awards are separate nonnegative integers; a vocation award names its validated VocationId. Validate both awards and commit their ledgers with the same unique quest outcome/receipt, never credit whichever vocation happens to be active when a delayed callback arrives.",
             "Refresh dialogue, journal and relevant region board. Party sharing checks each recipient’s eligibility and never copies completed rewards."
           ]
         },
@@ -1547,6 +1591,17 @@
             "[[sources-verification.html|UE-NET]]",
             "[[asset-index.html|Planned assets and fields]]",
             "[[feature-coverage.html|Requirement-by-requirement gaps]]"
+          ]
+        },
+        {
+          "title": "Trainer and progression award integration",
+          "paragraphs": [
+            "Use the existing ANpcServiceActor/UNpcServiceDefinition trainer interaction and eligibility checks for ChangeVocation; no new NPC hierarchy or service is needed. The authoritative identity operation preserves quest/faction/region state while changing only the active vocation and its permitted initial record/debit.",
+            "For quests that grant experience, author CombatXP and VocationXP independently and name the target vocation for a vocation award. Existing unique quest-completion outcomes/receipts protect both ledgers together; reject invalid awards before either is written. Inactive vocation histories are preserved, but do not receive XP merely from switching or opening a journal."
+          ],
+          "links": [
+            "[[design/vocational-identity.html|Trainer policy and transaction]]",
+            "[[asset:Fixture_identity]]"
           ]
         }
       ],
@@ -3396,14 +3451,14 @@
         {
           "title": "Editor and configuration sequence",
           "paragraphs": [
-            "Build login, selection and creation screens. Assign DA_Vocation_Forgekeeper/Hearthkeeper/Wayfinder and the audited appearance catalog. Display unavailable later vocations explicitly. Use a disposable Phase 05 account fixture before durable wiring in Phase 06.",
+            "Build login, selection and creation screens with independent faction, combat discipline, vocation and appearance controls. Assign the existing prototype vocations. Use Fixture_identity for disposable selections; approved faction content and full UCombatDisciplineDefinition integration remain required before real creation (discipline assets stay at Phase 12).",
             "Create native types in the future game repository, compile the applicable Editor target, then reopen the Editor before choosing custom Blueprint parents. Add/assign only the data and components named by this phase. Save the assets and configured route map. Exact menus/APIs that require the missing installed version remain an Unverified integration."
           ]
         },
         {
           "title": "Native ownership contract",
           "paragraphs": [
-            "The server validates one active VocationId and all appearance IDs. Character identity is separate from the Pawn. Combat discipline is not the vocation; do not silently combine them into one class selector.",
+            "The server validates independent FactionId, CombatDisciplineId and VocationId plus appearance. Faction/class lock after successful creation; vocation alone can be retrained. Phase 05 fixtures are disposable contract tests, not durable gameplay or a second class architecture.",
             "All custom signatures in linked pages are proposals. BlueprintReadOnly exposes state for observation; BlueprintCallable exposes a request path, not authority. Definitions remain immutable during play."
           ]
         },
@@ -3431,7 +3486,7 @@
         {
           "title": "Success, rejection and regression",
           "paragraphs": [
-            "No vocation, duplicate normalized name, invalid body/outfit or excessive character slots reject before spawn. A failed creation leaves no half-record; durable proof is gated on Phase 06.",
+            "Missing/unavailable class or vocation, missing/invalid faction, duplicate normalized name, invalid appearance or excessive slots reject before mutation/spawn. An absent approved identity catalog blocks real creation; transaction proof uses Phase 06 isolated fixtures and is rechecked with real definitions at Phase 12.",
             "Verify both remote appearance and the existing movement loop. Phase 05 fixture resets must be visibly labeled disposable.",
             "Capture before/after IDs, revisions, amounts and expected error codes. A command that lost its response must retain its original request identity for reconciliation. Record Not run instead of manufacturing an observation."
           ]
@@ -3541,7 +3596,7 @@
         {
           "title": "Native ownership contract",
           "paragraphs": [
-            "Commit aggregate changes with receipt and payload digest in the same transaction. UCharacterStateComponent publishes one owner-only projection. The service is the canonical writer; GameInstance does not become a shared database.",
+            "Extend Record_Character in place: permanent FactionId/CombatDisciplineId, active VocationId, independent Progression.Combat and Progression.Vocations keyed by stable vocation ID. Its existing Revision versions progression/build snapshots. Commit mutations, domain uniqueness, receipt/digest and outbox atomically with in-transaction lease checks; UCharacterStateComponent remains an owner-only projection.",
             "All custom signatures in linked pages are proposals. BlueprintReadOnly exposes state for observation; BlueprintCallable exposes a request path, not authority. Definitions remain immutable during play."
           ]
         },
@@ -3570,7 +3625,7 @@
           "title": "Success, rejection and regression",
           "paragraphs": [
             "Duplicate login, stale epoch, changed payload under the same RequestId and unsupported schema reject. An unknown outcome must query/replay the original request, not issue an untracked second grant.",
-            "Repeat both prototype vocations and remote avatar observation. Confirm no credentials or private inventory appear in public replication/logs.",
+            "Round-trip every vocation history, not just the active record. Reject post-creation class mutation, stale versions and corrupt active-vocation references. Test the documented legacy conversion without replaying awards or assigning an unknown class. Real identity admission remains gated on approved definitions; isolated service fixtures do not imply Unreal integration.",
             "Capture before/after IDs, revisions, amounts and expected error codes. A command that lost its response must retain its original request identity for reconciliation. Record Not run instead of manufacturing an observation."
           ]
         },
@@ -4405,7 +4460,7 @@
         {
           "title": "Native ownership contract",
           "paragraphs": [
-            "Skill purchases are service-backed transactions over authored prerequisites and point budgets. Animation counts do not infer mastery. Respec preserves critical content access.",
+            "Skill purchases remain service-backed transactions over authored prerequisites and separate combat/mastery budgets. Bind each character to its permanently selected UCombatDisciplineDefinition; respec stays within that class. Derive combat/vocation levels independently from validated XP definitions. Restore saved vocation records without re-awarding points; never infer mastery from animation counts.",
             "All custom signatures in linked pages are proposals. BlueprintReadOnly exposes state for observation; BlueprintCallable exposes a request path, not authority. Definitions remain immutable during play."
           ]
         },
@@ -4426,14 +4481,14 @@
         {
           "title": "Run now and capture observations",
           "paragraphs": [
-            "Purchase a valid talent, reconnect, change loadout and verify the same build. Compare a Hearthkeeper Vanguard and Forgekeeper Ranger to prove the axes are independent.",
+            "With the approved faction catalog and discipline definitions integrated, rerun real character creation. Compare every available class/vocation combination; inspect independent levels and retained histories. At Phase 13 connect trainer interaction to ChangeVocation, then run Fixture_identity including Level 35 Vanguard / Level 20 Forgekeeper → new Level 1 Hearthkeeper → Level 12 Hearthkeeper → restored Forgekeeper 20 → restored Hearthkeeper 12.",
             "For shared-state phases run one human on a dedicated server first, then two separate clients. For relevant contention features repeat at 5, 10 and 30 connected clients and record the environment. Early visual-only phases defer remote checks to Phase 04."
           ]
         },
         {
           "title": "Success, rejection and regression",
           "paragraphs": [
-            "Overspend, mutually exclusive branches, cyclic prerequisites, duplicate purchase and old-vocation advanced crafting permission reject.",
+            "Reject post-creation CombatDisciplineId mutation, combat/mastery point substitution, overspending, exclusive branches, cyclic prerequisites, duplicate purchase and inactive-vocation abilities/recipes. Never present another class selector as respec or retraining.",
             "Rerun baseline combat with each art-supported starting discipline. Arcanist/Warden art gaps remain explicit rather than disappearing from scope.",
             "Capture before/after IDs, revisions, amounts and expected error codes. A command that lost its response must retain its original request identity for reconciliation. Record Not run instead of manufacturing an observation."
           ]
@@ -4591,7 +4646,7 @@
         {
           "title": "Native ownership contract",
           "paragraphs": [
-            "Quest objectives consume authoritative gameplay receipts, not widgets. NPC services share the existing command route. Personal completion and global stage change are different facts.",
+            "Quest objectives consume authoritative gameplay receipts, not widgets. NPC services share the existing command route. Route the existing trainer service through ChangeVocation with lease/revision checks and the established provisional retraining policy; no new trainer class or transaction owner. Separate CombatXP and targeted VocationXP awards in the atomic quest reward.",
             "All custom signatures in linked pages are proposals. BlueprintReadOnly exposes state for observation; BlueprintCallable exposes a request path, not authority. Definitions remain immutable during play."
           ]
         },
@@ -4612,14 +4667,14 @@
         {
           "title": "Run now and capture observations",
           "paragraphs": [
-            "Accept the starter chain, complete its currently active steps, deliver once and reopen the journal. Confirm each vocation has a base-skill/NPC alternative for required production.",
+            "Accept and complete the existing starter chain alone through its current alternatives. At an appropriate existing trainer, run Fixture_identity with introduction/varied-contract requirements satisfied and the authored retraining fee policy configured. Revisit trained vocations, retry an accepted change and verify no duplicated kit, mastery points, recipes or modifiers.",
             "For shared-state phases run one human on a dedicated server first, then two separate clients. For relevant contention features repeat at 5, 10 and 30 connected clients and record the environment. Early visual-only phases defer remote checks to Phase 04."
           ]
         },
         {
           "title": "Success, rejection and regression",
           "paragraphs": [
-            "Stale dialogue option, ineligible shared quest, duplicate delivery and unavailable service show an explicit reason without replaying a reward.",
+            "Stale dialogue, ineligible quest, duplicate delivery and unavailable service retain their existing errors. Trainer changes additionally reject stale lease/revision, unavailable vocation, incomplete trade/craft/transfer or unresolved durable work; no partial fee or progress mutation.",
             "Run combat → loot → vendor → journal from the normal route. A conversation may limit local input but must not pause the server.",
             "Capture before/after IDs, revisions, amounts and expected error codes. A command that lost its response must retain its original request identity for reconciliation. Record Not run instead of manufacturing an observation."
           ]
@@ -8366,7 +8421,8 @@
         {
           "title": "Character creation contract",
           "paragraphs": [
-            "Committed requirement: one and only one primary vocation is selected for every playable character. The creator shows an active choice’s typical actions, pace/difficulty, products, world contribution, combat synergy and boundaries. Unsupported exclusive costumes are not part of the promise."
+            "Committed requirement: one and only one primary vocation is selected for every playable character. The creator shows an active choice’s typical actions, pace/difficulty, products, world contribution, combat synergy and boundaries. Unsupported exclusive costumes are not part of the promise.",
+            "Committed requirement: select one permanent combat class through UCombatDisciplineDefinition and one permanent faction separately from the changeable vocation. Every available class supports every available vocation. Combat level/XP, class abilities and purchased combat talents cannot change when retraining a vocation."
           ]
         },
         {
@@ -8394,7 +8450,7 @@
               ],
               [
                 "What is retained?",
-                "All items, completed quests, regional credit and the old vocation’s XP/learned recipe IDs remain recorded."
+                "All items, permanent quest outcomes, faction allegiance, Living Regions credit and combat progression remain. Every trained vocation retains its own XP, derived level, mastery XP/points, purchased skills/talents, learned recipes, techniques and accomplishments."
               ],
               [
                 "What is inactive?",
@@ -8402,7 +8458,7 @@
               ],
               [
                 "What is newly granted?",
-                "New introductory mentor access. Starter-kit receipts remain character-unique; switching cannot farm free tools/materials."
+                "A never-trained vocation gets one Level-1 record at its defined initial XP and introductory mentor access. A returning vocation restores its saved record, not Level 1. Starter-kit and one-time unlock/mastery outcomes cannot replay."
               ],
               [
                 "Cost?",
@@ -8414,7 +8470,7 @@
               ],
               [
                 "Atomic validation?",
-                "No pending trade/craft/transfer. Commit active VocationId, permission rebuild and change receipt together."
+                "No pending trade/craft/transfer or unresolved durable work. Commit active VocationId, keyed progression, any existing authored retraining debit, change receipt and outbox together. Rebuild runtime permissions from that committed revision before enabling vocation actions; runtime handles are not stored in the transaction."
               ],
               [
                 "Other characters?",
@@ -8437,6 +8493,37 @@
           "links": [
             "[[professions/index.html|Five full loop contracts]]",
             "[[systems/identity.html|Creator and durable record]]"
+          ]
+        },
+        {
+          "title": "Server-authoritative ChangeVocation contract",
+          "paragraphs": [
+            "ChangeVocation(Envelope, TargetVocationId, TrainerId) is a proposed Briarwake operation routed by the existing owned controller/NPC service through UDurableStateClient; it is not an Unreal API or a new transaction framework. Envelope uses OperationType=ChangeVocation, RequestId, authenticated character scope, LeaseEpoch, ExpectedRevisions and ContentVersion. Its semantic digest includes TargetVocationId, TrainerId, the decision revisions and pinned content, not renewed transport credentials.",
+            "Keep the established provisional trainer policy above: introduction and three varied contracts, an appropriate trainer, the authored affordable retraining contract/fee, and three varied contracts before another switch. Exact fee/content remains unapproved tuning. Do not invent another fee, cooldown, penalty, prerequisite or human-player dependency. Missing required authored policy/definitions blocks that integration test rather than making up values."
+          ],
+          "steps": [
+            "Authenticate the character; reject impersonation. Look up (character scope, ChangeVocation, RequestId) before current trainer/eligibility/revision checks. Return an authorized matching committed receipt unchanged; a changed semantic payload returns RequestIdentityConflict. A fresh lease may read an older receipt; it cannot authorize a new write with an old epoch.",
+            "For a new mutation, validate the current authoritative session lease and live trainer interaction/range, the existing retraining eligibility and fee policy, and the requested available UVocationDefinition. Same active target returns AlreadyActive with no fee, progression change or repeated grants. Prepare required versioned definitions before entering the commit boundary.",
+            "Within the existing transaction lock/compare the character and any affected fee aggregate in deterministic order. Recheck LeaseEpoch, ExpectedRevisions, content, trainer authorization and eligibility. Reject IncompatiblePendingOperation for pending trade/craft/transfer or unresolved value/XP work; do not copy a snapshot while another durable result is unknown.",
+            "Stage the full next Record_Character, preserving Progression.Combat and every existing Progression.Vocations entry. If TargetVocationId has never been trained in a validated schema, add one entry at InitialXP with derived Level 1 and defined initial values. Otherwise reuse its saved entry byte-for-byte; do not rerun its starter or earned unlock grants.",
+            "Set only VocationId to the target. Compute the target permission plan from its committed-history candidate and authored definitions. Validate unique grants and preserve class abilities/talents, faction, inventory items, permanent quest outcomes and Living Regions contributions. The only permitted unrelated debit is the already-authored retraining fee, if applicable.",
+            "Commit the staged record, one Revision increment, any existing authored debit, permanent domain uniqueness guards, Record_CommandReceipt and outbox atomically. The receipt records old/new vocation IDs and exact committed revisions. No receipt, fee, history or active selector may commit alone.",
+            "After commit, rebuild only vocation-sourced permissions/modifiers on the server from the new revision; gate vocation commands until hydration is complete. Publish the permitted public identity subset and owner-only histories via the existing outbox/projection route. Clients ignore older state revisions; an old receipt is historical evidence, not a command to restore its old active vocation."
+          ]
+        },
+        {
+          "title": "Active permissions, independent awards and recovery",
+          "paragraphs": [
+            "LearnedRecipeIds, purchased skills/talents, techniques and accomplishments stay in each inactive entry. Specialist availability requires both current VocationId and the newly active saved progression/definition prerequisites. Remove or disable only handles/modifiers sourced exclusively from the former vocation; preserve class/equipment/general-activity grants. Deduplicate by stable grant source and authored ability/effect identity. Widgets and copied client permission lists are never authority.",
+            "Revalidate active vocation permission on authoritative ability activation and crafting acceptance/commit, including delayed requests with old UI or grant handles. Switching cannot make an old specialist recipe legal. Preserve general gathering, basic fishing, combat and essential NPC alternatives available to every character. Rebuilds are deterministic set reconciliation, not additive reward delivery.",
+            "CombatXP and targeted VocationXP are independently authored, validated and stored. Quest rewards may specify both separately under one unique completion transaction. Purchased combat talents spend only combat points; vocation purchases spend only that vocation’s mastery points. An accepted activity names its target VocationId and content/revision context; serialize/reconcile its award before switching, never redirect delayed XP to a different active vocation.",
+            "Before commit an interruption leaves the original active vocation and histories intact. After commit, a lost response/reconnect/restart resolves through the same receipt and outbox. Repeated delivery cannot grant starter items, mastery points or modifiers again. Two competing changes with the same expected Revision yield one commit and one StaleRevision rejection; no two active vocations. Replaying an earlier accepted change after a later switch returns its original receipt without changing current state.",
+            "Respawn, logout/reconnect and per-character zone transfer hydrate all vocation histories from Record_Character, then rebuild the active permission set once. Fence the old zone and reject late commands under its old epoch. Never save progression in the Pawn, UI, Data Asset or a second progression owner."
+          ],
+          "links": [
+            "[[asset:Record_Character]]",
+            "[[asset:Fixture_identity]]",
+            "[[architecture/transactions-and-ledgers.html|Receipt and outbox conventions]]"
           ]
         }
       ]
@@ -8496,6 +8583,7 @@
         {
           "title": "Creator and tutorial",
           "paragraphs": [
+            "Committed requirement: choose exactly one available combat discipline during character creation and store its stable DefinitionId as CombatDisciplineId. This combat class is permanent. Every available class supports every vocation and valid faction; no vocation change changes class, combat XP/level, abilities or purchased combat talents. Respec only redistributes talents within the existing class under its current policy.",
             "Introduce a basic art-supported combat action in the tutorial and let the player learn the difference from vocation. The prototype may offer only currently integrated disciplines. Final-system documentation still owes all four specified skill trees and their tested solo paths."
           ]
         },
@@ -8513,6 +8601,17 @@
           "links": [
             "[[systems/combat.html|Combat implementation contract]]",
             "[[systems/dungeons.html|Solo/group mechanics]]"
+          ]
+        },
+        {
+          "title": "Independent combat progression and write protection",
+          "paragraphs": [
+            "Record_Character.Progression.Combat owns combat TotalXP, pinned DefinitionVersion, purchased talent IDs and unspent combat points. Derive level from its validated curve, not vocation level; Combat 40 / Forgekeeper 5 and Combat 10 / Hearthkeeper 30 are valid unless a particular authored activity explicitly states a requirement. Vocation mastery points cannot buy combat talents.",
+            "Reject any post-creation CombatDisciplineId mutation at the authoritative durable boundary, including a generic record update or forged client payload. No class-change NPC, reset token, alternate active class or multiclass system is introduced. Returning to a vocation restores only that vocation’s progression; class grants remain associated with the permanently selected definition."
+          ],
+          "links": [
+            "[[asset:Record_Character]]",
+            "[[asset:Fixture_identity]]"
           ]
         }
       ]
@@ -9679,7 +9778,7 @@
     {
       "path": "walkthroughs/new-character.html",
       "title": "01. New character and required vocation",
-      "summary": "One CharacterId and one kit receipt; vocation.hearthkeeper persists.",
+      "summary": "One CharacterId and kit receipt; permanent faction/Vanguard and active Hearthkeeper with independent retained progression.",
       "category": "Worked walkthrough",
       "maturity": "Test specification; not run",
       "sections": [
@@ -9687,7 +9786,7 @@
           "title": "Fixture and readiness",
           "paragraphs": [
             "First integrated checkpoint: Phase 05. Stable fixture identifiers: acct-bw-001 / char-bw-hearth / vocation.hearthkeeper.",
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
             "All sample quantities and timings are controlled fixtures. Actual authored definitions must match the scenario before running it."
           ]
         },
@@ -9705,16 +9804,16 @@
           "title": "Ownership and user journey",
           "paragraphs": [
             "ABriarwakeGameMode admits a verified character-session lease. ABriarwakePlayerController routes owned commands. A newly spawned ABriarwakeCharacter is only the current body.",
-            "The persistence boundary writes Record_Account and Record_Character together with Record_CommandReceipt. It reserves the normalized display-name key and grants the starting kit once.",
-            "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Public name, vocation and permitted appearance replicate; account identity, inventory and authentication tokens do not become public PlayerState fields."
+            "The persistence boundary writes Record_Account, Record_Character and Record_CommandReceipt atomically with the normalized name reservation and unique starter kit. Record_Character owns permanent FactionId/CombatDisciplineId, active VocationId and independent Progression.Combat / Progression.Vocations histories; its Revision versions the complete progression/build projection.",
+            "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Publish only the permitted public identity/appearance subset. UCharacterStateComponent exposes owner-only committed progression, including inactive vocation histories; raw records, account identity and authentication tokens are never public PlayerState fields."
           ]
         },
         {
           "title": "Worked execution",
           "paragraphs": [],
           "steps": [
-            "Open WBP_CharacterCreate from the login/character-selection flow; choose an audited appearance and Hearthkeeper.",
-            "Submit request create.hearth.001. Service derives the account, validates catalog/name/slot rules and atomically creates the record and starter receipt.",
+            "Open WBP_CharacterCreate; choose an audited appearance, approved faction, available Vanguard (discipline.vanguard) and Hearthkeeper (vocation.hearthkeeper) independently. Confirm that faction and class are permanent.",
+            "Submit create.hearth.001 with all required IDs. The authenticated service independently validates every selection, name and slot, then atomically commits identities, initial combat/vocation progression and the unique kit/name/receipt outcomes.",
             "Admit one session lease and spawn at Thornmere square; UI displays the committed vocation and supported layers."
           ]
         },
@@ -9726,14 +9825,14 @@
         {
           "title": "Expected successful outcome",
           "paragraphs": [
-            "One CharacterId and one kit receipt; vocation.hearthkeeper persists.",
+            "One CharacterId and kit receipt; permanent faction/Vanguard and active Hearthkeeper with independent retained progression.",
             "Inspect the specific record IDs above and compare before/after balances, revisions and receipt identities. An on-screen success toast is not sufficient evidence."
           ]
         },
         {
           "title": "Rejected command",
           "paragraphs": [
-            "Missing vocation or unavailable appearance is rejected before name/item mutation."
+            "Omit CombatDisciplineId, omit VocationId, use unavailable IDs and omit/forge FactionId in separate requests. Each fails before name/item mutation. Attempt a post-creation class patch: PermanentIdentityLocked, with unchanged progression."
           ]
         },
         {
@@ -9745,7 +9844,7 @@
         {
           "title": "Reconnect and server restart",
           "paragraphs": [
-            "Logout, restart and join from another client; same character/appearance/vocation, no second kit."
+            "Logout, restart and reconnect: same permanent identities, appearance, active vocation and all keyed histories; no second kit or threshold rewards."
           ]
         },
         {
@@ -9756,6 +9855,16 @@
           "links": [
             "[[sources-verification.html|Execution evidence]]",
             "[[architecture/transactions-and-ledgers.html|Receipt semantics]]"
+          ]
+        },
+        {
+          "title": "Trainer continuation and implementation gate",
+          "paragraphs": [
+            "Phase 05 is disposable UI/contract setup, Phase 06 provides isolated durable tests, Phase 12 integrates real discipline definitions and Phase 13 connects trainers. Approved faction content is also required before real creation. Run the retained-progression sequence only after these dependencies and the existing retraining eligibility are satisfied.",
+            "Continue with Fixture_identity: Vanguard 35 / Forgekeeper 20 → first Hearthkeeper 1 → train Hearthkeeper 12 → Forgekeeper 20 → Hearthkeeper 12. Compare complete combat and inactive vocation records, ability sources, item IDs and unique award counts at every step. These are future-game acceptance steps, not executed Unreal tests."
+          ],
+          "links": [
+            "[[asset:Fixture_identity]]"
           ]
         }
       ]
@@ -10209,7 +10318,7 @@
           "title": "Ownership and user journey",
           "paragraphs": [
             "The PlayerState-associated AbilitySystemComponent and UCombatAttributeSet own runtime ability/attribute behavior. ABriarwakeCharacter is the current avatar. Server traces and target validation decide hits; PaperZD observes action state.",
-            "Record_Character persists purchased talent IDs, independent combat XP and build revision. Reconstruct derived attributes and granted abilities from validated content on login; do not persist raw component pointers.",
+            "Record_Character.CombatDisciplineId is permanent after creation. Progression.Combat stores independent TotalXP, DefinitionVersion, PurchasedTalentIds and UnspentTalentPoints. Record_Character.Revision is also the progression/build revision; derive level and rebuild abilities from validated definitions without replaying rewards. Vocation changes preserve this entire combat record and its grants; talent respec remains within the chosen discipline.",
             "WBP_HUD displays health/stamina/mana, cooldowns and action errors; WBP_Talents requests purchases. Keyboard and controller can select the same valid targets."
           ]
         },
@@ -19064,7 +19173,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Prepare the future native type ABriarwakePlayerController using the stated base and required module dependencies. Compile the real project before any Blueprint selects this type. Expose only current-phase properties and validated APIs. This page does not create a header, implementation or compiled class.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -19132,9 +19241,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -19152,7 +19261,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -19506,7 +19615,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Prepare the future native type ABriarwakePlayerState using the stated base and required module dependencies. Compile the real project before any Blueprint selects this type. Expose only current-phase properties and validated APIs. This page does not create a header, implementation or compiled class.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -19567,9 +19676,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -19587,7 +19696,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -19651,7 +19760,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Prepare the future native type UConnectionSubsystem using the stated base and required module dependencies. Compile the real project before any Blueprint selects this type. Expose only current-phase properties and validated APIs. This page does not create a header, implementation or compiled class.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -19719,9 +19828,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -19739,7 +19848,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -19750,7 +19859,7 @@
     {
       "path": "assets/Vocations/UVocationDefinition.html",
       "title": "UVocationDefinition",
-      "summary": "One chosen primary vocation, independent from combat discipline.",
+      "summary": "One active primary vocation, independent from permanent combat class; immutable rules rebuild permissions from that vocation’s retained progression.",
       "category": "Asset reference",
       "maturity": "Initial contract",
       "sections": [
@@ -19793,7 +19902,7 @@
         {
           "title": "Purpose and ownership",
           "paragraphs": [
-            "One chosen primary vocation, independent from combat discipline.",
+            "One active primary vocation, independent from permanent combat class; immutable rules rebuild permissions from that vocation’s retained progression.",
             "Owner: Content author; immutable during play. Lifetime: Loaded content; no player state.",
             "Replication: None for authored definitions/assets. Persistence: Save stable IDs only; not this object.",
             "Authored values describe rules; runtime projections and persistent instances remain separate. A view/definition cannot become an additional authoritative writer."
@@ -19803,7 +19912,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Prepare the future native type UVocationDefinition using the stated base and required module dependencies. Compile the real project before any Blueprint selects this type. Expose only current-phase properties and validated APIs. This page does not create a header, implementation or compiled class.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -19854,6 +19963,27 @@
                 "Authored prerequisites",
                 "EditDefaultsOnly",
                 "Author"
+              ],
+              [
+                "ContentVersion",
+                "positive int32",
+                "Pinned by each stored vocation DefinitionVersion",
+                "EditDefaultsOnly",
+                "Author"
+              ],
+              [
+                "InitialXP",
+                "nonnegative int64",
+                "0 unless explicitly authored; must derive Level 1",
+                "EditDefaultsOnly",
+                "Author"
+              ],
+              [
+                "LevelThresholds",
+                "ordered nonnegative int64 thresholds",
+                "Strictly increasing; first threshold 0; complete authored curve required, no combat-level input",
+                "EditDefaultsOnly",
+                "Author"
               ]
             ]
           }
@@ -19861,7 +19991,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -19885,9 +20015,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -19905,9 +20035,20 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
+          ]
+        },
+        {
+          "title": "Retained history and active-only permissions",
+          "paragraphs": [
+            "VocationId identifies a stable key in Record_Character.Progression.Vocations. This immutable definition owns no player XP. Validate ContentVersion, InitialXP and LevelThresholds before activation; initial XP must yield Level 1 and the curve cannot depend on combat level.",
+            "The character may have many retained history entries but exactly one active VocationId. Apply only its saved eligible abilities/recipes/techniques, retaining inactive learned information. Returning to a trained vocation restores XP/mastery/purchases and never reapplies starter items or earned milestone grants."
+          ],
+          "links": [
+            "[[design/vocational-identity.html|ChangeVocation transaction and eligibility]]",
+            "[[asset:Record_Character]]"
           ]
         }
       ],
@@ -19969,7 +20110,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "After UVocationDefinition exists and compiles, create a Data Asset of that schema in the stated Content folder, save it as DA_Vocation_Forgekeeper, validate its stable IDs and assign it to the named consumer. The schema and this instance are different assets.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -20030,9 +20171,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -20050,7 +20191,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -20114,7 +20255,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "After UVocationDefinition exists and compiles, create a Data Asset of that schema in the stated Content folder, save it as DA_Vocation_Hearthkeeper, validate its stable IDs and assign it to the named consumer. The schema and this instance are different assets.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -20175,9 +20316,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -20195,7 +20336,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -20259,7 +20400,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "After UVocationDefinition exists and compiles, create a Data Asset of that schema in the stated Content folder, save it as DA_Vocation_Wayfinder, validate its stable IDs and assign it to the named consumer. The schema and this instance are different assets.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -20320,9 +20461,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -20340,7 +20481,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -20404,7 +20545,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "After UVocationDefinition exists and compiles, create a Data Asset of that schema in the stated Content folder, save it as DA_Vocation_Woodwright, validate its stable IDs and assign it to the named consumer. The schema and this instance are different assets.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -20465,9 +20606,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -20485,7 +20626,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -20549,7 +20690,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "After UVocationDefinition exists and compiles, create a Data Asset of that schema in the stated Content folder, save it as DA_Vocation_Apothecary, validate its stable IDs and assign it to the named consumer. The schema and this instance are different assets.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -20610,9 +20751,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -20630,7 +20771,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -21012,7 +21153,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "This is a proposed backend record contract, not a Content Browser asset. Implement a versioned service schema with explicit field types, uniqueness/revision/lease constraints and migration tests. No database schema implementation is generated by this documentation package.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -21087,9 +21228,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -21107,7 +21248,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -21118,7 +21259,7 @@
     {
       "path": "assets/Persistence/Record_Character.html",
       "title": "Record_Character",
-      "summary": "CharacterId, AccountId, VocationId, AppearanceIds, combat/vocation XP, safe ZoneId/SpawnId, Revision",
+      "summary": "Canonical character identities, independent combat progression and retained per-vocation histories; active VocationId is not a second progression record.",
       "category": "Asset reference",
       "maturity": "Initial contract",
       "sections": [
@@ -21161,7 +21302,7 @@
         {
           "title": "Purpose and ownership",
           "paragraphs": [
-            "CharacterId, AccountId, VocationId, AppearanceIds, combat/vocation XP, safe ZoneId/SpawnId, Revision",
+            "Canonical character identities, independent combat progression and retained per-vocation histories; active VocationId is not a second progression record.",
             "Owner: Persistence boundary. Lifetime: Durable, versioned record.",
             "Replication: No raw record replication; publish privacy-filtered projections. Persistence: Canonical service record.",
             "Authored values describe rules; runtime projections and persistent instances remain separate. A view/definition cannot become an additional authoritative writer."
@@ -21171,7 +21312,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "This is a proposed backend record contract, not a Content Browser asset. Implement a versioned service schema with explicit field types, uniqueness/revision/lease constraints and migration tests. No database schema implementation is generated by this documentation package.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -21196,9 +21337,23 @@
                 "Persistence boundary"
               ],
               [
+                "FactionId",
+                "stable content ID",
+                "Required, permanent; approved faction definition, never inferred from reputation",
+                "Server-only contract; client receives filtered view",
+                "Persistence boundary"
+              ],
+              [
+                "CombatDisciplineId",
+                "stable content ID",
+                "Required, permanent; resolves UCombatDisciplineDefinition.DefinitionId",
+                "Server-only contract; client receives filtered view",
+                "Persistence boundary"
+              ],
+              [
                 "VocationId",
                 "stable content ID",
-                "Exactly one permitted primary vocation",
+                "Exactly one active key in Progression.Vocations; change only through validated retraining",
                 "Server-only contract; client receives filtered view",
                 "Persistence boundary"
               ],
@@ -21211,8 +21366,29 @@
               ],
               [
                 "Progression",
-                "separate integer XP ledgers",
-                "Combat, vocation and reputation distinct",
+                "existing versioned value object",
+                "Keep existing reputation/unrelated fields; refine combat and vocation ledgers below",
+                "Server-only contract; client receives filtered view",
+                "Persistence boundary"
+              ],
+              [
+                "Progression.Combat",
+                "TotalXP, DefinitionVersion, PurchasedTalentIds, UnspentTalentPoints",
+                "New: validated initial XP, pinned definition version, empty purchases, zero points unless explicitly authored; level is derived",
+                "Server-only contract; client receives filtered view",
+                "Persistence boundary"
+              ],
+              [
+                "Progression.Vocations",
+                "map<stable VocationId, vocation progression value>",
+                "Only trained vocations have entries; one active key, every inactive entry retained; no array-index/display-name identity",
+                "Server-only contract; client receives filtered view",
+                "Persistence boundary"
+              ],
+              [
+                "Progression.Vocations[VocationId]",
+                "TotalXP, DefinitionVersion, MasteryXP, UnspentMasteryPoints, PurchasedSkillIds, PurchasedTalentIds, LearnedRecipeIds, UnlockedTechniqueIds, AccomplishmentIds",
+                "First training: validated InitialXP (normally 0) yielding Level 1, MasteryXP/points 0 and empty earned sets except authored initial recipes/unlocks; returning restores saved values",
                 "Server-only contract; client receives filtered view",
                 "Persistence boundary"
               ],
@@ -21226,7 +21402,7 @@
               [
                 "Revision / SchemaVersion",
                 "integer / positive integer",
-                "Explicit concurrency and migration version",
+                "Revision is the existing aggregate AND progression/build revision; proposed schema-2 contract, not evidence of a deployed migration",
                 "Server-only contract; client receives filtered view",
                 "Persistence boundary"
               ]
@@ -21236,7 +21412,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -21260,9 +21436,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -21280,9 +21456,33 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
+          ]
+        },
+        {
+          "title": "Progression value ownership and defaults",
+          "paragraphs": [
+            "Extend the existing Progression object, not a new manager, component, table owner or parallel save. VocationId remains the only authoritative active-vocation selector. Progression.Vocations is keyed by stable vocation ID; an entry’s identity is its key, never its position, display name or an additional mutable ID field. The active key must exist and every trained inactive entry survives.",
+            "Progression.Combat belongs to the permanent CombatDisciplineId. Each vocation value stores TotalXP, DefinitionVersion, MasteryXP, UnspentMasteryPoints, PurchasedSkillIds, PurchasedTalentIds, LearnedRecipeIds, UnlockedTechniqueIds and AccomplishmentIds. Integer values are nonnegative and bounded; ID collections are duplicate-free and validated against their versioned definitions. Mastery rank derives from MasteryXP and the authored mastery graph. Do not keep an independently writable saved Level or MasteryRank.",
+            "Combat and vocation levels derive independently from TotalXP and their pinned, validated LevelThresholds. No formula reads the other track’s level. ContentVersion on the definition is the stored DefinitionVersion; reject unavailable versions rather than silently using a changed curve. First training uses the vocation’s InitialXP (default 0), which must map to Level 1; initialize mastery XP/points to 0 and earned sets empty except explicitly authored initial recipes/unlocks. Entry creation and any permitted initial grants occur once under the existing transaction/domain-uniqueness rules.",
+            "Revision is the existing character aggregate revision and also the progression/build projection revision. Every committed XP award, purchase or active-vocation change advances it once; do not add a separately writable build/level counter. SchemaVersion versions serialization, not player progress. Preserve reputation, inventory records, quest outcomes and Living Regions contributions in their existing owners.",
+            "One-time award history remains governed by the existing durable domain outcomes and Record_CommandReceipt, not by cached ability handles. Threshold awards happen on validated XP deltas once; import, hydration, switching and permission reconstruction grant no XP, points, items or already-earned unlock rewards."
+          ]
+        },
+        {
+          "title": "Compatible migration and unresolved legacy identities",
+          "paragraphs": [
+            "Schema 2 below is the proposed next documentation contract; no deployed schema or actual save fixtures were found in mmo_docs. Before rollout inventory real supported versions and codecs. Keep the old representation readable, back up originals and validate conversion into temporary values before an atomic revision/schema update. Do not treat this prose as an executed database migration.",
+            "For a supported single-vocation legacy record, retain VocationId and move its existing vocation XP/mastery/purchases/recipes/techniques/accomplishments into Progression.Vocations[VocationId]. Preserve the combat ledger, talents and unspent combat points separately, plus all unrelated fields and unique reward outcomes. After conversion only the new keyed value is authoritative; deprecated fields remain read-only compatibility input, never dual-written. Reapplying the migration to schema 2 is a no-op.",
+            "Preserve every existing historical vocation record by its original stable ID. If an old format did not store a particular fact, use documented empty/zero defaults only where absence is proven to mean never earned. Unknown or conflicting history is not proof of an untrained vocation: retain the raw record, quarantine conflicting writes and recover from trusted records/receipts/backups or explicit migration review. Do not silently reset or discard earned progression.",
+            "Backfill CombatDisciplineId or FactionId only from an unambiguous trusted original selection. Otherwise return MigrationNeedsIdentitySelection and do not admit gameplay. Resolve through an authenticated, audited one-time legacy completion using approved available definitions while the record is fenced; preserve existing XP/talents and require a reviewed mapping when they constrain compatibility. Commit the decision and receipt atomically, then apply the permanent lock. Never assign a default class, infer allegiance from reputation or expose repeated class changes.",
+            "A missing inactive key in a validated current-schema record means never trained. A missing active key, duplicate serialized key, negative/overflowed XP, unknown/removed definition, inconsistent purchased IDs or unsupported schema/definition version is a load/migration failure, not permission to initialize over old data. Reject/quarantine while retaining the original; do not fall back to a fresh character. A content migration preserves XP, earned points/purchases and one-time outcomes; recompute views without replaying threshold rewards."
+          ],
+          "links": [
+            "[[architecture/transactions-and-ledgers.html|Existing atomic boundary]]",
+            "[[asset:Fixture_identity]]"
           ]
         }
       ],
@@ -24621,7 +24821,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -24773,7 +24973,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -24918,7 +25118,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -25063,7 +25263,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -25208,7 +25408,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -25353,7 +25553,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -25498,7 +25698,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -25643,7 +25843,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -28442,7 +28642,7 @@
     {
       "path": "assets/Combat/UCombatDisciplineDefinition.html",
       "title": "UCombatDisciplineDefinition",
-      "summary": "Combat ability/talent progression independent of vocation.",
+      "summary": "The existing combat-class definition; its DefinitionId is stored once as permanent CombatDisciplineId, independent of vocation.",
       "category": "Asset reference",
       "maturity": "Initial contract",
       "sections": [
@@ -28485,7 +28685,7 @@
         {
           "title": "Purpose and ownership",
           "paragraphs": [
-            "Combat ability/talent progression independent of vocation.",
+            "The existing combat-class definition; its DefinitionId is stored once as permanent CombatDisciplineId, independent of vocation.",
             "Owner: Content author; immutable during play. Lifetime: Loaded content; no player state.",
             "Replication: None for authored definitions/assets. Persistence: Save stable IDs only; not this object.",
             "Authored values describe rules; runtime projections and persistent instances remain separate. A view/definition cannot become an additional authoritative writer."
@@ -28525,6 +28725,13 @@
                 "1 (fixture)",
                 "EditDefaultsOnly; BlueprintReadOnly",
                 "Content author"
+              ],
+              [
+                "LevelThresholds",
+                "ordered nonnegative int64 thresholds",
+                "Strictly increasing; first threshold 0; derive combat level from independent TotalXP",
+                "EditDefaultsOnly",
+                "Author"
               ]
             ]
           }
@@ -28532,7 +28739,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -28541,7 +28748,7 @@
           "paragraphs": [
             "Creation prerequisites: [[asset:Briarwake]]",
             "Direct registered reverse users: [[asset:DA_Discipline_Arcanist]], [[asset:DA_Discipline_Ranger]], [[asset:DA_Discipline_Vanguard]], [[asset:DA_Discipline_Warden]], [[asset:UTalentDefinition]]",
-            "Runtime consumers/assignments: DA_GameCatalog, WBP_Talents.",
+            "Runtime consumers/assignments: DA_GameCatalog, WBP_Talents, WBP_CharacterCreate.",
             "The graph tracks creation requirements; later observer assignments may reference an already-created owner without requiring cyclic construction. Follow the phase’s reopen-consumer instructions."
           ]
         },
@@ -28557,7 +28764,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -28579,6 +28786,17 @@
             "Activate five valid hits with sufficient stamina, reject a sixth hit outside range, and verify disabled animation notifies do not alter damage.",
             "Both clients attack the same server target. A fabricated target, duplicate activation or late hit after death cannot apply another cost/reward outcome.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
+          ]
+        },
+        {
+          "title": "Permanent selection and grant ownership",
+          "paragraphs": [
+            "DefinitionId is the existing stable combat-class identity, stored as immutable Record_Character.CombatDisciplineId at creation. The four proposed IDs are discipline.vanguard, discipline.ranger, discipline.arcanist and discipline.warden; unavailable definitions stay unselectable. Do not introduce ClassId or another class schema.",
+            "LevelThresholds and ContentVersion validate the independent combat TotalXP projection. Purchases and class grants belong to the selected discipline; vocation changes do not remove them. Reopen WBP_CharacterCreate at Phase 12 when the definitions become active; earlier identity fixtures cannot waive permanent selection."
+          ],
+          "links": [
+            "[[design/combat-disciplines.html|Class and respec policy]]",
+            "[[asset:Record_Character]]"
           ]
         }
       ],
@@ -28702,7 +28920,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -28805,7 +29023,7 @@
               [
                 "DefinitionId",
                 "FName / stable UTF-8 ID",
-                "Unique authored ID",
+                "discipline.vanguard",
                 "EditDefaultsOnly; BlueprintReadOnly",
                 "Content author"
               ],
@@ -28822,7 +29040,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -28847,7 +29065,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -28950,7 +29168,7 @@
               [
                 "DefinitionId",
                 "FName / stable UTF-8 ID",
-                "Unique authored ID",
+                "discipline.ranger",
                 "EditDefaultsOnly; BlueprintReadOnly",
                 "Content author"
               ],
@@ -28967,7 +29185,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -28992,7 +29210,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -29095,7 +29313,7 @@
               [
                 "DefinitionId",
                 "FName / stable UTF-8 ID",
-                "Unique authored ID",
+                "discipline.arcanist",
                 "EditDefaultsOnly; BlueprintReadOnly",
                 "Content author"
               ],
@@ -29112,7 +29330,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -29137,7 +29355,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -29240,7 +29458,7 @@
               [
                 "DefinitionId",
                 "FName / stable UTF-8 ID",
-                "Unique authored ID",
+                "discipline.warden",
                 "EditDefaultsOnly; BlueprintReadOnly",
                 "Content author"
               ],
@@ -29257,7 +29475,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -29282,7 +29500,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -35310,7 +35528,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Use the native asset editor or controlled fixture authoring path appropriate to the declared type. Confirm installed plugin support before creation; configure exact references through the owning phase rather than treating this planned record as an already-created engine asset.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -35378,9 +35596,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -35398,7 +35616,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -35462,7 +35680,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Use the native asset editor or controlled fixture authoring path appropriate to the declared type. Confirm installed plugin support before creation; configure exact references through the owning phase rather than treating this planned record as an already-created engine asset.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -35530,9 +35748,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -35550,7 +35768,7 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
@@ -35614,7 +35832,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Use the native asset editor or controlled fixture authoring path appropriate to the declared type. Confirm installed plugin support before creation; configure exact references through the owning phase rather than treating this planned record as an already-created engine asset.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -35658,7 +35876,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId); authenticated account context, no authoritative state in the widget",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -35682,9 +35900,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -35702,9 +35920,16 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
+          ]
+        },
+        {
+          "title": "Independent selection and durable confirmation",
+          "paragraphs": [
+            "Require independent FactionId, CombatDisciplineId and VocationId selections and explain permanent allegiance/class before confirmation. Do not filter available vocations by class or use a vocation choice as an implicit class. Submit through the existing authenticated command, retain PendingRequestId on unknown outcome, and show stable server validation errors.",
+            "Only a committed creation result permits character admission. Missing approved faction content or discipline integration is IdentityCatalogUnavailable, not permission to omit a selection. The UI owns neither identities nor XP and cannot unlock class editing later."
           ]
         }
       ],
@@ -36443,7 +36668,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [
@@ -36526,7 +36751,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Use the native asset editor or controlled fixture authoring path appropriate to the declared type. Confirm installed plugin support before creation; configure exact references through the owning phase rather than treating this planned record as an already-created engine asset.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -36570,7 +36795,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "Request ChangeVocation through the existing trainer/controller route; display committed active and inactive progression, never mutate Record_Character locally",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -36594,9 +36819,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -36614,9 +36839,19 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
+          ]
+        },
+        {
+          "title": "Active and retained vocation views",
+          "paragraphs": [
+            "Observe owner-only Progression.Vocations histories and the one active VocationId at Record_Character.Revision. Display saved level/XP, mastery and learned recipes for inactive vocations as retained but inactive. A never-trained selection previews Level 1; it does not overwrite another history. No editable combat-class control belongs here.",
+            "Request retraining only through the existing trainer/controller route, with current revisions and the original PendingRequestId until resolved. Display server rejection or PendingSave/RecoveryPending without optimistic progression/grant mutation. After success pull current state; a replayed old receipt must not replace a newer projection."
+          ],
+          "links": [
+            "[[design/vocational-identity.html|Trainer transaction]]"
           ]
         }
       ],
@@ -39361,7 +39596,7 @@
     {
       "path": "assets/Tests/Fixture_identity.html",
       "title": "Fixture_identity",
-      "summary": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
+      "summary": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
       "category": "Asset reference",
       "maturity": "Initial contract",
       "sections": [
@@ -39404,7 +39639,7 @@
         {
           "title": "Purpose and ownership",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
             "Owner: Content author; immutable during play. Lifetime: Loaded content; no player state.",
             "Replication: None for authored definitions/assets. Persistence: Save stable IDs only; not this object.",
             "Authored values describe rules; runtime projections and persistent instances remain separate. A view/definition cannot become an additional authoritative writer."
@@ -39414,7 +39649,7 @@
           "title": "How to create and configure",
           "paragraphs": [
             "Use the native asset editor or controlled fixture authoring path appropriate to the declared type. Confirm installed plugin support before creation; configure exact references through the owning phase rather than treating this planned record as an already-created engine asset.",
-            "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back."
+            "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation."
           ]
         },
         {
@@ -39448,7 +39683,7 @@
               [
                 "ExpectedResult",
                 "assertions",
-                "See solo/duo/load contract",
+                "See the keyed progression fixture and future-game acceptance matrix on this existing fixture page",
                 "Test author",
                 "Test harness"
               ]
@@ -39458,7 +39693,7 @@
         {
           "title": "Commands and notifications",
           "paragraphs": [
-            "No executable API on this authored record.",
+            "Execute the authored identity/progression cases against the future service/game; repository unittest checks are static contract checks only",
             "Custom project functions and backend endpoints are proposed. Engine creation actions, plugin APIs and these custom commands are not interchangeable. Emit a completed-change notification only after the owning rule/transaction succeeds."
           ]
         },
@@ -39467,7 +39702,7 @@
           "paragraphs": [
             "Creation prerequisites: No earlier custom asset prerequisite.",
             "Direct registered reverse users: None in this initial creation graph; runtime consumers are listed below.",
-            "Runtime consumers/assignments: systems/identity.html, phases/phase-05.html.",
+            "Runtime consumers/assignments: systems/identity.html, phases/phase-05.html, phases/phase-06.html, phases/phase-12.html, phases/phase-13.html.",
             "The graph tracks creation requirements; later observer assignments may reference an already-created owner without requiring cyclic construction. Follow the phase’s reopen-consumer instructions."
           ]
         },
@@ -39482,9 +39717,9 @@
         {
           "title": "Concrete wiring and fixture",
           "paragraphs": [
-            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-            "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
-            "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+            "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+            "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
+            "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
           ],
           "links": [
             "[[systems/identity.html|Full system sequence and failure policy]]",
@@ -39502,10 +39737,118 @@
         {
           "title": "Acceptance and remaining depth",
           "paragraphs": [
-            "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+            "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
             "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
             "Documentation status: initial contract. Full per-property validation, complete consumer assignments, provider/plugin compatibility, compiled Editor steps and runtime outcomes remain incomplete. Do not mark this asset implemented merely because the page is linked."
           ]
+        },
+        {
+          "title": "Machine-readable progression fixture",
+          "paragraphs": [
+            "The JSON below lives in this existing Fixture_identity contract and is checked by tools/tests/test_character_progression.py. It describes expectations, not an executable gameplay model. Resolve the approved faction fixture before runtime execution; fixture.* purchase IDs and the linear XP thresholds are isolated test content, not new shipped talents or balance.",
+            "Preconditions: future UE 5.8.3 Editor/package, actual dedicated zone/service, the normal character frontend and Thornmere/Elderwood route, Phase 12 combat definitions, Phase 13 trainers, and approved faction content. Use a named isolated test account; never overwrite a player record. Satisfy the existing introduction/three-contract/retraining policy before each change. Seed earned histories through controlled fixture import with reward replay disabled; compare full records, grants, revisions and outcome counts, not only UI levels."
+          ],
+          "code": "{\n  \"status\": \"not_run_in_unreal\",\n  \"scope\": \"Static documentation fixture; values/curves are test-only, not balance or a service implementation\",\n  \"required_creation_fields\": [\n    \"RequestId\",\n    \"Name\",\n    \"AppearanceIds\",\n    \"FactionId\",\n    \"CombatDisciplineId\",\n    \"VocationId\"\n  ],\n  \"permanent_fields\": [\n    \"FactionId\",\n    \"CombatDisciplineId\"\n  ],\n  \"active_vocation_field\": \"VocationId\",\n  \"combat_progression_path\": \"Progression.Combat\",\n  \"vocation_progression_path\": \"Progression.Vocations\",\n  \"vocation_value_fields\": [\n    \"TotalXP\",\n    \"DefinitionVersion\",\n    \"MasteryXP\",\n    \"UnspentMasteryPoints\",\n    \"PurchasedSkillIds\",\n    \"PurchasedTalentIds\",\n    \"LearnedRecipeIds\",\n    \"UnlockedTechniqueIds\",\n    \"AccomplishmentIds\"\n  ],\n  \"combat_discipline_ids\": [\n    \"discipline.vanguard\",\n    \"discipline.ranger\",\n    \"discipline.arcanist\",\n    \"discipline.warden\"\n  ],\n  \"vocation_ids\": [\n    \"vocation.forgekeeper\",\n    \"vocation.hearthkeeper\",\n    \"vocation.wayfinder\",\n    \"vocation.woodwright\",\n    \"vocation.apothecary\"\n  ],\n  \"faction_fixture\": \"Resolve the approved available faction; no invented faction ID may be stored\",\n  \"test_level_thresholds\": [\n    0,\n    100,\n    200,\n    300,\n    400,\n    500,\n    600,\n    700,\n    800,\n    900,\n    1000,\n    1100,\n    1200,\n    1300,\n    1400,\n    1500,\n    1600,\n    1700,\n    1800,\n    1900,\n    2000,\n    2100,\n    2200,\n    2300,\n    2400,\n    2500,\n    2600,\n    2700,\n    2800,\n    2900,\n    3000,\n    3100,\n    3200,\n    3300,\n    3400,\n    3500,\n    3600,\n    3700,\n    3800,\n    3900\n  ],\n  \"combat_snapshot\": {\n    \"CombatDisciplineId\": \"discipline.vanguard\",\n    \"TotalXP\": 3400,\n    \"DefinitionVersion\": 1,\n    \"PurchasedTalentIds\": [\n      \"fixture.combat.talent\"\n    ],\n    \"UnspentTalentPoints\": 2\n  },\n  \"saved_vocations\": {\n    \"vocation.forgekeeper\": {\n      \"TotalXP\": 1900,\n      \"DefinitionVersion\": 1,\n      \"MasteryXP\": 75,\n      \"UnspentMasteryPoints\": 3,\n      \"PurchasedSkillIds\": [\n        \"fixture.forge.skill\"\n      ],\n      \"PurchasedTalentIds\": [\n        \"fixture.forge.talent\"\n      ],\n      \"LearnedRecipeIds\": [\n        \"recipe.watch-fitting\"\n      ],\n      \"UnlockedTechniqueIds\": [\n        \"fixture.forge.technique\"\n      ],\n      \"AccomplishmentIds\": [\n        \"fixture.forge.accomplishment\"\n      ]\n    },\n    \"vocation.hearthkeeper\": {\n      \"TotalXP\": 1100,\n      \"DefinitionVersion\": 1,\n      \"MasteryXP\": 45,\n      \"UnspentMasteryPoints\": 2,\n      \"PurchasedSkillIds\": [\n        \"fixture.hearth.skill\"\n      ],\n      \"PurchasedTalentIds\": [\n        \"fixture.hearth.talent\"\n      ],\n      \"LearnedRecipeIds\": [\n        \"fixture.hearth.recipe\"\n      ],\n      \"UnlockedTechniqueIds\": [\n        \"fixture.hearth.technique\"\n      ],\n      \"AccomplishmentIds\": [\n        \"fixture.hearth.accomplishment\"\n      ]\n    }\n  },\n  \"sequence\": [\n    {\n      \"step\": \"initial\",\n      \"active\": \"vocation.forgekeeper\",\n      \"expected_level\": 20,\n      \"expected_xp\": 1900,\n      \"retained\": [\n        \"vocation.forgekeeper\"\n      ],\n      \"combat_unchanged\": true,\n      \"replayed_rewards\": 0\n    },\n    {\n      \"step\": \"first_training\",\n      \"active\": \"vocation.hearthkeeper\",\n      \"expected_level\": 1,\n      \"expected_xp\": 0,\n      \"retained\": [\n        \"vocation.forgekeeper\",\n        \"vocation.hearthkeeper\"\n      ],\n      \"combat_unchanged\": true,\n      \"replayed_rewards\": 0\n    },\n    {\n      \"step\": \"independent_training\",\n      \"active\": \"vocation.hearthkeeper\",\n      \"expected_level\": 12,\n      \"expected_xp\": 1100,\n      \"retained\": [\n        \"vocation.forgekeeper\",\n        \"vocation.hearthkeeper\"\n      ],\n      \"combat_unchanged\": true,\n      \"replayed_rewards\": 0\n    },\n    {\n      \"step\": \"return_forgekeeper\",\n      \"active\": \"vocation.forgekeeper\",\n      \"expected_level\": 20,\n      \"expected_xp\": 1900,\n      \"retained\": [\n        \"vocation.forgekeeper\",\n        \"vocation.hearthkeeper\"\n      ],\n      \"combat_unchanged\": true,\n      \"replayed_rewards\": 0\n    },\n    {\n      \"step\": \"return_hearthkeeper\",\n      \"active\": \"vocation.hearthkeeper\",\n      \"expected_level\": 12,\n      \"expected_xp\": 1100,\n      \"retained\": [\n        \"vocation.forgekeeper\",\n        \"vocation.hearthkeeper\"\n      ],\n      \"combat_unchanged\": true,\n      \"replayed_rewards\": 0\n    }\n  ],\n  \"independent_level_pairs\": [\n    [\n      40,\n      5\n    ],\n    [\n      10,\n      30\n    ]\n  ],\n  \"populations\": [\n    1,\n    2,\n    5,\n    10,\n    30\n  ]\n}"
+        },
+        {
+          "title": "Future-game progression acceptance matrix",
+          "paragraphs": [
+            "Every row is NOT RUN IN UNREAL. Automated repository checks validate source contracts and fixture expectations only. Record the real build/service/content versions, before/after aggregate values, request/receipt IDs, revisions, ability/modifier source counts and failure evidence when these procedures execute."
+          ],
+          "table": {
+            "headers": [
+              "Scenario ID",
+              "Procedure",
+              "Required observable result"
+            ],
+            "rows": [
+              [
+                "create_valid",
+                "For each approved faction, each of four available disciplines and each of five available vocations, create through the normal UI and inspect storage; gate nonintegrated choices instead of claiming they ran.",
+                "One immutable faction/class and one active vocation persist, with independent initial XP and one kit/name/receipt outcome. All 20 available class/vocation pairs are legal."
+              ],
+              [
+                "missing_class",
+                "Remove CombatDisciplineId from the request and submit.",
+                "CombatDisciplineRequired; no character, name reservation, item or receipt claiming success."
+              ],
+              [
+                "missing_vocation",
+                "Remove VocationId and submit.",
+                "VocationRequired; no durable mutation."
+              ],
+              [
+                "unavailable_selection",
+                "Use unsupported and unavailable class/vocation IDs separately; omit or forge faction, then remove its approved catalog.",
+                "CombatDisciplineUnavailable / VocationUnavailable / FactionRequired / FactionUnavailable / IdentityCatalogUnavailable; unchanged state."
+              ],
+              [
+                "permanent_identity",
+                "After creation, forge a class replacement through the client command and a generic service patch; repeat for faction. Exercise same-class talent respec separately.",
+                "PermanentIdentityLocked for identity changes, with no XP/talent loss; only existing within-class respec is allowed."
+              ],
+              [
+                "first_training",
+                "Seed Vanguard 35 / Forgekeeper 20; satisfy current trainer eligibility and switch to never-trained Hearthkeeper.",
+                "Vanguard remains 35 with identical XP/talents/class grants; Hearthkeeper starts at defined XP and Level 1, Forgekeeper’s complete record remains."
+              ],
+              [
+                "restore_history",
+                "Train Hearthkeeper to 12; after satisfying existing eligibility return to Forgekeeper, then Hearthkeeper.",
+                "Restore Forgekeeper 20 and Hearthkeeper 12 with exact saved XP, mastery, points, skills, talents, recipes, techniques and accomplishments."
+              ],
+              [
+                "repeat_switch",
+                "Repeat eligible switches and same-active requests; count unique item/mastery/unlock outcomes and source-specific grants.",
+                "No history loss, duplicated rewards or modifiers; AlreadyActive changes nothing. Existing fee, if authored, is charged once per genuinely committed change only."
+              ],
+              [
+                "combat_unchanged",
+                "Snapshot Progression.Combat, CombatDisciplineId, faction, combat grant sources, inventory item IDs, quests and region contributions around each switch.",
+                "All remain identical except a specifically authored retraining currency debit; vocation mastery points never spend as combat points."
+              ],
+              [
+                "inactive_permission",
+                "After switching, send a stale exclusive ability activation and old specialist recipe command; also try basic fishing/general gathering.",
+                "InactiveVocationPermission rejects specialist use at authoritative acceptance/commit; learned data stays stored, general activities and class abilities remain available."
+              ],
+              [
+                "lifecycle",
+                "Logout, reconnect, respawn and transfer only one character between Thornmere/Elderwood; restart the owning process and inspect full snapshots.",
+                "All trained histories and permanent identities survive; one active vocation/lease, no repeated grants; remaining clients stay in their zones."
+              ],
+              [
+                "receipt_replay",
+                "Drop the accepted change response; retry it unchanged on reconnect with a fresh lease. Switch again, then replay the earlier accepted request and try a changed target under that RequestId.",
+                "Original authorized receipt returned without mutation or fees; older receipt cannot overwrite newer active state. Changed payload returns RequestIdentityConflict."
+              ],
+              [
+                "concurrent_changes",
+                "Submit two eligible target changes with the same ExpectedRevisions; repeat from a fenced old zone.",
+                "One coherent commit plus one StaleRevision; stale epoch cannot write. Never two active vocations, two fees or a lost history."
+              ],
+              [
+                "pending_and_faults",
+                "Try an invalid trainer/range and switch with unresolved craft/trade/transfer/XP work. Inject failure before commit, after commit/before reply and before outbox delivery.",
+                "Reject before mutation or resolve PendingSave/RecoveryPending by receipt. An atomic original or new state survives; replayed publication rebuilds no rewards."
+              ],
+              [
+                "independent_awards",
+                "Use Combat 40 / Forgekeeper 5 and Combat 10 / Hearthkeeper 30. Award combat XP alone, vocation XP alone, then an explicitly dual-XP quest and replay its completion.",
+                "Each ledger changes only by its own authored amount; dual award commits once with the unique quest outcome; delayed XP is never redirected to another vocation."
+              ],
+              [
+                "migration",
+                "Round-trip supported single-vocation and multi-vocation legacy snapshots, then rerun migration. Include missing class, missing active history, unknown IDs/versions, duplicate keys and negative XP.",
+                "Preserve all recoverable progress and outcomes with no grants replay. Unresolved identities require audited one-time completion; corrupt/ambiguous records are retained and quarantined, never reset or default-assigned."
+              ],
+              [
+                "solo_and_clients",
+                "Run the same path with one human first, then 2 clients and the existing 5/10/30 cases when available; use NPC/base-activity alternatives.",
+                "Identity/progression rules do not change with population; essential vocation progress and retraining never require another human."
+              ]
+            ]
+          }
         }
       ],
       "asset": "Fixture_identity"
@@ -39939,7 +40282,7 @@
           "title": "Concrete wiring and fixture",
           "paragraphs": [
             "dummy.thornmere.01 has 100 health. GA_BasicMelee costs 10 stamina and deals 20 damage in the deterministic fixture; these are test values, not final balance.",
-            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+            "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
             "Rebuild talents/equipment-derived grants after respawn or transfer; remove old handles before reapplying the new avatar binding."
           ],
           "links": [

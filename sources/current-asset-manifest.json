@@ -3072,7 +3072,7 @@
         "WBP_CharacterCreate",
         "DA_GameCatalog"
       ],
-      "description": "One chosen primary vocation, independent from combat discipline.",
+      "description": "One active primary vocation, independent from permanent combat class; immutable rules rebuild permissions from that vocation’s retained progression.",
       "doc_path": "assets/Vocations/UVocationDefinition.html",
       "domain": "Vocations",
       "work_kind": "Custom C++ future work",
@@ -3112,6 +3112,27 @@
           "MasteryGraph",
           "TArray<FName>",
           "Authored prerequisites",
+          "EditDefaultsOnly",
+          "Author"
+        ],
+        [
+          "ContentVersion",
+          "positive int32",
+          "Pinned by each stored vocation DefinitionVersion",
+          "EditDefaultsOnly",
+          "Author"
+        ],
+        [
+          "InitialXP",
+          "nonnegative int64",
+          "0 unless explicitly authored; must derive Level 1",
+          "EditDefaultsOnly",
+          "Author"
+        ],
+        [
+          "LevelThresholds",
+          "ordered nonnegative int64 thresholds",
+          "Strictly increasing; first threshold 0; complete authored curve required, no combat-level input",
           "EditDefaultsOnly",
           "Author"
         ]
@@ -3605,7 +3626,7 @@
         "UDurableStateClient",
         "identity durable command"
       ],
-      "description": "CharacterId, AccountId, VocationId, AppearanceIds, combat/vocation XP, safe ZoneId/SpawnId, Revision",
+      "description": "Canonical character identities, independent combat progression and retained per-vocation histories; active VocationId is not a second progression record.",
       "doc_path": "assets/Persistence/Record_Character.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -3621,9 +3642,23 @@
           "Persistence boundary"
         ],
         [
+          "FactionId",
+          "stable content ID",
+          "Required, permanent; approved faction definition, never inferred from reputation",
+          "Server-only contract; client receives filtered view",
+          "Persistence boundary"
+        ],
+        [
+          "CombatDisciplineId",
+          "stable content ID",
+          "Required, permanent; resolves UCombatDisciplineDefinition.DefinitionId",
+          "Server-only contract; client receives filtered view",
+          "Persistence boundary"
+        ],
+        [
           "VocationId",
           "stable content ID",
-          "Exactly one permitted primary vocation",
+          "Exactly one active key in Progression.Vocations; change only through validated retraining",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
         ],
@@ -3636,8 +3671,29 @@
         ],
         [
           "Progression",
-          "separate integer XP ledgers",
-          "Combat, vocation and reputation distinct",
+          "existing versioned value object",
+          "Keep existing reputation/unrelated fields; refine combat and vocation ledgers below",
+          "Server-only contract; client receives filtered view",
+          "Persistence boundary"
+        ],
+        [
+          "Progression.Combat",
+          "TotalXP, DefinitionVersion, PurchasedTalentIds, UnspentTalentPoints",
+          "New: validated initial XP, pinned definition version, empty purchases, zero points unless explicitly authored; level is derived",
+          "Server-only contract; client receives filtered view",
+          "Persistence boundary"
+        ],
+        [
+          "Progression.Vocations",
+          "map<stable VocationId, vocation progression value>",
+          "Only trained vocations have entries; one active key, every inactive entry retained; no array-index/display-name identity",
+          "Server-only contract; client receives filtered view",
+          "Persistence boundary"
+        ],
+        [
+          "Progression.Vocations[VocationId]",
+          "TotalXP, DefinitionVersion, MasteryXP, UnspentMasteryPoints, PurchasedSkillIds, PurchasedTalentIds, LearnedRecipeIds, UnlockedTechniqueIds, AccomplishmentIds",
+          "First training: validated InitialXP (normally 0) yielding Level 1, MasteryXP/points 0 and empty earned sets except authored initial recipes/unlocks; returning restores saved values",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
         ],
@@ -3651,7 +3707,7 @@
         [
           "Revision / SchemaVersion",
           "integer / positive integer",
-          "Explicit concurrency and migration version",
+          "Revision is the existing aggregate AND progression/build revision; proposed schema-2 contract, not evidence of a deployed migration",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
         ]
@@ -6477,9 +6533,10 @@
       ],
       "consumers": [
         "DA_GameCatalog",
-        "WBP_Talents"
+        "WBP_Talents",
+        "WBP_CharacterCreate"
       ],
-      "description": "Combat ability/talent progression independent of vocation.",
+      "description": "The existing combat-class definition; its DefinitionId is stored once as permanent CombatDisciplineId, independent of vocation.",
       "doc_path": "assets/Combat/UCombatDisciplineDefinition.html",
       "domain": "Combat",
       "work_kind": "Custom C++ future work",
@@ -6500,6 +6557,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "LevelThresholds",
+          "ordered nonnegative int64 thresholds",
+          "Strictly increasing; first threshold 0; derive combat level from independent TotalXP",
+          "EditDefaultsOnly",
+          "Author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6595,7 +6659,7 @@
         [
           "DefinitionId",
           "FName / stable UTF-8 ID",
-          "Unique authored ID",
+          "discipline.vanguard",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ],
@@ -6647,7 +6711,7 @@
         [
           "DefinitionId",
           "FName / stable UTF-8 ID",
-          "Unique authored ID",
+          "discipline.ranger",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ],
@@ -6699,7 +6763,7 @@
         [
           "DefinitionId",
           "FName / stable UTF-8 ID",
-          "Unique authored ID",
+          "discipline.arcanist",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ],
@@ -6751,7 +6815,7 @@
         [
           "DefinitionId",
           "FName / stable UTF-8 ID",
-          "Unique authored ID",
+          "discipline.warden",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ],
@@ -9090,7 +9154,7 @@
           "Local controller; not a reward ID"
         ]
       ],
-      "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
+      "command": "CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId); authenticated account context, no authoritative state in the widget",
       "documentation_status": "initial_contract",
       "verification": {
         "engine_compile": "not_run",
@@ -9426,7 +9490,7 @@
           "Local controller; not a reward ID"
         ]
       ],
-      "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
+      "command": "Request ChangeVocation through the existing trainer/controller route; display committed active and inactive progression, never mutate Record_Character locally",
       "documentation_status": "initial_contract",
       "verification": {
         "engine_compile": "not_run",
@@ -10459,9 +10523,12 @@
       "reverse_users": [],
       "consumers": [
         "systems/identity.html",
-        "phases/phase-05.html"
+        "phases/phase-05.html",
+        "phases/phase-06.html",
+        "phases/phase-12.html",
+        "phases/phase-13.html"
       ],
-      "description": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
+      "description": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
       "doc_path": "assets/Tests/Fixture_identity.html",
       "domain": "Tests",
       "work_kind": "Test contract",
@@ -10486,12 +10553,12 @@
         [
           "ExpectedResult",
           "assertions",
-          "See solo/duo/load contract",
+          "See the keyed progression fixture and future-game acceptance matrix on this existing fixture page",
           "Test author",
           "Test harness"
         ]
       ],
-      "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
+      "command": "Execute the authored identity/progression cases against the future service/game; repository unittest checks are static contract checks only",
       "documentation_status": "initial_contract",
       "verification": {
         "engine_compile": "not_run",

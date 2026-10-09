@@ -6,28 +6,28 @@
       "title": "Accounts, character creation and vocation selection",
       "phase": 5,
       "source": "7.1",
-      "intro": "Create one validated character with exactly one primary vocation. Appearance and vocation are separate choices; combat discipline is a third, independent progression choice. Character creation is an atomic durable operation, not the act of spawning a Pawn.",
-      "definition": "UAppearanceCatalog and UVocationDefinition list permitted IDs. AccountPolicy fixes character-slot and name rules; none of these definitions contains a player password or current inventory.",
+      "intro": "Every new character selects one permanent FactionId, one permanent CombatDisciplineId (combat class), and one changeable primary VocationId. These identities are independent; every available combat discipline supports every available vocation. Character creation is an atomic durable operation, not the act of spawning a Pawn.",
+      "definition": "UAppearanceCatalog, UCombatDisciplineDefinition and UVocationDefinition resolve permitted stable IDs through DA_GameCatalog. FactionId must resolve through the approved faction specification, independently of class/vocation and reputation. AccountPolicy retains character-slot and name rules; definitions hold no player inventory or credentials.",
       "runtime": "ABriarwakeGameMode admits a verified character-session lease. ABriarwakePlayerController routes owned commands. A newly spawned ABriarwakeCharacter is only the current body.",
-      "storage": "The persistence boundary writes Record_Account and Record_Character together with Record_CommandReceipt. It reserves the normalized display-name key and grants the starting kit once.",
-      "projection": "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Public name, vocation and permitted appearance replicate; account identity, inventory and authentication tokens do not become public PlayerState fields.",
+      "storage": "The persistence boundary writes Record_Account, Record_Character and Record_CommandReceipt atomically with the normalized name reservation and unique starter kit. Record_Character owns permanent FactionId/CombatDisciplineId, active VocationId and independent Progression.Combat / Progression.Vocations histories; its Revision versions the complete progression/build projection.",
+      "projection": "WBP_Login → WBP_CharacterSelect → WBP_CharacterCreate → WBP_HUD. Publish only the permitted public identity/appearance subset. UCharacterStateComponent exposes owner-only committed progression, including inactive vocation histories; raw records, account identity and authentication tokens are never public PlayerState fields.",
       "editor": [
-        "Create the three widgets under Content/Game/UI/Frontend. Put the appearance preview, vocation comparison and validation errors in separate panels. Set an explicit controller focus order: name, appearance, vocation, confirm, back.",
-        "In DA_GameCatalog assign all available vocation definitions and the allowed appearance catalog. Before Phase 20/21, mark Woodwright and Apothecary unavailable rather than presenting nonfunctional choices.",
-        "Configure the server default map separately from the client frontend. Phase 05 may use an explicitly disposable test account fixture; activate durable creation and duplicate-login prevention at Phase 06."
+        "Create the three widgets under Content/Game/UI/Frontend. Keep appearance, faction, combat discipline and vocation selections separate. Focus order: name, appearance, faction, combat discipline, vocation, confirm, back. Explain the permanent faction/class choices before confirmation; UI validation does not replace server validation.",
+        "Assign available discipline/vocation definitions and the allowed appearance catalog in DA_GameCatalog; connect the approved faction selection catalog without class/vocation filters. Keep Woodwright and Apothecary unavailable before their existing Phase 20/21 activation. Required choices cannot be omitted because a definition is unavailable.",
+        "Configure the server map separately from the client frontend. Phase 05 uses disposable identity fixtures; Phase 06 exercises durable transactions with isolated fixtures. Real character creation stays blocked until the approved faction catalog and Phase 12 discipline definitions are integrated. Do not silently choose a class or retain disposable fixtures as player characters."
       ],
       "flow": [
-        "Submit CreateCharacter(RequestId, Name, AppearanceIds, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form.",
+        "Submit CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) from the authenticated account context. The service derives AccountId; it is not trusted from the form. Include every semantic selection in the existing request digest.",
         "Normalize the name with a pinned Unicode policy, validate length and forbidden characters, then acquire account-slot and name constraints in one transaction.",
-        "Create CharacterId, chosen vocation, zeroed independent XP ledgers, starting-zone position and starter-kit receipt. Reusing the request returns the same CharacterId.",
+        "After independent catalog/availability checks, atomically create CharacterId, permanent FactionId/CombatDisciplineId, active VocationId, initial Progression.Combat and exactly one keyed Progression.Vocations entry. Initialize validated Level-1 XP, name reservation, safe starting position and the unique starter-kit outcome/receipt together. A matching request returns the original CharacterId, not another kit.",
         "Reserve a session lease before admitting the body. Bind the local view to the admitted CharacterId and pull its snapshot.",
-        "Reconnect from another client after logging out. Display the same vocation and appearance without granting another kit."
+        "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
       ],
-      "fixture": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth starts at zone.thornmere / spawn.square with VocationId vocation.hearthkeeper. Names and slot counts here are tuning fixtures.",
-      "solo": "Create the Hearthkeeper, enter Thornmere, log out, restart the zone and reconnect. One durable character, one starter kit and one active lease must exist.",
+      "fixture": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+      "solo": "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
       "duo": "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
       "load": "At 30 simulated admissions measure name-constraint conflicts, admission latency and lease cleanup. These are future connected-client tests, not results from this package.",
-      "failures": "No vocation → VocationRequired. Unsupported cosmetic ID → AppearanceUnavailable. Full slots → CharacterLimit. Duplicate normalized name → NameUnavailable. A provider failure must not leave a half-created character.",
+      "failures": "Missing combat discipline → CombatDisciplineRequired; unsupported/unavailable discipline → CombatDisciplineUnavailable. Missing vocation → VocationRequired; unsupported/unavailable vocation → VocationUnavailable. Missing/invalid faction → FactionRequired/FactionUnavailable; absent approved catalog → IdentityCatalogUnavailable. Unsupported cosmetic → AppearanceUnavailable; full slots → CharacterLimit; duplicate normalized name → NameUnavailable. Reject before any name/item/identity mutation.",
       "art": "No archive was available. The character preview must use explicitly audited combinations before it can be accepted; do not infer skins from vocation names.",
       "scope": "Authentication-provider selection, password recovery implementation and jurisdiction-specific retention policy remain unresolved. Do not build an ad hoc password store in Unreal.",
       "refs": [
@@ -112,7 +112,7 @@
       "intro": "Combat combines server-resolved melee and projectiles with optional soft targeting for abilities and healing. Vanguard, Ranger, Arcanist and Warden are independent of the five vocations. Every discipline must have a viable solo path.",
       "definition": "UCombatDisciplineDefinition, UTalentDefinition and authored GameplayAbility/GameplayEffect classes define available actions, costs, cooldowns and branch prerequisites. Tuning is authored data, not widget logic.",
       "runtime": "The PlayerState-associated AbilitySystemComponent and UCombatAttributeSet own runtime ability/attribute behavior. ABriarwakeCharacter is the current avatar. Server traces and target validation decide hits; PaperZD observes action state.",
-      "storage": "Record_Character persists purchased talent IDs, independent combat XP and build revision. Reconstruct derived attributes and granted abilities from validated content on login; do not persist raw component pointers.",
+      "storage": "Record_Character.CombatDisciplineId is permanent after creation. Progression.Combat stores independent TotalXP, DefinitionVersion, PurchasedTalentIds and UnspentTalentPoints. Record_Character.Revision is also the progression/build revision; derive level and rebuild abilities from validated definitions without replaying rewards. Vocation changes preserve this entire combat record and its grants; talent respec remains within the chosen discipline.",
       "projection": "WBP_HUD displays health/stamina/mana, cooldowns and action errors; WBP_Talents requests purchases. Keyboard and controller can select the same valid targets.",
       "editor": [
         "Enable GameplayAbilities and verify GameplayTags/GameplayTasks module dependencies in the future game. Add the AbilitySystemComponent on the selected replicated owner and document its owner/avatar initialization on possession and respawn.",
@@ -120,7 +120,7 @@
         "Place BP_TrainingDummy on the connected Elderwood route. Start with one trace shape and one projectile; disable visual damage notifies to prove rules remain server-driven."
       ],
       "flow": [
-        "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown and target.",
+        "Ability input requests activation through the owning controller/ability component. Server checks lease, state, resource cost, cooldown, target and current committed grant permission. A stale or inactive vocation-exclusive grant is not permission to execute; permanent combat-class grants remain independent.",
         "Commit permitted runtime cost once and open the authored hit window. The server chooses collision results and line-of-sight eligibility.",
         "Apply damage/healing through the selected GAS effects. Track legitimate support and damage participation for rewards.",
         "On a durable reward, request the persistence transaction using encounter/reward identity; do not award XP in the damage widget.",
@@ -357,7 +357,7 @@
         "Interact with an NPC; validate lease, distance and service availability at the current regional revision.",
         "Present a state-derived dialogue projection. On selection, validate the actual option against current conditions again.",
         "Advance eligible objectives from accepted gameplay receipts and preserve the personal/global distinction.",
-        "Commit quest reward and completion flag together; a repeated delivery cannot create a second reward.",
+        "Commit quest reward and completion flag together; a repeated delivery cannot create a second reward. Authored CombatXP and VocationXP awards are separate nonnegative integers; a vocation award names its validated VocationId. Validate both awards and commit their ledgers with the same unique quest outcome/receipt, never credit whichever vocation happens to be active when a delayed callback arrives.",
         "Refresh dialogue, journal and relevant region board. Party sharing checks each recipient’s eligibility and never copies completed rewards."
       ],
       "fixture": "mentor.vesa offers the First Supplies chain. One recipe output or an NPC-commission voucher satisfies its production objective, so no required story step demands another player vocation.",
