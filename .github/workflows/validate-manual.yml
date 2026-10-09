@@ -1,0 +1,72 @@
+name: Validate offline manual
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [docs/faction-allegiance-foundation]
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Preserve exact input for reproducibility
+        run: |
+          git bundle create "$RUNNER_TEMP/manual-source.bundle" HEAD refs/remotes/origin/main
+      - name: Run documentation checks and record every exit code
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import pathlib
+          import subprocess
+          import sys
+          directory = pathlib.Path(os.environ['RUNNER_TEMP']) / 'manual-checks'
+          directory.mkdir()
+          commands = [
+              ['python3', 'tools/build_manual_indexes.py'],
+              ['python3', 'tools/build_manual_indexes.py', '--check'],
+              ['python3', 'tools/validate_documentation.py'],
+              ['python3', 'tools/check_phase_integration.py'],
+              ['python3', 'tools/check_feature_coverage.py'],
+              ['python3', 'tools/simulate_population_scaling.py'],
+              ['python3', '-m', 'unittest', 'discover', '-s', 'tools/tests', '-v'],
+              ['git', 'diff', '--exit-code', '--', '*.html', 'site/search-data.js'],
+          ]
+          if pathlib.Path('tools/validate_factions.py').exists():
+              commands.append(['python3', 'tools/validate_factions.py'])
+          results = []
+          for index, command in enumerate(commands):
+              result = subprocess.run(command, capture_output=True, text=True)
+              output = result.stdout + result.stderr
+              (directory / f'{index:02d}.log').write_text(output, encoding='utf-8')
+              print('$ ' + ' '.join(command), '\n' + output, f'EXIT={result.returncode}', flush=True)
+              results.append({'command': command, 'exit_code': result.returncode})
+          (directory / 'results.json').write_text(json.dumps(results, indent=2) + '\n', encoding='utf-8')
+          sys.exit(int(any(result['exit_code'] for result in results)))
+          PY
+      - name: Upload private repository validation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: manual-evidence-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/manual-source.bundle
+            ${{ runner.temp }}/manual-checks
+          retention-days: 7
+          if-no-files-found: error
+  strict-completion-audit:
+    name: Full-guide completion audit (currently incomplete)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - run: python3 tools/check_feature_coverage.py --require-complete
