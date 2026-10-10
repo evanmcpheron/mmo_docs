@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Four data-driven political allegiances, one authored MVP campaign, and explicit PvE-first rivalry."><title>Political factions and independent organizations · Briarwake</title><link rel="stylesheet" href="../site/style.css"><script defer src="../site/search-data.js"></script><script defer src="../site/app.js"></script></head>
+<body data-root="../"><a class="skip" href="#main">Skip to content</a><header class="mobile-bar"><a href="../index.html">Briarwake</a><button id="menu-toggle" type="button" aria-expanded="false" aria-controls="sidebar">Navigation</button></header>
+<aside id="sidebar" class="sidebar"><a class="brand" href="../index.html"><small>DEVELOPMENT GUIDE</small><strong>Briarwake</strong></a><p class="sidebar-description">Entirely 2D · Persistent world<br>Solo-capable · 1–30 test target</p><nav aria-label="Main navigation"><a href="../index.html">Guide home</a><a href="../getting-started.html">Start here</a><a href="../development-roadmap.html">Phases 00–31</a><a href="../first-vertical-slice.html">Vertical slices</a><a href="../systems/index.html">System contracts</a><a href="../professions/index.html">Five vocations</a><a href="../world/authored-biomes.html">World and regions</a><a href="../walkthroughs/index.html">Worked examples</a><a href="../architecture.html">Architecture</a><a href="../asset-index.html">Asset register</a><a href="../dependency-map.html">Dependencies</a><a href="../engineering/index.html">Engineering standard</a><a href="../search.html">Search</a><a href="../checklist.html">My phase progress</a><a href="../feature-coverage.html">Coverage and gaps</a><a href="../sources-verification.html">Sources and tests</a><a href="../glossary.html">Glossary</a><a href="../site-map.html">All pages</a></nav><div class="sidebar-footer"><button id="theme-toggle" type="button">Change theme</button><p>Offline edition · 09 October 2026<br>Partial documentation. No game build.</p></div></aside>
+<div class="layout"><div class="breadcrumbs"><a href="../index.html">Guide</a><span aria-hidden="true"> / </span>Faction implementation</div><main id="main"><header class="page-header"><p class="eyebrow">Faction implementation</p><h1>Political factions and independent organizations</h1><p class="lead">Four data-driven political allegiances, one authored MVP campaign, and explicit PvE-first rivalry.</p><p class="status-tag">Authored documentation; runtime integration not run</p></header>
+<details class="toc"><summary>On this page</summary><ol><li><a href="#section-01-evidence-boundary">Evidence boundary</a></li><li><a href="#section-02-taxonomy-and-source-of-truth">Taxonomy and source of truth</a></li><li><a href="#section-03-hearthward-league">Hearthward League</a></li><li><a href="#section-04-briarbound-clans">Briarbound Clans</a></li><li><a href="#section-05-ironfang-warbands">Ironfang Warbands</a></li><li><a href="#section-06-tidebound-compact">Tidebound Compact</a></li><li><a href="#section-07-baseline-symmetric-political-relationships">Baseline symmetric political relationships</a></li><li><a href="#section-08-roadward-accord">Roadward Accord</a></li><li><a href="#section-09-hearth-assembly">Hearth Assembly</a></li><li><a href="#section-10-veil-survey">Veil Survey</a></li><li><a href="#section-11-non-playable-antagonist">Non-playable antagonist</a></li><li><a href="#section-12-policy-and-tunings">Policy and tunings</a></li></ol></details><section aria-labelledby="section-01-evidence-boundary"><h2 id="section-01-evidence-boundary">Evidence boundary</h2><p>This is the authoritative generated documentation view of the versioned faction sources. Unreal/native/backend integration and real maps remain separately required.</p><ul class="link-grid"><li><a href="factions-and-allegiance.html">Taxonomy and rivalry</a></li><li><a href="../architecture/faction-contracts.html">Implementation contracts</a></li><li><a href="../walkthroughs/hearthward-campaign.html">Hearthward campaign</a></li><li><a href="../testing/faction-acceptance.html">Verification and QA</a></li><li><a href="../architecture/faction-compatibility.html">Contradiction register</a></li><li><a href="../faction-traceability.html">Requirement traceability</a></li></ul></section><section aria-labelledby="section-02-taxonomy-and-source-of-truth"><h2 id="section-02-taxonomy-and-source-of-truth">Taxonomy and source of truth</h2><p>Authored documentation contracts. Selection flags describe the requested launch configuration, not a running server. Deployment remains blocked until cooked-content and solo-game checks pass.</p><p>Political allegiance is mandatory and permanent. Civic reputation, personal faction standing, regional pressure and hostile NPC affiliation are separate facts with separate owners.</p></section><section aria-labelledby="section-03-hearthward-league"><h2 id="section-03-hearthward-league">Hearthward League</h2><p>A human-led federation of frontier towns: defended homes, restored roads and open trade. Its survey charters can dispossess earlier occupants and treat sacred places as unused land.</p><p>Stable ID: <code>faction.hearthward-league</code>. Join the Thornmere road effort, investigate a missing caravan, negotiate a sacred crossing, contribute to North Road, choose a personal settlement policy and uncover Covenant interference at the Split Bell.</p><p>Authored MVP selection: true; existing continuation: retain_identity_and_recover. Real deployment still requires cooked-content and solo acceptance.</p><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>Starting region / map / spawn</td><td><code>{
+  &quot;fallback_spawn_id&quot;: &quot;spawn.thornmere.neutral-infirmary&quot;,
+  &quot;map_id&quot;: &quot;L_ThornmereVillage&quot;,
+  &quot;region_id&quot;: &quot;thornmere&quot;,
+  &quot;spawn_authentication&quot;: &quot;Resolve only from pinned catalog and durable FactionId; never from client map coordinates.&quot;,
+  &quot;spawn_id&quot;: &quot;spawn.thornmere.hearthward-arrival&quot;,
+  &quot;zone_id&quot;: &quot;zone.thornmere&quot;
+}</code></td></tr><tr><td>Story entry / cast</td><td><code>{
+  &quot;authored&quot;: true,
+  &quot;cast_ids&quot;: [
+    &quot;npc.hearthward.maren-vale&quot;,
+    &quot;mentor.vesa&quot;,
+    &quot;npc.briarbound.talan-reed&quot;,
+    &quot;npc.neutral.eren-dusk&quot;
+  ],
+  &quot;concept&quot;: &quot;Join the Thornmere road effort, investigate a missing caravan, negotiate a sacred crossing, contribute to North Road, choose a personal settlement policy and uncover Covenant interference at the Split Bell.&quot;,
+  &quot;cutscene_key&quot;: &quot;Scene.hearthward.Arrival&quot;,
+  &quot;dialogue_key&quot;: &quot;Dialogue.hearthward.Arrival&quot;,
+  &quot;initial_flags&quot;: [
+    &quot;flag.hearthward.arrival&quot;
+  ],
+  &quot;journal_key&quot;: &quot;Journal.hearthward.Arrival&quot;,
+  &quot;mentor_id&quot;: &quot;npc.hearthward.maren-vale&quot;,
+  &quot;root_quest_id&quot;: &quot;quest.hearthward.oath-road&quot;
+}</code></td></tr><tr><td>Initial separate standings</td><td><code>{
+  &quot;factions&quot;: {
+    &quot;faction.briarbound-clans&quot;: 0,
+    &quot;faction.hearthward-league&quot;: 100,
+    &quot;faction.ironfang-warbands&quot;: 0,
+    &quot;faction.tidebound-compact&quot;: 0
+  },
+  &quot;organizations&quot;: {
+    &quot;organization.hearth-assembly&quot;: 0,
+    &quot;organization.roadward-accord&quot;: 0,
+    &quot;organization.veil-survey&quot;: 0
+  }
+}</code></td></tr><tr><td>Services and rewards</td><td><code>{
+  &quot;guard_policy_id&quot;: &quot;policy.factions.pve-first&quot;,
+  &quot;guest_passage&quot;: &quot;Neutral hub and designated shared-threat routes; not faction headquarters.&quot;,
+  &quot;merchant_policy_id&quot;: &quot;policy.hearthward.commissions&quot;,
+  &quot;reward_table_id&quot;: &quot;rewards.hearthward.intro&quot;,
+  &quot;trainer_policy_id&quot;: &quot;policy.neutral.essential-trainers&quot;
+}</code></td></tr><tr><td>Starter / presentation</td><td><code>{
+  &quot;appearance_catalog_asset&quot;: &quot;DA_AppearanceCatalog&quot;,
+  &quot;class_loadout_rule&quot;: &quot;StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.&quot;,
+  &quot;copper&quot;: 40,
+  &quot;facing_count&quot;: 4,
+  &quot;grant_source_id&quot;: &quot;grant.character-create.hearthward.v1&quot;,
+  &quot;item_id&quot;: &quot;item.starter-sword&quot;,
+  &quot;outfit_id&quot;: &quot;appearance.starter.common-four-facing&quot;,
+  &quot;presentation_key&quot;: &quot;Appearance.hearthward.Starter&quot;,
+  &quot;quantity&quot;: 1,
+  &quot;unique_art_required&quot;: false
+}</code></td></tr><tr><td>Content readiness</td><td><code>{
+  &quot;authored_specification&quot;: true,
+  &quot;blocking_content&quot;: [],
+  &quot;cooked_content_verified&quot;: false,
+  &quot;runtime_status&quot;: &quot;not_run&quot;,
+  &quot;solo_acceptance_verified&quot;: false
+}</code></td></tr></tbody></table></div></section><section aria-labelledby="section-04-briarbound-clans"><h2 id="section-04-briarbound-clans">Briarbound Clans</h2><p>Woodland guardians and ancestral communities: stewardship, negotiated access and protection of sacred places. Blanket exclusion can leave neighboring families without winter supplies.</p><p>Stable ID: <code>faction.briarbound-clans</code>. An apprentice steward at Mosswake Sanctuary finds a waystone survey cut across protected roots. Mentor Ashren asks who may consent to passage. Preserve the grove or negotiate supervised access; converge on the Bellroot warnings. Concept only: production quests, dialogue, map placements and mentor art are not authored.</p><p>Authored MVP selection: false; existing continuation: retain_identity_and_recover. Real deployment still requires cooked-content and solo acceptance.</p><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>Starting region / map / spawn</td><td><code>{
+  &quot;fallback_spawn_id&quot;: &quot;spawn.thornmere.neutral-infirmary&quot;,
+  &quot;map_id&quot;: &quot;L_ElderwoodRoad&quot;,
+  &quot;region_id&quot;: &quot;elderwood&quot;,
+  &quot;spawn_authentication&quot;: &quot;Resolve only from pinned catalog and durable FactionId; never from client map coordinates.&quot;,
+  &quot;spawn_id&quot;: &quot;spawn.elderwood.briarbound-sanctuary&quot;,
+  &quot;zone_id&quot;: &quot;zone.elderwood&quot;
+}</code></td></tr><tr><td>Story entry / cast</td><td><code>{
+  &quot;authored&quot;: false,
+  &quot;cast_ids&quot;: [
+    &quot;npc.briarbound.ashren-moss&quot;
+  ],
+  &quot;concept&quot;: &quot;An apprentice steward at Mosswake Sanctuary finds a waystone survey cut across protected roots. Mentor Ashren asks who may consent to passage. Preserve the grove or negotiate supervised access; converge on the Bellroot warnings. Concept only: production quests, dialogue, map placements and mentor art are not authored.&quot;,
+  &quot;cutscene_key&quot;: &quot;Scene.briarbound.Arrival&quot;,
+  &quot;dialogue_key&quot;: &quot;Dialogue.briarbound.Arrival&quot;,
+  &quot;initial_flags&quot;: [
+    &quot;flag.briarbound.arrival&quot;
+  ],
+  &quot;journal_key&quot;: &quot;Journal.briarbound.Arrival&quot;,
+  &quot;mentor_id&quot;: &quot;npc.briarbound.ashren-moss&quot;,
+  &quot;root_quest_id&quot;: &quot;quest.briarbound.roots-of-passage&quot;
+}</code></td></tr><tr><td>Initial separate standings</td><td><code>{
+  &quot;factions&quot;: {
+    &quot;faction.briarbound-clans&quot;: 100,
+    &quot;faction.hearthward-league&quot;: 0,
+    &quot;faction.ironfang-warbands&quot;: 0,
+    &quot;faction.tidebound-compact&quot;: 0
+  },
+  &quot;organizations&quot;: {
+    &quot;organization.hearth-assembly&quot;: 0,
+    &quot;organization.roadward-accord&quot;: 0,
+    &quot;organization.veil-survey&quot;: 0
+  }
+}</code></td></tr><tr><td>Services and rewards</td><td><code>{
+  &quot;guard_policy_id&quot;: &quot;policy.factions.pve-first&quot;,
+  &quot;guest_passage&quot;: &quot;Neutral hub and designated shared-threat routes; not faction headquarters.&quot;,
+  &quot;merchant_policy_id&quot;: &quot;policy.briarbound.commissions&quot;,
+  &quot;reward_table_id&quot;: &quot;rewards.briarbound.intro&quot;,
+  &quot;trainer_policy_id&quot;: &quot;policy.neutral.essential-trainers&quot;
+}</code></td></tr><tr><td>Starter / presentation</td><td><code>{
+  &quot;appearance_catalog_asset&quot;: &quot;DA_AppearanceCatalog&quot;,
+  &quot;class_loadout_rule&quot;: &quot;StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.&quot;,
+  &quot;copper&quot;: 40,
+  &quot;facing_count&quot;: 4,
+  &quot;grant_source_id&quot;: &quot;grant.character-create.briarbound.v1&quot;,
+  &quot;item_id&quot;: &quot;item.starter-sword&quot;,
+  &quot;outfit_id&quot;: &quot;appearance.starter.common-four-facing&quot;,
+  &quot;presentation_key&quot;: &quot;Appearance.briarbound.Starter&quot;,
+  &quot;quantity&quot;: 1,
+  &quot;unique_art_required&quot;: false
+}</code></td></tr><tr><td>Content readiness</td><td><code>{
+  &quot;authored_specification&quot;: false,
+  &quot;blocking_content&quot;: [
+    &quot;starting sanctuary/camp/harbor placement&quot;,
+    &quot;root quest graph and later quests&quot;,
+    &quot;mentor and supporting cast dialogue&quot;,
+    &quot;safe faction travel and services&quot;,
+    &quot;critical rewards and profession-neutral alternatives&quot;,
+    &quot;four-facing presentation audit&quot;,
+    &quot;solo acceptance route&quot;
+  ],
+  &quot;cooked_content_verified&quot;: false,
+  &quot;runtime_status&quot;: &quot;not_run&quot;,
+  &quot;solo_acceptance_verified&quot;: false
+}</code></td></tr></tbody></table></div></section><section aria-labelledby="section-05-ironfang-warbands"><h2 id="section-05-ironfang-warbands">Ironfang Warbands</h2><p>Orc-like martial clans seek political recognition and ancestral territory. Korra advocates witnessed agreements; aggressive captains favor reprisals. Neither ancestry nor species determines moral worth.</p><p>Stable ID: <code>faction.ironfang-warbands</code>. At Stonewake Camp near Stonehollow, Korra asks a new witness to recover ancestral boundary stones before an aggressive captain retaliates against a caravan. Recognition versus reprisal leads toward the Quiet Foundry inscriptions. Concept only: production quests, dialogue, map placements and mentor art are not authored.</p><p>Authored MVP selection: false; existing continuation: retain_identity_and_recover. Real deployment still requires cooked-content and solo acceptance.</p><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>Starting region / map / spawn</td><td><code>{
+  &quot;fallback_spawn_id&quot;: &quot;spawn.thornmere.neutral-infirmary&quot;,
+  &quot;map_id&quot;: &quot;L_CairnstepHeights&quot;,
+  &quot;region_id&quot;: &quot;cairnstep&quot;,
+  &quot;spawn_authentication&quot;: &quot;Resolve only from pinned catalog and durable FactionId; never from client map coordinates.&quot;,
+  &quot;spawn_id&quot;: &quot;spawn.cairnstep.ironfang-camp&quot;,
+  &quot;zone_id&quot;: &quot;zone.cairnstep&quot;
+}</code></td></tr><tr><td>Story entry / cast</td><td><code>{
+  &quot;authored&quot;: false,
+  &quot;cast_ids&quot;: [
+    &quot;npc.ironfang.korra-stonevoice&quot;
+  ],
+  &quot;concept&quot;: &quot;At Stonewake Camp near Stonehollow, Korra asks a new witness to recover ancestral boundary stones before an aggressive captain retaliates against a caravan. Recognition versus reprisal leads toward the Quiet Foundry inscriptions. Concept only: production quests, dialogue, map placements and mentor art are not authored.&quot;,
+  &quot;cutscene_key&quot;: &quot;Scene.ironfang.Arrival&quot;,
+  &quot;dialogue_key&quot;: &quot;Dialogue.ironfang.Arrival&quot;,
+  &quot;initial_flags&quot;: [
+    &quot;flag.ironfang.arrival&quot;
+  ],
+  &quot;journal_key&quot;: &quot;Journal.ironfang.Arrival&quot;,
+  &quot;mentor_id&quot;: &quot;npc.ironfang.korra-stonevoice&quot;,
+  &quot;root_quest_id&quot;: &quot;quest.ironfang.claim-of-the-stones&quot;
+}</code></td></tr><tr><td>Initial separate standings</td><td><code>{
+  &quot;factions&quot;: {
+    &quot;faction.briarbound-clans&quot;: 0,
+    &quot;faction.hearthward-league&quot;: 0,
+    &quot;faction.ironfang-warbands&quot;: 100,
+    &quot;faction.tidebound-compact&quot;: 0
+  },
+  &quot;organizations&quot;: {
+    &quot;organization.hearth-assembly&quot;: 0,
+    &quot;organization.roadward-accord&quot;: 0,
+    &quot;organization.veil-survey&quot;: 0
+  }
+}</code></td></tr><tr><td>Services and rewards</td><td><code>{
+  &quot;guard_policy_id&quot;: &quot;policy.factions.pve-first&quot;,
+  &quot;guest_passage&quot;: &quot;Neutral hub and designated shared-threat routes; not faction headquarters.&quot;,
+  &quot;merchant_policy_id&quot;: &quot;policy.ironfang.commissions&quot;,
+  &quot;reward_table_id&quot;: &quot;rewards.ironfang.intro&quot;,
+  &quot;trainer_policy_id&quot;: &quot;policy.neutral.essential-trainers&quot;
+}</code></td></tr><tr><td>Starter / presentation</td><td><code>{
+  &quot;appearance_catalog_asset&quot;: &quot;DA_AppearanceCatalog&quot;,
+  &quot;class_loadout_rule&quot;: &quot;StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.&quot;,
+  &quot;copper&quot;: 40,
+  &quot;facing_count&quot;: 4,
+  &quot;grant_source_id&quot;: &quot;grant.character-create.ironfang.v1&quot;,
+  &quot;item_id&quot;: &quot;item.starter-sword&quot;,
+  &quot;outfit_id&quot;: &quot;appearance.starter.common-four-facing&quot;,
+  &quot;presentation_key&quot;: &quot;Appearance.ironfang.Starter&quot;,
+  &quot;quantity&quot;: 1,
+  &quot;unique_art_required&quot;: false
+}</code></td></tr><tr><td>Content readiness</td><td><code>{
+  &quot;authored_specification&quot;: false,
+  &quot;blocking_content&quot;: [
+    &quot;starting sanctuary/camp/harbor placement&quot;,
+    &quot;root quest graph and later quests&quot;,
+    &quot;mentor and supporting cast dialogue&quot;,
+    &quot;safe faction travel and services&quot;,
+    &quot;critical rewards and profession-neutral alternatives&quot;,
+    &quot;four-facing presentation audit&quot;,
+    &quot;solo acceptance route&quot;
+  ],
+  &quot;cooked_content_verified&quot;: false,
+  &quot;runtime_status&quot;: &quot;not_run&quot;,
+  &quot;solo_acceptance_verified&quot;: false
+}</code></td></tr></tbody></table></div></section><section aria-labelledby="section-06-tidebound-compact"><h2 id="section-06-tidebound-compact">Tidebound Compact</h2><p>Independent coastal communities defend maritime autonomy, navigation and negotiated trade. Unrestricted private commerce can evade responsibility for inland damage.</p><p>Stable ID: <code>faction.tidebound-compact</code>. At Galehaven Free Quay, Sera asks a new navigator to investigate disputed salvage from the old sea road. Free passage versus collective stewardship leads to the Stormglass Beacon and common waystone mystery. Concept only: production quests, dialogue, map placements and mentor art are not authored.</p><p>Authored MVP selection: false; existing continuation: retain_identity_and_recover. Real deployment still requires cooked-content and solo acceptance.</p><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>Starting region / map / spawn</td><td><code>{
+  &quot;fallback_spawn_id&quot;: &quot;spawn.thornmere.neutral-infirmary&quot;,
+  &quot;map_id&quot;: &quot;L_GalehavenCoast&quot;,
+  &quot;region_id&quot;: &quot;galehaven&quot;,
+  &quot;spawn_authentication&quot;: &quot;Resolve only from pinned catalog and durable FactionId; never from client map coordinates.&quot;,
+  &quot;spawn_id&quot;: &quot;spawn.galehaven.tidebound-harbor&quot;,
+  &quot;zone_id&quot;: &quot;zone.galehaven&quot;
+}</code></td></tr><tr><td>Story entry / cast</td><td><code>{
+  &quot;authored&quot;: false,
+  &quot;cast_ids&quot;: [
+    &quot;npc.tidebound.sera-vane&quot;
+  ],
+  &quot;concept&quot;: &quot;At Galehaven Free Quay, Sera asks a new navigator to investigate disputed salvage from the old sea road. Free passage versus collective stewardship leads to the Stormglass Beacon and common waystone mystery. Concept only: production quests, dialogue, map placements and mentor art are not authored.&quot;,
+  &quot;cutscene_key&quot;: &quot;Scene.tidebound.Arrival&quot;,
+  &quot;dialogue_key&quot;: &quot;Dialogue.tidebound.Arrival&quot;,
+  &quot;initial_flags&quot;: [
+    &quot;flag.tidebound.arrival&quot;
+  ],
+  &quot;journal_key&quot;: &quot;Journal.tidebound.Arrival&quot;,
+  &quot;mentor_id&quot;: &quot;npc.tidebound.sera-vane&quot;,
+  &quot;root_quest_id&quot;: &quot;quest.tidebound.free-water&quot;
+}</code></td></tr><tr><td>Initial separate standings</td><td><code>{
+  &quot;factions&quot;: {
+    &quot;faction.briarbound-clans&quot;: 0,
+    &quot;faction.hearthward-league&quot;: 0,
+    &quot;faction.ironfang-warbands&quot;: 0,
+    &quot;faction.tidebound-compact&quot;: 100
+  },
+  &quot;organizations&quot;: {
+    &quot;organization.hearth-assembly&quot;: 0,
+    &quot;organization.roadward-accord&quot;: 0,
+    &quot;organization.veil-survey&quot;: 0
+  }
+}</code></td></tr><tr><td>Services and rewards</td><td><code>{
+  &quot;guard_policy_id&quot;: &quot;policy.factions.pve-first&quot;,
+  &quot;guest_passage&quot;: &quot;Neutral hub and designated shared-threat routes; not faction headquarters.&quot;,
+  &quot;merchant_policy_id&quot;: &quot;policy.tidebound.commissions&quot;,
+  &quot;reward_table_id&quot;: &quot;rewards.tidebound.intro&quot;,
+  &quot;trainer_policy_id&quot;: &quot;policy.neutral.essential-trainers&quot;
+}</code></td></tr><tr><td>Starter / presentation</td><td><code>{
+  &quot;appearance_catalog_asset&quot;: &quot;DA_AppearanceCatalog&quot;,
+  &quot;class_loadout_rule&quot;: &quot;StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.&quot;,
+  &quot;copper&quot;: 40,
+  &quot;facing_count&quot;: 4,
+  &quot;grant_source_id&quot;: &quot;grant.character-create.tidebound.v1&quot;,
+  &quot;item_id&quot;: &quot;item.starter-sword&quot;,
+  &quot;outfit_id&quot;: &quot;appearance.starter.common-four-facing&quot;,
+  &quot;presentation_key&quot;: &quot;Appearance.tidebound.Starter&quot;,
+  &quot;quantity&quot;: 1,
+  &quot;unique_art_required&quot;: false
+}</code></td></tr><tr><td>Content readiness</td><td><code>{
+  &quot;authored_specification&quot;: false,
+  &quot;blocking_content&quot;: [
+    &quot;starting sanctuary/camp/harbor placement&quot;,
+    &quot;root quest graph and later quests&quot;,
+    &quot;mentor and supporting cast dialogue&quot;,
+    &quot;safe faction travel and services&quot;,
+    &quot;critical rewards and profession-neutral alternatives&quot;,
+    &quot;four-facing presentation audit&quot;,
+    &quot;solo acceptance route&quot;
+  ],
+  &quot;cooked_content_verified&quot;: false,
+  &quot;runtime_status&quot;: &quot;not_run&quot;,
+  &quot;solo_acceptance_verified&quot;: false
+}</code></td></tr></tbody></table></div></section><section aria-labelledby="section-07-baseline-symmetric-political-relationships"><h2 id="section-07-baseline-symmetric-political-relationships">Baseline symmetric political relationships</h2><p>symmetric_base_and_overrides; author one canonical unordered pair</p><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Factions</th><th scope="col">Score</th><th scope="col">Political reason</th></tr></thead><tbody><tr><td>faction.hearthward-league / faction.briarbound-clans</td><td>-30</td><td>Road restoration crosses sacred groves; each side contests who can authorize land use.</td></tr><tr><td>faction.hearthward-league / faction.ironfang-warbands</td><td>-25</td><td>Frontier surveys overlap ancestral ridge claims; defensive patrols are read as occupation.</td></tr><tr><td>faction.hearthward-league / faction.tidebound-compact</td><td>10</td><td>Both value commerce, but the Compact rejects imposed inland tolls and route ownership.</td></tr><tr><td>faction.briarbound-clans / faction.ironfang-warbands</td><td>-10</td><td>Both recognize ancestral stewardship; mineral extraction and patrol access remain disputed.</td></tr><tr><td>faction.briarbound-clans / faction.tidebound-compact</td><td>5</td><td>Negotiated access is common ground; timber exports and private dredging cause friction.</td></tr><tr><td>faction.ironfang-warbands / faction.tidebound-compact</td><td>0</td><td>Harbors can recognize clan trade without recognizing every territorial claim or privateer.</td></tr></tbody></table></div></section><section aria-labelledby="section-08-roadward-accord"><h2 id="section-08-roadward-accord">Roadward Accord</h2><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>id</td><td>organization.roadward-accord</td></tr><tr><td>name</td><td>Roadward Accord</td></tr><tr><td>kind</td><td>independent_organization</td></tr><tr><td>role</td><td>Cross-faction road crews, bridge arbitration and safe-passage witnesses. Membership or standing grants repair commissions, not political citizenship.</td></tr><tr><td>initial_reputation</td><td><code>0</code></td></tr></tbody></table></div></section><section aria-labelledby="section-09-hearth-assembly"><h2 id="section-09-hearth-assembly">Hearth Assembly</h2><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>id</td><td>organization.hearth-assembly</td></tr><tr><td>name</td><td>Hearth Assembly</td></tr><tr><td>kind</td><td>independent_organization</td></tr><tr><td>role</td><td>Cross-faction food, gardens and practical knowledge. Mentor Vesa serves this civic body. It is not the Hearthward League and cannot set permanent allegiance.</td></tr><tr><td>initial_reputation</td><td><code>0</code></td></tr></tbody></table></div></section><section aria-labelledby="section-10-veil-survey"><h2 id="section-10-veil-survey">Veil Survey</h2><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>id</td><td>organization.veil-survey</td></tr><tr><td>name</td><td>Veil Survey</td></tr><tr><td>kind</td><td>independent_organization</td></tr><tr><td>role</td><td>Cross-faction waystone research, cartography and fictional affliction study. Cooperation does not override faction restrictions.</td></tr><tr><td>initial_reputation</td><td><code>0</code></td></tr></tbody></table></div></section><section aria-labelledby="section-11-non-playable-antagonist"><h2 id="section-11-non-playable-antagonist">Non-playable antagonist</h2><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>id</td><td>enemy.hollow-covenant</td></tr><tr><td>name</td><td>Hollow Covenant</td></tr><tr><td>kind</td><td>nonplayable_hostile</td></tr><tr><td>role</td><td>A clandestine movement that manipulates waystone disturbances and incites factions to abandon shared warning duties. It exploits human political failures; the ancient waystone mystery is not reduced to its creation.</td></tr></tbody></table></div></section><section aria-labelledby="section-12-policy-and-tunings"><h2 id="section-12-policy-and-tunings">Policy and tunings</h2><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table ><thead><tr><th scope="col">Field</th><th scope="col">Value</th></tr></thead><tbody><tr><td>id</td><td>policy.factions.pve-first</td></tr><tr><td>version</td><td><code>1</code></td></tr><tr><td>open_world_player_damage</td><td><code>false</code></td></tr><tr><td>pvp_extension</td><td>Future separate opt-in consent/mode evaluator before the existing combat target validator; no shipped PvP toggle, reward, queue or damage override.</td></tr><tr><td>reputation_min</td><td><code>-1000</code></td></tr><tr><td>reputation_max</td><td><code>1000</code></td></tr><tr><td>relationship_min</td><td><code>-100</code></td></tr><tr><td>relationship_max</td><td><code>100</code></td></tr><tr><td>regional_pressure_min</td><td><code>-100</code></td></tr><tr><td>regional_pressure_max</td><td><code>100</code></td></tr><tr><td>personal_modifier_divisor</td><td><code>50</code></td></tr><tr><td>personal_modifier_cap</td><td><code>20</code></td></tr><tr><td>pressure_modifier_divisor</td><td><code>10</code></td></tr><tr><td>pressure_modifier_cap</td><td><code>10</code></td></tr><tr><td>attitude_thresholds</td><td><code>{
+  &quot;friendly&quot;: 50,
+  &quot;hostile&quot;: -100,
+  &quot;neutral&quot;: 0,
+  &quot;wary&quot;: -30
+}</code></td></tr><tr><td>neutral_zones</td><td><code>[
+  &quot;zone.thornmere.neutral-hub&quot;,
+  &quot;zone.elderwood.bellroot-common-camp&quot;
+]</code></td></tr><tr><td>hostility_zones</td><td><code>[
+  &quot;zone.thornmere.crossing-patrol&quot;,
+  &quot;zone.elderwood.contested-causeway&quot;
+]</code></td></tr><tr><td>safe_route_ids</td><td><code>[
+  &quot;route.thornmere.reedbank&quot;,
+  &quot;route.elderwood.willow-cut&quot;
+]</code></td></tr><tr><td>cooperation</td><td><code>{
+  &quot;chat&quot;: &quot;Existing block, moderation and recipient rules; no faction cipher.&quot;,
+  &quot;cross_faction_guilds&quot;: true,
+  &quot;neutral_and_shared_threat_parties&quot;: true,
+  &quot;private_headquarters&quot;: &quot;No automatic party or guild teleport/admission. Each member needs their own eligibility.&quot;,
+  &quot;quest_credit&quot;: &quot;Each character receives only authoritative evidence for their own eligible quest; never copy allegiance, choices or rewards.&quot;,
+  &quot;trade&quot;: &quot;Neutral or guest-pass-authorized service areas; escrow, bind, distance and sanctions still apply.&quot;
+}</code></td></tr><tr><td>resolution</td><td><code>{
+  &quot;essential_progress_requires_winner&quot;: false,
+  &quot;immutable_construction&quot;: true,
+  &quot;options&quot;: [
+    &quot;shared-passage&quot;,
+    &quot;fortified-crossing&quot;
+  ],
+  &quot;pressure_delta_per_resolved_round&quot;: 10,
+  &quot;round_duration_seconds&quot;: 1800,
+  &quot;rule&quot;: &quot;Most distinct authenticated account ballots; a tie or empty round selects shared-passage. Pin electorate rule, cutoff, options and policy version when opening the round.&quot;,
+  &quot;tie_break&quot;: &quot;shared-passage&quot;,
+  &quot;votes_per_account_per_round&quot;: 1
+}</code></td></tr><tr><td>essential_services</td><td><code>[
+  &quot;basic-trade&quot;,
+  &quot;repair&quot;,
+  &quot;all-vocation-training&quot;,
+  &quot;all-class-training&quot;,
+  &quot;essential-commissions&quot;,
+  &quot;story-recovery&quot;
+]</code></td></tr><tr><td>continuation</td><td>Disabling new selection never changes FactionId. Keep version-pinned definitions/rewards and safe fallback available; unresolved story content is deferred in the personal journal, not deleted or auto-completed.</td></tr></tbody></table></div></section>
+<footer class="page-footer"><p>Planned game behavior is not runtime evidence. <a href="../sources-verification.html">Read sources and limitations</a>.</p><a href="#main">Back to top</a></footer></main></div></body></html>

@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "new_assets": [
+    "FFactionRelationshipDefinition",
+    "UFactionDefinition",
+    "UFactionPolicyDefinition",
+    "DA_FactionPolicy_PveFirst",
+    "DA_Faction_Hearthward",
+    "DA_Faction_Briarbound",
+    "DA_Faction_Ironfang",
+    "DA_Faction_Tidebound",
+    "Record_RealmFactionPolicy",
+    "EFactionAttitude",
+    "FFactionAccessDecision",
+    "DA_NPC_MarenVale",
+    "DA_NPC_TalanReed",
+    "DA_NPC_ErenDusk",
+    "DA_Quest_OathRoad",
+    "DA_Quest_MissingCaravan",
+    "DA_Quest_BriarsCrossing",
+    "DA_Quest_NorthRoadCompact",
+    "DA_Quest_CrossingChoice",
+    "DA_Quest_BellDusk",
+    "DA_Encounter_SplitBell",
+    "DA_Item_StraightGrainTimber",
+    "DA_Resource_ElderwoodTimber"
+  ],
+  "materially_extended_assets": [
+    "UGameCatalog",
+    "DA_GameCatalog",
+    "Record_Character",
+    "Record_CommandReceipt",
+    "QuestProgressRecord",
+    "UQuestDefinition",
+    "UNpcServiceDefinition",
+    "ANpcServiceActor",
+    "ABriarwakeAIController",
+    "Record_Region",
+    "ProjectContributionRecord",
+    "UConstructionProjectDefinition",
+    "DA_Project_NorthRoad",
+    "UDurableStateClient",
+    "UCharacterStateComponent",
+    "ABriarwakePlayerState",
+    "ABriarwakeGameState",
+    "ARegionProjectionActor",
+    "Record_SessionLease",
+    "Record_Transfer",
+    "UZoneDefinition",
+    "AZoneGate",
+    "DA_NPC_MentorVesa",
+    "WBP_CharacterCreate",
+    "WBP_CharacterSelect",
+    "WBP_Login",
+    "WBP_Dialogue",
+    "WBP_QuestJournal",
+    "WBP_RegionBoard",
+    "WBP_Merchant",
+    "DA_Item_StarterSword",
+    "DA_Item_RepairKit",
+    "DA_Item_WatchFitting",
+    "DA_Item_FieldLoaf",
+    "DA_Item_BridgeSupport",
+    "DA_Item_BlightRemedy",
+    "DA_Item_IronOre",
+    "DA_Item_SalvagePlate",
+    "DA_Item_Goldenroot",
+    "DA_Item_BlightReagent",
+    "DA_Recipe_WatchFitting",
+    "DA_Recipe_FieldLoaf",
+    "DA_Recipe_BridgeSupport",
+    "DA_Recipe_BlightRemedy"
+  ],
+  "phase_assignments": [
+    {
+      "phase": 5,
+      "configure": "Register faction schemas, all four ID definitions and the PvE-first policy. Creator displays desired Hearthward-only selection and permanent warning; fixtures disposable until durable/content gates pass.",
+      "consumers": "DA_GameCatalog; WBP_CharacterCreate; WBP_CharacterSelect",
+      "acceptance": "Attempt missing/forged/locked faction IDs; inspect independent class/vocation controls and locked reason. Full campaign is NOT complete here."
+    },
+    {
+      "phase": 6,
+      "configure": "Extend Record_Character to proposed schema3 preserving schema2 class/vocation histories. Create realm policy record and enforce atomic identity/kit/standing/receipt creation; test explicit legacy confirmation.",
+      "consumers": "Record_Character; Record_CommandReceipt; Record_SessionLease; UDurableStateClient",
+      "acceptance": "Run duplicate CreateCharacter and before/after-commit faults; demonstrate no auto-faction migration."
+    },
+    {
+      "phase": 7,
+      "configure": "Extend existing lease/transfer admission with durable faction validation, neutral safe fallback and digest-only ticket storage. Future root/guest story is assigned after its quest exists.",
+      "consumers": "Record_Transfer; UZoneDefinition; AZoneGate",
+      "acceptance": "Use synthetic eligibility at this phase; fence source, race destination versus expiry, resnapshot. Do not claim Q6 is available."
+    },
+    {
+      "phase": 13,
+      "configure": "Extend existing NPC/quest definitions and evaluate one faction access decision. Author Vesa plus Maren/Talan/Eren and Q1–Q3 while retaining First Supplies. No project or later recipe is required by these early quests.",
+      "consumers": "UNpcServiceDefinition; ANpcServiceActor; UQuestDefinition; DA_GameCatalog; WBP_Dialogue",
+      "acceptance": "Run oath/caravan/parley alternatives alone; reject client evidence and NPC hostility in the neutral square."
+    },
+    {
+      "phase": 15,
+      "configure": "Retain early project board and one region owner. Prepare faction-neutral bound work receipts alongside the existing Forgekeeper fitting route; do not claim the full campaign or all five recipes exist.",
+      "consumers": "DA_Project_NorthRoad; Record_Region; ProjectContributionRecord; WBP_RegionBoard",
+      "acceptance": "One character can contribute through basic work; race duplicate source IDs and existing NorthRoad alias."
+    },
+    {
+      "phase": 19,
+      "configure": "Preserve Slice B here. Wayfinder discovery receipts may contribute to the same project; faction badge does not gate cartography.",
+      "consumers": "CharacterDiscoveryRecord; DA_Project_NorthRoad",
+      "acceptance": "Run existing Slice B and reject duplicate discovery/contribution credit."
+    },
+    {
+      "phase": 20,
+      "configure": "Author structural timber item/site on existing resource/inventory owners and bind the Woodwright recipe input. Preserve server-randomized eligible sites and neutral safe access.",
+      "consumers": "DA_Recipe_BridgeSupport; UResourceSiteDefinition; UItemDefinition",
+      "acceptance": "Harvest/craft/contribute once; repeat request cannot create another item or credit."
+    },
+    {
+      "phase": 21,
+      "configure": "All five vocation contribution definitions now exist; retain active-vocation validation and free public work alternative.",
+      "consumers": "DA_Recipe_BlightRemedy; DA_GameCatalog",
+      "acceptance": "Check each recipe references real catalog inputs/outputs and neutral acquisition."
+    },
+    {
+      "phase": 22,
+      "configure": "Create Q4 with all recipe/project prerequisites already present. Extend same region owner with pressure fields; retain permanent construction and late-arrival maintenance.",
+      "consumers": "DA_Quest_NorthRoadCompact; Record_Region; ARegionProjectionActor",
+      "acceptance": "Four three-unit orders complete essential12 alone; an already repaired realm still requires personal3, without reconstruction."
+    },
+    {
+      "phase": 23,
+      "configure": "Create Q5 and add the bounded versioned crossing consultation to the same region owner. Personal branch commits with its reward; optional public ballot remains separate.",
+      "consumers": "DA_Quest_CrossingChoice; Record_RealmFactionPolicy; WBP_RegionBoard",
+      "acceptance": "Race opposed choices/ballots and tie; one-account/round and deterministic cutoff rule hold."
+    },
+    {
+      "phase": 24,
+      "configure": "Author Split Bell encounter definition on existing encounter authority; defer its NPC assistance activation until26. Retain noncombat tablet alternative.",
+      "consumers": "DA_Encounter_SplitBell; UEncounterDefinition",
+      "acceptance": "Validate count, PvE-only target rules, telegraph and no required human group."
+    },
+    {
+      "phase": 25,
+      "configure": "Bind faction commission/access/discount policy to existing merchant transactions; neutral essentials remain available.",
+      "consumers": "WBP_Merchant; ANpcServiceActor; existing economy owners",
+      "acceptance": "Hostile optional outpost denial gives a safe neutral route; no essential material monopoly."
+    },
+    {
+      "phase": 26,
+      "configure": "Activate existing NPC help and Q6. This is the first full faction MVP acceptance checkpoint, not Phase05. Register final campaign links and guest Elderwood admission; all actual content/solo readiness gates must pass before release.",
+      "consumers": "DA_Quest_BellDusk; DA_Encounter_SplitBell; existing NPC help; UZoneDefinition; DA_GameCatalog",
+      "acceptance": "Create → six quests (both branches separately) → durable road and journal → Elderwood transfer → restart/reconnect. One human and no PvP; runtime proof remains not_run in this docs repository."
+    },
+    {
+      "phase": 27,
+      "configure": "Enable neutral/shared-threat cross-faction party/guild cooperation using existing social security; private faction rewards remain individual.",
+      "consumers": "Existing party/guild/chat/trade owners",
+      "acceptance": "Two opposing faction fixtures cooperate without gaining each other’s private quest or merchant permissions."
+    },
+    {
+      "phase": 28,
+      "configure": "Verify shared-threat dungeon access has a solo variant and faction-specific personal rewards are not shared merely by party membership.",
+      "consumers": "Existing dungeon and NPC-help owners",
+      "acceptance": "One human completes essential route; mixed faction party has equivalent core advancement."
+    },
+    {
+      "phase": 30,
+      "configure": "Review localized permanent warning, locked future identities, journal public/personal distinction, non-color hostility, controller focus and narrow layout.",
+      "consumers": "Existing UI widgets",
+      "acceptance": "No audio-only clue, eight-facing requirement or fake playable future option."
+    },
+    {
+      "phase": 31,
+      "configure": "Validate complete enabled dependency closure, continuation archive and migration/rollback readiness. Run real 1/2/5/10/30 admission/transfer/project tests only with engine/backend available.",
+      "consumers": "Deployment; catalog; all faction consumers",
+      "acceptance": "Reject enabling any future faction with missing spawn/story/NPC/critical reward/neutral/solo content. Record actual measurements separately from SQLite conformance jobs."
+    }
+  ],
+  "runtime_status": "not_run"
+}

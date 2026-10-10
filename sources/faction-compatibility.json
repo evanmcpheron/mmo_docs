@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only compatibility audit of relevant sources, not proof of all game binaries/Blueprints. The listed resolutions apply only to mmo_docs. Revisions and PR status describe the observed inspection, not an assumption that unmerged work exists on main.",
+  "revisions": {
+    "mmo_docs_main": "468d9430b5492ee5b6d1777ae021b59085c7a507",
+    "game_source_tree": "529ec36b85d2ba5f8a51f1a2f18bc896d9035656 (Source/RPG)",
+    "game_rename_pr": "Briarwake#12 open/unmerged at inspection; head5815a4f6a586eac4601023df5d1077c49b7c83a7",
+    "historical_reference": "game_docs/main AGENTS and README read-only sample; not an exhaustive audit"
+  },
+  "discrepancies": [
+    {
+      "id": "FC-01",
+      "subsystem": "Repository boundary and full implementation",
+      "sources": [
+        "AGENTS.md",
+        "README.md",
+        "DELIVERY_STATUS.md"
+      ],
+      "current": "mmo_docs is a JSON-generated offline manual and forbids game runtime files.",
+      "requested": "Full implementation where permitted; no fake runtime success.",
+      "resolution": "Complete actual authored contracts/content/validators/SQLite tests here; do not add .h/.cpp/plugin/uasset or mutate another repository.",
+      "migration_test": "Documentation static forbidden-file validation; separate authorized Briarwake integration required.",
+      "evidence": "AGENTS read first via live connector; local checkout from authenticated Git bundle."
+    },
+    {
+      "id": "FC-02",
+      "subsystem": "Current module and rename PR",
+      "sources": [
+        "Briarwake/Source/RPG",
+        "Briarwake PR12",
+        "sources/design-decisions.json ADR001"
+      ],
+      "current": "Live inspected Source tree uses RPG; unmerged PR12 proposes Briarwake naming. Manual already plans Source/Briarwake.",
+      "requested": "No rename as part of faction task; distinguish actual/planned.",
+      "resolution": "Keep planned manual destination paths; companion instructions use verified current module and wait for rename reconciliation.",
+      "migration_test": "No renamed game files or companion PR; UHT/API proof not_run.",
+      "evidence": "Read current source tree and two trivial native headers; read PR12 body, not independent validation of its reported builds."
+    },
+    {
+      "id": "FC-03",
+      "subsystem": "Game engineering creation policy",
+      "sources": [
+        "Briarwake/AGENTS.md",
+        "Briarwake/Docs/GIT_WORKFLOW.md"
+      ],
+      "current": "Native class creation is user-led in Editor; task branches and real QA required.",
+      "requested": "Follow compatibility instructions without game repo changes.",
+      "resolution": "Document class parent/name/Public/Factions/current-module wizard prerequisites; do not create classes in this task.",
+      "migration_test": "Authorized companion task must first confirm created native classes.",
+      "evidence": "Live instructions and engineering README/philosophy/architecture/review read."
+    },
+    {
+      "id": "FC-04",
+      "subsystem": "Dated side-scrolling/local-save assumptions",
+      "sources": [
+        "Briarwake/Docs/Engineering/architecture.md",
+        "game_docs/README.md",
+        "design/game-pillars.html"
+      ],
+      "current": "Historical engineering architecture describes older side-scroll/local Profile ownership; reference guide says2.5D.",
+      "requested": "Fully2D top-down/three-quarter Paper2D/PaperZD with durable MMO authority.",
+      "resolution": "Do not inherit historical movement/save ownership into new faction contracts; use mmo_docs existing durable character/region/lease owners.",
+      "migration_test": "No movement refactor; authoritative ownership/phase checks and future runtime acceptance.",
+      "evidence": "Read-only historical sample, not exhaustive game_docs audit; preserved old documents unchanged."
+    },
+    {
+      "id": "FC-05",
+      "subsystem": "Class and vocation already confirmed",
+      "sources": [
+        "sources/design-decisions.json ADR006",
+        "sources/current-asset-manifest.json Record_Character",
+        "tools/tests/test_character_progression.py"
+      ],
+      "current": "Permanent faction/class plus one changeable active vocation with retained histories already documented on latest main.",
+      "requested": "Faction independent of both; no regression to fixed profession.",
+      "resolution": "Keep all existing class/vocation fields,20valid class-vocation combinations, active permissions and prior histories. Add faction fields only.",
+      "migration_test": "Run existing progression tests unchanged alongside faction tests.",
+      "evidence": "Latest main468d includes merged PR1; original fixture/schema2 tests retained."
+    },
+    {
+      "id": "FC-06",
+      "subsystem": "Former faction-like civic organizations",
+      "sources": [
+        "design/world-and-story.html",
+        "systems/quests.html"
+      ],
+      "current": "Roadward Accord, Hearth Assembly and Veil Survey are described as groups/factions in earlier prose.",
+      "requested": "Four political allegiances plus separate civic standings; preserve names.",
+      "resolution": "Explicitly classify them as cross-faction civic organizations, with Hearth Assembly distinct from Hearthward League everywhere affected.",
+      "migration_test": "Taxonomy uniqueness and NPC organization/faction-axis validation; retain mentor.vesa.",
+      "evidence": "Original organizations and original story arcs preserved; political history added narrowly."
+    },
+    {
+      "id": "FC-07",
+      "subsystem": "Hollow Covenant and political morality",
+      "sources": [
+        "sources/factions.json",
+        "design/world-and-story.html"
+      ],
+      "current": "Original waystone/Briarwake threat leaves political organization detail open.",
+      "requested": "Hollow Covenant nonplayable; Ironfang not inherently evil.",
+      "resolution": "Use enemy.hollow-covenant and ideological territorial conflicts; no playable antagonist option or race morality enum.",
+      "migration_test": "Playable/civic/enemy namespace and selection tests.",
+      "evidence": "New authored political content, not evidence of game assets."
+    },
+    {
+      "id": "FC-08",
+      "subsystem": "Existing authoritative owners",
+      "sources": [
+        "architecture/state-ownership.html",
+        "architecture/transactions-and-ledgers.html",
+        "architecture/zone-transfers.html"
+      ],
+      "current": "Character/quest/region/session ownership and transactional receipts already planned.",
+      "requested": "No overlapping managers or UI authority.",
+      "resolution": "Add definitions/value structs and one durable realm policy aggregate. Extend current owners, never create faction inventory/quest/session managers.",
+      "migration_test": "Asset dependency/phase contracts, source tests and SQLite transactions; runtime adapters not_run.",
+      "evidence": "Inspected planned manifest and current source tree; catalog/quest/backend classes not present in inspected game native tree."
+    },
+    {
+      "id": "FC-09",
+      "subsystem": "Save version and unknown population",
+      "sources": [
+        "sources/current-asset-manifest.json Record_Character",
+        "Briarwake PR12"
+      ],
+      "current": "Manual proposes schema2; old actual save population/schema is not verified. PR12 reports retained28fixtures without migration test.",
+      "requested": "Maintain saves without silent faction assignment.",
+      "resolution": "Propose schema3 additive extension and explicit missing-faction confirmation; corrupt IDs require reviewed repair, retained histories untouched.",
+      "migration_test": "Missing/null versus corrupt migration fixture, no starter replay; original save import requires companion evidence.",
+      "evidence": "No real save inspection or migration executed; fixture results are not original-save proof."
+    },
+    {
+      "id": "FC-10",
+      "subsystem": "New-selection versus continuation",
+      "sources": [
+        "sources/factions.json",
+        "systems/identity.html"
+      ],
+      "current": "No previous concrete faction availability/continuation catalog.",
+      "requested": "Locked future content must not crash or orphan later characters.",
+      "resolution": "Separate selection from historical continuation; preserve archived definitions and safe neutral recovery.",
+      "migration_test": "Disable after creation, replay creation receipt, missing definition/version and fallback tests.",
+      "evidence": "Authored readiness gate; actual cooked content and live admissions not_run."
+    },
+    {
+      "id": "FC-11",
+      "subsystem": "North Road aliases and permanence",
+      "sources": [
+        "systems/regions.html",
+        "walkthroughs/forgekeeper.html",
+        "sources/region-state-contracts.json"
+      ],
+      "current": "Region system uses project.elderwood.north-road; walkthroughs use project.north-road; stored conceptual project key NorthRoad.",
+      "requested": "Preserve existing milestones and avoid two project authorities.",
+      "resolution": "Canonicalize to region-system ID, retain NorthRoad key and explicit legacy alias resolved before receipt uniqueness. Add completion event name without a new reward generation.",
+      "migration_test": "Alias/essential12 source checks; duplicate/late maintenance model tests.",
+      "evidence": "Existing inconsistency documented, not silently erased or used to duplicate state."
+    },
+    {
+      "id": "FC-12",
+      "subsystem": "Personal choices versus public world",
+      "sources": [
+        "systems/regions.html",
+        "sources/region-state-contracts.json"
+      ],
+      "current": "Permanent construction with bounded recurring threats; public political conflict unspecified.",
+      "requested": "Consequential branches without last-submit wins, new-player lockout or history rewrite.",
+      "resolution": "Personal Q5 choice immutable; fixed versioned consultation selects only reversible public signage/patrol/commission policy; neutral routes permanent.",
+      "migration_test": "Tied opposite preferences, one-account vote, repeat resolution, preserved completion and personal branches.",
+      "evidence": "SQLite policy/receipt model; real schedule/visual/AI behavior not_run."
+    },
+    {
+      "id": "FC-13",
+      "subsystem": "Population and social boundaries",
+      "sources": [
+        "systems/social.html",
+        "systems/dungeons.html",
+        "sources/phase-integration.json"
+      ],
+      "current": "Essential solo routes; social at27 and NPC assistance26.",
+      "requested": "1–30target, cross-faction neutral cooperation without compulsory PvP.",
+      "resolution": "Full faction slice26 needs no party; social extension27 and shared dungeon28 use existing owners.",
+      "migration_test": "One-human free-work model; simulated workers labeled correctly; real clients required.",
+      "evidence": "No measured network performance supplied."
+    },
+    {
+      "id": "FC-14",
+      "subsystem": "Economy and profession materials",
+      "sources": [
+        "systems/crafting.html",
+        "professions/index.html",
+        "sources/current-asset-manifest.json"
+      ],
+      "current": "WatchFitting has3ore+1salvage; other example recipe inputs incomplete; timber yield item not registered.",
+      "requested": "Exact authored contribution inputs without faction material monopoly.",
+      "resolution": "Preserve fitting quantities; pin optional existing loaf/support/remedy inputs and add only structural timber item/site contracts needed for that route. Free public work bypasses all specialist resources.",
+      "migration_test": "Recipe/input/source closure, active vocation baseline tests and future profession playthrough.",
+      "evidence": "New fixture tuning is authored, not economy-balanced or cooked content."
+    },
+    {
+      "id": "FC-15",
+      "subsystem": "Phases and activation",
+      "sources": [
+        "DELIVERY_STATUS.md",
+        "sources/phase-creation-order.json",
+        "sources/phase-integration.json"
+      ],
+      "current": "NPC13, early project15, SliceB19 fixed; later regional/economy/NPC help dependencies.",
+      "requested": "No renumbering or future-asset dependency.",
+      "resolution": "Faction definitions05/schema06, quests1–3at13,Q4at22,Q5at23,Q6fullslice26; future faction registration05is not production availability.",
+      "migration_test": "Acyclic dependency validation, matching creates/activates, preserved32phases.",
+      "evidence": "Source generation/phase accounting only, not executed phase implementation."
+    },
+    {
+      "id": "FC-16",
+      "subsystem": "Art, maps and API evidence",
+      "sources": [
+        "sources/verification.json",
+        "sources/current-asset-manifest.json",
+        "Briarwake PR12"
+      ],
+      "current": "Art source audit and installed PaperZD/plugin compatibility not proven by this task.",
+      "requested": "Four-facing available assumptions only; no fabricated maps/assets/APIs.",
+      "resolution": "Shared four-facing presentation and localized text/camera-free scene alternatives; tile anchors are authored coordinates requiring real navigation/collision validation.",
+      "migration_test": "Deployment readiness remains failing; UHT/Blueprint/cooked-map tests explicitly not_run.",
+      "evidence": "PR12 plugin errors are reported compatibility limitations, not locally reproduced here."
+    },
+    {
+      "id": "FC-17",
+      "subsystem": "Canonical generation and coverage honesty",
+      "sources": [
+        "tools/build_manual_indexes.py",
+        "sources/manual-pages.json",
+        "sources/feature-coverage.json"
+      ],
+      "current": "JSON sources drive all HTML/search; full-guide completion explicitly partial.",
+      "requested": "Integrated pages/graphs without hand HTML edits or weakened strict gate.",
+      "resolution": "Extend generator with faction source renderer, regenerate deterministically. Keep every original requirement status and strict rule unchanged; add separate faction traceability.",
+      "migration_test": "All required scripts including --require-complete; expected baseline strict failure retained.",
+      "evidence": "Baseline first7commands exit0; strict exit1 before edits; final observed results recorded separately."
+    },
+    {
+      "id": "FC-18",
+      "subsystem": "Delivery and checkout access",
+      "sources": [
+        "GitHub API branch468d9430b5492ee5b6d1777ae021b59085c7a507",
+        "local /mnt/data/mmo_docs"
+      ],
+      "current": "Direct Git network cannot resolve github.com; authenticated GitHub tools can read/write. Existing faction-foundation branch contains a prior validation workflow.",
+      "requested": "Preserve unrelated branch/work; scoped branch and real PR attempt.",
+      "resolution": "Use separate docs/faction-allegiance-campaign branch from verified latestmain, authenticated bundle for local validation, and connector-backed scoped publication. Do not alter the older branch or other repositories.",
+      "migration_test": "Recheck latestmain before delivery; compare published source tree/patch and report real PR result.",
+      "evidence": "Initial fresh local clone had no user changes; branch created remotely. Publication status is recorded only after actual attempt."
+    }
+  ]
+}

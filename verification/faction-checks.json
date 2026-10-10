@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "base_commit": "468d9430b5492ee5b6d1777ae021b59085c7a507",
+  "scope": "Local documentation/schema/SQLite conformance; no executable game or production service.",
+  "commands": [
+    {
+      "command": "python3 tools/build_manual_indexes.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/build_manual_indexes.py --check",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/validate_documentation.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/check_phase_integration.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/check_feature_coverage.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/simulate_population_scaling.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 -m unittest discover -s tools/tests -v",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/check_feature_coverage.py --require-complete",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/validate_factions.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "python3 tools/validate_factions.py --deployment",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "met_expected_outcome": true
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "met_expected_outcome": true
+    }
+  ],
+  "unit_tests": {
+    "executed": 79,
+    "passed": 79,
+    "baseline_tests": 29,
+    "faction_tests": 50
+  },
+  "json_schema": {
+    "status": "pass",
+    "validator": "jsonschema 4.26.0",
+    "scope": "Both Draft202012 schema documents checked; four authored faction records validated. No auth/transport/runtime proof."
+  },
+  "browser": {
+    "file_protocol": "blocked_by_administrator; exit1",
+    "local_http": "blocked_by_administrator; exit1",
+    "in_memory": "pass; 12 desktop pages at1440px, 8 mobile pages at390px; zero JS errors",
+    "visual_review": "Faction taxonomy desktop and campaign mobile viewport screenshots inspected; no layout clipping in these samples; full accessibility/navigation not certified"
+  },
+  "expected_nonpassing_gates": [
+    "Full-guide strict completion remains incomplete before and after this change",
+    "Faction deployment gate lacks cooked-content and solo-runtime proof"
+  ],
+  "not_run": [
+    "Unreal native/UHT and Blueprint compile",
+    "Cooked maps, real art and NPC placements",
+    "Authenticated production backend and PostgreSQL fault tests",
+    "Actual 1/2/5/10/30 network client tests and load measurements",
+    "Real character/save migration, AI, quest objectives, transfers and gameplay"
+  ],
+  "source_sha256": {
+    "sources/faction-acceptance.json": "8992ce824b4f31a3c13eca5674d6f1e52a146e24f26ed86642467eb907bd6ff3",
+    "sources/faction-asset-integration.json": "d117e1f2185b231020b40e31fe13938ddc9b3b136cb5b58230e757dcbaee4920",
+    "sources/faction-compatibility.json": "c7a93a84330d5accc8aad155bded13e418373438143962393f30cb492801d79d",
+    "sources/faction-data.schema.json": "7f732624cfd8395303f77d14eb6390ac0a11146098664a849e452b7aba03a087",
+    "sources/faction-implementation.json": "9666120b1aa724dedd2474549f9f0ef2bec52c1d40d1dba195d23d36ed2a1b02",
+    "sources/faction-localization.en.json": "247f83626754be7b381b69bbf5c381f4260a304858d463689da27f6e52f4f10d",
+    "sources/faction-traceability.json": "3b3db0e848eb96d1ce068b2d4c5c342ace797b616179419117d040e5f78ddb64",
+    "sources/faction-wire.schema.json": "3f44263ab00276b6efe89736d1632a6ee4223352100b2d6e4b45172cfb2f8a50",
+    "sources/factions.json": "21f1e24c6189190ed0d1bd03d4ea5c5aaa324d3987bee07ada908ce8d6284627",
+    "sources/hearthward-campaign.json": "6a07efb2ed3cd8aa44af6a6154a3cadeb483505448d199148d6ad40a58871385",
+    "tools/faction_manual.py": "6d3d6c7335cf93a69f04096d70c9eab51d00769a15528bdb354e145980cc0103",
+    "tools/tests/faction_model.py": "6b0ec94f2bccaf7b59cf1a105ffede2985eb9b2e4c813b8e00a08a2eea70d2f0",
+    "tools/tests/test_factions.py": "706cb5edfb0fb17eb3ed2e8f1ad915bebdd7130f871a30a32d773a8ea6b68800",
+    "tools/validate_factions.py": "22a269a8cccbc16b9d71e5378f09233a90c6aef84f811ce5b2dacc2cd74c2fbf"
+  },
+  "status": "pass_with_explicit_blocked_gates"
+}

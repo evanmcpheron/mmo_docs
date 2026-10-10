@@ -1,0 +1,492 @@
+{
+  "schema_version": 1,
+  "catalog_version": 1,
+  "availability_revision": 1,
+  "scope": "Authored documentation contracts. Selection flags describe the requested launch configuration, not a running server. Deployment remains blocked until cooked-content and solo-game checks pass.",
+  "namespace_rules": {
+    "faction.": "Permanent playable political identity; append definitions, never enum ordinals.",
+    "organization.": "Independent civic association reputation; never a character allegiance.",
+    "enemy.": "Nonplayable antagonist group; never a selectable faction.",
+    "quest.": "Version-pinned quest identity.",
+    "spawn.": "Authenticated placement registry; no client coordinates.",
+    "source.": "Permanent objective/reward provenance identity."
+  },
+  "factions": [
+    {
+      "id": "faction.hearthward-league",
+      "display_name": "Hearthward League",
+      "display_key": "Faction.hearthward.Name",
+      "content_version": 1,
+      "kind": "playable_allegiance",
+      "ideology": "A human-led federation of frontier towns: defended homes, restored roads and open trade. Its survey charters can dispossess earlier occupants and treat sacred places as unused land.",
+      "selection": {
+        "selectable_for_new_character": true,
+        "locked_reason_key": "",
+        "existing_character_continuation": "retain_identity_and_recover"
+      },
+      "start": {
+        "region_id": "thornmere",
+        "zone_id": "zone.thornmere",
+        "map_id": "L_ThornmereVillage",
+        "spawn_id": "spawn.thornmere.hearthward-arrival",
+        "fallback_spawn_id": "spawn.thornmere.neutral-infirmary",
+        "spawn_authentication": "Resolve only from pinned catalog and durable FactionId; never from client map coordinates."
+      },
+      "story": {
+        "root_quest_id": "quest.hearthward.oath-road",
+        "mentor_id": "npc.hearthward.maren-vale",
+        "cast_ids": [
+          "npc.hearthward.maren-vale",
+          "mentor.vesa",
+          "npc.briarbound.talan-reed",
+          "npc.neutral.eren-dusk"
+        ],
+        "initial_flags": [
+          "flag.hearthward.arrival"
+        ],
+        "journal_key": "Journal.hearthward.Arrival",
+        "dialogue_key": "Dialogue.hearthward.Arrival",
+        "cutscene_key": "Scene.hearthward.Arrival",
+        "concept": "Join the Thornmere road effort, investigate a missing caravan, negotiate a sacred crossing, contribute to North Road, choose a personal settlement policy and uncover Covenant interference at the Split Bell.",
+        "authored": true
+      },
+      "initial_reputation": {
+        "factions": {
+          "faction.hearthward-league": 100,
+          "faction.briarbound-clans": 0,
+          "faction.ironfang-warbands": 0,
+          "faction.tidebound-compact": 0
+        },
+        "organizations": {
+          "organization.roadward-accord": 0,
+          "organization.hearth-assembly": 0,
+          "organization.veil-survey": 0
+        }
+      },
+      "services": {
+        "guard_policy_id": "policy.factions.pve-first",
+        "merchant_policy_id": "policy.hearthward.commissions",
+        "trainer_policy_id": "policy.neutral.essential-trainers",
+        "guest_passage": "Neutral hub and designated shared-threat routes; not faction headquarters.",
+        "reward_table_id": "rewards.hearthward.intro"
+      },
+      "starter": {
+        "grant_source_id": "grant.character-create.hearthward.v1",
+        "item_id": "item.starter-sword",
+        "quantity": 1,
+        "copper": 40,
+        "class_loadout_rule": "StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.",
+        "appearance_catalog_asset": "DA_AppearanceCatalog",
+        "outfit_id": "appearance.starter.common-four-facing",
+        "facing_count": 4,
+        "presentation_key": "Appearance.hearthward.Starter",
+        "unique_art_required": false
+      },
+      "readiness": {
+        "authored_specification": true,
+        "cooked_content_verified": false,
+        "solo_acceptance_verified": false,
+        "runtime_status": "not_run",
+        "blocking_content": []
+      }
+    },
+    {
+      "id": "faction.briarbound-clans",
+      "display_name": "Briarbound Clans",
+      "display_key": "Faction.briarbound.Name",
+      "content_version": 1,
+      "kind": "playable_allegiance",
+      "ideology": "Woodland guardians and ancestral communities: stewardship, negotiated access and protection of sacred places. Blanket exclusion can leave neighboring families without winter supplies.",
+      "selection": {
+        "selectable_for_new_character": false,
+        "locked_reason_key": "Faction.FutureContentUnavailable",
+        "existing_character_continuation": "retain_identity_and_recover"
+      },
+      "start": {
+        "region_id": "elderwood",
+        "zone_id": "zone.elderwood",
+        "map_id": "L_ElderwoodRoad",
+        "spawn_id": "spawn.elderwood.briarbound-sanctuary",
+        "fallback_spawn_id": "spawn.thornmere.neutral-infirmary",
+        "spawn_authentication": "Resolve only from pinned catalog and durable FactionId; never from client map coordinates."
+      },
+      "story": {
+        "root_quest_id": "quest.briarbound.roots-of-passage",
+        "mentor_id": "npc.briarbound.ashren-moss",
+        "cast_ids": [
+          "npc.briarbound.ashren-moss"
+        ],
+        "initial_flags": [
+          "flag.briarbound.arrival"
+        ],
+        "journal_key": "Journal.briarbound.Arrival",
+        "dialogue_key": "Dialogue.briarbound.Arrival",
+        "cutscene_key": "Scene.briarbound.Arrival",
+        "concept": "An apprentice steward at Mosswake Sanctuary finds a waystone survey cut across protected roots. Mentor Ashren asks who may consent to passage. Preserve the grove or negotiate supervised access; converge on the Bellroot warnings. Concept only: production quests, dialogue, map placements and mentor art are not authored.",
+        "authored": false
+      },
+      "initial_reputation": {
+        "factions": {
+          "faction.hearthward-league": 0,
+          "faction.briarbound-clans": 100,
+          "faction.ironfang-warbands": 0,
+          "faction.tidebound-compact": 0
+        },
+        "organizations": {
+          "organization.roadward-accord": 0,
+          "organization.hearth-assembly": 0,
+          "organization.veil-survey": 0
+        }
+      },
+      "services": {
+        "guard_policy_id": "policy.factions.pve-first",
+        "merchant_policy_id": "policy.briarbound.commissions",
+        "trainer_policy_id": "policy.neutral.essential-trainers",
+        "guest_passage": "Neutral hub and designated shared-threat routes; not faction headquarters.",
+        "reward_table_id": "rewards.briarbound.intro"
+      },
+      "starter": {
+        "grant_source_id": "grant.character-create.briarbound.v1",
+        "item_id": "item.starter-sword",
+        "quantity": 1,
+        "copper": 40,
+        "class_loadout_rule": "StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.",
+        "appearance_catalog_asset": "DA_AppearanceCatalog",
+        "outfit_id": "appearance.starter.common-four-facing",
+        "facing_count": 4,
+        "presentation_key": "Appearance.briarbound.Starter",
+        "unique_art_required": false
+      },
+      "readiness": {
+        "authored_specification": false,
+        "cooked_content_verified": false,
+        "solo_acceptance_verified": false,
+        "runtime_status": "not_run",
+        "blocking_content": [
+          "starting sanctuary/camp/harbor placement",
+          "root quest graph and later quests",
+          "mentor and supporting cast dialogue",
+          "safe faction travel and services",
+          "critical rewards and profession-neutral alternatives",
+          "four-facing presentation audit",
+          "solo acceptance route"
+        ]
+      }
+    },
+    {
+      "id": "faction.ironfang-warbands",
+      "display_name": "Ironfang Warbands",
+      "display_key": "Faction.ironfang.Name",
+      "content_version": 1,
+      "kind": "playable_allegiance",
+      "ideology": "Orc-like martial clans seek political recognition and ancestral territory. Korra advocates witnessed agreements; aggressive captains favor reprisals. Neither ancestry nor species determines moral worth.",
+      "selection": {
+        "selectable_for_new_character": false,
+        "locked_reason_key": "Faction.FutureContentUnavailable",
+        "existing_character_continuation": "retain_identity_and_recover"
+      },
+      "start": {
+        "region_id": "cairnstep",
+        "zone_id": "zone.cairnstep",
+        "map_id": "L_CairnstepHeights",
+        "spawn_id": "spawn.cairnstep.ironfang-camp",
+        "fallback_spawn_id": "spawn.thornmere.neutral-infirmary",
+        "spawn_authentication": "Resolve only from pinned catalog and durable FactionId; never from client map coordinates."
+      },
+      "story": {
+        "root_quest_id": "quest.ironfang.claim-of-the-stones",
+        "mentor_id": "npc.ironfang.korra-stonevoice",
+        "cast_ids": [
+          "npc.ironfang.korra-stonevoice"
+        ],
+        "initial_flags": [
+          "flag.ironfang.arrival"
+        ],
+        "journal_key": "Journal.ironfang.Arrival",
+        "dialogue_key": "Dialogue.ironfang.Arrival",
+        "cutscene_key": "Scene.ironfang.Arrival",
+        "concept": "At Stonewake Camp near Stonehollow, Korra asks a new witness to recover ancestral boundary stones before an aggressive captain retaliates against a caravan. Recognition versus reprisal leads toward the Quiet Foundry inscriptions. Concept only: production quests, dialogue, map placements and mentor art are not authored.",
+        "authored": false
+      },
+      "initial_reputation": {
+        "factions": {
+          "faction.hearthward-league": 0,
+          "faction.briarbound-clans": 0,
+          "faction.ironfang-warbands": 100,
+          "faction.tidebound-compact": 0
+        },
+        "organizations": {
+          "organization.roadward-accord": 0,
+          "organization.hearth-assembly": 0,
+          "organization.veil-survey": 0
+        }
+      },
+      "services": {
+        "guard_policy_id": "policy.factions.pve-first",
+        "merchant_policy_id": "policy.ironfang.commissions",
+        "trainer_policy_id": "policy.neutral.essential-trainers",
+        "guest_passage": "Neutral hub and designated shared-threat routes; not faction headquarters.",
+        "reward_table_id": "rewards.ironfang.intro"
+      },
+      "starter": {
+        "grant_source_id": "grant.character-create.ironfang.v1",
+        "item_id": "item.starter-sword",
+        "quantity": 1,
+        "copper": 40,
+        "class_loadout_rule": "StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.",
+        "appearance_catalog_asset": "DA_AppearanceCatalog",
+        "outfit_id": "appearance.starter.common-four-facing",
+        "facing_count": 4,
+        "presentation_key": "Appearance.ironfang.Starter",
+        "unique_art_required": false
+      },
+      "readiness": {
+        "authored_specification": false,
+        "cooked_content_verified": false,
+        "solo_acceptance_verified": false,
+        "runtime_status": "not_run",
+        "blocking_content": [
+          "starting sanctuary/camp/harbor placement",
+          "root quest graph and later quests",
+          "mentor and supporting cast dialogue",
+          "safe faction travel and services",
+          "critical rewards and profession-neutral alternatives",
+          "four-facing presentation audit",
+          "solo acceptance route"
+        ]
+      }
+    },
+    {
+      "id": "faction.tidebound-compact",
+      "display_name": "Tidebound Compact",
+      "display_key": "Faction.tidebound.Name",
+      "content_version": 1,
+      "kind": "playable_allegiance",
+      "ideology": "Independent coastal communities defend maritime autonomy, navigation and negotiated trade. Unrestricted private commerce can evade responsibility for inland damage.",
+      "selection": {
+        "selectable_for_new_character": false,
+        "locked_reason_key": "Faction.FutureContentUnavailable",
+        "existing_character_continuation": "retain_identity_and_recover"
+      },
+      "start": {
+        "region_id": "galehaven",
+        "zone_id": "zone.galehaven",
+        "map_id": "L_GalehavenCoast",
+        "spawn_id": "spawn.galehaven.tidebound-harbor",
+        "fallback_spawn_id": "spawn.thornmere.neutral-infirmary",
+        "spawn_authentication": "Resolve only from pinned catalog and durable FactionId; never from client map coordinates."
+      },
+      "story": {
+        "root_quest_id": "quest.tidebound.free-water",
+        "mentor_id": "npc.tidebound.sera-vane",
+        "cast_ids": [
+          "npc.tidebound.sera-vane"
+        ],
+        "initial_flags": [
+          "flag.tidebound.arrival"
+        ],
+        "journal_key": "Journal.tidebound.Arrival",
+        "dialogue_key": "Dialogue.tidebound.Arrival",
+        "cutscene_key": "Scene.tidebound.Arrival",
+        "concept": "At Galehaven Free Quay, Sera asks a new navigator to investigate disputed salvage from the old sea road. Free passage versus collective stewardship leads to the Stormglass Beacon and common waystone mystery. Concept only: production quests, dialogue, map placements and mentor art are not authored.",
+        "authored": false
+      },
+      "initial_reputation": {
+        "factions": {
+          "faction.hearthward-league": 0,
+          "faction.briarbound-clans": 0,
+          "faction.ironfang-warbands": 0,
+          "faction.tidebound-compact": 100
+        },
+        "organizations": {
+          "organization.roadward-accord": 0,
+          "organization.hearth-assembly": 0,
+          "organization.veil-survey": 0
+        }
+      },
+      "services": {
+        "guard_policy_id": "policy.factions.pve-first",
+        "merchant_policy_id": "policy.tidebound.commissions",
+        "trainer_policy_id": "policy.neutral.essential-trainers",
+        "guest_passage": "Neutral hub and designated shared-threat routes; not faction headquarters.",
+        "reward_table_id": "rewards.tidebound.intro"
+      },
+      "starter": {
+        "grant_source_id": "grant.character-create.tidebound.v1",
+        "item_id": "item.starter-sword",
+        "quantity": 1,
+        "copper": 40,
+        "class_loadout_rule": "StarterSword is universally equipable baseline training equipment; the independent discipline catalog supplies later ability/loadout specialization. Never use faction to filter class.",
+        "appearance_catalog_asset": "DA_AppearanceCatalog",
+        "outfit_id": "appearance.starter.common-four-facing",
+        "facing_count": 4,
+        "presentation_key": "Appearance.tidebound.Starter",
+        "unique_art_required": false
+      },
+      "readiness": {
+        "authored_specification": false,
+        "cooked_content_verified": false,
+        "solo_acceptance_verified": false,
+        "runtime_status": "not_run",
+        "blocking_content": [
+          "starting sanctuary/camp/harbor placement",
+          "root quest graph and later quests",
+          "mentor and supporting cast dialogue",
+          "safe faction travel and services",
+          "critical rewards and profession-neutral alternatives",
+          "four-facing presentation audit",
+          "solo acceptance route"
+        ]
+      }
+    }
+  ],
+  "organizations": [
+    {
+      "id": "organization.roadward-accord",
+      "name": "Roadward Accord",
+      "kind": "independent_organization",
+      "role": "Cross-faction road crews, bridge arbitration and safe-passage witnesses. Membership or standing grants repair commissions, not political citizenship.",
+      "initial_reputation": 0
+    },
+    {
+      "id": "organization.hearth-assembly",
+      "name": "Hearth Assembly",
+      "kind": "independent_organization",
+      "role": "Cross-faction food, gardens and practical knowledge. Mentor Vesa serves this civic body. It is not the Hearthward League and cannot set permanent allegiance.",
+      "initial_reputation": 0
+    },
+    {
+      "id": "organization.veil-survey",
+      "name": "Veil Survey",
+      "kind": "independent_organization",
+      "role": "Cross-faction waystone research, cartography and fictional affliction study. Cooperation does not override faction restrictions.",
+      "initial_reputation": 0
+    }
+  ],
+  "enemies": [
+    {
+      "id": "enemy.hollow-covenant",
+      "name": "Hollow Covenant",
+      "kind": "nonplayable_hostile",
+      "role": "A clandestine movement that manipulates waystone disturbances and incites factions to abandon shared warning duties. It exploits human political failures; the ancient waystone mystery is not reduced to its creation."
+    }
+  ],
+  "relations": {
+    "symmetry": "symmetric_base_and_overrides; author one canonical unordered pair",
+    "self_score": 100,
+    "pairs": [
+      {
+        "factions": [
+          "faction.hearthward-league",
+          "faction.briarbound-clans"
+        ],
+        "score": -30,
+        "motive": "Road restoration crosses sacred groves; each side contests who can authorize land use."
+      },
+      {
+        "factions": [
+          "faction.hearthward-league",
+          "faction.ironfang-warbands"
+        ],
+        "score": -25,
+        "motive": "Frontier surveys overlap ancestral ridge claims; defensive patrols are read as occupation."
+      },
+      {
+        "factions": [
+          "faction.hearthward-league",
+          "faction.tidebound-compact"
+        ],
+        "score": 10,
+        "motive": "Both value commerce, but the Compact rejects imposed inland tolls and route ownership."
+      },
+      {
+        "factions": [
+          "faction.briarbound-clans",
+          "faction.ironfang-warbands"
+        ],
+        "score": -10,
+        "motive": "Both recognize ancestral stewardship; mineral extraction and patrol access remain disputed."
+      },
+      {
+        "factions": [
+          "faction.briarbound-clans",
+          "faction.tidebound-compact"
+        ],
+        "score": 5,
+        "motive": "Negotiated access is common ground; timber exports and private dredging cause friction."
+      },
+      {
+        "factions": [
+          "faction.ironfang-warbands",
+          "faction.tidebound-compact"
+        ],
+        "score": 0,
+        "motive": "Harbors can recognize clan trade without recognizing every territorial claim or privateer."
+      }
+    ]
+  },
+  "policy": {
+    "id": "policy.factions.pve-first",
+    "version": 1,
+    "open_world_player_damage": false,
+    "pvp_extension": "Future separate opt-in consent/mode evaluator before the existing combat target validator; no shipped PvP toggle, reward, queue or damage override.",
+    "reputation_min": -1000,
+    "reputation_max": 1000,
+    "relationship_min": -100,
+    "relationship_max": 100,
+    "regional_pressure_min": -100,
+    "regional_pressure_max": 100,
+    "personal_modifier_divisor": 50,
+    "personal_modifier_cap": 20,
+    "pressure_modifier_divisor": 10,
+    "pressure_modifier_cap": 10,
+    "attitude_thresholds": {
+      "friendly": 50,
+      "neutral": 0,
+      "wary": -30,
+      "hostile": -100
+    },
+    "neutral_zones": [
+      "zone.thornmere.neutral-hub",
+      "zone.elderwood.bellroot-common-camp"
+    ],
+    "hostility_zones": [
+      "zone.thornmere.crossing-patrol",
+      "zone.elderwood.contested-causeway"
+    ],
+    "safe_route_ids": [
+      "route.thornmere.reedbank",
+      "route.elderwood.willow-cut"
+    ],
+    "cooperation": {
+      "neutral_and_shared_threat_parties": true,
+      "cross_faction_guilds": true,
+      "chat": "Existing block, moderation and recipient rules; no faction cipher.",
+      "trade": "Neutral or guest-pass-authorized service areas; escrow, bind, distance and sanctions still apply.",
+      "private_headquarters": "No automatic party or guild teleport/admission. Each member needs their own eligibility.",
+      "quest_credit": "Each character receives only authoritative evidence for their own eligible quest; never copy allegiance, choices or rewards."
+    },
+    "resolution": {
+      "round_duration_seconds": 1800,
+      "votes_per_account_per_round": 1,
+      "rule": "Most distinct authenticated account ballots; a tie or empty round selects shared-passage. Pin electorate rule, cutoff, options and policy version when opening the round.",
+      "options": [
+        "shared-passage",
+        "fortified-crossing"
+      ],
+      "tie_break": "shared-passage",
+      "essential_progress_requires_winner": false,
+      "immutable_construction": true,
+      "pressure_delta_per_resolved_round": 10
+    },
+    "essential_services": [
+      "basic-trade",
+      "repair",
+      "all-vocation-training",
+      "all-class-training",
+      "essential-commissions",
+      "story-recovery"
+    ],
+    "continuation": "Disabling new selection never changes FactionId. Keep version-pinned definitions/rewards and safe fallback available; unresolved story content is deferred in the personal journal, not deleted or auto-completed."
+  }
+}

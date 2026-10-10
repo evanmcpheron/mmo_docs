@@ -18,7 +18,7 @@ def run(chromium: str, screenshot_directory: Path | None, base_url: str | None=N
 
     def page_url(path: str) -> str:
         return base_url + path if base_url else (ROOT / path).as_uri()
-    examples = ['index.html', 'phases/phase-15.html', 'systems/fishing.html', 'professions/hearthkeeper.html', 'architecture/zone-transfers.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'dependency-map.html', 'sources-verification.html', 'walkthroughs/recipe-race.html']
+    examples = ['index.html', 'phases/phase-15.html', 'systems/fishing.html', 'professions/hearthkeeper.html', 'architecture/zone-transfers.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'dependency-map.html', 'sources-verification.html', 'walkthroughs/recipe-race.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html', 'faction-traceability.html']
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(executable_path=chromium, headless=True, args=['--no-sandbox'])
         context = browser.new_context(viewport={'width': 1440, 'height': 1000}, accept_downloads=True)
@@ -29,7 +29,7 @@ def run(chromium: str, screenshot_directory: Path | None, base_url: str | None=N
             page.goto(page_url(path), wait_until='load')
             assert page.locator('h1').count() == 1, path
             assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), path + ' desktop overflow'
-        checks.append('Ten representative pages loaded; one h1 and no page-width overflow at 1440px.')
+        checks.append('Fourteen representative pages loaded; one h1 and no page-width overflow at 1440px.')
         page.goto(page_url('index.html'))
         if screenshot_directory:
             screenshot_directory.mkdir(parents=True, exist_ok=True)
@@ -50,7 +50,7 @@ def run(chromium: str, screenshot_directory: Path | None, base_url: str | None=N
         assert page.locator('#search-results li').count() > 0
         checks.append('Offline search returns a known system, supports multiple terms and handles zero results.')
         page.goto(page_url('asset-index.html'))
-        assert page.locator('[data-asset-row]:visible').count() == 205
+        assert page.locator('[data-asset-row]:visible').count() == len(json.loads((ROOT / 'sources/current-asset-manifest.json').read_text())['assets'])
         page.locator('#asset-query').fill('WatchFitting')
         assert page.locator('[data-asset-row]:visible').count() == 2
         page.locator('#asset-query').fill('')
@@ -93,7 +93,7 @@ def run(chromium: str, screenshot_directory: Path | None, base_url: str | None=N
             assert not page.locator('#check-31').is_checked()
         checks.append('Progress reload, JSON export, valid replacement import, invalid import rejection and reset confirmation work.')
         page.set_viewport_size({'width': 390, 'height': 844})
-        for path in ['index.html', 'phases/phase-15.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'checklist.html']:
+        for path in ['index.html', 'phases/phase-15.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'checklist.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html']:
             page.goto(page_url(path))
             assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), path + ' mobile overflow'
         page.goto(page_url('index.html'))
@@ -104,7 +104,7 @@ def run(chromium: str, screenshot_directory: Path | None, base_url: str | None=N
         assert not page.locator('#sidebar').is_visible()
         if screenshot_directory:
             page.screenshot(path=str(screenshot_directory / 'home-mobile.png'), full_page=True)
-        checks.append('Five representative pages fit 390px width; mobile navigation opens and Escape closes it.')
+        checks.append('Eight representative pages fit 390px width; mobile navigation opens and Escape closes it.')
         page.set_viewport_size({'width': 1440, 'height': 1000})
         page.goto(page_url('index.html'))
         page.keyboard.press('Tab')

@@ -1,0 +1,360 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:briarwake:documentation:faction-definition:1",
+  "title": "Authored faction definition, version1",
+  "description": "One definition record from sources/factions.json. Cross-record readiness, relation matrix, content references and actual deployment proof additionally require tools/validate_factions.py and the runtime acceptance contract. Political IDs are data, not enumerated faction classes.",
+  "allOf": [
+    {
+      "$ref": "#/$defs/FactionDefinition"
+    }
+  ],
+  "$defs": {
+    "StableId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"
+    },
+    "FactionId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96,
+      "pattern": "^faction\\.[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+    },
+    "FactionDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/FactionId"
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96
+        },
+        "display_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "content_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "kind": {
+          "const": "playable_allegiance"
+        },
+        "ideology": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "selection": {
+          "type": "object",
+          "properties": {
+            "selectable_for_new_character": {
+              "type": "boolean"
+            },
+            "locked_reason_key": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "existing_character_continuation": {
+              "const": "retain_identity_and_recover"
+            }
+          },
+          "required": [
+            "selectable_for_new_character",
+            "locked_reason_key",
+            "existing_character_continuation"
+          ],
+          "additionalProperties": false
+        },
+        "start": {
+          "type": "object",
+          "properties": {
+            "zone_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "spawn_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "fallback_spawn_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "region_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 96
+            },
+            "map_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "spawn_authentication": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "required": [
+            "zone_id",
+            "spawn_id",
+            "fallback_spawn_id",
+            "region_id",
+            "map_id",
+            "spawn_authentication"
+          ],
+          "additionalProperties": false
+        },
+        "story": {
+          "type": "object",
+          "properties": {
+            "root_quest_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "mentor_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "cast_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/StableId"
+              },
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "initial_flags": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/StableId"
+              },
+              "minItems": 1,
+              "maxItems": 32,
+              "uniqueItems": true
+            },
+            "journal_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "dialogue_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "cutscene_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "concept": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "authored": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "root_quest_id",
+            "mentor_id",
+            "cast_ids",
+            "initial_flags",
+            "journal_key",
+            "dialogue_key",
+            "cutscene_key",
+            "concept",
+            "authored"
+          ],
+          "additionalProperties": false
+        },
+        "initial_reputation": {
+          "type": "object",
+          "properties": {
+            "factions": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 96,
+                "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"
+              },
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": -1000,
+                "maximum": 1000
+              },
+              "minProperties": 1
+            },
+            "organizations": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 96,
+                "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"
+              },
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": -1000,
+                "maximum": 1000
+              },
+              "minProperties": 1
+            }
+          },
+          "required": [
+            "factions",
+            "organizations"
+          ],
+          "additionalProperties": false
+        },
+        "services": {
+          "type": "object",
+          "properties": {
+            "guard_policy_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "merchant_policy_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "trainer_policy_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "reward_table_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "guest_passage": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "required": [
+            "guard_policy_id",
+            "merchant_policy_id",
+            "trainer_policy_id",
+            "reward_table_id",
+            "guest_passage"
+          ],
+          "additionalProperties": false
+        },
+        "starter": {
+          "type": "object",
+          "properties": {
+            "grant_source_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "item_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "quantity": {
+              "const": 1
+            },
+            "copper": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "class_loadout_rule": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "appearance_catalog_asset": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "outfit_id": {
+              "$ref": "#/$defs/StableId"
+            },
+            "facing_count": {
+              "const": 4
+            },
+            "presentation_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "unique_art_required": {
+              "const": false
+            }
+          },
+          "required": [
+            "grant_source_id",
+            "item_id",
+            "quantity",
+            "copper",
+            "class_loadout_rule",
+            "appearance_catalog_asset",
+            "outfit_id",
+            "facing_count",
+            "presentation_key",
+            "unique_art_required"
+          ],
+          "additionalProperties": false
+        },
+        "readiness": {
+          "type": "object",
+          "properties": {
+            "authored_specification": {
+              "type": "boolean"
+            },
+            "cooked_content_verified": {
+              "type": "boolean"
+            },
+            "solo_acceptance_verified": {
+              "type": "boolean"
+            },
+            "runtime_status": {
+              "enum": [
+                "not_run",
+                "verified_with_evidence"
+              ]
+            },
+            "blocking_content": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "minItems": 0,
+              "maxItems": 64,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "authored_specification",
+            "cooked_content_verified",
+            "solo_acceptance_verified",
+            "runtime_status",
+            "blocking_content"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "display_name",
+        "display_key",
+        "content_version",
+        "kind",
+        "ideology",
+        "selection",
+        "start",
+        "story",
+        "initial_reputation",
+        "services",
+        "starter",
+        "readiness"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

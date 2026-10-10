@@ -205,10 +205,10 @@
       "build_target": "Login/character creation/selection, required vocation choice, appearance/layer preview, introductory combat-style setup",
       "required_proof": "Create Forgekeeper/Hearthkeeper/Wayfinder prototype record; invalid/duplicate choice and names rejected",
       "title": "Character creation and one required vocation",
-      "editor_steps": "Build login, selection and creation screens with independent faction, combat discipline, vocation and appearance controls. Assign the existing prototype vocations. Use Fixture_identity for disposable selections; approved faction content and full UCombatDisciplineDefinition integration remain required before real creation (discipline assets stay at Phase 12).",
-      "native_contract": "The server validates independent FactionId, CombatDisciplineId and VocationId plus appearance. Faction/class lock after successful creation; vocation alone can be retrained. Phase 05 fixtures are disposable contract tests, not durable gameplay or a second class architecture.",
-      "reopen_consumers": "WBP_Login; WBP_CharacterSelect; WBP_CharacterCreate; ABriarwakeGameMode",
-      "run_now": "Create one character in each prototype vocation through the ordinary UI. Enter Thornmere with the correct starter presentation and repeat using controller navigation.",
+      "editor_steps": "Build login, selection and creation screens with independent faction, combat discipline, vocation and appearance controls. Assign the existing prototype vocations. Use Fixture_identity for disposable selections; approved faction content and full UCombatDisciplineDefinition integration remain required before real creation (discipline assets stay at Phase 12). Faction extension: Register faction schemas, all four ID definitions and the PvE-first policy. Creator displays desired Hearthward-only selection and permanent warning; fixtures disposable until durable/content gates pass.",
+      "native_contract": "The server validates independent FactionId, CombatDisciplineId and VocationId plus appearance. Faction/class lock after successful creation; vocation alone can be retrained. Phase 05 fixtures are disposable contract tests, not durable gameplay or a second class architecture. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "WBP_Login; WBP_CharacterSelect; WBP_CharacterCreate; ABriarwakeGameMode; DA_GameCatalog; WBP_CharacterCreate; WBP_CharacterSelect",
+      "run_now": "Create one character in each prototype vocation through the ordinary UI. Enter Thornmere with the correct starter presentation and repeat using controller navigation. Faction acceptance: Attempt missing/forged/locked faction IDs; inspect independent class/vocation controls and locked reason. Full campaign is NOT complete here.",
       "rejection": "Missing/unavailable class or vocation, missing/invalid faction, duplicate normalized name, invalid appearance or excessive slots reject before mutation/spawn. An absent approved identity catalog blocks real creation; transaction proof uses Phase 06 isolated fixtures and is rechecked with real definitions at Phase 12.",
       "regression": "Verify both remote appearance and the existing movement loop. Phase 05 fixture resets must be visibly labeled disposable.",
       "creates": [
@@ -219,7 +219,15 @@
         "UVocationDefinition",
         "DA_Vocation_Forgekeeper",
         "DA_Vocation_Hearthkeeper",
-        "DA_Vocation_Wayfinder"
+        "DA_Vocation_Wayfinder",
+        "FFactionRelationshipDefinition",
+        "UFactionDefinition",
+        "UFactionPolicyDefinition",
+        "DA_FactionPolicy_PveFirst",
+        "DA_Faction_Hearthward",
+        "DA_Faction_Briarbound",
+        "DA_Faction_Ironfang",
+        "DA_Faction_Tidebound"
       ],
       "activates": [
         "UVocationDefinition",
@@ -229,7 +237,15 @@
         "WBP_Login",
         "WBP_CharacterSelect",
         "WBP_CharacterCreate",
-        "Fixture_identity"
+        "Fixture_identity",
+        "FFactionRelationshipDefinition",
+        "UFactionDefinition",
+        "UFactionPolicyDefinition",
+        "DA_FactionPolicy_PveFirst",
+        "DA_Faction_Hearthward",
+        "DA_Faction_Briarbound",
+        "DA_Faction_Ironfang",
+        "DA_Faction_Tidebound"
       ],
       "dependencies": [
         4
@@ -242,10 +258,10 @@
       "build_target": "Durable character/realm models, ID and transaction ledger, schema versions, reconnect and server restart",
       "required_proof": "Solo character and second client preserve identical canonical progression without duplication",
       "title": "Durable records, receipts and reconnect",
-      "editor_steps": "Define and implement the future server persistence endpoint and versioned account/character/inventory/receipt/lease records. Wire UDurableStateClient on the server only. Replace disposable character fixtures with service-backed creation and one active fenced lease.",
-      "native_contract": "Extend Record_Character in place: permanent FactionId/CombatDisciplineId, active VocationId, independent Progression.Combat and Progression.Vocations keyed by stable vocation ID. Its existing Revision versions progression/build snapshots. Commit mutations, domain uniqueness, receipt/digest and outbox atomically with in-transaction lease checks; UCharacterStateComponent remains an owner-only projection.",
-      "reopen_consumers": "ABriarwakeGameMode; UCharacterStateComponent; WBP_CharacterSelect; ABriarwakePlayerState",
-      "run_now": "Create a character, record IDs/revisions, disconnect after an acknowledged commit, restart the zone and reconnect. Retry the same request after dropping only its response.",
+      "editor_steps": "Define and implement the future server persistence endpoint and versioned account/character/inventory/receipt/lease records. Wire UDurableStateClient on the server only. Replace disposable character fixtures with service-backed creation and one active fenced lease. Faction extension: Extend Record_Character to proposed schema3 preserving schema2 class/vocation histories. Create realm policy record and enforce atomic identity/kit/standing/receipt creation; test explicit legacy confirmation.",
+      "native_contract": "Extend Record_Character in place: permanent FactionId/CombatDisciplineId, active VocationId, independent Progression.Combat and Progression.Vocations keyed by stable vocation ID. Its existing Revision versions progression/build snapshots. Commit mutations, domain uniqueness, receipt/digest and outbox atomically with in-transaction lease checks; UCharacterStateComponent remains an owner-only projection. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "ABriarwakeGameMode; UCharacterStateComponent; WBP_CharacterSelect; ABriarwakePlayerState; Record_Character; Record_CommandReceipt; Record_SessionLease; UDurableStateClient",
+      "run_now": "Create a character, record IDs/revisions, disconnect after an acknowledged commit, restart the zone and reconnect. Retry the same request after dropping only its response. Faction acceptance: Run duplicate CreateCharacter and before/after-commit faults; demonstrate no auto-faction migration.",
       "rejection": "Duplicate login, stale epoch, changed payload under the same RequestId and unsupported schema reject. An unknown outcome must query/replay the original request, not issue an untracked second grant.",
       "regression": "Round-trip every vocation history, not just the active record. Reject post-creation class mutation, stale versions and corrupt active-vocation references. Test the documented legacy conversion without replaying awards or assigning an unknown class. Real identity admission remains gated on approved definitions; isolated service fixtures do not imply Unreal integration.",
       "creates": [
@@ -255,7 +271,8 @@
         "Record_Inventory",
         "Record_SessionLease",
         "UCharacterStateComponent",
-        "UDurableStateClient"
+        "UDurableStateClient",
+        "Record_RealmFactionPolicy"
       ],
       "activates": [
         "UDurableStateClient",
@@ -264,7 +281,8 @@
         "Record_Character",
         "Record_Inventory",
         "Record_CommandReceipt",
-        "Record_SessionLease"
+        "Record_SessionLease",
+        "Record_RealmFactionPolicy"
       ],
       "dependencies": [
         5
@@ -277,10 +295,10 @@
       "build_target": "Two connected 2D biomes with loading screen, persistent identifiers and per-player zone migration",
       "required_proof": "One character transfers while another stays; retries/failures preserve one authoritative character",
       "title": "Two zones and fenced per-character travel",
-      "editor_steps": "Author L_ElderwoodRoad and both UZoneDefinition instances. Start Thornmere and Elderwood in separate dedicated processes with distinct ports. Configure paired gates and safe arrival IDs; wire the directory/reservation/lease protocol before showing travel as complete.",
-      "native_contract": "The persistence boundary fences old ownership and consumes a single-use transfer ticket. Only the selected character reconnects; source ServerTravel is not a zone-crossing solution.",
-      "reopen_consumers": "AZoneGate; ABriarwakeGameMode; UConnectionSubsystem; WBP_Loading; DA_GameCatalog",
-      "run_now": "Leave client B in Thornmere while client A crosses to Elderwood and back. Observe identical inventory/appearance/vocation and one active lease for A throughout terminal recovery.",
+      "editor_steps": "Author L_ElderwoodRoad and both UZoneDefinition instances. Start Thornmere and Elderwood in separate dedicated processes with distinct ports. Configure paired gates and safe arrival IDs; wire the directory/reservation/lease protocol before showing travel as complete. Faction extension: Extend existing lease/transfer admission with durable faction validation, neutral safe fallback and digest-only ticket storage. Future root/guest story is assigned after its quest exists.",
+      "native_contract": "The persistence boundary fences old ownership and consumes a single-use transfer ticket. Only the selected character reconnects; source ServerTravel is not a zone-crossing solution. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "AZoneGate; ABriarwakeGameMode; UConnectionSubsystem; WBP_Loading; DA_GameCatalog; Record_Transfer; UZoneDefinition; AZoneGate",
+      "run_now": "Leave client B in Thornmere while client A crosses to Elderwood and back. Observe identical inventory/appearance/vocation and one active lease for A throughout terminal recovery. Faction acceptance: Use synthetic eligibility at this phase; fence source, race destination versus expiry, resnapshot. Do not claim Q6 is available.",
       "rejection": "Expire/replay a transfer token, lose the destination after reservation and disconnect after fencing. No source body may accept a late transaction under its old epoch.",
       "regression": "Run Phase 06 retry/restart tests on both sides. Never recover by blindly restoring the old source snapshot after destination activation.",
       "creates": [
@@ -499,10 +517,10 @@
       "build_target": "NPC dialogue, quest objectives/journal, starter quest chain, vocation mentor contracts",
       "required_proof": "Character completes one multi-step quest alone; joining mid-quest never double-grants reward",
       "title": "Starter quests, mentors and baseline NPC commerce",
-      "editor_steps": "Author First Supplies and Mentor Vesa using composable NPC service definitions. Add journal/dialogue observers. Introduce only fixed baseline repair/supply/commission services needed for the starter slice; retain Phase 25 for full stock, bank and secure trade.",
-      "native_contract": "Quest objectives consume authoritative gameplay receipts, not widgets. NPC services share the existing command route. Route the existing trainer service through ChangeVocation with lease/revision checks and the established provisional retraining policy; no new trainer class or transaction owner. Separate CombatXP and targeted VocationXP awards in the atomic quest reward.",
-      "reopen_consumers": "ANpcServiceActor; WBP_Dialogue; WBP_QuestJournal; WBP_Merchant; DA_GameCatalog",
-      "run_now": "Accept and complete the existing starter chain alone through its current alternatives. At an appropriate existing trainer, run Fixture_identity with introduction/varied-contract requirements satisfied and the authored retraining fee policy configured. Revisit trained vocations, retry an accepted change and verify no duplicated kit, mastery points, recipes or modifiers.",
+      "editor_steps": "Author First Supplies and Mentor Vesa using composable NPC service definitions. Add journal/dialogue observers. Introduce only fixed baseline repair/supply/commission services needed for the starter slice; retain Phase 25 for full stock, bank and secure trade. Faction extension: Extend existing NPC/quest definitions and evaluate one faction access decision. Author Vesa plus Maren/Talan/Eren and Q1–Q3 while retaining First Supplies. No project or later recipe is required by these early quests.",
+      "native_contract": "Quest objectives consume authoritative gameplay receipts, not widgets. NPC services share the existing command route. Route the existing trainer service through ChangeVocation with lease/revision checks and the established provisional retraining policy; no new trainer class or transaction owner. Separate CombatXP and targeted VocationXP awards in the atomic quest reward. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "ANpcServiceActor; WBP_Dialogue; WBP_QuestJournal; WBP_Merchant; DA_GameCatalog; UNpcServiceDefinition; ANpcServiceActor; UQuestDefinition; DA_GameCatalog; WBP_Dialogue",
+      "run_now": "Accept and complete the existing starter chain alone through its current alternatives. At an appropriate existing trainer, run Fixture_identity with introduction/varied-contract requirements satisfied and the authored retraining fee policy configured. Revisit trained vocations, retry an accepted change and verify no duplicated kit, mastery points, recipes or modifiers. Faction acceptance: Run oath/caravan/parley alternatives alone; reject client evidence and NPC hostility in the neutral square.",
       "rejection": "Stale dialogue, ineligible quest, duplicate delivery and unavailable service retain their existing errors. Trainer changes additionally reject stale lease/revision, unavailable vocation, incomplete trade/craft/transfer or unresolved durable work; no partial fee or progress mutation.",
       "regression": "Run combat → loot → vendor → journal from the normal route. A conversation may limit local input but must not pause the server.",
       "creates": [
@@ -520,7 +538,15 @@
         "DA_Economy_Baseline",
         "DA_NPC_MentorVesa",
         "DA_Quest_FirstSupplies",
-        "DA_Item_RepairKit"
+        "DA_Item_RepairKit",
+        "EFactionAttitude",
+        "FFactionAccessDecision",
+        "DA_NPC_MarenVale",
+        "DA_NPC_TalanReed",
+        "DA_NPC_ErenDusk",
+        "DA_Quest_OathRoad",
+        "DA_Quest_MissingCaravan",
+        "DA_Quest_BriarsCrossing"
       ],
       "activates": [
         "IA_Journal",
@@ -537,7 +563,15 @@
         "WBP_Dialogue",
         "WBP_QuestJournal",
         "WBP_Merchant",
-        "Fixture_quests"
+        "Fixture_quests",
+        "EFactionAttitude",
+        "FFactionAccessDecision",
+        "DA_NPC_MarenVale",
+        "DA_NPC_TalanReed",
+        "DA_NPC_ErenDusk",
+        "DA_Quest_OathRoad",
+        "DA_Quest_MissingCaravan",
+        "DA_Quest_BriarsCrossing"
       ],
       "dependencies": [
         12
@@ -581,10 +615,10 @@
       "build_target": "Forgekeeper complete mini-loop: prospect, recover salvage, smelt/forge, repair, defend",
       "required_proof": "Solo plays Forgekeeper outing plus one world-project material, gear usable and restart-safe",
       "title": "Forgekeeper outing and first durable project contribution",
-      "editor_steps": "Add WatchFitting recipe and forge service. Build the small North Road project schema, board and record now because this phase requires a real repair outcome. Connect prospect → salvage encounter → harvest → forge → watchtower contribution.",
-      "native_contract": "Crafting and contribution share receipt/transaction primitives. The early project is not a debug counter: debit inputs, record contribution and publish stage once. Expand this same owner/schema at 22/23.",
-      "reopen_consumers": "WBP_Crafting; WBP_RegionBoard; ARegionProjectionActor; DA_Project_NorthRoad; DA_Quest_FirstSupplies",
-      "run_now": "As a solo Forgekeeper obtain 3 ore and 1 salvage plate, forge one fitting and contribute it. Inspect inventory debit, mastery and region receipt; restart and observe the repair state.",
+      "editor_steps": "Add WatchFitting recipe and forge service. Build the small North Road project schema, board and record now because this phase requires a real repair outcome. Connect prospect → salvage encounter → harvest → forge → watchtower contribution. Faction extension: Retain early project board and one region owner. Prepare faction-neutral bound work receipts alongside the existing Forgekeeper fitting route; do not claim the full campaign or all five recipes exist.",
+      "native_contract": "Crafting and contribution share receipt/transaction primitives. The early project is not a debug counter: debit inputs, record contribution and publish stage once. Expand this same owner/schema at 22/23. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "WBP_Crafting; WBP_RegionBoard; ARegionProjectionActor; DA_Project_NorthRoad; DA_Quest_FirstSupplies; DA_Project_NorthRoad; Record_Region; ProjectContributionRecord; WBP_RegionBoard",
+      "run_now": "As a solo Forgekeeper obtain 3 ore and 1 salvage plate, forge one fitting and contribute it. Inspect inventory debit, mastery and region receipt; restart and observe the repair state. Faction acceptance: One character can contribute through basic work; race duplicate source IDs and existing NorthRoad alias.",
       "rejection": "Double-click craft, replay contribution, lose response after commit and fill inventory all have explicit outcomes. No animation completion may grant fitting or stage credit.",
       "regression": "Rerun vendor alternatives so another vocation can acquire essential fittings without a human blacksmith. Maintain the same catalog/region identities through later phases.",
       "creates": [
@@ -731,10 +765,10 @@
       "build_target": "Wayfinder exploration/cartography, tracks, hidden routes and skirmish encounters",
       "required_proof": "Solo scout discovers route and threat, fights, reports it, gains personal/shared discovery once",
       "title": "Wayfinder cartography and revised Slice B checkpoint",
-      "editor_steps": "Add personal discovery cells, track/clue definitions, hidden Willow Cut and a shared shortcut state. Wire map/minimap, the route NPC report and skirmish/safer investigation alternatives.",
-      "native_contract": "Personal discovery, optional first-arrival recognition and shared route access are separate transactions/scopes. Revealing a public shortcut does not consume another character’s personal reward.",
-      "reopen_consumers": "DA_Vocation_Wayfinder; WBP_WorldMap; WBP_Minimap; AZoneGate; ARegionProjectionActor",
-      "run_now": "Inspect three clues, choose a route, overcome its challenge, report and use the shortcut. Rejoin and replay triggers without another reward. Now run all three Slice B vocation routes.",
+      "editor_steps": "Add personal discovery cells, track/clue definitions, hidden Willow Cut and a shared shortcut state. Wire map/minimap, the route NPC report and skirmish/safer investigation alternatives. Faction extension: Preserve Slice B here. Wayfinder discovery receipts may contribute to the same project; faction badge does not gate cartography.",
+      "native_contract": "Personal discovery, optional first-arrival recognition and shared route access are separate transactions/scopes. Revealing a public shortcut does not consume another character’s personal reward. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "DA_Vocation_Wayfinder; WBP_WorldMap; WBP_Minimap; AZoneGate; ARegionProjectionActor; CharacterDiscoveryRecord; DA_Project_NorthRoad",
+      "run_now": "Inspect three clues, choose a route, overcome its challenge, report and use the shortcut. Rejoin and replay triggers without another reward. Now run all three Slice B vocation routes. Faction acceptance: Run existing Slice B and reject duplicate discovery/contribution credit.",
       "rejection": "Client-forged discovery, wrong clue order, invalid gate and duplicate report reject. A later-arriving character can still complete the personal route.",
       "regression": "Revised Slice B is after Phase 19, not 18. Its merchant/board minimum was introduced at 13/15; full economy and regional extensions remain later.",
       "creates": [
@@ -762,21 +796,25 @@
       "build_target": "Woodwright timber management, carpentry, replanting, defense assets and quests",
       "required_proof": "Solo sources eligible timber, crafts a bridge support and restores an authored forest/road state",
       "title": "Woodwright timber, carpentry and grove restoration",
-      "editor_steps": "Activate DA_Vocation_Woodwright, BridgeSupport recipe and mentor route. Use existing sites for eligible mature timber, authored replant/restore states and defense objectives. Add necessary tool/art fallbacks transparently.",
-      "native_contract": "The Woodwright composes shared gathering, crafting, quest and project systems. Sustainable selection and support design change the outcome; no independent logging inventory subsystem.",
-      "reopen_consumers": "WBP_CharacterCreate; DA_GameCatalog; WBP_Professions; WBP_Crafting; WBP_RegionBoard",
-      "run_now": "Create a Woodwright through the normal creator, identify timber, craft support, defend/repair the road and restore a grove stage alone with normal gear.",
+      "editor_steps": "Activate DA_Vocation_Woodwright, BridgeSupport recipe and mentor route. Use existing sites for eligible mature timber, authored replant/restore states and defense objectives. Add necessary tool/art fallbacks transparently. Faction extension: Author structural timber item/site on existing resource/inventory owners and bind the Woodwright recipe input. Preserve server-randomized eligible sites and neutral safe access.",
+      "native_contract": "The Woodwright composes shared gathering, crafting, quest and project systems. Sustainable selection and support design change the outcome; no independent logging inventory subsystem. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "WBP_CharacterCreate; DA_GameCatalog; WBP_Professions; WBP_Crafting; WBP_RegionBoard; DA_Recipe_BridgeSupport; UResourceSiteDefinition; UItemDefinition",
+      "run_now": "Create a Woodwright through the normal creator, identify timber, craft support, defend/repair the road and restore a grove stage alone with normal gear. Faction acceptance: Harvest/craft/contribute once; repeat request cannot create another item or credit.",
       "rejection": "Protected sapling harvest, rival restoration overwrite, duplicate support contribution and an unlicensed/missing tool pose must not pass silently.",
       "regression": "Run the three earlier vocations after activating the fourth. Character creation still requires exactly one active primary vocation.",
       "creates": [
-        "DA_Recipe_BridgeSupport",
         "DA_Vocation_Woodwright",
-        "DA_Item_BridgeSupport"
+        "DA_Item_BridgeSupport",
+        "DA_Item_StraightGrainTimber",
+        "DA_Recipe_BridgeSupport",
+        "DA_Resource_ElderwoodTimber"
       ],
       "activates": [
         "DA_Vocation_Woodwright",
         "DA_Item_BridgeSupport",
-        "DA_Recipe_BridgeSupport"
+        "DA_Recipe_BridgeSupport",
+        "DA_Item_StraightGrainTimber",
+        "DA_Resource_ElderwoodTimber"
       ],
       "dependencies": [
         19
@@ -789,10 +827,10 @@
       "build_target": "Apothecary herb discovery, field research, alchemy and support/curative quests",
       "required_proof": "Solo collects safe reagents, solves regional illness challenge and crafts a useful antidote",
       "title": "Apothecary investigation, alchemy and cure",
-      "editor_steps": "Activate DA_Vocation_Apothecary, reagent and BlightRemedy recipe. Author a clue-based plant diagnosis, hazard expedition and regional cure objective. Add a safe accessible alternative to precision timing.",
-      "native_contract": "Field research unlocks permitted formula choices; server-validated ingredient/technique selection determines the result. Healing effects and regional cure receipts have different owners.",
-      "reopen_consumers": "WBP_CharacterCreate; DA_GameCatalog; WBP_Crafting; WBP_QuestJournal; UActionExecutionComponent",
-      "run_now": "Create the fifth vocation, identify a reagent, resolve an encounter or safe route, craft remedy and cure the local condition. Verify useful solo progression with no specialist partner.",
+      "editor_steps": "Activate DA_Vocation_Apothecary, reagent and BlightRemedy recipe. Author a clue-based plant diagnosis, hazard expedition and regional cure objective. Add a safe accessible alternative to precision timing. Faction extension: All five vocation contribution definitions now exist; retain active-vocation validation and free public work alternative.",
+      "native_contract": "Field research unlocks permitted formula choices; server-validated ingredient/technique selection determines the result. Healing effects and regional cure receipts have different owners. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "WBP_CharacterCreate; DA_GameCatalog; WBP_Crafting; WBP_QuestJournal; UActionExecutionComponent; DA_Recipe_BlightRemedy; DA_GameCatalog",
+      "run_now": "Create the fifth vocation, identify a reagent, resolve an encounter or safe route, craft remedy and cure the local condition. Verify useful solo progression with no specialist partner. Faction acceptance: Check each recipe references real catalog inputs/outputs and neutral acquisition.",
       "rejection": "Wrong formula, missing research, repeated cure and interrupted craft produce explicit outcomes without consuming ingredients twice.",
       "regression": "Run all five creators and short-session routes. Apothecary fallback animations remain on the art backlog until verified.",
       "creates": [
@@ -818,17 +856,19 @@
       "build_target": "Living Regions schema: durable development/danger/discovery records, snapshot/delta presentation, UI boards",
       "required_proof": "Solo and a newly joined second client see the same staged region state after restart",
       "title": "Full Living Region projection and persistence",
-      "editor_steps": "Extend the Phase 15 region schema to independent development/danger/discovery axes and versioned snapshot/delta publication. Add late-join hydration, revision-gap detection and migration fixtures.",
-      "native_contract": "ARegionProjectionActor observes durable region records; GameState replicates public summaries. One outbox event may have many idempotent consumers, none of which grants the project again.",
-      "reopen_consumers": "ARegionProjectionActor; ABriarwakeGameState; WBP_RegionBoard; WBP_WorldMap; ANpcServiceActor",
-      "run_now": "Commit a stage, restart the server, join with a new client and verify the same route, services, dialogue and minimap state. Drop a delta and require a full snapshot refresh.",
+      "editor_steps": "Extend the Phase 15 region schema to independent development/danger/discovery axes and versioned snapshot/delta publication. Add late-join hydration, revision-gap detection and migration fixtures. Faction extension: Create Q4 with all recipe/project prerequisites already present. Extend same region owner with pressure fields; retain permanent construction and late-arrival maintenance.",
+      "native_contract": "ARegionProjectionActor observes durable region records; GameState replicates public summaries. One outbox event may have many idempotent consumers, none of which grants the project again. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "ARegionProjectionActor; ABriarwakeGameState; WBP_RegionBoard; WBP_WorldMap; ANpcServiceActor; DA_Quest_NorthRoadCompact; Record_Region; ARegionProjectionActor",
+      "run_now": "Commit a stage, restart the server, join with a new client and verify the same route, services, dialogue and minimap state. Drop a delta and require a full snapshot refresh. Faction acceptance: Four three-unit orders complete essential12 alone; an already repaired realm still requires personal3, without reconstruction.",
       "rejection": "Out-of-order revisions, unknown stage/content version and duplicated outbox delivery cannot regress the visible world or repeat a reward.",
       "regression": "Migrate the existing North Road record rather than creating a second project system. Preserve all earlier vocation contribution receipts.",
       "creates": [
-        "Fixture_regions"
+        "Fixture_regions",
+        "DA_Quest_NorthRoadCompact"
       ],
       "activates": [
-        "Fixture_regions"
+        "Fixture_regions",
+        "DA_Quest_NorthRoadCompact"
       ],
       "dependencies": [
         21
@@ -841,14 +881,18 @@
       "build_target": "Shared construction objectives, alternative solo contribution routes, NPC visual/service/world transitions",
       "required_proof": "Solo repairs a bridge through available methods; 2/5/10/30 cannot duplicate contributions",
       "title": "Construction, solo alternatives and visible services",
-      "editor_steps": "Author the full North Road objective alternatives and staged bridge/watchtower visuals. Bind route collision, merchant activation, dialogue and map markers to the same committed stage. Display personal effort and optional enhancements separately.",
-      "native_contract": "Contribution validation checks current stage, allowed source and both inventory/region revisions in one transaction. A player never loses credit because someone else logs in.",
-      "reopen_consumers": "DA_Project_NorthRoad; WBP_RegionBoard; AZoneGate; ANpcServiceActor; World stage visual consumers",
-      "run_now": "Complete the essential project with one human, then with 2/5/10/30 in future fixtures. Separately seed a 70-of-100 progress display fixture for a mid-stage join and validate its revision.",
+      "editor_steps": "Author the full North Road objective alternatives and staged bridge/watchtower visuals. Bind route collision, merchant activation, dialogue and map markers to the same committed stage. Display personal effort and optional enhancements separately. Faction extension: Create Q5 and add the bounded versioned crossing consultation to the same region owner. Personal branch commits with its reward; optional public ballot remains separate.",
+      "native_contract": "Contribution validation checks current stage, allowed source and both inventory/region revisions in one transaction. A player never loses credit because someone else logs in. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "DA_Project_NorthRoad; WBP_RegionBoard; AZoneGate; ANpcServiceActor; World stage visual consumers; DA_Quest_CrossingChoice; Record_RealmFactionPolicy; WBP_RegionBoard",
+      "run_now": "Complete the essential project with one human, then with 2/5/10/30 in future fixtures. Separately seed a 70-of-100 progress display fixture for a mid-stage join and validate its revision. Faction acceptance: Race opposed choices/ballots and tie; one-account/round and deterministic cutoff rule hold.",
       "rejection": "Race the last two contributions and reject stale stage commands without debit. Duplicate outbox application changes visuals once and awards nothing.",
       "regression": "Rerun every vocation’s distinct contribution and the non-specialist NPC route. Main construction remains permanent through inactivity/restart.",
-      "creates": [],
-      "activates": [],
+      "creates": [
+        "DA_Quest_CrossingChoice"
+      ],
+      "activates": [
+        "DA_Quest_CrossingChoice"
+      ],
       "dependencies": [
         22
       ],
@@ -860,13 +904,15 @@
       "build_target": "Region danger, enemy camp escalation, clue-driven legendary hunts, patrol and NPC reaction events",
       "required_proof": "One human can resolve essential threat; group roles add tactical variety; danger resets by authored policy",
       "title": "Regional danger and clue-driven legendary hunt",
-      "editor_steps": "Author bounded threat bands, camp stages, patrol changes and a regional leader encounter. Connect Wayfinder clues, Apothecary blight research and supply/repair contributions to distinct eligible threat objectives.",
-      "native_contract": "Danger events are server-authorized state transitions with transparent renewal rules. They may change patrols/services temporarily but do not destroy permanent construction because players were absent.",
-      "reopen_consumers": "DA_Region_Elderwood; UEncounterDefinition; ABriarwakeAIController; WBP_RegionBoard; WBP_QuestJournal",
-      "run_now": "Investigate clues, resolve a camp, defeat the leader under the solo mechanic variant with permitted aid and observe the merchant route change. Repeat with a cooperative group.",
+      "editor_steps": "Author bounded threat bands, camp stages, patrol changes and a regional leader encounter. Connect Wayfinder clues, Apothecary blight research and supply/repair contributions to distinct eligible threat objectives. Faction extension: Author Split Bell encounter definition on existing encounter authority; defer its NPC assistance activation until26. Retain noncombat tablet alternative.",
+      "native_contract": "Danger events are server-authorized state transitions with transparent renewal rules. They may change patrols/services temporarily but do not destroy permanent construction because players were absent. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "DA_Region_Elderwood; UEncounterDefinition; ABriarwakeAIController; WBP_RegionBoard; WBP_QuestJournal; DA_Encounter_SplitBell; UEncounterDefinition",
+      "run_now": "Investigate clues, resolve a camp, defeat the leader under the solo mechanic variant with permitted aid and observe the merchant route change. Repeat with a cooperative group. Faction acceptance: Validate count, PvE-only target rules, telegraph and no required human group.",
       "rejection": "Repeated leader-death receipt, client-forged threat reduction and an unbounded absence penalty reject. An interrupted event restores only its authored repeatable state.",
       "regression": "Rerun permanent bridge state after threat renewal. Verify main-story access remains viable when no other human is online.",
-      "creates": [],
+      "creates": [
+        "DA_Encounter_SplitBell"
+      ],
       "activates": [],
       "dependencies": [
         23
@@ -879,10 +925,10 @@
       "build_target": "NPC merchants, currency, buy/sell/repair/bank, trade escrow, player-vocation market relevance",
       "required_proof": "Solo provisions without player trade; two clients trade securely; stale balances and retries fail cleanly",
       "title": "Economy hardening, bank and secure player trade",
-      "editor_steps": "Extend the early baseline merchant with stock, buyback, repair, bank and commissions. Add two-sided offer-revision trade escrow and atomic transfer. UI must show exact instance properties and clear both confirmations when an offer changes.",
-      "native_contract": "Currency uses checked integers; service mutations cover balances, stock and item ownership together. Reserve escrowed assets against equip/sell/craft conflicts. A lost final response is queried, not interpreted as cancellation.",
-      "reopen_consumers": "WBP_Merchant; WBP_Bank; WBP_Trade; UCharacterStateComponent; ANpcServiceActor",
-      "run_now": "As a solo Wayfinder buy repairs, earn/sell/commission and complete the story route. With two clients trade items/currency, alter offers and disconnect at each commit boundary.",
+      "editor_steps": "Extend the early baseline merchant with stock, buyback, repair, bank and commissions. Add two-sided offer-revision trade escrow and atomic transfer. UI must show exact instance properties and clear both confirmations when an offer changes. Faction extension: Bind faction commission/access/discount policy to existing merchant transactions; neutral essentials remain available.",
+      "native_contract": "Currency uses checked integers; service mutations cover balances, stock and item ownership together. Reserve escrowed assets against equip/sell/craft conflicts. A lost final response is queried, not interpreted as cancellation. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "WBP_Merchant; WBP_Bank; WBP_Trade; UCharacterStateComponent; ANpcServiceActor; WBP_Merchant; ANpcServiceActor; existing economy owners",
+      "run_now": "As a solo Wayfinder buy repairs, earn/sell/commission and complete the story route. With two clients trade items/currency, alter offers and disconnect at each commit boundary. Faction acceptance: Hostile optional outpost denial gives a safe neutral route; no essential material monopoly.",
       "rejection": "Negative funds, overflow, stale quote, bound item, full recipient bag and duplicated confirmation must produce a lossless rejection or the original terminal receipt.",
       "regression": "Retest all NPC alternatives and recipe/quest supply chains. Human trade improves choice but is never a required production dependency.",
       "creates": [
@@ -908,14 +954,19 @@
       "build_target": "Deep solo-to-30 balance, scalable encounters/projects, hireling NPCs and world-content parity",
       "required_proof": "Automated/controlled tests at 1,2,5,10,30; core PvE never requires a human group and scaling avoids goal oscillation",
       "title": "Solo-to-30 model and constrained NPC help",
-      "editor_steps": "Implement the frozen optional-enhancement model, fixed solo-reachable essential quota and per-player visible effort. Store the activation snapshot and policy version. Author companion assistance for missing mechanics with active-player checks.",
-      "native_contract": "Population is measured over a bounded engaged-account window, not instantaneous logins. Essential goals/credit never change. Optional targets never decrease when population increases, and a project stage never retunes while active.",
-      "reopen_consumers": "UConstructionProjectDefinition; UEncounterDefinition; WBP_RegionBoard; NPC assistance consumer",
-      "run_now": "Run the offline arithmetic simulation in this package, then separately run actual 1/2/5/10/30 clients. Measure personal time-to-value, solo route completion, stalls, rewards and assistance abuse.",
+      "editor_steps": "Implement the frozen optional-enhancement model, fixed solo-reachable essential quota and per-player visible effort. Store the activation snapshot and policy version. Author companion assistance for missing mechanics with active-player checks. Faction extension: Activate existing NPC help and Q6. This is the first full faction MVP acceptance checkpoint, not Phase05. Register final campaign links and guest Elderwood admission; all actual content/solo readiness gates must pass before release.",
+      "native_contract": "Population is measured over a bounded engaged-account window, not instantaneous logins. Essential goals/credit never change. Optional targets never decrease when population increases, and a project stage never retunes while active. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "UConstructionProjectDefinition; UEncounterDefinition; WBP_RegionBoard; NPC assistance consumer; DA_Quest_BellDusk; DA_Encounter_SplitBell; existing NPC help; UZoneDefinition; DA_GameCatalog",
+      "run_now": "Run the offline arithmetic simulation in this package, then separately run actual 1/2/5/10/30 clients. Measure personal time-to-value, solo route completion, stalls, rewards and assistance abuse. Faction acceptance: Create → six quests (both branches separately) → durable road and journal → Elderwood transfer → restart/reconnect. One human and no PvP; runtime proof remains not_run in this docs repository.",
       "rejection": "Login churn, alt inflation, mid-stage recount, repeated helper rewards and AFK companion completion must not lower essential work or mint rewards.",
       "regression": "Slice C requires all five solo routes, durable shared stages, late join/restart, a resolved threat and real population evidence where infrastructure permits.",
-      "creates": [],
-      "activates": [],
+      "creates": [
+        "DA_Quest_BellDusk"
+      ],
+      "activates": [
+        "DA_Quest_BellDusk",
+        "DA_Encounter_SplitBell"
+      ],
       "dependencies": [
         25
       ],
@@ -927,10 +978,10 @@
       "build_target": "Party/group XP and loot, chat/friends/block, guild contributions, social boards and permissions",
       "required_proof": "Solo remains fully playable; a group can coordinate without griefing or duplicating credit",
       "title": "Party, chat, friends, block and guild permissions",
-      "editor_steps": "Wire social screens to scoped membership/presence and chat routes. Add expiring single-use invitations, friends/block and guild roles with permission revisions. Integrate party reward credit with the existing encounter policy.",
-      "native_contract": "Social persistence belongs to one shared service responsibility, not a duplicate account store. The zone decides local proximity; only authorized recipients receive messages or private state.",
-      "reopen_consumers": "WBP_Social; WBP_Party; WBP_Chat; Encounter participation consumer; WBP_RegionBoard",
-      "run_now": "Invite, accept, share eligible quests, support in combat, trade, block and revoke a guild permission with two players. Repeat the entire solo route without membership.",
+      "editor_steps": "Wire social screens to scoped membership/presence and chat routes. Add expiring single-use invitations, friends/block and guild roles with permission revisions. Integrate party reward credit with the existing encounter policy. Faction extension: Enable neutral/shared-threat cross-faction party/guild cooperation using existing social security; private faction rewards remain individual.",
+      "native_contract": "Social persistence belongs to one shared service responsibility, not a duplicate account store. The zone decides local proximity; only authorized recipients receive messages or private state. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "WBP_Social; WBP_Party; WBP_Chat; Encounter participation consumer; WBP_RegionBoard; Existing party/guild/chat/trade owners",
+      "run_now": "Invite, accept, share eligible quests, support in combat, trade, block and revoke a guild permission with two players. Repeat the entire solo route without membership. Faction acceptance: Two opposing faction fixtures cooperate without gaining each other’s private quest or merchant permissions.",
       "rejection": "Expired invite, blocked message, stale guild rank and spam are rejected/rate-limited. An old UI cannot retain permission after demotion.",
       "regression": "Verify guild presence does not become a crafting/dungeon/story gate and ordinary 30-client zone population is not treated as required dungeon group size.",
       "creates": [
@@ -960,10 +1011,10 @@
       "build_target": "Dungeons, regional bosses, cooperative expeditions, companion substitution and instance recovery",
       "required_proof": "Same critical milestone obtainable with one human and with parties; boss variants validated",
       "title": "Bellroot Vault solo/group dungeon",
-      "editor_steps": "Author the Bellroot Vault entry, checkpoint, guardian and exit with the solo helper/lever variant and voluntary group role variant. Set a five-human initial party fixture separately from the thirty-client region load case.",
-      "native_contract": "Instance ownership, active participation, checkpoints and reward receipts survive planned recovery. Helpers perform bounded mechanic tasks and cannot complete encounters while the player is idle.",
-      "reopen_consumers": "UDungeonDefinition; WBP_DungeonEntry; AZoneGate; UEncounterDefinition; WBP_Party",
-      "run_now": "Obtain unlock.bellroot-road with 1, 2 and 5 humans through the appropriate variants. Crash/reconnect before and after boss reward commitment and verify checkpoint/receipt behavior.",
+      "editor_steps": "Author the Bellroot Vault entry, checkpoint, guardian and exit with the solo helper/lever variant and voluntary group role variant. Set a five-human initial party fixture separately from the thirty-client region load case. Faction extension: Verify shared-threat dungeon access has a solo variant and faction-specific personal rewards are not shared merely by party membership.",
+      "native_contract": "Instance ownership, active participation, checkpoints and reward receipts survive planned recovery. Helpers perform bounded mechanic tasks and cannot complete encounters while the player is idle. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "UDungeonDefinition; WBP_DungeonEntry; AZoneGate; UEncounterDefinition; WBP_Party; Existing dungeon and NPC-help owners",
+      "run_now": "Obtain unlock.bellroot-road with 1, 2 and 5 humans through the appropriate variants. Crash/reconnect before and after boss reward commitment and verify checkpoint/receipt behavior. Faction acceptance: One human completes essential route; mixed faction party has equivalent core advancement.",
       "rejection": "Instance full, source/destination loss, expired entry, duplicate boss reward and inactive-player helper farming fail under documented policies.",
       "regression": "Retest field combat, zone transfer and permanent region stage after dungeon exit. Essential narrative rewards remain available solo.",
       "creates": [
@@ -1028,10 +1079,10 @@
       "build_target": "Full UI/UX and accessibility, controller navigation, audio/VFX, localization, content balance and quality-of-life",
       "required_proof": "All real game features reachable from screens that do not own rules; screen-independent regression passes",
       "title": "Full screens, accessibility and audiovisual feedback",
-      "editor_steps": "Complete every screen route and controller focus path. Add localization keys, scalable readable text, reduced motion and visual equivalents for audio/timing cues. Assign licensed audio/VFX only after provenance checks.",
-      "native_contract": "Controller owns widget lifetime. Widgets read projections and send commands; none implements inventory, skills, world stages, merchant stock or quest completion.",
-      "reopen_consumers": "All WBP_ assets; UUiScreenCatalog; ABriarwakePlayerController; UCharacterAppearanceComponent",
-      "run_now": "Run the starter routes and dungeon with controller, large text, reduced motion and audio disabled. Destroy/recreate the HUD and merchant/crafting widgets while repeating authoritative actions.",
+      "editor_steps": "Complete every screen route and controller focus path. Add localization keys, scalable readable text, reduced motion and visual equivalents for audio/timing cues. Assign licensed audio/VFX only after provenance checks. Faction extension: Review localized permanent warning, locked future identities, journal public/personal distinction, non-color hostility, controller focus and narrow layout.",
+      "native_contract": "Controller owns widget lifetime. Widgets read projections and send commands; none implements inventory, skills, world stages, merchant stock or quest completion. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "All WBP_ assets; UUiScreenCatalog; ABriarwakePlayerController; UCharacterAppearanceComponent; Existing UI widgets",
+      "run_now": "Run the starter routes and dungeon with controller, large text, reduced motion and audio disabled. Destroy/recreate the HUD and merchant/crafting widgets while repeating authoritative actions. Faction acceptance: No audio-only clue, eight-facing requirement or fake playable future option.",
       "rejection": "Missing focus return, inaccessible timing, lost pending-state recovery and a rule available only inside a widget fail acceptance. Screen-reader support needs actual platform evidence.",
       "regression": "Recheck every system after UI replacement; gameplay outcomes and receipts must be unchanged.",
       "creates": [
@@ -1055,10 +1106,10 @@
       "build_target": "Security/ops/anti-cheat, deployment, performance/packet-loss, package proof, backup/recovery, content migrations and doc audits",
       "required_proof": "Truthful packaged server/client validation at populations 1/2/5/10/30 (where environment permits), failures named explicitly",
       "title": "Packaging, security, restore and truthful evidence",
-      "editor_steps": "Package matched future client/server builds and run the deployment matrix in a nonproduction environment. Test secrets separation, rate limits, moderation permissions, crash/timeout/replay, schema migration and isolated backup restoration.",
-      "native_contract": "Publish environment, exact commands, source/build hashes and raw observed results. Static HTML/schema tests cannot be substituted for Blueprint compilation, network tests or actual 30-client performance.",
-      "reopen_consumers": "All runtime consumers; sources/verification.json; operations runbook; feature and asset registries",
-      "run_now": "Run Slice D: original biome route, solo/party dungeon, secure trade/social flow, durable region changes and end-to-end recovery. Profile 1/2/5/10/30 with declared hardware/latency/loss.",
+      "editor_steps": "Package matched future client/server builds and run the deployment matrix in a nonproduction environment. Test secrets separation, rate limits, moderation permissions, crash/timeout/replay, schema migration and isolated backup restoration. Faction extension: Validate complete enabled dependency closure, continuation archive and migration/rollback readiness. Run real 1/2/5/10/30 admission/transfer/project tests only with engine/backend available.",
+      "native_contract": "Publish environment, exact commands, source/build hashes and raw observed results. Static HTML/schema tests cannot be substituted for Blueprint compilation, network tests or actual 30-client performance. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "reopen_consumers": "All runtime consumers; sources/verification.json; operations runbook; feature and asset registries; Deployment; catalog; all faction consumers",
+      "run_now": "Run Slice D: original biome route, solo/party dungeon, secure trade/social flow, durable region changes and end-to-end recovery. Profile 1/2/5/10/30 with declared hardware/latency/loss. Faction acceptance: Reject enabling any future faction with missing spawn/story/NPC/critical reward/neutral/solo content. Record actual measurements separately from SQLite conformance jobs.",
       "rejection": "Fail acceptance for unknown transaction outcomes without a receipt query, duplicated character ownership, unrecoverable backup, exposed token or any invented passing build/runtime record.",
       "regression": "Rerun all four slices. Record remaining art/provider/platform/version blockers and leave the guide/game completion status incomplete where requirements remain unproven.",
       "creates": [

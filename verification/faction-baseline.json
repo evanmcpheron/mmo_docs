@@ -1,0 +1,38 @@
+{
+  "base_commit": "468d9430b5492ee5b6d1777ae021b59085c7a507",
+  "scope": "Clean main baseline; 29 tests; no runtime verification",
+  "commands": [
+    {
+      "command": "python3 tools/build_manual_indexes.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 tools/build_manual_indexes.py --check",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 tools/validate_documentation.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 tools/check_phase_integration.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 tools/check_feature_coverage.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 tools/simulate_population_scaling.py",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 -m unittest discover -s tools/tests -v",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 tools/check_feature_coverage.py --require-complete",
+      "exit_code": 1
+    }
+  ]
+}

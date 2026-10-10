@@ -28,3 +28,16 @@ The included arithmetic model is not a player-behavior simulation or measured ba
 See `verification/test-results.txt`, `validation.json`, `phase-integration.json`, `coverage-accounting.json`, `coverage-strict.json`, `browser.json`, and `sources/population-simulation.json` for exact executed outcomes. A static pass establishes only the current files' checked invariants. Browser policy blocked file:// and local-HTTP navigation; isolated in-memory rendering, search, filtering and progress-JSON controls passed, but ordinary navigation, actual file download and storage persistence are not verified. A strict completion failure is expected and intentionally retained.
 
 Next implementation work must obtain and audit the exact source archives, then complete each phase's asset/editor/consumer contract against those sources. Do not call this package complete merely because its links validate.
+
+
+## Faction extension — current task scope
+
+Based on main `468d9430b5492ee5b6d1777ae021b59085c7a507`, preserving the merged permanent-class/changeable-vocation policy. This batch adds four configurable allegiances, an authored six-quest Hearthward campaign, data/wire schemas, 23 new and 44 extended asset contracts, phase assignments, 72 requirement mappings and 18 compatibility decisions. Total generated pages:349; registered assets:228. Existing contracts retain their initial maturity; the original whole-guide coverage statuses are unchanged.
+
+Hearthward’s content specification is complete enough to follow its six authored quest routes, including dialogue choices, contribution alternatives and source IDs. It is **not a playable implementation**: real `.umap`/NPC/UI assets, production objective evaluators, authenticated service operations, UHT/Blueprint wiring and dedicated-server acceptance remain unimplemented/unverified in this repository. Source-only Unreal delivery is specifically blocked by AGENTS.md. Three future faction campaigns, maps and art are explicitly not authored; synthetic four-/five-faction tests do not change their production locks.
+
+Creation/catalog policy is Phase05 with a bounded fixture; schema/migration06, NPC/early quests13, existing board15 and SliceB19 remain. Shared project effects22, public preference23, NPC-assisted final confrontation26 and social verification27 use the same established owners. Full faction slice26 cannot be advertised as complete at character creation.
+
+Actual checks are recorded in `verification/faction-checks.json`; baseline results are in `faction-baseline.json`. SQLite tests include trusted-evidence branch completion, duplicate/replay handling, writer contention, migration and transfer fencing. They are not actual server/client or PostgreSQL crash tests. In-memory desktop/mobile checks are separate from environment-blocked file/HTTP navigation. Strict full-guide completion and faction deployment readiness remain explicit non-passing gates.
+
+Publication is recorded in `verification/faction-publication.json`. The earlier edition’s access failures remain historical. Neither the game repository nor the historical guide is changed. Game PR12’s rename and plugin-build statements were inspected as unmerged/reported evidence, not rerun or adopted as merged facts.

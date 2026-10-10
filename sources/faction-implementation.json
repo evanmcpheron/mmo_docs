@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "scope": "Detailed proposed implementation contracts; no Unreal or production backend source is authorized in this repository",
+  "sections": [
+    {
+      "title": "Scope, versions and immutable names",
+      "paragraphs": [
+        "Committed requirements: exactly one permanent playable FactionId per character, independent of permanent CombatDisciplineId and the one active changeable VocationId. Returning to a trained vocation restores its saved history. No class/vocation eligibility filter is derived from faction.",
+        "CatalogVersion=1, faction definition ContentVersion=1, PolicyVersion=1 and proposed Record_Character SchemaVersion=3 are separate from monotonic aggregate Revision and writer LeaseEpoch. Never reuse a display name, asset path or array index as durable identity. IDs are case-sensitive lower-case ASCII namespace tokens, 1–96 bytes, matching ^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$. Existing NorthRoad storage key is an explicitly retained legacy exception.",
+        "The faction content is an authored, validated specification. SelectableForNewCharacter is the desired MVP content policy, not proof of cooked maps. A release additionally requires the deployment validator and real content/solo acceptance evidence. All current Unreal, backend and multiplayer acceptance remains not_run."
+      ]
+    },
+    {
+      "title": "Authority and object lifetime",
+      "paragraphs": [],
+      "table": {
+        "headers": [
+          "Fact",
+          "Only mutation owner",
+          "Projection / lifetime"
+        ],
+        "rows": [
+          [
+            "Definitions / default relationships",
+            "Validated content build, immutable per content version",
+            "UGameCatalog indexes UFactionDefinition and UFactionPolicyDefinition; retain active and historical versions"
+          ],
+          [
+            "Permanent allegiance, standings, personal choices",
+            "Existing authenticated character-domain transaction owner",
+            "Record_Character + QuestProgressRecord; UCharacterStateComponent owner-only snapshot"
+          ],
+          [
+            "Realm relationships / treaty policy",
+            "Existing durable service realm aggregate Record_RealmFactionPolicy",
+            "ABriarwakeGameState publishes filtered relevant revision, never raw edit authority"
+          ],
+          [
+            "Regional pressure, project units and policy round",
+            "Existing Record_Region mutation owner",
+            "ARegionProjectionActor subscribes/pulls contiguous revisions; no world-state cache with independent writes"
+          ],
+          [
+            "Quest eligibility, objective receipts, grants",
+            "Existing quest evaluation and transaction boundary",
+            "UQuestDefinition authored conditions; no UFactionQuestManager"
+          ],
+          [
+            "NPC hostility and service availability",
+            "Current zone server evaluates one immutable decision from authenticated state",
+            "ANpcServiceActor / AI use FFactionAccessDecision; movement/targets remain ephemeral"
+          ],
+          [
+            "Character lease / admission / recovery",
+            "Existing session and transfer durable operations",
+            "Record_SessionLease + Record_Transfer; one Active writer; client never supplies effective faction"
+          ]
+        ]
+      }
+    },
+    {
+      "title": "Wire envelope, authorization and bounded input",
+      "paragraphs": [
+        "Keep the existing CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId) semantic fields. CatalogVersion, AvailabilityRevision and protocol version are envelope metadata, not a competing creator signature. Derive AccountId from authenticated context; do not accept client CharacterId, ZoneId, SpawnId, inventory, faction reputation or starter source.",
+        "Every mutation envelope: ProtocolVersion uint32=1; RequestId UUIDv4/v5; OperationId allowlisted stable ID; expected aggregate revisions uint64; ContentVersion positive int32; LeaseEpoch uint64 for character writes; typed operation payload. The service constructs PayloadDigest=SHA-256 of UTF-8 canonical JSON (sorted keys, no floats, explicit null semantics). Include semantic revisions, selected IDs, branch/amount/source IDs and version metadata; exclude authentication secrets and server-reconstructed principal. Cap entire payload at 16 KiB, action lists at16, names at24 normalized characters, IDs at96bytes, quantity at1..999 and unknown fields reject.",
+        "Use the existing authenticated transport and owned ABriarwakePlayerController command route. Proposed ServerRequestFactionAction has Reliable server RPC semantics, no client-set identity and no direct backend credentials. Allowlist quest/interaction/board/travel action IDs; per-connection burst16 and sustained4 commands/second are initial tunings, additionally per-account backend limits. Confirm lease/epoch and interaction permissions inside accepted server actions. Authentication, encryption, rate-limit implementation and actual RPC signatures need authorized companion work; this manual does not fabricate working network calls.",
+        "Name fixture policy: NFKC normalization, ASCII A–Z/a–z plus single internal space/hyphen, 3–24 characters, trim ends, case-fold uniqueness within realm, reserved admin/moderator. Production localization/name policy is versioned and requires moderation review; migration never renormalizes occupied old names into collisions silently. Account slots remain existing AccountPolicy limits."
+      ]
+    },
+    {
+      "title": "Transaction order and constraints",
+      "paragraphs": [],
+      "steps": [
+        "Authenticate principal and validate envelope size/type; resolve account/character ownership without trusting any payload identity. Start one durable transaction at serializable isolation or equivalent explicit lock/CAS guarantees. The SQLite tests serialize writes but do not choose the production store.",
+        "Check receipt by (AccountId for creation, otherwise CharacterId; OperationId; RequestId). Authenticate before reading it. Equal digest returns original committed result, even after availability changes or a new session lease. Different digest rejects RequestIdentityConflict. Unknown request proceeds only with current authority.",
+        "Acquire affected aggregates in lexicographic (aggregate type, stable ID) order. Recheck account slots/name reservation, active session server/epoch/expiry, expected revisions and pinned catalog/policy versions in the same transaction. A concurrent deployment must not pass an older admission rule then commit under a newer rule.",
+        "Evaluate the complete plan before mutations: objectives, branch validity, item instance capacity, active vocation permissions, quantities, source ownership, faction/organization standing caps and public project revision. Resolve project aliases before domain uniqueness.",
+        "Commit character and inventory changes, quest/choice, contribution or realm change, domain uniqueness, command receipt and outbox together. Increment each changed aggregate revision once. Capture exact IDs, deltas, clamped results, chosen content versions and affected revisions in the receipt; never record raw credentials or transfer bearer tokens.",
+        "After commit, return Committed with receipt and revisions. Publish durable outbox events, first relevant aggregate snapshot/delta then dependent UI notifications when the client has the referenced revisions. Delivery may duplicate or reorder; it cannot decide rewards.",
+        "Subscribe before snapshot, then discard deltas <=snapshot revision; accept only next revision; any gap, reconnect or policy-version mismatch triggers a fresh snapshot. UI Pending/Syncing persists during unknown outcome; animation or a closed widget never substitutes a receipt."
+      ]
+    },
+    {
+      "title": "Keys, indexes and retention",
+      "paragraphs": [],
+      "table": {
+        "headers": [
+          "Record",
+          "Required uniqueness / index",
+          "Retained meaning"
+        ],
+        "rows": [
+          [
+            "Record_Character",
+            "PK CharacterId; FK AccountId; unique (RealmId,NormalizedName); index(AccountId,CharacterId)",
+            "FactionId NOT NULL for ready schema3; immutable after creation except audited privileged repair; CombatDisciplineId unchanged"
+          ],
+          [
+            "Record_CommandReceipt",
+            "unique (ScopeId,OperationId,RequestId); stored Digest and CommittedResult",
+            "Result lookup remains owner-authorized across leases; archival cannot remove domain uniqueness"
+          ],
+          [
+            "Starter grant / quest reward",
+            "unique(CharacterId,SourceId,CompletionGeneration)",
+            "One starter grant; one reward per quest-generation regardless of new RequestId"
+          ],
+          [
+            "QuestProgressRecord",
+            "unique(CharacterId,QuestId); stored DefinitionVersion, objective receipts, BranchId and CompletionReceiptId",
+            "Completed choices immutable; same existing quest owner"
+          ],
+          [
+            "Objective evidence",
+            "unique(CharacterId,QuestId,ObjectiveId,SourceOccurrenceId); index(CharacterId,QuestId)",
+            "Zone server supplies unique encounter/work/interaction occurrence, never user-generated arbitrary credit"
+          ],
+          [
+            "Standings / audit",
+            "unique(CharacterId,Axis,SubjectId); source receipt event index(CharacterId,SourceId,Generation)",
+            "Axis distinguishes faction from organization; old/new value and requested/applied delta audited"
+          ],
+          [
+            "ProjectContributionRecord",
+            "unique(CharacterId,ProjectId,ProjectGeneration,ContributionSourceId)",
+            "Consumed item/work order/discovery cannot be claimed through a second faction or alias"
+          ],
+          [
+            "Record_Region policy round",
+            "unique(RealmId,RegionId,RoundId); ballot unique(RoundId,AccountId)",
+            "Stored version/cutoff/resolution seed/tie rule; expired round cannot be re-resolved"
+          ],
+          [
+            "Record_RealmFactionPolicy",
+            "PK RealmId; PolicyRevision; override pair unique(RealmId,CanonicalFactionPair)",
+            "Immutable append audit of actor, reason, old/new version and accepted command receipt"
+          ],
+          [
+            "Record_SessionLease / Record_Transfer",
+            "one lease row/CharacterId; unique TransferId and ticket digest; at most one pending transfer/CharacterId",
+            "Destination admission/expiry compete by conditional update of the same transfer and lease epoch"
+          ]
+        ]
+      }
+    },
+    {
+      "title": "Rejected, unknown and committed outcomes",
+      "paragraphs": [
+        "Rejected returns an explicit error and has no gameplay value mutation. RequestIdentityConflict means the same key was reused for different semantics; do not retry changed fields. StaleRevision after a definitive rejection permits a refreshed decision with a new RequestId. UnknownOutcome is a transport observation only: query/retry the same request and digest before permitting competing work. Committed returns the original authoritative result even if the response was previously lost.",
+        "Before-commit process death aborts the transaction or leaves an outcome requiring lookup; after-commit death preserves receipts and outbox. A stale source server may read its character’s authorized receipt but cannot start another mutation. Never compensate a timeout by restoring an old whole-character snapshot. A privileged correction is a new explicitly linked compensating transaction.",
+        "Error vocabulary: FactionRequired, UnknownFaction, FactionUnavailable, FactionContentUnavailable, CatalogChanged, ContentVersionMismatch, MigrationRequired, RecoveryReviewRequired, PermanentIdentityLocked, Unauthorized, StaleLease, StaleRevision, RequestIdentityConflict, ObjectiveIncomplete, ChoiceLocked, InvalidSpawn, TransferPending, TransferExpired, AdmissionDenied, ServiceRestricted, ContributionAlreadyConsumed. Client text is localized and does not disclose other accounts or private policy notes."
+      ]
+    },
+    {
+      "title": "Create, enumerate and continue",
+      "paragraphs": [],
+      "steps": [
+        "GetAvailableFactionCatalog returns public definition ID/version/display text/start region/availability/locked reason under one availability revision. Locked factions remain visible as future identities, never enabled controls. Pending or missing catalog disables Confirm; never substitute another faction locally.",
+        "CreateCharacter validates exactly one valid faction, one valid immutable discipline, one valid active vocation and allowed appearance independently. Server chooses spawn and starter from the authenticated selected definition. Atomic commit includes slot/name reservation, character identity/schema3, one initial vocation history, initial faction/civic standings, campaign root availability, initial zone/spawn, one starter source receipt and exact existing item instance grants.",
+        "The baseline starter sword remains universal basic equipment; it does not change discipline or grant another class’s talents. Preserve any existing class-specific starting grants under their own source IDs; the faction package must not duplicate them. All five vocations use available shared four-facing starter presentation; faction ribbon/pin is a text badge unless an audited compatible sprite exists.",
+        "Login reads durable FactionId and its historical version, not current selection controls. Disabling new selection does not deny existing characters. Retain an archived valid definition and supported story mapping. A removed or corrupt reference enters authenticated recovery with visible explanation; restore a neutral safe location without changing allegiance or replaying starter rewards. Account character selection stays available during review."
+      ]
+    },
+    {
+      "title": "Standing and one NPC access decision",
+      "paragraphs": [
+        "Initial standings are specified separately for every faction and civic organization. Only accepted server action receipts can request a standing delta; clients cannot call AwardReputation. Clamp each axis to [-1000,1000] and audit requested delta, applied delta and source. Neither standing nor realm relationship changes permanent FactionId or historical branch flags.",
+        "Base pair relationships are symmetric, authored once per canonical unordered pair. Overrides are also symmetric; missing/duplicate/reversed/asymmetric pair rejects the configuration. If later content needs directional diplomacy, add a versioned policy explicitly instead of silently reversing one row.",
+        "Evaluate base-or-realm-override score plus personal standing modifier trunc_toward_zero(standing/50) clamped[-20,20], plus bounded regional pressure modifier trunc_toward_zero(pressure/10) clamped[-10,10]. Clamp final score[-100,100]. Friendly>=50, neutral>=0, wary>=-30, hostile below-30. Unknown IDs deny optional privileged service and request content recovery; never become automatically friendly.",
+        "Neutral sanctuary/shared-threat context and valid diplomatic guest passage suppress guard aggression but do not authorize private headquarters, private quest turn-in, discounts or confidential dialogue. Essential repair, food, travel, basic trade and vocation training remain at neutral NPCs independent of standing. Faction commissions require durable matching faction plus authored standing threshold; threshold0 for standard commissions. Cosmetic title at200; optional price discount2% at200, capped5%, neutral prices always viable. Essential recipes and ingredient supply cannot be faction-exclusive.",
+        "FFactionAccessDecision includes Attitude, bMayUseEssentialService, bMayUseFactionService, bMayGuardAggro, bMayOfferQuest, bMayPlayerDamage=false, ReasonId and Character/Region/Policy revisions. ANpcServiceActor, guard AI, quest offer and merchant quote consume this one decision. Recompute at every accepted action and on relevant revisions, not every Tick. Revalidate price and inventory in purchase transaction; quoted UI discount is not authority.",
+        "Hostile NPC attacks require an authored conflict subzone, non-neutral/non-guest context, eligible PvE target and standard encounter/line-of-sight rules. Entering a shared town or opposite player’s party never flips global aggression. Warn before hostile boundary entry and mark an always-available Reedbank/Willow Cut bypass. Hollow Covenant hostility derives from enemy encounter rules, not playable faction selection."
+      ]
+    },
+    {
+      "title": "Realm policy and regional contention",
+      "paragraphs": [
+        "Record_RealmFactionPolicy owns bounded relationship overrides, approved guest treaties and cooperation policy version. Deploy a validated configuration through the existing server deployment boundary, not a new GM console. ApplyRealmFactionPolicy is service-admin-only: authenticate role, require reason, expected policy revision and full config validation, commit audit/outbox, then publish the new revision. Reject partial/incompatible configurations; retain last known good policy.",
+        "Record_Region owns North Road pressure and a bounded 30-minute consultation round. At activation freeze PolicyVersion, option IDs, cutoff and tie-break. Eligible account has a character with accepted Q5 completion; one ballot/account/round irrespective of faction alts. A ballot records preference, not an irreversible shared personal branch. A serializable revision check protects cast/resolve races.",
+        "At the fixed service-clock cutoff, count unique eligible account ballots. Majority selects shared-passage or fortified-crossing; tie or empty selects shared-passage. Store one immutable resolution; last UI submit cannot determine it. Pressure moves by at most10 and remains[-100,100]; subsequent rounds may change reversible patrol/signage/commission emphasis only. No construction, discovery, essential route or previous personal branch is undone.",
+        "Solo players complete the twelve-unit milestone via four free work orders without waiting for consultation, PvP, specialist trades or another human. Optional group enhancements retain the existing frozen population formula. A second final contributor receives accepted personal maintenance credit only if confirmed after the current project revision; stale submissions reject before consuming materials. Never auto-debit a stale priced offer.",
+        "This is a narrow NPC-facilitated regional policy consultation, not a general guild election, territorial conquest simulation or PvP objective. It adds one bounded ruleset to the existing regional owner. Public political result is shown separately from “Your decision” in the journal and region board."
+      ]
+    },
+    {
+      "title": "Cross-faction cooperation, economy and extension boundary",
+      "paragraphs": [
+        "Friends, chat and guild membership do not require matching faction. Parties can include rivals in neutral/shared-threat content; membership never grants access to another character’s faction quest, restricted headquarters, merchant privilege or quest reward. Private quest eligibility is evaluated per-character. Existing invite consent, mute/block/moderation, trade escrow and capacity checks remain mandatory. Solo alternatives do not require party mechanics, which are not activated before Phase27.",
+        "Gathering, server-randomized ore/timber/plants/fishing, farming, combat class and all five vocation paths remain accessible. Faction flavored commissions/cosmetics may differ; essential materials, recipes and repairs have neutral sources and broadly comparable utility. Region policy cannot remove those sources. Public work uses account/character-owned bound orders, not transferable quest credit.",
+        "Baseline player-vs-player damage, allegiance-based collision blocking, forced duels and faction reward requirements for battlegrounds are absent. The damage validation boundary would accept a future independently authorized opt-in match context; no settings toggle, matchmaking implementation, arena reward or inoperative PvP switch is shipped here. Such future authorization must not be inferred from rival affiliation."
+      ]
+    },
+    {
+      "title": "Admission, fencing and recovery",
+      "paragraphs": [],
+      "steps": [
+        "BeginTransfer receives only an allowed gate/route intent. The source validates current durable faction, quest-derived guest unlock, zone eligibility, safe destination spawn and current policy/definition version. The service creates TransferId and short-lived random single-use bearer ticket, persists only its digest and expiry, and moves the same lease to InTransit at incremented epoch before destination can write. Source stops actions when fenced.",
+        "A committed begin receipt contains transfer identity/epoch, never reusable raw ticket. On an unknown response, authenticated ResumeTransfer rotates a fresh ticket digest on the still-Fenced transfer using expected transfer revision and epoch, invalidating the previous ticket; otherwise report terminal state or use expiry recovery. Rotation is a companion contract, not implemented by the SQLite fixture, which exercises deterministic expiry recovery instead.",
+        "Destination authenticates ticket ownership/server binding and lease epoch, then re-reads durable faction/content/policy and validates spawn against admitted zone navigation. Atomically mark Activated and set destination server owner/location at the fenced epoch. Replay returns the original authorized terminal receipt, not another actor/writer.",
+        "Expiry recovery and destination activation compare the same current Fenced state and epoch. Exactly one wins. Recovery fences again, retains all character identity/progression and returns to neutral infirmary if no supported safe origin exists. A crash after commit is recovered by terminal receipt/snapshot; never duplicate the body or grant the kit.",
+        "After admission, PlayerState badge and owner snapshot derive from the committed record. Bind region subscriptions, pull snapshot and admit visible body only when character and destination region revisions are coherent. During missing content or unavailable service, remain in authenticated recovery without allowing competing value writes."
+      ]
+    },
+    {
+      "title": "Save and content migrations",
+      "paragraphs": [
+        "Proposed schema3 extends—not replaces—the schema2 class/vocation contract with FactionDefinitionVersion, Progression.FactionStandings, Progression.OrganizationStandings, FactionMigrationState and quest-version references. Revision remains the existing character/build revision. No second class or active vocation field is added. Saved CombatDisciplineId, all trained vocation histories, inventory instance IDs, currency and unlocked recipes remain byte/semantically preserved.",
+        "Old-save population is unknown. The rename PR describes 28 saved fixtures but they were not inspected here. Never auto-assign Hearthward. Schema2 record without FactionId becomes NeedsFactionConfirmation in the account recovery screen. Show permanent choice and starting/guest implications, require explicit authenticated confirmation of an available faction, record MigrationId, old/new schema hashes, actor and time. Grant no starter kit, no replay of vocation XP, no retroactive quest rewards. Administrator-reviewed import is required if ownership or schema interpretation is ambiguous.",
+        "A non-null unknown/corrupt FactionId, unsupported faction content version or ambiguous old quest mapping enters NeedsReview. Do not reinterpret ID spelling, pick an enum index or silently migrate it to Hearthward. Normal faction mutation after confirmation rejects PermanentIdentityLocked. Exceptional administrator repair requires verified account ownership, old/new IDs, reason/ticket, second review for allegiance changes and a transaction linking the old record hash; revoke/fence active lease before changing placement and publish an audit event.",
+        "Keep existing quest.thornmere.first-supplies and its rewards unchanged. New Hearthward quests have distinct source IDs. Their shared story beats do not auto-complete or regrant the legacy quest. Existing First Supplies completion changes Vesa’s introductory dialogue only. Later world state supplies public conditions, not fabricated personal evidence. No legacy record is deleted to make room for the faction arc.",
+        "Catalog upgrades require explicit version mappings for every active quest/objective/branch/reward source. Safe additive updates pin active DefinitionVersion until completion. Removed objectives map accepted occurrences one-to-one with a migration receipt and unchanged reward generation; ambiguous maps stop the affected quest in recovery, while neutral essentials remain available. Completed branches and reward source uniqueness are immutable. Rollback retains new columns/definitions and uses a compatible reader; do not run an old writer against schema3 or drop migrated data."
+      ]
+    },
+    {
+      "title": "Companion Unreal and backend integration boundary",
+      "paragraphs": [
+        "mmo_docs/AGENTS.md forbids game runtime files; no .h/.cpp/plugin/Build.cs/.uasset/.umap is supplied. The Python validators and SQLite fixture are executable documentation tests, not replacements for UDurableStateClient, quest authority or the production backend. Actual Source/RPG on Briarwake/main contains only the two inspected trivial native GameInstance/GameMode classes, not the planned MMO owners.",
+        "Briarwake requires user-led Tools → New C++ Class creation and confirmation before native implementation. For UFactionDefinition and UFactionPolicyDefinition: parent PrimaryDataAsset, class name FactionDefinition / FactionPolicyDefinition (without U), Public, source folder Factions, module RPG on the inspected main or Briarwake only after rename PR12 is merged and verified. Existing manual Source/Briarwake paths remain planned destination contracts, not verified current paths. USTRUCT/UENUM declarations belong to the authorized companion module after its policy review; they are not Blueprint asset fakes.",
+        "Use Core/CoreUObject/Engine for these definition/value contracts and the existing module’s UMG/Paper2D/PaperZD integration where actually needed; no new faction runtime module or plugin. Regenerate/UHT/compile before exposing proposed Blueprint getters. Catalog retains loaded immutable data until its owning game instance/service generation changes. Zone teardown cancels callbacks by character/epoch/zone generation and unbinds observers; no game-thread UObject access from a storage worker callback.",
+        "Companion prerequisites: approved native class creation; actual authenticated backend and schema3 migration; owned RPC transport; existing item/quest/source receipt adapter; region/outbox and transfer integration; cooked maps, NPC placement and compatible four-facing art; plugin compatibility; Unreal Editor/UHT/Blueprint/dedicated server tests. Neither a documentation PR nor a session menu plugin establishes a playable faction feature."
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "EnumerateFactionCatalog",
+      "authorization": "account authenticated read",
+      "commit": "catalog version + availability revision; no mutation",
+      "result": "Public selection view includes disabled reason; no class/vocation coupling",
+      "verification": "test_only_hearthward_selectable"
+    },
+    {
+      "id": "CreateCharacter",
+      "authorization": "authenticated account; account/name/slot locked",
+      "commit": "Character, inventory starter, initial standings, name reservation, receipt, outbox atomic",
+      "result": "Duplicate identical result, malformed/disabled IDs no mutation",
+      "verification": "test_atomic_creation_replay_and_starter_once"
+    },
+    {
+      "id": "AcceptFactionObjective",
+      "authorization": "trusted zone action + owned active quest; lease and source occurrence",
+      "commit": "Quest objective progress/source receipt and character revision atomic",
+      "result": "A client cannot assert combat, dialogue or discovery completion",
+      "verification": "test_duplicate_objective_source_and_quest_rewards_once"
+    },
+    {
+      "id": "CompleteFactionQuest",
+      "authorization": "quest authority; definition version, requirements, selected branch, expected revision",
+      "commit": "Completion, immutable choice, common/branch rewards, standings, domain guard, receipt, outbox",
+      "result": "One reward generation; new RequestId cannot replay a grant",
+      "verification": "test_solo_full_campaign_branches_and_restart"
+    },
+    {
+      "id": "ContributeFactionProject",
+      "authorization": "owned item/work/discovery source, current character and region revisions",
+      "commit": "Debit/consume, personal credit, region progress, contribution receipt, outbox",
+      "result": "Alias-resolved uniqueness; completed projects accept labeled maintenance",
+      "verification": "test_stale_region_and_after_commit_contribution_recovery"
+    },
+    {
+      "id": "EvaluateNpcAccess",
+      "authorization": "current zone server read of character/region/realm definitions",
+      "commit": "No writes; one FFactionAccessDecision",
+      "result": "Neutral essentials and guest rules before guard aggression; no player damage",
+      "verification": "test_neutral_services_and_no_player_damage"
+    },
+    {
+      "id": "CastRegionalPreference",
+      "authorization": "account with eligible completed personal choice; open round",
+      "commit": "One ballot/account/round + command receipt",
+      "result": "Does not overwrite personal branch or resolve public policy",
+      "verification": "test_same_account_cannot_cast_multiple_character_ballots"
+    },
+    {
+      "id": "ResolveRegionalPreference",
+      "authorization": "trusted service clock at fixed cutoff; current round version",
+      "commit": "One winner, bounded pressure, region revision, audit/outbox",
+      "result": "Majority; tie/empty shared-passage; repeat returns existing result",
+      "verification": "test_two_accounts_tied_ballots_ignore_submission_order_and_preserve_history"
+    },
+    {
+      "id": "ApplyRealmFactionPolicy",
+      "authorization": "privileged deployment identity, reason, reviewed config, expected revision",
+      "commit": "New versioned overrides/treaties, audit, receipt, outbox",
+      "result": "Reject unknown pair or destructive essential restriction; no GM console",
+      "verification": "not_run: configuration deployment adapter"
+    },
+    {
+      "id": "BeginTransfer / ActivateTransfer / RecoverTransfer",
+      "authorization": "authenticated account/server, gate eligibility, ticket and lease fencing",
+      "commit": "One transfer+lease owner transition and committed location",
+      "result": "Ticket digest only; current faction revalidated at destination",
+      "verification": "test_transfer_expiry_and_admission_race_has_one_terminal_winner"
+    },
+    {
+      "id": "ConfirmLegacyFaction",
+      "authorization": "owner in explicit schema2 missing-faction recovery",
+      "commit": "Schema3 identity+initial standing migration receipt; no starter",
+      "result": "Preserve class/vocation/inventory; corrupt non-null needs review",
+      "verification": "test_legacy_confirmation_preserves_class_vocation_inventory_and_xp"
+    },
+    {
+      "id": "RepairFactionIdentity",
+      "authorization": "privileged reviewed migration, reason, old hash, fenced sessions",
+      "commit": "Audited compensation/migration; no ordinary respec API",
+      "result": "Not implemented in fixture; production requires independent authorization",
+      "verification": "not_run: privileged correction"
+    }
+  ],
+  "runtime_status": "not_run"
+}

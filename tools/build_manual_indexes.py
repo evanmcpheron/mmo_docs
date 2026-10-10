@@ -9,6 +9,7 @@ import os
 import re
 from pathlib import Path
 from urllib.parse import urlsplit
+from faction_manual import faction_localization, faction_properties, faction_sections
 ROOT = Path(__file__).resolve().parents[1]
 NAVIGATION = [('index.html', 'Guide home'), ('getting-started.html', 'Start here'), ('development-roadmap.html', 'Phases 00–31'), ('first-vertical-slice.html', 'Vertical slices'), ('systems/index.html', 'System contracts'), ('professions/index.html', 'Five vocations'), ('world/authored-biomes.html', 'World and regions'), ('walkthroughs/index.html', 'Worked examples'), ('architecture.html', 'Architecture'), ('asset-index.html', 'Asset register'), ('dependency-map.html', 'Dependencies'), ('engineering/index.html', 'Engineering standard'), ('search.html', 'Search'), ('checklist.html', 'My phase progress'), ('feature-coverage.html', 'Coverage and gaps'), ('sources-verification.html', 'Sources and tests'), ('glossary.html', 'Glossary'), ('site-map.html', 'All pages')]
 
@@ -64,7 +65,7 @@ def prepare_page(source: dict, assets: dict, phases: list) -> dict:
     if 'asset' in page:
         asset = assets[page['asset']]
         page['sections'][0]['table'] = asset_identity(asset)
-        page['sections'][3]['table'] = {'headers': ['Field', 'Type / shape', 'Example / default', 'Exposure', 'Writer'], 'rows': asset['properties']}
+        page['sections'][3]['table'] = {'headers': ['Field', 'Type / shape', 'Example / default', 'Exposure', 'Writer'], 'rows': faction_properties(asset, ROOT)}
         page['sections'][4]['paragraphs'][0] = asset['command']
         section = page['sections'][5]
         section['paragraphs'][0] = 'Creation prerequisites: ' + (', '.join((f'[[asset:{name}]]' for name in asset['dependencies'])) or 'None.')
@@ -75,6 +76,8 @@ def prepare_page(source: dict, assets: dict, phases: list) -> dict:
         phase = phases[int(match[1])]
         entries = [assets[name] for name in phase['creates']]
         page['sections'][2]['table']['rows'] = [[f"[[asset:{asset['name']}]]", asset['type'] + ' / ' + asset['parent/native_base'], asset['exact_game_path_or_source_path'], f"{asset['first_active_phase']:02d}"] for asset in entries] or [['No new registered identity', 'Extend existing consumers', 'See phase recipe', 'This phase']]
+    if page.get('faction_source'):
+        page['sections'].extend(faction_sections(page['faction_source'], ROOT))
     return page
 
 def dynamic_content(page: dict, pages: list, assets: dict, phases: list) -> str:
@@ -82,7 +85,7 @@ def dynamic_content(page: dict, pages: list, assets: dict, phases: list) -> str:
     kind = page.get('dynamic')
     render = lambda text: inline(text, path, assets)
     if kind == 'home':
-        counts = [('32', 'planned phases'), (str(len(assets)), 'asset contracts'), ('18', 'system chapters'), ('15', 'worked examples')]
+        counts = [('32', 'planned phases'), (str(len(assets)), 'asset contracts'), ('18', 'system chapters'), ('16', 'worked examples')]
         return '<div class="metrics">' + ''.join((f'<div><strong>{value}</strong><span>{label}</span></div>' for value, label in counts)) + '</div>'
     if kind == 'search':
         return '<div class="control-panel"><label for="search-input">Search words</label><input type="search" id="search-input" placeholder="Try fishing or lease epoch" autocomplete="off"><p id="search-status" role="status">Enter one or more words.</p><ol id="search-results" class="result-list"></ol></div>'
@@ -156,6 +159,7 @@ def build_outputs() -> dict[str, str]:
         text = ' '.join((str(section.get(key, '')) for section in page['sections'] for key in ['title', 'paragraphs', 'steps', 'bullets', 'table']))
         search.append({'path': page['path'], 'title': page['title'], 'summary': page['summary'], 'category': page['category'], 'text': text})
     outputs['site/search-data.js'] = 'window.BRIARWAKE_SEARCH = ' + json.dumps(search, ensure_ascii=False, separators=(',', ':')) + ';\n'
+    outputs['sources/faction-localization.en.json'] = json.dumps(faction_localization(ROOT), ensure_ascii=False, indent=2) + '\n'
     return outputs
 
 def main() -> int:
@@ -175,7 +179,7 @@ def main() -> int:
     if stale:
         print('FAIL: stale or missing generated files:\n' + '\n'.join(stale))
         return 1
-    print(('PASS: generated files are current; ' if args.check else 'Built ') + f'{len(outputs) - 1} HTML pages and one offline search index.')
+    print(('PASS: generated files are current; ' if args.check else 'Built ') + f'{sum(path.endswith(".html") for path in outputs)} HTML pages, one offline search index and the faction English export.')
     return 0
 if __name__ == '__main__':
     raise SystemExit(main())
