@@ -1,0 +1,1646 @@
+{
+  "schema_version": 1,
+  "campaign_id": "campaign.hearthward.introduction",
+  "content_version": 1,
+  "faction_id": "faction.hearthward-league",
+  "root_quest_id": "quest.hearthward.oath-road",
+  "complete_slice_phase": 26,
+  "runtime_status": "not_run",
+  "tile_contract": "All positions are authored tile anchors in a reserved overlay of L_ThornmereVillage. Use DA_ThornmereNavigation tile scale and origin; validate walkability, collision, maximum interaction distance and no-hostility volumes in the actual map. Coordinates do not claim the existing binary map has these placements.",
+  "spawns": [
+    {
+      "id": "spawn.thornmere.hearthward-arrival",
+      "map_id": "L_ThornmereVillage",
+      "zone_id": "zone.thornmere",
+      "tile": [
+        24,
+        18
+      ],
+      "facing": "South",
+      "allowed_factions": [
+        "faction.hearthward-league"
+      ],
+      "safe": true,
+      "authored": true,
+      "deployment_verified": false,
+      "purpose": "Hearthward arrivals beside the west road ledger; distinct from the neutral infirmary."
+    },
+    {
+      "id": "spawn.thornmere.neutral-infirmary",
+      "map_id": "L_ThornmereVillage",
+      "zone_id": "zone.thornmere",
+      "tile": [
+        20,
+        22
+      ],
+      "facing": "South",
+      "allowed_factions": [
+        "faction.hearthward-league",
+        "faction.briarbound-clans",
+        "faction.ironfang-warbands",
+        "faction.tidebound-compact"
+      ],
+      "safe": true,
+      "authored": true,
+      "deployment_verified": false,
+      "purpose": "Permanent faction-neutral recovery cell, no aggro volume, basic services and exit to Reedbank."
+    },
+    {
+      "id": "spawn.elderwood.bellroot-guest",
+      "map_id": "L_ElderwoodRoad",
+      "zone_id": "zone.elderwood",
+      "tile": [
+        8,
+        40
+      ],
+      "facing": "North",
+      "allowed_factions": [
+        "faction.hearthward-league",
+        "faction.briarbound-clans",
+        "faction.ironfang-warbands",
+        "faction.tidebound-compact"
+      ],
+      "safe": true,
+      "authored": true,
+      "deployment_verified": false,
+      "purpose": "Bellroot common camp guest arrival; never inside the Briarbound sanctuary."
+    },
+    {
+      "id": "spawn.elderwood.briarbound-sanctuary",
+      "map_id": "L_ElderwoodRoad",
+      "zone_id": "zone.elderwood",
+      "tile": null,
+      "facing": "South",
+      "allowed_factions": [
+        "faction.briarbound-clans"
+      ],
+      "safe": true,
+      "authored": false,
+      "deployment_verified": false,
+      "purpose": "Reserved identity; actual placement, walkability, guard exclusion and travel authoring not yet produced."
+    },
+    {
+      "id": "spawn.cairnstep.ironfang-camp",
+      "map_id": "L_CairnstepHeights",
+      "zone_id": "zone.cairnstep",
+      "tile": null,
+      "facing": "South",
+      "allowed_factions": [
+        "faction.ironfang-warbands"
+      ],
+      "safe": true,
+      "authored": false,
+      "deployment_verified": false,
+      "purpose": "Reserved identity; actual placement, walkability, guard exclusion and travel authoring not yet produced."
+    },
+    {
+      "id": "spawn.galehaven.tidebound-harbor",
+      "map_id": "L_GalehavenCoast",
+      "zone_id": "zone.galehaven",
+      "tile": null,
+      "facing": "South",
+      "allowed_factions": [
+        "faction.tidebound-compact"
+      ],
+      "safe": true,
+      "authored": false,
+      "deployment_verified": false,
+      "purpose": "Reserved identity; actual placement, walkability, guard exclusion and travel authoring not yet produced."
+    }
+  ],
+  "npcs": [
+    {
+      "id": "mentor.vesa",
+      "asset": "DA_NPC_MentorVesa",
+      "name": "Mentor Vesa",
+      "faction_id": null,
+      "organization_id": "organization.hearth-assembly",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        23,
+        20
+      ],
+      "facing": "East",
+      "interaction_tiles": 2,
+      "services": [
+        "all-vocation-training",
+        "essential-commissions",
+        "story-recovery"
+      ],
+      "availability": "Always in the neutral village; reconstruct saved presence before enabling interactions. Never killed or despawned by region policy.",
+      "dialogue_key": "Dialogue.vesa.Intro",
+      "authored": true,
+      "intro_text": "The Hearth Assembly teaches every traveler the basics. Your chosen vocation grants specialist training; your political allegiance does not remove access to food, tools or recovery."
+    },
+    {
+      "id": "npc.hearthward.maren-vale",
+      "asset": "DA_NPC_MarenVale",
+      "name": "Maren Vale, road clerk",
+      "faction_id": "faction.hearthward-league",
+      "organization_id": null,
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        26,
+        18
+      ],
+      "facing": "West",
+      "interaction_tiles": 2,
+      "services": [
+        "hearthward-campaign",
+        "hearthward-commissions"
+      ],
+      "availability": "Neutral-square desk and journal-safe remote contact at the same desk after public changes. No mandatory real-world dusk schedule.",
+      "dialogue_key": "Dialogue.hearthward.Arrival",
+      "authored": true,
+      "intro_text": "Welcome to Thornmere. Your allegiance to the Hearthward League is already recorded. I will explain the road charter and the people it affects."
+    },
+    {
+      "id": "npc.briarbound.talan-reed",
+      "asset": "DA_NPC_TalanReed",
+      "name": "Talan Reed, crossing witness",
+      "faction_id": "faction.briarbound-clans",
+      "organization_id": "organization.roadward-accord",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        42,
+        8
+      ],
+      "facing": "South",
+      "interaction_tiles": 2,
+      "services": [
+        "crossing-parley"
+      ],
+      "availability": "Noncombat parley volume on Thornmere side of crossing; guarded path and Reedbank alternate remain open to every faction.",
+      "dialogue_key": "Dialogue.talan.Crossing",
+      "authored": true,
+      "intro_text": "I speak for the families tending the marked grove. We will hear a proposal for passage, but the grove is not empty land."
+    },
+    {
+      "id": "npc.neutral.eren-dusk",
+      "asset": "DA_NPC_ErenDusk",
+      "name": "Eren Dusk, bell keeper",
+      "faction_id": null,
+      "organization_id": "organization.veil-survey",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        30,
+        20
+      ],
+      "facing": "South",
+      "interaction_tiles": 2,
+      "services": [
+        "bell-investigation",
+        "story-recovery"
+      ],
+      "availability": "At the Split Bell, with an always-available private rehearsal for newcomers; world bell visuals never substitute for personal evidence.",
+      "dialogue_key": "Dialogue.eren.Warning",
+      "authored": true,
+      "intro_text": "The Veil Survey studies the waystones for every community. Bring evidence before assigning blame; the disturbance reaches beyond any one faction."
+    }
+  ],
+  "items": [
+    {
+      "id": "item.starter-sword",
+      "asset": "DA_Item_StarterSword",
+      "authored": true,
+      "critical": true
+    },
+    {
+      "id": "item.repair-kit",
+      "asset": "DA_Item_RepairKit",
+      "authored": true,
+      "critical": true
+    },
+    {
+      "id": "item.watch-fitting",
+      "asset": "DA_Item_WatchFitting",
+      "authored": true,
+      "critical": false
+    },
+    {
+      "id": "item.field-loaf",
+      "asset": "DA_Item_FieldLoaf",
+      "authored": true,
+      "critical": false
+    },
+    {
+      "id": "item.bridge-support",
+      "asset": "DA_Item_BridgeSupport",
+      "authored": true,
+      "critical": false
+    },
+    {
+      "id": "item.blight-remedy",
+      "asset": "DA_Item_BlightRemedy",
+      "authored": true,
+      "critical": false
+    },
+    {
+      "id": "item.iron-ore",
+      "asset": "DA_Item_IronOre",
+      "authored": true,
+      "provenance": "Existing planned item identity; stable serialization spelling pinned by this faction content version. Display names and old fixture tokens remain aliases, never extra inventory."
+    },
+    {
+      "id": "item.salvage-plate",
+      "asset": "DA_Item_SalvagePlate",
+      "authored": true,
+      "provenance": "Existing planned item identity; stable serialization spelling pinned by this faction content version. Display names and old fixture tokens remain aliases, never extra inventory."
+    },
+    {
+      "id": "item.goldenroot",
+      "asset": "DA_Item_Goldenroot",
+      "authored": true,
+      "provenance": "Existing planned item identity; stable serialization spelling pinned by this faction content version. Display names and old fixture tokens remain aliases, never extra inventory."
+    },
+    {
+      "id": "item.blight-reagent",
+      "asset": "DA_Item_BlightReagent",
+      "authored": true,
+      "provenance": "Existing planned item identity; stable serialization spelling pinned by this faction content version. Display names and old fixture tokens remain aliases, never extra inventory."
+    },
+    {
+      "id": "item.straight-grain-timber",
+      "asset": "DA_Item_StraightGrainTimber",
+      "authored": true,
+      "provenance": "New required structural timber instance of existing UItemDefinition; no unique art required."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "recipe.watch-fitting",
+      "asset": "DA_Recipe_WatchFitting",
+      "output_id": "item.watch-fitting",
+      "authored": true,
+      "inputs": [
+        {
+          "id": "item.iron-ore",
+          "quantity": 3
+        },
+        {
+          "id": "item.salvage-plate",
+          "quantity": 1
+        }
+      ],
+      "output_quantity": 1,
+      "station_id": "station.thornmere.forge",
+      "active_vocation_id": "vocation.forgekeeper",
+      "minimum_vocation_level": 1,
+      "phase": 15,
+      "craft_duration_seconds": 0,
+      "recipe_acquisition": "Existing vocation mentor introduction; free basic public contracts remain available without learning this recipe",
+      "tuning_status": "Pinned authored MVP fixture, not measured economy balance",
+      "failure": "Validate ingredients, active vocation, station distance, capacity and revisions before one atomic craft debit/grant receipt. A new request is a new craft; replay is not."
+    },
+    {
+      "id": "recipe.field-loaf",
+      "asset": "DA_Recipe_FieldLoaf",
+      "output_id": "item.field-loaf",
+      "authored": true,
+      "inputs": [
+        {
+          "id": "item.goldenroot",
+          "quantity": 2
+        }
+      ],
+      "output_quantity": 1,
+      "station_id": "station.thornmere.oven",
+      "active_vocation_id": "vocation.hearthkeeper",
+      "minimum_vocation_level": 1,
+      "phase": 18,
+      "craft_duration_seconds": 0,
+      "recipe_acquisition": "Existing vocation mentor introduction; free basic public contracts remain available without learning this recipe",
+      "tuning_status": "Pinned authored MVP fixture, not measured economy balance",
+      "failure": "Validate ingredients, active vocation, station distance, capacity and revisions before one atomic craft debit/grant receipt. A new request is a new craft; replay is not."
+    },
+    {
+      "id": "recipe.bridge-support",
+      "asset": "DA_Recipe_BridgeSupport",
+      "output_id": "item.bridge-support",
+      "authored": true,
+      "inputs": [
+        {
+          "id": "item.straight-grain-timber",
+          "quantity": 3
+        }
+      ],
+      "output_quantity": 1,
+      "station_id": "station.thornmere.carpentry",
+      "active_vocation_id": "vocation.woodwright",
+      "minimum_vocation_level": 1,
+      "phase": 20,
+      "craft_duration_seconds": 0,
+      "recipe_acquisition": "Existing vocation mentor introduction; free basic public contracts remain available without learning this recipe",
+      "tuning_status": "Pinned authored MVP fixture, not measured economy balance",
+      "failure": "Validate ingredients, active vocation, station distance, capacity and revisions before one atomic craft debit/grant receipt. A new request is a new craft; replay is not."
+    },
+    {
+      "id": "recipe.blight-remedy",
+      "asset": "DA_Recipe_BlightRemedy",
+      "output_id": "item.blight-remedy",
+      "authored": true,
+      "inputs": [
+        {
+          "id": "item.blight-reagent",
+          "quantity": 2
+        }
+      ],
+      "output_quantity": 1,
+      "station_id": "station.thornmere.apothecary",
+      "active_vocation_id": "vocation.apothecary",
+      "minimum_vocation_level": 1,
+      "phase": 21,
+      "craft_duration_seconds": 0,
+      "recipe_acquisition": "Existing vocation mentor introduction; free basic public contracts remain available without learning this recipe",
+      "tuning_status": "Pinned authored MVP fixture, not measured economy balance",
+      "failure": "Validate ingredients, active vocation, station distance, capacity and revisions before one atomic craft debit/grant receipt. A new request is a new craft; replay is not."
+    }
+  ],
+  "quests": [
+    {
+      "id": "quest.hearthward.oath-road",
+      "asset": "DA_Quest_OathRoad",
+      "title": "Oath of the Road",
+      "title_key": "Quest.Hearthward.Q01.Title",
+      "content_version": 1,
+      "faction_id": "faction.hearthward-league",
+      "prerequisites": [],
+      "next_quest_ids": [
+        "quest.hearthward.missing-caravan"
+      ],
+      "quest_giver_id": "npc.hearthward.maren-vale",
+      "turn_in_npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "level_requirement": 1,
+      "minimum_humans": 1,
+      "pvp_required": false,
+      "party_required": false,
+      "authored": true,
+      "why": "The League recognizes the character as a named contributor, not disposable labor. The player learns the permanent allegiance they already chose and the obligations that accompany safe passage.",
+      "dialogue": [
+        {
+          "id": "dialogue.hearthward.q1.n1",
+          "speaker": "Maren",
+          "text_key": "Dialogue.Hearthward.Q01.N01.Line",
+          "text": "The ledger records your allegiance to the Hearthward League. This is not membership in Vesa’s Hearth Assembly. Your class and vocation remain separate.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q01.N01.Primary",
+              "text": "A road is worth defending when people can use it. Record my pledge.",
+              "response_key": "Dialogue.Hearthward.Q01.N01.Response",
+              "response": "Your allegiance is already permanent. We ask you to keep people supplied and account for the cost of expansion. You may question our officers without changing who you are."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q01.N01.Alternative",
+              "text": "Explain what the League expects of me.",
+              "response_key": "Dialogue.Hearthward.Q01.N01.Response",
+              "response": "Your allegiance is already permanent. We ask you to keep people supplied and account for the cost of expansion. You may question our officers without changing who you are."
+            }
+          ],
+          "continue_to": "dialogue.hearthward.q1.n2",
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        },
+        {
+          "id": "dialogue.hearthward.q1.n2",
+          "speaker": "Vesa",
+          "text_key": "Dialogue.Hearthward.Q01.N02.Line",
+          "text": "I teach through the Hearth Assembly, not the League. Every traveler needs food, tools and a way home.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q01.N02.Primary",
+              "text": "Show me the work available to my vocation.",
+              "response_key": "Dialogue.Hearthward.Q01.N02.Response",
+              "response": "Both routes remain open. Specialist training belongs to your active vocation; basic work and the story do not."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q01.N02.Alternative",
+              "text": "Show me an ordinary supply contract.",
+              "response_key": "Dialogue.Hearthward.Q01.N02.Response",
+              "response": "Both routes remain open. Specialist training belongs to your active vocation; basic work and the story do not."
+            }
+          ],
+          "continue_to": null,
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        }
+      ],
+      "marker_id": "marker.hearthward.charter",
+      "marker_tile": [
+        26,
+        18
+      ],
+      "reward": {
+        "source_id": "source.reward.hearthward.q1.v1",
+        "combat_xp": 25,
+        "copper": 20,
+        "items": [],
+        "faction_reputation": {
+          "faction.hearthward-league": 10
+        },
+        "organization_reputation": {
+          "organization.roadward-accord": 10
+        },
+        "vocation_xp": 0,
+        "claim_generation": 1
+      },
+      "failure_policy": "Death or disconnect keeps committed evidence. Recreate only uncommitted scene/encounter work with a new encounter attempt but the same domain completion generation. Quest items are virtual objective facts, not losable inventory. Invalid, distant, stale or forged interaction is rejected without mutation.",
+      "late_arrival_policy": "Use current-world dialogue and a personal witness/rehearsal variant. Existing construction satisfies only the public milestone condition; it never fabricates personal objective receipts or duplicates legacy rewards.",
+      "journal_key": "Journal.Hearthward.Q01",
+      "journal_text": "The League recognizes the character as a named contributor, not disposable labor. The player learns the permanent allegiance they already chose and the obligations that accompany safe passage.",
+      "required_recipe_ids": [],
+      "branches": [],
+      "objectives": [
+        {
+          "id": "objective.hearthward.charter",
+          "required_units": 1,
+          "source_id": "source.hearthward.charter",
+          "description": "Read Maren’s charter and confirm the already-chosen allegiance.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        },
+        {
+          "id": "objective.hearthward.mentor",
+          "required_units": 1,
+          "source_id": "source.hearthward.mentor",
+          "description": "Speak to Vesa about active vocation training and the neutral public contract.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        }
+      ],
+      "dialogue_dispatch": "Server opens a 120-second conversation for this NPC, quest version and current stage. Recheck distance <=2 tiles, line of sight, lease and NPC policy on every choice. Primary/alternative at nodes1/2 acknowledge their displayed subject; informational replies return to the node. Only objective_rules predicates produce evidence. Q5 choices primary/alternative at the decision node map to branches[0]/branches[1] and require an explicit final confirmation showing both reputation effects. Other choices do not set political flags.",
+      "cutscene": {
+        "key": "Scene.Hearthward.Q01.Summary",
+        "type": "optional camera-free dialogue overlay",
+        "skip": "Skip closes presentation only; interactions and objective conditions still required. Journal contains all story text. No unique animation/art dependency."
+      },
+      "journal_states": {
+        "accepted": "The League recognizes the character as a named contributor, not disposable labor. The player learns the permanent allegiance they already chose and the obligations that accompany safe passage.",
+        "completed": "Oath of the Road completed. Personal evidence and reward receipt remain in this journal after travel or political change.",
+        "public_changed": "The settlement changed through other contributions. Your own account of this event remains available; speak to the witness to complete your missing personal steps."
+      }
+    },
+    {
+      "id": "quest.hearthward.missing-caravan",
+      "asset": "DA_Quest_MissingCaravan",
+      "title": "The Missing Caravan",
+      "title_key": "Quest.Hearthward.Q02.Title",
+      "content_version": 1,
+      "faction_id": "faction.hearthward-league",
+      "prerequisites": [
+        "quest.hearthward.oath-road"
+      ],
+      "next_quest_ids": [
+        "quest.hearthward.briars-crossing"
+      ],
+      "quest_giver_id": "npc.hearthward.maren-vale",
+      "turn_in_npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "level_requirement": 1,
+      "minimum_humans": 1,
+      "pvp_required": false,
+      "party_required": false,
+      "authored": true,
+      "why": "The caravan carried provisions and a waystone rubbing. Finding it keeps Thornmere supplied and gives the character a credible reason to investigate the disturbance.",
+      "dialogue": [
+        {
+          "id": "dialogue.hearthward.q2.n1",
+          "speaker": "Maren",
+          "text_key": "Dialogue.Hearthward.Q02.N01.Line",
+          "text": "A cart bound for the north crossing did not arrive. Its provisions matter, but I am more worried about the copied inscription in its chest.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q02.N01.Primary",
+              "text": "I will follow the wheel tracks and speak to the witness.",
+              "response_key": "Dialogue.Hearthward.Q02.N01.Response",
+              "response": "Either route can establish what happened. Bring the broken seal, not a rumor."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q02.N01.Alternative",
+              "text": "I will clear the sentries and search the cart.",
+              "response_key": "Dialogue.Hearthward.Q02.N01.Response",
+              "response": "Either route can establish what happened. Bring the broken seal, not a rumor."
+            }
+          ],
+          "continue_to": "dialogue.hearthward.q2.n2",
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        },
+        {
+          "id": "dialogue.hearthward.q2.n2",
+          "speaker": "Vesa",
+          "text_key": "Dialogue.Hearthward.Q02.N02.Line",
+          "text": "Return what can be used. We will feed the crew before arguing over who owns the road.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q02.N02.Primary",
+              "text": "The cart is found. Here is the authenticated manifest.",
+              "response_key": "Dialogue.Hearthward.Q02.N02.Response",
+              "response": "Read the axle marks, examine the abandoned chest and use the reed-bank path. No one needs to face a patrol alone."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q02.N02.Alternative",
+              "text": "Tell me how to recover supplies without fighting.",
+              "response_key": "Dialogue.Hearthward.Q02.N02.Response",
+              "response": "Read the axle marks, examine the abandoned chest and use the reed-bank path. No one needs to face a patrol alone."
+            }
+          ],
+          "continue_to": null,
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        }
+      ],
+      "marker_id": "marker.caravan.axle",
+      "marker_tile": [
+        34,
+        11
+      ],
+      "reward": {
+        "source_id": "source.reward.hearthward.q2.v1",
+        "combat_xp": 50,
+        "copper": 20,
+        "items": [
+          {
+            "item_id": "item.repair-kit",
+            "quantity": 1
+          }
+        ],
+        "faction_reputation": {
+          "faction.hearthward-league": 15
+        },
+        "organization_reputation": {
+          "organization.hearth-assembly": 10
+        },
+        "vocation_xp": 0,
+        "claim_generation": 1
+      },
+      "failure_policy": "Death or disconnect keeps committed evidence. Recreate only uncommitted scene/encounter work with a new encounter attempt but the same domain completion generation. Quest items are virtual objective facts, not losable inventory. Invalid, distant, stale or forged interaction is rejected without mutation.",
+      "late_arrival_policy": "Use current-world dialogue and a personal witness/rehearsal variant. Existing construction satisfies only the public milestone condition; it never fabricates personal objective receipts or duplicates legacy rewards.",
+      "journal_key": "Journal.Hearthward.Q02",
+      "journal_text": "The caravan carried provisions and a waystone rubbing. Finding it keeps Thornmere supplied and gives the character a credible reason to investigate the disturbance.",
+      "required_recipe_ids": [],
+      "branches": [],
+      "objectives": [
+        {
+          "id": "objective.hearthward.caravan-lead",
+          "required_units": 1,
+          "source_id": "source.hearthward.caravan-lead",
+          "description": "Authenticate the caravan lead through either complete path.",
+          "alternatives": [
+            "Inspect axle at (34,11), chest at (36,10), and witness note at (37,12), in any order; all three server interactions produce one lead receipt.",
+            "Defeat two briar-struck sentries within encounter.caravan-recovery, then inspect the chest; server death receipts and the inspection produce the same lead receipt."
+          ],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        },
+        {
+          "id": "objective.hearthward.manifest",
+          "required_units": 1,
+          "source_id": "source.hearthward.manifest",
+          "description": "Deliver the virtual recovered manifest at Vesa’s desk; requires caravan-lead evidence.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        }
+      ],
+      "dialogue_dispatch": "Server opens a 120-second conversation for this NPC, quest version and current stage. Recheck distance <=2 tiles, line of sight, lease and NPC policy on every choice. Primary/alternative at nodes1/2 acknowledge their displayed subject; informational replies return to the node. Only objective_rules predicates produce evidence. Q5 choices primary/alternative at the decision node map to branches[0]/branches[1] and require an explicit final confirmation showing both reputation effects. Other choices do not set political flags.",
+      "cutscene": {
+        "key": "Scene.Hearthward.Q02.Summary",
+        "type": "optional camera-free dialogue overlay",
+        "skip": "Skip closes presentation only; interactions and objective conditions still required. Journal contains all story text. No unique animation/art dependency."
+      },
+      "journal_states": {
+        "accepted": "The caravan carried provisions and a waystone rubbing. Finding it keeps Thornmere supplied and gives the character a credible reason to investigate the disturbance.",
+        "completed": "The Missing Caravan completed. Personal evidence and reward receipt remain in this journal after travel or political change.",
+        "public_changed": "The settlement changed through other contributions. Your own account of this event remains available; speak to the witness to complete your missing personal steps."
+      }
+    },
+    {
+      "id": "quest.hearthward.briars-crossing",
+      "asset": "DA_Quest_BriarsCrossing",
+      "title": "Briars at the Crossing",
+      "title_key": "Quest.Hearthward.Q03.Title",
+      "content_version": 1,
+      "faction_id": "faction.hearthward-league",
+      "prerequisites": [
+        "quest.hearthward.missing-caravan"
+      ],
+      "next_quest_ids": [
+        "quest.hearthward.north-road-compact"
+      ],
+      "quest_giver_id": "npc.hearthward.maren-vale",
+      "turn_in_npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "level_requirement": 1,
+      "minimum_humans": 1,
+      "pvp_required": false,
+      "party_required": false,
+      "authored": true,
+      "why": "The player learns why the woodland communities dispute the road and obtains physical evidence that the Hollow Covenant is exploiting that dispute.",
+      "dialogue": [
+        {
+          "id": "dialogue.hearthward.q3.n1",
+          "speaker": "Talan",
+          "text_key": "Dialogue.Hearthward.Q03.N01.Line",
+          "text": "Your maps call these roots empty ground. My family has tended the crossing since before Thornmere kept a ledger.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q03.N01.Primary",
+              "text": "Then the road agreement needs your consent.",
+              "response_key": "Dialogue.Hearthward.Q03.N01.Response",
+              "response": "Both are true. Someone drove iron markers into the roots after our meeting. Look at the knot cut into them."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q03.N01.Alternative",
+              "text": "A supply road also protects families who cannot wait.",
+              "response_key": "Dialogue.Hearthward.Q03.N01.Response",
+              "response": "Both are true. Someone drove iron markers into the roots after our meeting. Look at the knot cut into them."
+            }
+          ],
+          "continue_to": "dialogue.hearthward.q3.n2",
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        },
+        {
+          "id": "dialogue.hearthward.q3.n2",
+          "speaker": "Eren",
+          "text_key": "Dialogue.Hearthward.Q03.N02.Line",
+          "text": "This knot is not a clan sign. The Hollow Covenant has copied part of a waystone warning and reversed its order.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q03.N02.Primary",
+              "text": "Record the evidence, not an accusation against the clans.",
+              "response_key": "Dialogue.Hearthward.Q03.N02.Response",
+              "response": "I will record both. The old warnings describe a depth below the roads. We do not yet know what the Deepweal is."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q03.N02.Alternative",
+              "text": "Tell Maren why the disturbance is dangerous.",
+              "response_key": "Dialogue.Hearthward.Q03.N02.Response",
+              "response": "I will record both. The old warnings describe a depth below the roads. We do not yet know what the Deepweal is."
+            }
+          ],
+          "continue_to": null,
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        }
+      ],
+      "marker_id": "marker.crossing.knot",
+      "marker_tile": [
+        43,
+        9
+      ],
+      "reward": {
+        "source_id": "source.reward.hearthward.q3.v1",
+        "combat_xp": 60,
+        "copper": 25,
+        "items": [],
+        "faction_reputation": {
+          "faction.hearthward-league": 10
+        },
+        "organization_reputation": {
+          "organization.veil-survey": 10
+        },
+        "vocation_xp": 0,
+        "claim_generation": 1
+      },
+      "failure_policy": "Death or disconnect keeps committed evidence. Recreate only uncommitted scene/encounter work with a new encounter attempt but the same domain completion generation. Quest items are virtual objective facts, not losable inventory. Invalid, distant, stale or forged interaction is rejected without mutation.",
+      "late_arrival_policy": "Use current-world dialogue and a personal witness/rehearsal variant. Existing construction satisfies only the public milestone condition; it never fabricates personal objective receipts or duplicates legacy rewards.",
+      "journal_key": "Journal.Hearthward.Q03",
+      "journal_text": "The player learns why the woodland communities dispute the road and obtains physical evidence that the Hollow Covenant is exploiting that dispute.",
+      "required_recipe_ids": [],
+      "branches": [],
+      "objectives": [
+        {
+          "id": "objective.hearthward.parley",
+          "required_units": 1,
+          "source_id": "source.hearthward.parley",
+          "description": "Complete both statements in Talan’s protected parley; neither dialogue answer forces a permanent branch.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        },
+        {
+          "id": "objective.hearthward.covenant-evidence",
+          "required_units": 1,
+          "source_id": "source.hearthward.covenant-evidence",
+          "description": "Inspect the marked stake at (43,9), then present it to Eren. Gate on both server interactions; record discovery.hearthward.covenant-knot.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        }
+      ],
+      "dialogue_dispatch": "Server opens a 120-second conversation for this NPC, quest version and current stage. Recheck distance <=2 tiles, line of sight, lease and NPC policy on every choice. Primary/alternative at nodes1/2 acknowledge their displayed subject; informational replies return to the node. Only objective_rules predicates produce evidence. Q5 choices primary/alternative at the decision node map to branches[0]/branches[1] and require an explicit final confirmation showing both reputation effects. Other choices do not set political flags.",
+      "cutscene": {
+        "key": "Scene.Hearthward.Q03.Summary",
+        "type": "optional camera-free dialogue overlay",
+        "skip": "Skip closes presentation only; interactions and objective conditions still required. Journal contains all story text. No unique animation/art dependency."
+      },
+      "journal_states": {
+        "accepted": "The player learns why the woodland communities dispute the road and obtains physical evidence that the Hollow Covenant is exploiting that dispute.",
+        "completed": "Briars at the Crossing completed. Personal evidence and reward receipt remain in this journal after travel or political change.",
+        "public_changed": "The settlement changed through other contributions. Your own account of this event remains available; speak to the witness to complete your missing personal steps."
+      }
+    },
+    {
+      "id": "quest.hearthward.north-road-compact",
+      "asset": "DA_Quest_NorthRoadCompact",
+      "title": "The North Road Compact",
+      "title_key": "Quest.Hearthward.Q04.Title",
+      "content_version": 1,
+      "faction_id": "faction.hearthward-league",
+      "prerequisites": [
+        "quest.hearthward.briars-crossing"
+      ],
+      "next_quest_ids": [
+        "quest.hearthward.crossing-choice"
+      ],
+      "quest_giver_id": "npc.hearthward.maren-vale",
+      "turn_in_npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "level_requirement": 1,
+      "minimum_humans": 1,
+      "pvp_required": false,
+      "party_required": false,
+      "authored": true,
+      "why": "A restored route creates practical access and services, with the character credited for their own work even on a realm whose bridge was repaired before they arrived.",
+      "dialogue": [
+        {
+          "id": "dialogue.hearthward.q4.n1",
+          "speaker": "Maren",
+          "text_key": "Dialogue.Hearthward.Q04.N01.Line",
+          "text": "North Road needs twelve units of accepted work. Your own ledger needs three. If the bridge already stands, maintenance still counts for you without rebuilding it.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q04.N01.Primary",
+              "text": "Show the work for my vocation.",
+              "response_key": "Dialogue.Hearthward.Q04.N01.Response",
+              "response": "The Roadward Accord accepts equivalent work. A basic inspection and delivery can earn all twelve units without a specialist, a market or another player."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q04.N01.Alternative",
+              "text": "Give me the free public supply contract.",
+              "response_key": "Dialogue.Hearthward.Q04.N01.Response",
+              "response": "The Roadward Accord accepts equivalent work. A basic inspection and delivery can earn all twelve units without a specialist, a market or another player."
+            }
+          ],
+          "continue_to": "dialogue.hearthward.q4.n2",
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        },
+        {
+          "id": "dialogue.hearthward.q4.n2",
+          "speaker": "Talan",
+          "text_key": "Dialogue.Hearthward.Q04.N02.Line",
+          "text": "A repaired crossing is not permission to take every tree beside it. Put the limits in writing.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q04.N02.Primary",
+              "text": "Record the work and preserve the boundary markers.",
+              "response_key": "Dialogue.Hearthward.Q04.N02.Response",
+              "response": "Inspect and maintain what stands. Their own receipts record their work; old builders keep their history."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q04.N02.Alternative",
+              "text": "Explain how late arrivals can contribute.",
+              "response_key": "Dialogue.Hearthward.Q04.N02.Response",
+              "response": "Inspect and maintain what stands. Their own receipts record their work; old builders keep their history."
+            }
+          ],
+          "continue_to": null,
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        }
+      ],
+      "marker_id": "marker.north-road.board",
+      "marker_tile": [
+        25,
+        19
+      ],
+      "reward": {
+        "source_id": "source.reward.hearthward.q4.v1",
+        "combat_xp": 75,
+        "copper": 30,
+        "items": [],
+        "faction_reputation": {
+          "faction.hearthward-league": 20
+        },
+        "organization_reputation": {
+          "organization.roadward-accord": 10
+        },
+        "vocation_xp": 0,
+        "claim_generation": 1
+      },
+      "failure_policy": "Death or disconnect keeps committed evidence. Recreate only uncommitted scene/encounter work with a new encounter attempt but the same domain completion generation. Quest items are virtual objective facts, not losable inventory. Invalid, distant, stale or forged interaction is rejected without mutation.",
+      "late_arrival_policy": "Use current-world dialogue and a personal witness/rehearsal variant. Existing construction satisfies only the public milestone condition; it never fabricates personal objective receipts or duplicates legacy rewards.",
+      "journal_key": "Journal.Hearthward.Q04",
+      "journal_text": "A restored route creates practical access and services, with the character credited for their own work even on a realm whose bridge was repaired before they arrived.",
+      "required_recipe_ids": [
+        "recipe.watch-fitting",
+        "recipe.field-loaf",
+        "recipe.bridge-support",
+        "recipe.blight-remedy"
+      ],
+      "branches": [],
+      "objectives": [
+        {
+          "id": "objective.hearthward.contribution",
+          "required_units": 3,
+          "source_id": "source.hearthward.project-contribution",
+          "description": "Contribute three accepted units through any listed route. Additional units are allowed until the essential project reaches twelve; post-completion work is maintenance.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        },
+        {
+          "id": "objective.hearthward.road-ready",
+          "required_units": 1,
+          "source_id": "source.hearthward.north-road-ready",
+          "description": "Observe the permanent NorthRoad essential completion through the versioned region snapshot. With one human, complete the free public contract four times to reach twelve units.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        }
+      ],
+      "contribution_routes": [
+        {
+          "id": "route.contribution.forgekeeper",
+          "vocation_id": "vocation.forgekeeper",
+          "item_id": "item.watch-fitting",
+          "quantity": 1,
+          "units": 3,
+          "recipe_id": "recipe.watch-fitting",
+          "fallback": "route.contribution.public-contract"
+        },
+        {
+          "id": "route.contribution.hearthkeeper",
+          "vocation_id": "vocation.hearthkeeper",
+          "item_id": "item.field-loaf",
+          "quantity": 1,
+          "units": 3,
+          "recipe_id": "recipe.field-loaf",
+          "fallback": "route.contribution.public-contract"
+        },
+        {
+          "id": "route.contribution.wayfinder",
+          "vocation_id": "vocation.wayfinder",
+          "evidence_id": "discovery.willow-cut",
+          "units": 3,
+          "fallback": "route.contribution.public-contract"
+        },
+        {
+          "id": "route.contribution.woodwright",
+          "vocation_id": "vocation.woodwright",
+          "item_id": "item.bridge-support",
+          "quantity": 1,
+          "units": 3,
+          "recipe_id": "recipe.bridge-support",
+          "fallback": "route.contribution.public-contract"
+        },
+        {
+          "id": "route.contribution.apothecary",
+          "vocation_id": "vocation.apothecary",
+          "item_id": "item.blight-remedy",
+          "quantity": 1,
+          "units": 3,
+          "recipe_id": "recipe.blight-remedy",
+          "fallback": "route.contribution.public-contract"
+        },
+        {
+          "id": "route.contribution.public-contract",
+          "vocation_id": null,
+          "copper_cost": 0,
+          "units": 3,
+          "steps": [
+            "Accept a uniquely numbered bound work order at Vesa.",
+            "Inspect the three marked safe road cells (28,15), (31,13), (34,12); distance, order ID and distinct markers are server-validated.",
+            "Return to the board; consume that work order once and atomically publish three project/personal units."
+          ],
+          "repeat": "A new order is available after the previous one is consumed. Four orders complete the twelve-unit essential milestone solo. Post-completion maintenance grants personal quest progress but no repeated faction reputation, currency, influence ballot or duplicate public construction."
+        }
+      ],
+      "dialogue_dispatch": "Server opens a 120-second conversation for this NPC, quest version and current stage. Recheck distance <=2 tiles, line of sight, lease and NPC policy on every choice. Primary/alternative at nodes1/2 acknowledge their displayed subject; informational replies return to the node. Only objective_rules predicates produce evidence. Q5 choices primary/alternative at the decision node map to branches[0]/branches[1] and require an explicit final confirmation showing both reputation effects. Other choices do not set political flags.",
+      "cutscene": {
+        "key": "Scene.Hearthward.Q04.Summary",
+        "type": "optional camera-free dialogue overlay",
+        "skip": "Skip closes presentation only; interactions and objective conditions still required. Journal contains all story text. No unique animation/art dependency."
+      },
+      "journal_states": {
+        "accepted": "A restored route creates practical access and services, with the character credited for their own work even on a realm whose bridge was repaired before they arrived.",
+        "completed": "The North Road Compact completed. Personal evidence and reward receipt remain in this journal after travel or political change.",
+        "public_changed": "The settlement changed through other contributions. Your own account of this event remains available; speak to the witness to complete your missing personal steps."
+      }
+    },
+    {
+      "id": "quest.hearthward.crossing-choice",
+      "asset": "DA_Quest_CrossingChoice",
+      "title": "Who Holds the Crossing?",
+      "title_key": "Quest.Hearthward.Q05.Title",
+      "content_version": 1,
+      "faction_id": "faction.hearthward-league",
+      "prerequisites": [
+        "quest.hearthward.north-road-compact"
+      ],
+      "next_quest_ids": [
+        "quest.hearthward.bell-dusk"
+      ],
+      "quest_giver_id": "npc.hearthward.maren-vale",
+      "turn_in_npc_id": "npc.briarbound.talan-reed",
+      "map_id": "L_ThornmereVillage",
+      "level_requirement": 1,
+      "minimum_humans": 1,
+      "pvp_required": false,
+      "party_required": false,
+      "authored": true,
+      "why": "The character decides what the League should stand for at the crossing. Personal relationships and later dialogue remember that decision regardless of the realm policy outcome.",
+      "dialogue": [
+        {
+          "id": "dialogue.hearthward.q5.n1",
+          "speaker": "Maren",
+          "text_key": "Dialogue.Hearthward.Q05.N01.Line",
+          "text": "The League wants your recommendation. It will remain in your journal. The realm’s public compact is resolved separately and may choose differently.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q05.N01.Primary",
+              "text": "Shared passage: witness access with the Briarbound and forbid cutting the marked grove.",
+              "response_key": "Dialogue.Hearthward.Q05.N01.Response",
+              "response": "Neither choice closes essential travel or authorizes attacks on rival players. You cannot rewrite your personal recommendation after it is committed."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q05.N01.Alternative",
+              "text": "Fortified crossing: station League guards outside the grove and guarantee a public bypass.",
+              "response_key": "Dialogue.Hearthward.Q05.N01.Response",
+              "response": "Neither choice closes essential travel or authorizes attacks on rival players. You cannot rewrite your personal recommendation after it is committed."
+            }
+          ],
+          "continue_to": "dialogue.hearthward.q5.n2",
+          "authority": "Dialogue preview is read-only. Only final confirmed CompleteFactionQuest at Talan commits the permanent personal choice and rewards; public preference is a separate optional action."
+        },
+        {
+          "id": "dialogue.hearthward.q5.n2",
+          "speaker": "Talan",
+          "text_key": "Dialogue.Hearthward.Q05.N02.Line",
+          "text": "I will remember what you signed, even if the realm chooses another policy.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q05.N02.Primary",
+              "text": "Let the record show shared passage.",
+              "response_key": "Dialogue.Hearthward.Q05.N02.Response",
+              "response": "A promise has meaning only when the people at the crossing can see it kept.",
+              "branch_id": "shared-passage"
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q05.N02.Alternative",
+              "text": "Let the record show a defended road with an open bypass.",
+              "response_key": "Dialogue.Hearthward.Q05.N02.Response",
+              "response": "A promise has meaning only when the people at the crossing can see it kept.",
+              "branch_id": "fortified-crossing"
+            }
+          ],
+          "continue_to": null,
+          "authority": "Dialogue preview is read-only. Only final confirmed CompleteFactionQuest at Talan commits the permanent personal choice and rewards; public preference is a separate optional action."
+        }
+      ],
+      "marker_id": "marker.crossing.compact",
+      "marker_tile": [
+        26,
+        18
+      ],
+      "reward": {
+        "source_id": "source.reward.hearthward.q5.v1",
+        "combat_xp": 50,
+        "copper": 20,
+        "items": [],
+        "faction_reputation": {
+          "faction.hearthward-league": 10
+        },
+        "organization_reputation": {
+          "organization.roadward-accord": 10
+        },
+        "vocation_xp": 0,
+        "claim_generation": 1
+      },
+      "failure_policy": "Death or disconnect keeps committed evidence. Recreate only uncommitted scene/encounter work with a new encounter attempt but the same domain completion generation. Quest items are virtual objective facts, not losable inventory. Invalid, distant, stale or forged interaction is rejected without mutation.",
+      "late_arrival_policy": "Use current-world dialogue and a personal witness/rehearsal variant. Existing construction satisfies only the public milestone condition; it never fabricates personal objective receipts or duplicates legacy rewards.",
+      "journal_key": "Journal.Hearthward.Q05",
+      "journal_text": "The character decides what the League should stand for at the crossing. Personal relationships and later dialogue remember that decision regardless of the realm policy outcome.",
+      "required_recipe_ids": [],
+      "branches": [
+        {
+          "id": "shared-passage",
+          "text_key": "Choice.Hearthward.SharedPassage",
+          "text": "Witness shared passage with the Briarbound and protect the marked grove.",
+          "flag_id": "flag.hearthward.shared-passage",
+          "faction_reputation": {
+            "faction.briarbound-clans": 30
+          },
+          "organization_reputation": {
+            "organization.roadward-accord": 15
+          },
+          "cosmetic_id": "cosmetic.hearthward.witness-ribbon",
+          "mechanical_reward_tier": 1,
+          "next_quest_id": "quest.hearthward.bell-dusk",
+          "personal_consequence": "Talan shares a boundary-history journal entry; Maren’s commissions refer to you as a compact witness. No required recipe is gated by this ribbon."
+        },
+        {
+          "id": "fortified-crossing",
+          "text_key": "Choice.Hearthward.FortifiedCrossing",
+          "text": "Station League guards outside the grove and guarantee the public bypass.",
+          "flag_id": "flag.hearthward.fortified-crossing",
+          "faction_reputation": {
+            "faction.hearthward-league": 30,
+            "faction.briarbound-clans": -10
+          },
+          "organization_reputation": {
+            "organization.roadward-accord": 15
+          },
+          "cosmetic_id": "cosmetic.hearthward.road-pin",
+          "mechanical_reward_tier": 1,
+          "next_quest_id": "quest.hearthward.bell-dusk",
+          "personal_consequence": "Maren offers a defensive-history journal entry; Talan challenges your guarantees in later dialogue. Equivalent commissions and required story remain available."
+        }
+      ],
+      "objectives": [
+        {
+          "id": "objective.hearthward.choice",
+          "required_units": 1,
+          "source_id": "source.hearthward.crossing-choice",
+          "description": "Commit exactly one personal recommendation; public round participation is separate and is not required to continue.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        }
+      ],
+      "dialogue_dispatch": "Maren at dialogue.hearthward.q5.n1 previews both offers without mutation. Visit Talan at dialogue.hearthward.q5.n2; each choice names its explicit branch_id. The confirmation view displays both faction and civic standing deltas from that branch plus the common quest reward. Submit CompleteFactionQuest with that BranchId after confirmation. Cancel closes the view without changing the character. Server revalidates current NPC, <=2-tile distance, line of sight, quest version, lease, objectives and revision. Accepted branch and rewards commit together; a later choice cannot rewrite them.",
+      "cutscene": {
+        "key": "Scene.Hearthward.Q05.Summary",
+        "type": "optional camera-free dialogue overlay",
+        "skip": "Skip closes presentation only; interactions and objective conditions still required. Journal contains all story text. No unique animation/art dependency."
+      },
+      "journal_states": {
+        "accepted": "The character decides what the League should stand for at the crossing. Personal relationships and later dialogue remember that decision regardless of the realm policy outcome.",
+        "completed": "Who Holds the Crossing? completed. Personal evidence and reward receipt remain in this journal after travel or political change.",
+        "public_changed": "The settlement changed through other contributions. Your own account of this event remains available; speak to the witness to complete your missing personal steps."
+      }
+    },
+    {
+      "id": "quest.hearthward.bell-dusk",
+      "asset": "DA_Quest_BellDusk",
+      "title": "Bell at Dusk",
+      "title_key": "Quest.Hearthward.Q06.Title",
+      "content_version": 1,
+      "faction_id": "faction.hearthward-league",
+      "prerequisites": [
+        "quest.hearthward.crossing-choice"
+      ],
+      "next_quest_ids": [],
+      "quest_giver_id": "npc.neutral.eren-dusk",
+      "turn_in_npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "level_requirement": 1,
+      "minimum_humans": 1,
+      "pvp_required": false,
+      "party_required": false,
+      "authored": true,
+      "why": "The warning proves that the factions face a danger none understands alone. The player gains a concrete lead into Elderwood and the remaining regional story.",
+      "dialogue": [
+        {
+          "id": "dialogue.hearthward.q6.n1",
+          "speaker": "Eren",
+          "text_key": "Dialogue.Hearthward.Q06.N01.Line",
+          "text": "The Split Bell answers a signal that no living keeper sent. The Covenant is feeding the pattern. We can break its focus or restore the warning sequence.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q06.N01.Primary",
+              "text": "I will confront the briar-struck sentries with your assistance.",
+              "response_key": "Dialogue.Hearthward.Q06.N01.Response",
+              "response": "Both paths reveal the same warning. The bell scene can be begun now; you do not have to wait for real dusk."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q06.N01.Alternative",
+              "text": "Teach me the three inscriptions so we can quiet the signal.",
+              "response_key": "Dialogue.Hearthward.Q06.N01.Response",
+              "response": "Both paths reveal the same warning. The bell scene can be begun now; you do not have to wait for real dusk."
+            }
+          ],
+          "continue_to": "dialogue.hearthward.q6.n2",
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        },
+        {
+          "id": "dialogue.hearthward.q6.n2",
+          "speaker": "Maren",
+          "text_key": "Dialogue.Hearthward.Q06.N02.Line",
+          "text": "Your report changes the work ahead. Thornmere cannot solve this by extending another survey line. Carry Eren’s rubbing to Bellroot.",
+          "choices": [
+            {
+              "id": "primary",
+              "text_key": "Dialogue.Hearthward.Q06.N02.Primary",
+              "text": "Record my choice and issue guest passage to Elderwood.",
+              "response_key": "Dialogue.Hearthward.Q06.N02.Response",
+              "response": "The construction, your contribution and your personal choices remain. Bellroot can receive you through the common camp, whatever the latest crossing policy."
+            },
+            {
+              "id": "alternative",
+              "text_key": "Dialogue.Hearthward.Q06.N02.Alternative",
+              "text": "What remains here after I leave?",
+              "response_key": "Dialogue.Hearthward.Q06.N02.Response",
+              "response": "The construction, your contribution and your personal choices remain. Bellroot can receive you through the common camp, whatever the latest crossing policy."
+            }
+          ],
+          "continue_to": null,
+          "authority": "UI requests dialogue choice; only a current, server-validated interaction may issue objective evidence. Closing or replaying the line cannot grant progress."
+        }
+      ],
+      "marker_id": "marker.split-bell.inscriptions",
+      "marker_tile": [
+        30,
+        20
+      ],
+      "reward": {
+        "source_id": "source.reward.hearthward.q6.v1",
+        "combat_xp": 100,
+        "copper": 40,
+        "items": [
+          {
+            "item_id": "item.repair-kit",
+            "quantity": 1
+          }
+        ],
+        "faction_reputation": {
+          "faction.hearthward-league": 25
+        },
+        "organization_reputation": {
+          "organization.veil-survey": 10
+        },
+        "vocation_xp": 0,
+        "claim_generation": 1
+      },
+      "failure_policy": "Death or disconnect keeps committed evidence. Recreate only uncommitted scene/encounter work with a new encounter attempt but the same domain completion generation. Quest items are virtual objective facts, not losable inventory. Invalid, distant, stale or forged interaction is rejected without mutation.",
+      "late_arrival_policy": "Use current-world dialogue and a personal witness/rehearsal variant. Existing construction satisfies only the public milestone condition; it never fabricates personal objective receipts or duplicates legacy rewards.",
+      "journal_key": "Journal.Hearthward.Q06",
+      "journal_text": "The warning proves that the factions face a danger none understands alone. The player gains a concrete lead into Elderwood and the remaining regional story.",
+      "required_recipe_ids": [],
+      "branches": [],
+      "objectives": [
+        {
+          "id": "objective.hearthward.bell-warning",
+          "required_units": 1,
+          "source_id": "source.hearthward.bell-warning",
+          "description": "Complete an encounter OR investigation variant; both yield the same warning.",
+          "alternatives": [
+            "Begin encounter.split-bell with Eren’s two NPC wardens; defeat three briar-struck echoes with reset-on-wipe and no entry fee. Scale optional adds for eligible participants, never required enemy count or player-only mechanics.",
+            "Read tablets at (29,19), (31,19), (30,21); the answer is visibly printed as Road, Root, Bell. Submit that sequence at Eren. Wrong order resets only the local sequence, with unlimited attempts and no item loss."
+          ],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        },
+        {
+          "id": "objective.hearthward.guest-passage",
+          "required_units": 1,
+          "source_id": "source.hearthward.guest-passage",
+          "description": "Report to Maren; commit unlock.travel.elderwood-common and unlock.story.elderwood together with completion rewards. Subsequent transfer uses the separate fenced travel command, not a reusable dialogue ticket.",
+          "alternatives": [],
+          "server_evidence": "Interaction session/encounter/project receipt bound to CharacterId, ObjectiveId, ContentVersion, zone instance, lease epoch and authoritative source occurrence. Unique (CharacterId, QuestId, ObjectiveId, SourceOccurrenceId)."
+        }
+      ],
+      "follow_up": {
+        "shared_region_id": "elderwood",
+        "shared_arc": "Tracks beneath the Canopy → The Missing Fittings → The Bellroot Vault",
+        "journal_entry_id": "journal.shared.elderwood-arrival",
+        "travel_spawn_id": "spawn.elderwood.bellroot-guest",
+        "mandatory_dungeon_humans": 1
+      },
+      "dialogue_dispatch": "Server opens a 120-second conversation for this NPC, quest version and current stage. Recheck distance <=2 tiles, line of sight, lease and NPC policy on every choice. Primary/alternative at nodes1/2 acknowledge their displayed subject; informational replies return to the node. Only objective_rules predicates produce evidence. Q5 choices primary/alternative at the decision node map to branches[0]/branches[1] and require an explicit final confirmation showing both reputation effects. Other choices do not set political flags.",
+      "cutscene": {
+        "key": "Scene.Hearthward.Q06.Summary",
+        "type": "optional camera-free dialogue overlay",
+        "skip": "Skip closes presentation only; interactions and objective conditions still required. Journal contains all story text. No unique animation/art dependency."
+      },
+      "journal_states": {
+        "accepted": "The warning proves that the factions face a danger none understands alone. The player gains a concrete lead into Elderwood and the remaining regional story.",
+        "completed": "Bell at Dusk completed. Personal evidence and reward receipt remain in this journal after travel or political change.",
+        "public_changed": "The settlement changed through other contributions. Your own account of this event remains available; speak to the witness to complete your missing personal steps."
+      }
+    }
+  ],
+  "legacy_arcs": [
+    {
+      "region_id": "thornmere",
+      "preserve": [
+        "quest.thornmere.first-supplies",
+        "First Supplies",
+        "A Sound from the North",
+        "Watchtower at Dusk"
+      ],
+      "integration": "The Hearthward chain supplies a political framing, not renamed copies. Existing First Supplies remains Vesa’s shared starter service. Its original RewardReceiptId is never cleared. Missing Caravan supplies the A Sound from the North evidence beat; Bell at Dusk supplies the watchtower warning beat. A mapped legacy completion can satisfy a shared prerequisite only through the versioned migration table, never by awarding both old and new reward generations."
+    },
+    {
+      "region_id": "elderwood",
+      "preserve": [
+        "NorthRoad",
+        "Willow Cut",
+        "discovery.willow-cut",
+        "Tracks beneath the Canopy",
+        "The Missing Fittings",
+        "The Bellroot Vault"
+      ],
+      "integration": "NorthRoad remains the existing project identity on Record_Region(elderwood). Thornmere board submits receipts to that same owner; it is not a second north-road project."
+    }
+  ],
+  "project": {
+    "id": "project.elderwood.north-road",
+    "asset": "DA_Project_NorthRoad",
+    "region_id": "elderwood",
+    "essential_target": 12,
+    "personal_quest_units": 3,
+    "completed_milestone_id": "NorthRoad.essential.complete",
+    "generation": 1,
+    "definition_version": 1,
+    "post_completion": "Accept a separately identified maintenance contribution for personal progress without decrementing, reconstructing or re-awarding the completed milestone.",
+    "required_humans": 1,
+    "storage_key": "NorthRoad",
+    "legacy_aliases": [
+      "project.north-road"
+    ],
+    "milestone_identity_note": "NorthRoad remains the existing project field/key. NorthRoad.essential.complete names the completion event, not a replacement construction or second reward. Resolve legacy project.north-road to project.elderwood.north-road before uniqueness checks."
+  },
+  "visuals": [
+    {
+      "id": "visual.north-road.unrepaired",
+      "condition": "NorthRoad essential total < 12",
+      "appearance": "Broken rail projection and crew supply crates; preserve original permanent flags.",
+      "service": "Free public work orders and neutral detour remain available."
+    },
+    {
+      "id": "visual.north-road.repaired",
+      "condition": "NorthRoad.essential.complete exists",
+      "appearance": "Repaired rail, lantern and crew board; reconstruct from region revision, never client inventory.",
+      "service": "Open essential safe route and existing baseline merchant route; never remove on later political change."
+    },
+    {
+      "id": "visual.crossing.shared-passage",
+      "condition": "Resolved public policy = shared-passage",
+      "appearance": "Paired text plaques and a nonblocking witness desk outside the grove.",
+      "service": "Shared witness commission flavor; same essential prices/stock and progression access."
+    },
+    {
+      "id": "visual.crossing.fortified-crossing",
+      "condition": "Resolved public policy = fortified-crossing",
+      "appearance": "League patrol banner and supply rack outside the grove; public bypass stays unobstructed.",
+      "service": "Defensive commission flavor; same essential utility and neutral trainers."
+    }
+  ],
+  "encounters": [
+    {
+      "id": "encounter.caravan-recovery",
+      "asset": "DA_Encounter_RoadAmbush",
+      "source_group_id": "enemy.hollow-covenant",
+      "count": 2,
+      "location_tiles": [
+        [
+          36,
+          9
+        ],
+        [
+          38,
+          11
+        ]
+      ],
+      "noncombat_alternative": "objective.hearthward.caravan-lead investigation path",
+      "death_receipt_scope": "EncounterInstanceId, CharacterId, encounter-generation; no credit solely from party membership.",
+      "health_per_sentry": 18,
+      "contact_damage": 3,
+      "attack_interval_seconds": 2,
+      "leash_tiles": 6,
+      "reset_seconds": 15,
+      "rules": "Reuse RoadAmbush mechanics as a campaign placement variant; do not globally retag all existing road enemies as Covenant. Root-struck sentries carry evidence of Covenant interference, not proof every rival faction is hostile."
+    },
+    {
+      "id": "encounter.split-bell",
+      "asset": "DA_Encounter_SplitBell",
+      "source_group_id": "enemy.hollow-covenant",
+      "count": 3,
+      "location_tiles": [
+        [
+          28,
+          18
+        ],
+        [
+          32,
+          18
+        ],
+        [
+          30,
+          22
+        ]
+      ],
+      "npc_assist_count": 2,
+      "noncombat_alternative": "Road, Root, Bell tablet sequence",
+      "death_receipt_scope": "EncounterInstanceId, CharacterId, encounter-generation; NPC aid cannot create duplicate personal reward receipts.",
+      "health_per_echo": 24,
+      "contact_damage": 4,
+      "attack_interval_seconds": 2,
+      "leash_tiles": 7,
+      "reset_seconds": 15,
+      "npc_assist_definition": "Two existing Phase26 NPC assistants, each 60 health, 4 damage every 2 seconds, never owns character reward; respawn on new personal attempt",
+      "rules": "Enemies select consenting encounter participants/NPC assistants only. No player-vs-player target. Attack telegraph 0.8 seconds with text/shape cue. No enrage or simultaneous switches. Defeat keeps earlier committed objectives. Noncombat tablets are always accessible at Eren outside combat."
+    }
+  ],
+  "acceptance_route": [
+    "Create a Hearthward character with a separate available class, one vocation and valid appearance.",
+    "Spawn at the Hearthward ledger, not the neutral fallback. Complete Q1 and Q2 through both alternative evidence routes in separate save fixtures.",
+    "Complete Q3; contribute to the existing NorthRoad owner through each vocation and the free public contract. With one human, four contracts complete twelve essential units.",
+    "In separate characters choose each Q5 branch; confirm its personal standing and journal remain even when public policy resolves differently.",
+    "Complete Q6 by combat with NPC assistance and by investigation in separate fixtures. Grant rewards and travel/story unlocks once.",
+    "Restart service and zone; inspect saved personal/region revisions, then transfer via guest admission to Elderwood. Drop the response after commit and reconnect; verify one active epoch, the same identities and no repeated rewards."
+  ],
+  "materials": [],
+  "interactions": [
+    {
+      "id": "interaction.charter",
+      "npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        26,
+        18
+      ],
+      "objective_id": "objective.hearthward.charter",
+      "evidence_key": "source.hearthward.charter",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.mentor",
+      "npc_id": "mentor.vesa",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        23,
+        20
+      ],
+      "objective_id": "objective.hearthward.mentor",
+      "evidence_key": "source.hearthward.mentor",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.caravan-axle",
+      "npc_id": null,
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        35,
+        12
+      ],
+      "objective_id": "objective.hearthward.caravan-lead",
+      "evidence_key": "clue.caravan.axle",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.caravan-chest",
+      "npc_id": null,
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        38,
+        10
+      ],
+      "objective_id": "objective.hearthward.caravan-lead",
+      "evidence_key": "clue.caravan.chest",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.caravan-witness",
+      "npc_id": "npc.briarbound.talan-reed",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        42,
+        8
+      ],
+      "objective_id": "objective.hearthward.caravan-lead",
+      "evidence_key": "clue.caravan.witness",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.caravan-manifest",
+      "npc_id": "mentor.vesa",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        23,
+        20
+      ],
+      "objective_id": "objective.hearthward.manifest",
+      "evidence_key": "source.hearthward.caravan-manifest",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.crossing-parley",
+      "npc_id": "npc.briarbound.talan-reed",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        42,
+        8
+      ],
+      "objective_id": "objective.hearthward.parley",
+      "evidence_key": "source.hearthward.crossing-parley",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.carved-stake",
+      "npc_id": null,
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        41,
+        10
+      ],
+      "objective_id": "objective.hearthward.covenant-evidence",
+      "evidence_key": "clue.crossing.stake",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.bell-evidence",
+      "npc_id": "npc.neutral.eren-dusk",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        30,
+        20
+      ],
+      "objective_id": "objective.hearthward.covenant-evidence",
+      "evidence_key": "clue.crossing.bell",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.policy-ledger",
+      "npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        26,
+        18
+      ],
+      "objective_id": "objective.hearthward.choice",
+      "evidence_key": "source.hearthward.crossing-choice",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.tablet-road",
+      "npc_id": null,
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        28,
+        20
+      ],
+      "objective_id": "objective.hearthward.bell-warning",
+      "evidence_key": "clue.bell.road",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.tablet-root",
+      "npc_id": null,
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        30,
+        22
+      ],
+      "objective_id": "objective.hearthward.bell-warning",
+      "evidence_key": "clue.bell.root",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.tablet-bell",
+      "npc_id": null,
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        32,
+        20
+      ],
+      "objective_id": "objective.hearthward.bell-warning",
+      "evidence_key": "clue.bell.bell",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.bell-report",
+      "npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        26,
+        18
+      ],
+      "objective_id": "objective.hearthward.guest-passage",
+      "evidence_key": "source.hearthward.bell-report",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    },
+    {
+      "id": "interaction.maren-parley",
+      "npc_id": "npc.hearthward.maren-vale",
+      "map_id": "L_ThornmereVillage",
+      "tile": [
+        26,
+        18
+      ],
+      "objective_id": "objective.hearthward.parley",
+      "evidence_key": "fact.crossing.maren-statement",
+      "maximum_distance_tiles": 2,
+      "line_of_sight_required": true,
+      "session_lifetime_seconds": 120,
+      "requires_owned_current_quest": true
+    }
+  ],
+  "objective_rules": [
+    {
+      "quest_id": "quest.hearthward.oath-road",
+      "expression": "charter := confirmed charter interaction; mentor := acknowledged Vesa introduction. Each complete fact issues one canonical objective source receipt."
+    },
+    {
+      "quest_id": "quest.hearthward.missing-caravan",
+      "expression": "caravan-lead := (axle AND chest AND witness) OR (two distinct validated sentry defeats AND chest). Manifest := lead already committed AND Vesa return interaction. First true alternative consumes the objective generation; other alternatives remain narrative only."
+    },
+    {
+      "quest_id": "quest.hearthward.briars-crossing",
+      "expression": "parley := hear Talan and Maren statements in either order, then choose acknowledge or challenge; both advance. evidence := carved stake AND Eren interpretation. Only server-held distinct evidence keys count."
+    },
+    {
+      "quest_id": "quest.hearthward.north-road-compact",
+      "expression": "contribution := sum accepted personal units >=3. road-ready := existing Record_Region NorthRoad essential completion. Four free work orders of three units meet the twelve-unit public threshold when alone; maintenance supplies personal units after completion."
+    },
+    {
+      "quest_id": "quest.hearthward.crossing-choice",
+      "expression": "choice := one of the two authored immutable branch IDs accepted with CompleteQuest after both offers are shown. Never persist a separate UI choice before the reward/branch transaction. Ballot is optional, separate, and cannot change the personal branch."
+    },
+    {
+      "quest_id": "quest.hearthward.bell-dusk",
+      "expression": "warning := (three distinct echo defeats in the character encounter with eligible NPC assistance) OR (three tablet clues AND ordered Road, Root, Bell inputs at Eren). report := warning committed AND Maren return interaction. Incorrect sequence resets only uncommitted attempt, no resource fee, timer, damage or penalty."
+    }
+  ],
+  "resource_routes": [
+    {
+      "id": "resource.elderwood.structural-timber",
+      "asset": "DA_Resource_ElderwoodTimber",
+      "region_id": "elderwood",
+      "item_id": "item.straight-grain-timber",
+      "minimum_yield": 1,
+      "maximum_yield": 2,
+      "respawn_seconds": 120,
+      "concurrent_claims": 1,
+      "eligibility": "Three authored neutral woodland cells on the Willow Cut bypass, server-randomized selection among eligible unoccupied cells. Basic hand gathering is allowed; Woodwright receives existing specialist improvements only. Keep guarded contested groves optional.",
+      "cells": [
+        [
+          12,
+          32
+        ],
+        [
+          16,
+          30
+        ],
+        [
+          18,
+          28
+        ]
+      ],
+      "map_id": "L_ElderwoodRoad",
+      "fallback": "Vesa public three-marker order can complete the same project without timber or leaving Thornmere."
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "scope": "Fresh Linux documentation/schema/SQLite conformance; no Unreal or production multiplayer execution",
+  "run_url": "https://github.com/evanmcpheron/mmo_docs/actions/runs/38012645365",
+  "main_commit": "468d9430b5492ee5b6d1777ae021b59085c7a507",
+  "reviewed_parent_commit": "e9921e2aec167e69f108b5118419ffa0c567af20",
+  "reviewed_local_commit": "5e0e99057edc17f5f725230ea76406428d7f4d50",
+  "matched_reviewed_files": 13,
+  "hash_mismatches": [],
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "tools/build_manual_indexes.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.356
+    },
+    {
+      "command": [
+        "python3",
+        "tools/build_manual_indexes.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.325
+    },
+    {
+      "command": [
+        "python3",
+        "tools/validate_documentation.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 2.161
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_phase_integration.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.047
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_feature_coverage.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.034
+    },
+    {
+      "command": [
+        "python3",
+        "tools/simulate_population_scaling.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.027
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 3.648
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_feature_coverage.py",
+        "--require-complete"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "duration_seconds": 0.038
+    },
+    {
+      "command": [
+        "python3",
+        "tools/validate_factions.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.045
+    },
+    {
+      "command": [
+        "python3",
+        "tools/validate_factions.py",
+        "--deployment"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "duration_seconds": 0.045
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.078
+    }
+  ],
+  "expected_nonpassing_gates": [
+    "Unmodified full-guide completeness gate: 46 incomplete requirement blocks",
+    "Missing cooked-content and solo-runtime faction deployment proof"
+  ],
+  "runtime": "not_run",
+  "passed": true
+}

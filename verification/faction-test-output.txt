@@ -1,0 +1,219 @@
+$ python3 tools/build_manual_indexes.py
+Built 349 HTML pages, one offline search index and the faction English export.
+
+EXIT=0
+$ python3 tools/build_manual_indexes.py --check
+PASS: generated files are current; 349 HTML pages, one offline search index and the faction English export.
+
+EXIT=0
+$ python3 tools/validate_documentation.py
+{
+  "status": "pass",
+  "scope": "Internal integrity of present documentation only; not full editorial coverage or game validation",
+  "html_pages": 349,
+  "registered_assets": 228,
+  "local_link_occurrences_checked": 16336,
+  "external_reference_occurrences_not_network_checked": 9,
+  "orphan_pages": 0,
+  "source_art_files_inventoried": 0,
+  "errors": [],
+  "game_runtime": "not_run"
+}
+
+EXIT=0
+$ python3 tools/check_phase_integration.py
+{
+  "status": "pass",
+  "phases": 32,
+  "scope": "Structure and present-registry integration accounting, not exhaustive Editor instructions or runtime integration",
+  "errors": []
+}
+
+EXIT=0
+$ python3 tools/check_feature_coverage.py
+{
+  "status": "pass",
+  "mode": "source-block-accounting",
+  "requirement_blocks": 46,
+  "incomplete_blocks": 46,
+  "full_guide_complete": false,
+  "scope": "Grouped requirements preserve source text; accounting does not certify atomic-feature completeness",
+  "errors": []
+}
+
+EXIT=0
+$ python3 tools/simulate_population_scaling.py
+{
+  "status": "pass",
+  "model": "Proposed arithmetic only",
+  "population_cases": [
+    {
+      "engaged_at_activation": 1,
+      "essential": 12,
+      "optional": 10,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 2,
+      "essential": 12,
+      "optional": 12,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 5,
+      "essential": 12,
+      "optional": 14,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 10,
+      "essential": 12,
+      "optional": 16,
+      "policy_version": 1
+    },
+    {
+      "engaged_at_activation": 30,
+      "essential": 12,
+      "optional": 18,
+      "policy_version": 1
+    }
+  ],
+  "checks": [
+    "Fixed essential goal",
+    "Expected optional values",
+    "Monotonic optional effort",
+    "Frozen existing goals",
+    "Credited progress retained",
+    "Input clamp"
+  ],
+  "runtime_or_fun_measurement": false,
+  "network_clients_connected": 0
+}
+
+EXIT=0
+$ python3 -m unittest discover -s tools/tests -v
+test_all_repeated_creation_signatures_require_three_identities (test_character_progression.CharacterProgressionContractTests.test_all_repeated_creation_signatures_require_three_identities) ... ok
+test_all_retained_vocation_facts_have_fixture_values (test_character_progression.CharacterProgressionContractTests.test_all_retained_vocation_facts_have_fixture_values) ... ok
+test_confirmed_decision_does_not_mark_runtime_implemented (test_character_progression.CharacterProgressionContractTests.test_confirmed_decision_does_not_mark_runtime_implemented) ... ok
+test_definition_initial_xp_and_versioned_curves_are_explicit (test_character_progression.CharacterProgressionContractTests.test_definition_initial_xp_and_versioned_curves_are_explicit) ... ok
+test_discipline_ids_resolve_existing_definitions (test_character_progression.CharacterProgressionContractTests.test_discipline_ids_resolve_existing_definitions) ... ok
+test_every_required_future_game_scenario_is_documented (test_character_progression.CharacterProgressionContractTests.test_every_required_future_game_scenario_is_documented) ... ok
+test_independent_required_selection_validation_is_explicit (test_character_progression.CharacterProgressionContractTests.test_independent_required_selection_validation_is_explicit) ... ok
+test_migration_preserves_history_and_requires_unresolved_identity_decisions (test_character_progression.CharacterProgressionContractTests.test_migration_preserves_history_and_requires_unresolved_identity_decisions) ... ok
+test_obsolete_creation_signatures_are_detected (test_character_progression.CharacterProgressionContractTests.test_obsolete_creation_signatures_are_detected) ... ok
+test_permissions_awards_and_recovery_are_not_ui_owned (test_character_progression.CharacterProgressionContractTests.test_permissions_awards_and_recovery_are_not_ui_owned) ... ok
+test_phase_integration_preserves_creation_order_and_readiness_gates (test_character_progression.CharacterProgressionContractTests.test_phase_integration_preserves_creation_order_and_readiness_gates) ... ok
+test_record_retains_one_active_selector_and_one_progression_owner (test_character_progression.CharacterProgressionContractTests.test_record_retains_one_active_selector_and_one_progression_owner) ... ok
+test_return_sequence_restores_saved_xp_and_derived_levels (test_character_progression.CharacterProgressionContractTests.test_return_sequence_restores_saved_xp_and_derived_levels) ... ok
+test_switch_uses_existing_transaction_and_receipt_framework (test_character_progression.CharacterProgressionContractTests.test_switch_uses_existing_transaction_and_receipt_framework) ... ok
+test_trainer_policy_is_not_rebalanced (test_character_progression.CharacterProgressionContractTests.test_trainer_policy_is_not_rebalanced) ... ok
+test_dependency_cycle_rejected (test_documentation.DocumentationTests.test_dependency_cycle_rejected) ... ok
+test_duplicate_identity_rejected (test_documentation.DocumentationTests.test_duplicate_identity_rejected) ... ok
+test_heading_ids_disambiguated (test_documentation.DocumentationTests.test_heading_ids_disambiguated) ... ok
+test_html_parser_collects_link_targets (test_documentation.DocumentationTests.test_html_parser_collects_link_targets) ... ok
+test_later_creation_dependency_rejected (test_documentation.DocumentationTests.test_later_creation_dependency_rejected) ... ok
+test_missing_link_and_duplicate_html_id_rejected (test_documentation.DocumentationTests.test_missing_link_and_duplicate_html_id_rejected) ... ok
+test_nested_relative_link (test_documentation.DocumentationTests.test_nested_relative_link) ... ok
+test_population_policy (test_documentation.DocumentationTests.test_population_policy) ... ok
+test_registry_baseline (test_documentation.DocumentationTests.test_registry_baseline) ... ok
+test_reverse_dependency_rejected (test_documentation.DocumentationTests.test_reverse_dependency_rejected) ... ok
+test_source_accounting_passes_but_completion_fails (test_documentation.DocumentationTests.test_source_accounting_passes_but_completion_fails) ... ok
+test_text_and_link_are_escaped (test_documentation.DocumentationTests.test_text_and_link_are_escaped) ... ok
+test_unknown_asset_rejected (test_documentation.DocumentationTests.test_unknown_asset_rejected) ... ok
+test_unproven_verified_status_rejected (test_documentation.DocumentationTests.test_unproven_verified_status_rejected) ... ok
+test_asset_rewards_are_generated_from_canonical_campaign (test_factions.FactionSourceTests.test_asset_rewards_are_generated_from_canonical_campaign) ... ok
+test_authored_catalog_and_campaign (test_factions.FactionSourceTests.test_authored_catalog_and_campaign) ... ok
+test_base_relations_are_symmetric_and_complete (test_factions.FactionSourceTests.test_base_relations_are_symmetric_and_complete) ... ok
+test_branch_advancement_parity (test_factions.FactionSourceTests.test_branch_advancement_parity) ... ok
+test_content_version_mismatch_rejected (test_factions.FactionSourceTests.test_content_version_mismatch_rejected) ... ok
+test_continuation_is_independent_of_new_selection (test_factions.FactionSourceTests.test_continuation_is_independent_of_new_selection) ... ok
+test_duplicate_faction_id_rejected (test_factions.FactionSourceTests.test_duplicate_faction_id_rejected) ... ok
+test_four_facing_and_deployment_evidence_gate (test_factions.FactionSourceTests.test_four_facing_and_deployment_evidence_gate) ... ok
+test_future_faction_cannot_be_enabled_without_content (test_factions.FactionSourceTests.test_future_faction_cannot_be_enabled_without_content) ... ok
+test_headquarters_restriction_and_override_symmetry (test_factions.FactionSourceTests.test_headquarters_restriction_and_override_symmetry) ... ok
+test_missing_objective_rule_and_broken_dialogue (test_factions.FactionSourceTests.test_missing_objective_rule_and_broken_dialogue) ... ok
+test_missing_recipe_input_and_invalid_standing_subject (test_factions.FactionSourceTests.test_missing_recipe_input_and_invalid_standing_subject) ... ok
+test_missing_spawn_npc_recipe_reward_and_travel_rejected (test_factions.FactionSourceTests.test_missing_spawn_npc_recipe_reward_and_travel_rejected) ... ok
+test_neutral_services_and_no_player_damage (test_factions.FactionSourceTests.test_neutral_services_and_no_player_damage) ... ok
+test_neutral_zone_does_not_bypass_faction_only_service (test_factions.FactionSourceTests.test_neutral_zone_does_not_bypass_faction_only_service) ... ok
+test_no_mandatory_pvp_or_group (test_factions.FactionSourceTests.test_no_mandatory_pvp_or_group) ... ok
+test_only_hearthward_selectable (test_factions.FactionSourceTests.test_only_hearthward_selectable) ... ok
+test_quest_dag_cycle_and_orphan_rejected (test_factions.FactionSourceTests.test_quest_dag_cycle_and_orphan_rejected) ... ok
+test_region_permanence_and_free_solo_contract (test_factions.FactionSourceTests.test_region_permanence_and_free_solo_contract) ... ok
+test_reverse_duplicate_relation_rejected (test_factions.FactionSourceTests.test_reverse_duplicate_relation_rejected) ... ok
+test_taxonomy_has_three_independent_organizations (test_factions.FactionSourceTests.test_taxonomy_has_three_independent_organizations) ... ok
+test_traceability_targets_and_phase_assignments_exist (test_factions.FactionSourceTests.test_traceability_targets_and_phase_assignments_exist) ... ok
+test_atomic_creation_replay_and_starter_once (test_factions.FactionTransactionTests.test_atomic_creation_replay_and_starter_once) ... ok
+test_corrupt_identity_needs_review_not_silent_assignment (test_factions.FactionTransactionTests.test_corrupt_identity_needs_review_not_silent_assignment) ... ok
+test_create_fault_before_and_after_commit (test_factions.FactionTransactionTests.test_create_fault_before_and_after_commit) ... ok
+test_creation_forgery_and_disabled_factions_leave_no_mutation (test_factions.FactionTransactionTests.test_creation_forgery_and_disabled_factions_leave_no_mutation) ... ok
+test_creation_validation_name_class_vocation_appearance_and_versions (test_factions.FactionTransactionTests.test_creation_validation_name_class_vocation_appearance_and_versions) ... ok
+test_cross_character_ownership_and_no_reputation_leak (test_factions.FactionTransactionTests.test_cross_character_ownership_and_no_reputation_leak) ... ok
+test_disable_new_selection_keeps_original_receipt_and_character_login (test_factions.FactionTransactionTests.test_disable_new_selection_keeps_original_receipt_and_character_login) ... ok
+test_disconnect_after_destination_commit_and_resnapshot (test_factions.FactionTransactionTests.test_disconnect_after_destination_commit_and_resnapshot) ... ok
+test_duplicate_objective_source_and_quest_rewards_once (test_factions.FactionTransactionTests.test_duplicate_objective_source_and_quest_rewards_once) ... ok
+test_fifth_faction_is_only_validated_content (test_factions.FactionTransactionTests.test_fifth_faction_is_only_validated_content) ... ok
+test_five_ten_thirty_sqlite_writers_create_consistent_unique_characters (test_factions.FactionTransactionTests.test_five_ten_thirty_sqlite_writers_create_consistent_unique_characters) ... ok
+test_four_faction_synthetic_creation_without_core_switches (test_factions.FactionTransactionTests.test_four_faction_synthetic_creation_without_core_switches) ... ok
+test_invalid_destination_and_relationship_version_rejected (test_factions.FactionTransactionTests.test_invalid_destination_and_relationship_version_rejected) ... ok
+test_legacy_confirmation_preserves_class_vocation_inventory_and_xp (test_factions.FactionTransactionTests.test_legacy_confirmation_preserves_class_vocation_inventory_and_xp) ... ok
+test_malformed_creation_types_are_rejected_without_mutation (test_factions.FactionTransactionTests.test_malformed_creation_types_are_rejected_without_mutation) ... ok
+test_personal_choice_is_immutable (test_factions.FactionTransactionTests.test_personal_choice_is_immutable) ... ok
+test_private_public_fields_do_not_leak (test_factions.FactionTransactionTests.test_private_public_fields_do_not_leak) ... ok
+test_quest_prerequisite_version_and_bad_evidence_rejected (test_factions.FactionTransactionTests.test_quest_prerequisite_version_and_bad_evidence_rejected) ... ok
+test_quest_reward_fault_and_reputation_clamping (test_factions.FactionTransactionTests.test_quest_reward_fault_and_reputation_clamping) ... ok
+test_same_account_cannot_cast_multiple_character_ballots (test_factions.FactionTransactionTests.test_same_account_cannot_cast_multiple_character_ballots) ... ok
+test_slot_constraint (test_factions.FactionTransactionTests.test_slot_constraint) ... ok
+test_solo_full_campaign_branches_and_restart (test_factions.FactionTransactionTests.test_solo_full_campaign_branches_and_restart) ... ok
+test_stale_lease_and_untrusted_client_rejected (test_factions.FactionTransactionTests.test_stale_lease_and_untrusted_client_rejected) ... ok
+test_stale_region_and_after_commit_contribution_recovery (test_factions.FactionTransactionTests.test_stale_region_and_after_commit_contribution_recovery) ... ok
+test_transfer_expiry_and_admission_race_has_one_terminal_winner (test_factions.FactionTransactionTests.test_transfer_expiry_and_admission_race_has_one_terminal_winner) ... ok
+test_transfer_fences_source_replays_and_keeps_identity (test_factions.FactionTransactionTests.test_transfer_fences_source_replays_and_keeps_identity) ... ok
+test_two_accounts_tied_ballots_ignore_submission_order_and_preserve_history (test_factions.FactionTransactionTests.test_two_accounts_tied_ballots_ignore_submission_order_and_preserve_history) ... ok
+test_work_requires_owned_complete_evidence_and_replay_protection (test_factions.FactionTransactionTests.test_work_requires_owned_complete_evidence_and_replay_protection) ... ok
+
+----------------------------------------------------------------------
+Ran 79 tests in 3.787s
+
+OK
+
+EXIT=0
+$ python3 tools/check_feature_coverage.py --require-complete
+{
+  "status": "fail",
+  "mode": "strict-completion",
+  "requirement_blocks": 46,
+  "incomplete_blocks": 46,
+  "full_guide_complete": false,
+  "scope": "Grouped requirements preserve source text; accounting does not certify atomic-feature completeness",
+  "errors": [
+    "Full master-prompt coverage is incomplete: 46 initial-contract source blocks plus blocked source audits and editorial gaps."
+  ]
+}
+
+EXIT=1
+$ python3 tools/validate_factions.py
+{
+  "status": "pass",
+  "scope": "Authored schema/reference/graph invariants only",
+  "deployment_gate": false,
+  "errors": [],
+  "unreal_runtime": "not_run"
+}
+
+EXIT=0
+$ python3 tools/validate_factions.py --deployment
+{
+  "status": "fail",
+  "scope": "Authored schema/reference/graph invariants only",
+  "deployment_gate": true,
+  "errors": [
+    "Deployment blocked: cooked content and solo gameplay are unverified for faction.hearthward-league"
+  ],
+  "unreal_runtime": "not_run"
+}
+
+EXIT=1
+$ git diff --check
+
+EXIT=0

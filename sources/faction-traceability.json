@@ -1,0 +1,1830 @@
+{
+  "schema_version": 1,
+  "scope": "Atomic implementation-prompt requirement mappings. Authored/source/model status is deliberately separate from actual game runtime, which is not_run throughout. This extension does not make the original full-guide coverage gate complete. Future story assets and prohibited executable game integration are explicitly identified rather than called finished.",
+  "requirements": [
+    {
+      "id": "FA-001",
+      "requirement": "Repository-only implementation and no runtime source package",
+      "sources": [
+        "AGENTS.md",
+        "sources/faction-compatibility.json#/discrepancies/0"
+      ],
+      "assets": [],
+      "phases": [
+        0,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "tools/validate_documentation.py",
+        "FQA-12"
+      ],
+      "documentation_status": "Runtime source blocked by repository policy; companion integration explicitly required",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-002",
+      "requirement": "Fully2D top-down, not historical platformer or2.5D",
+      "sources": [
+        "sources/faction-compatibility.json#/discrepancies/3"
+      ],
+      "assets": [
+        "ABriarwakeCharacter"
+      ],
+      "phases": [
+        0,
+        3
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-003",
+      "requirement": "Five equally important play pillars and no faction profession monopoly",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests/3/contribution_routes"
+      ],
+      "assets": [
+        "DA_Project_NorthRoad",
+        "UConstructionProjectDefinition"
+      ],
+      "phases": [
+        15,
+        19,
+        20,
+        21,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_region_permanence_and_free_solo_contract",
+        "FQA-05"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-004",
+      "requirement": "Mandatory permanent faction independent of class and vocation",
+      "sources": [
+        "sources/factions.json#/factions",
+        "sources/faction-implementation.json#/sections/0"
+      ],
+      "assets": [
+        "Record_Character",
+        "UFactionDefinition",
+        "WBP_CharacterCreate"
+      ],
+      "phases": [
+        5,
+        6
+      ],
+      "pages": [
+        "systems/identity.html"
+      ],
+      "checks": [
+        "test_creation_validation_name_class_vocation_appearance_and_versions",
+        "tools/tests/test_character_progression.py"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-005",
+      "requirement": "Account alts may differ without cross-character leakage",
+      "sources": [
+        "sources/faction-implementation.json#/sections/6"
+      ],
+      "assets": [
+        "Record_Account",
+        "Record_Character"
+      ],
+      "phases": [
+        5,
+        6
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_cross_character_ownership_and_no_reputation_leak",
+        "FQA-03"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-006",
+      "requirement": "Permanent identity repair is privileged and audited, not respec",
+      "sources": [
+        "sources/faction-implementation.json#/operations/11"
+      ],
+      "assets": [
+        "Record_Character",
+        "Record_CommandReceipt",
+        "Record_SessionLease"
+      ],
+      "phases": [
+        6,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_personal_choice_is_immutable",
+        "FQA-10"
+      ],
+      "documentation_status": "Contract authored; privileged production repair adapter not implemented",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-007",
+      "requirement": "Hearthward stable political definition, ideological conflict and starter region",
+      "sources": [
+        "sources/factions.json#/factions/0"
+      ],
+      "assets": [
+        "DA_Faction_Hearthward",
+        "UFactionDefinition"
+      ],
+      "phases": [
+        5,
+        26,
+        31
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "test_only_hearthward_selectable",
+        "test_four_faction_synthetic_creation_without_core_switches",
+        "FQA-12"
+      ],
+      "documentation_status": "Hearthward six-quest specification authored; runtime not implemented",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-008",
+      "requirement": "Briarbound stable political definition, ideological conflict and starter region",
+      "sources": [
+        "sources/factions.json#/factions/1"
+      ],
+      "assets": [
+        "DA_Faction_Briarbound",
+        "UFactionDefinition"
+      ],
+      "phases": [
+        5,
+        26,
+        31
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "test_only_hearthward_selectable",
+        "test_four_faction_synthetic_creation_without_core_switches",
+        "FQA-12"
+      ],
+      "documentation_status": "Registered/locked; full future story/maps/NPCs/art explicitly not authored",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-009",
+      "requirement": "Ironfang stable political definition, ideological conflict and starter region",
+      "sources": [
+        "sources/factions.json#/factions/2"
+      ],
+      "assets": [
+        "DA_Faction_Ironfang",
+        "UFactionDefinition"
+      ],
+      "phases": [
+        5,
+        26,
+        31
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "test_only_hearthward_selectable",
+        "test_four_faction_synthetic_creation_without_core_switches",
+        "FQA-12"
+      ],
+      "documentation_status": "Registered/locked; full future story/maps/NPCs/art explicitly not authored",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-010",
+      "requirement": "Tidebound stable political definition, ideological conflict and starter region",
+      "sources": [
+        "sources/factions.json#/factions/3"
+      ],
+      "assets": [
+        "DA_Faction_Tidebound",
+        "UFactionDefinition"
+      ],
+      "phases": [
+        5,
+        26,
+        31
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "test_only_hearthward_selectable",
+        "test_four_faction_synthetic_creation_without_core_switches",
+        "FQA-12"
+      ],
+      "documentation_status": "Registered/locked; full future story/maps/NPCs/art explicitly not authored",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-011",
+      "requirement": "Hollow Covenant remains nonplayable antagonist",
+      "sources": [
+        "sources/factions.json#/enemies"
+      ],
+      "assets": [
+        "UFactionDefinition",
+        "UEncounterDefinition"
+      ],
+      "phases": [
+        5,
+        13,
+        24
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "test_taxonomy_has_three_independent_organizations"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-012",
+      "requirement": "Preserve independent civic organizations and distinguish Hearth Assembly",
+      "sources": [
+        "sources/factions.json#/organizations",
+        "sources/hearthward-campaign.json#/npcs/0"
+      ],
+      "assets": [
+        "DA_NPC_MentorVesa",
+        "UNpcServiceDefinition"
+      ],
+      "phases": [
+        5,
+        13
+      ],
+      "pages": [
+        "design/world-and-story.html"
+      ],
+      "checks": [
+        "test_taxonomy_has_three_independent_organizations"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-013",
+      "requirement": "Retain six-region history, arcs and milestones",
+      "sources": [
+        "sources/hearthward-campaign.json#/legacy_arcs",
+        "sources/region-state-contracts.json#/biomes"
+      ],
+      "assets": [
+        "URegionDefinition",
+        "DA_Project_NorthRoad"
+      ],
+      "phases": [
+        13,
+        22,
+        29
+      ],
+      "pages": [
+        "design/world-and-story.html"
+      ],
+      "checks": [
+        "test_region_permanence_and_free_solo_contract",
+        "FQA-05"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-014",
+      "requirement": "Fifth faction is data/configuration, not a faction enum branch",
+      "sources": [
+        "sources/factions.json",
+        "tools/tests/fixtures/faction-synthetic.json"
+      ],
+      "assets": [
+        "UFactionDefinition",
+        "UFactionPolicyDefinition",
+        "UGameCatalog"
+      ],
+      "phases": [
+        5,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_four_faction_synthetic_creation_without_core_switches",
+        "FQA-12"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-015",
+      "requirement": "Separate new selection and historical continuation readiness",
+      "sources": [
+        "sources/factions.json#/factions",
+        "sources/faction-implementation.json#/sections/6"
+      ],
+      "assets": [
+        "UFactionDefinition",
+        "Record_Character"
+      ],
+      "phases": [
+        5,
+        6,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_disable_new_selection_keeps_original_receipt_and_character_login",
+        "test_continuation_is_independent_of_new_selection"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-016",
+      "requirement": "Future map/spawn/safe fallback references and authentication",
+      "sources": [
+        "sources/factions.json#/factions",
+        "sources/hearthward-campaign.json#/spawns"
+      ],
+      "assets": [
+        "UZoneDefinition",
+        "Record_Transfer"
+      ],
+      "phases": [
+        5,
+        7,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_missing_spawn_npc_recipe_reward_and_travel_rejected",
+        "FQA-12"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-017",
+      "requirement": "Future roots/cast/flags/localization/scene keys are reserved, not fake stories",
+      "sources": [
+        "sources/factions.json#/factions"
+      ],
+      "assets": [
+        "UFactionDefinition",
+        "UQuestDefinition"
+      ],
+      "phases": [
+        5,
+        31
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "test_future_faction_cannot_be_enabled_without_content",
+        "FQA-12"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-018",
+      "requirement": "Four-facing shared starter presentation and no unavailable unique art",
+      "sources": [
+        "sources/factions.json#/factions",
+        "sources/hearthward-campaign.json#/quests"
+      ],
+      "assets": [
+        "DA_AppearanceCatalog",
+        "WBP_CharacterCreate"
+      ],
+      "phases": [
+        1,
+        5,
+        30
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_four_facing_and_deployment_evidence_gate",
+        "FQA-01"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-019",
+      "requirement": "Reject enabling missing mandatory content or solo dependencies",
+      "sources": [
+        "sources/factions.json#/factions",
+        "tools/validate_factions.py",
+        "tools/tests/test_faction_readiness_regressions.py"
+      ],
+      "assets": [
+        "UGameCatalog",
+        "UFactionDefinition"
+      ],
+      "phases": [
+        5,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_future_faction_cannot_be_enabled_without_content",
+        "test_missing_spawn_npc_recipe_reward_and_travel_rejected",
+        "FQA-12",
+        "test_unauthored_starter_reward_rejected",
+        "test_unauthored_quest_reward_rejected",
+        "test_unauthored_recipe_output_rejected",
+        "test_unauthored_recipe_input_rejected",
+        "test_unauthored_nonroot_quest_rejected",
+        "test_unauthored_onward_spawn_rejected",
+        "test_authored_spawn_requires_a_registered_map_contract"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-020",
+      "requirement": "One authority per definition, personal, realm, region and runtime fact",
+      "sources": [
+        "sources/faction-implementation.json#/sections/1"
+      ],
+      "assets": [
+        "UGameCatalog",
+        "Record_Character",
+        "Record_Region",
+        "Record_RealmFactionPolicy"
+      ],
+      "phases": [
+        5,
+        6,
+        22
+      ],
+      "pages": [
+        "architecture/state-ownership.html"
+      ],
+      "checks": [
+        "tools/validate_documentation.py",
+        "FQA-08"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-021",
+      "requirement": "Server catalog filtering cannot be bypassed by client",
+      "sources": [
+        "sources/faction-implementation.json#/operations/0"
+      ],
+      "assets": [
+        "UGameCatalog",
+        "WBP_CharacterCreate"
+      ],
+      "phases": [
+        5,
+        6
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_only_hearthward_selectable",
+        "test_creation_forgery_and_disabled_factions_leave_no_mutation"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-022",
+      "requirement": "Atomic creation with name, slots, kit, spawn, three identities and receipt",
+      "sources": [
+        "sources/faction-implementation.json#/sections/6",
+        "sources/faction-wire.schema.json#/$defs/CreateCharacterPayload"
+      ],
+      "assets": [
+        "Record_Character",
+        "Record_Inventory",
+        "Record_CommandReceipt"
+      ],
+      "phases": [
+        5,
+        6
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_atomic_creation_replay_and_starter_once",
+        "test_slot_constraint",
+        "FQA-01"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-023",
+      "requirement": "Legacy missing faction requires explicit confirmation and retained histories",
+      "sources": [
+        "sources/faction-implementation.json#/sections/11",
+        "sources/faction-wire.schema.json#/$defs/CharacterFactionExtension"
+      ],
+      "assets": [
+        "Record_Character"
+      ],
+      "phases": [
+        6,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_legacy_confirmation_preserves_class_vocation_inventory_and_xp",
+        "FQA-10"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-024",
+      "requirement": "Unknown/corrupt faction or unsupported version enters review",
+      "sources": [
+        "sources/faction-implementation.json#/sections/11"
+      ],
+      "assets": [
+        "Record_Character",
+        "WBP_CharacterSelect"
+      ],
+      "phases": [
+        6,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_corrupt_identity_needs_review_not_silent_assignment",
+        "FQA-10"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-025",
+      "requirement": "Versioned bounded personal faction reputation with audited source",
+      "sources": [
+        "sources/factions.json#/policy",
+        "sources/hearthward-campaign.json#/quests"
+      ],
+      "assets": [
+        "Record_Character",
+        "Record_CommandReceipt"
+      ],
+      "phases": [
+        6,
+        13
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_quest_reward_fault_and_reputation_clamping",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-026",
+      "requirement": "Organization standing remains separate from political allegiance",
+      "sources": [
+        "sources/factions.json#/organizations",
+        "sources/faction-implementation.json#/sections/7"
+      ],
+      "assets": [
+        "Record_Character",
+        "UNpcServiceDefinition"
+      ],
+      "phases": [
+        6,
+        13
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_taxonomy_has_three_independent_organizations",
+        "test_cross_character_ownership_and_no_reputation_leak"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-027",
+      "requirement": "One NPC policy decision drives attitudes, guards, services and offers",
+      "sources": [
+        "sources/faction-implementation.json#/sections/7",
+        "tools/tests/test_faction_readiness_regressions.py"
+      ],
+      "assets": [
+        "FFactionAccessDecision",
+        "EFactionAttitude",
+        "ANpcServiceActor"
+      ],
+      "phases": [
+        13,
+        25
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_headquarters_restriction_and_override_symmetry",
+        "test_neutral_services_and_no_player_damage",
+        "FQA-09",
+        "test_unknown_npc_faction_rejected_before_neutral_or_guest_policy"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-028",
+      "requirement": "Adjustable durable realm overrides with validated config and audit",
+      "sources": [
+        "sources/faction-implementation.json#/sections/8",
+        "tools/tests/test_faction_readiness_regressions.py"
+      ],
+      "assets": [
+        "Record_RealmFactionPolicy",
+        "UFactionPolicyDefinition"
+      ],
+      "phases": [
+        6,
+        23,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_base_relations_are_symmetric_and_complete",
+        "test_reverse_duplicate_relation_rejected",
+        "FQA-06",
+        "test_policy_versions_and_modifier_caps_reject_invalid_values"
+      ],
+      "documentation_status": "Schema/policy contract and pure evaluation tests; deployment mutation adapter not implemented",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-029",
+      "requirement": "Keep base relations, personal standings, regional pressure and public views separate",
+      "sources": [
+        "sources/faction-implementation.json#/sections/1",
+        "sources/factions.json#/relations"
+      ],
+      "assets": [
+        "UFactionPolicyDefinition",
+        "Record_Character",
+        "Record_Region",
+        "ABriarwakeGameState"
+      ],
+      "phases": [
+        5,
+        6,
+        22
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_base_relations_are_symmetric_and_complete",
+        "FQA-06"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-030",
+      "requirement": "Quest roots, branch choices and rewards use existing transaction engine",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests",
+        "sources/faction-implementation.json#/operations/3"
+      ],
+      "assets": [
+        "UQuestDefinition",
+        "QuestProgressRecord",
+        "Record_CommandReceipt"
+      ],
+      "phases": [
+        13,
+        22,
+        23,
+        26
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_duplicate_objective_source_and_quest_rewards_once",
+        "test_solo_full_campaign_branches_and_restart"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-031",
+      "requirement": "Content changes preserve completed branches and reward uniqueness",
+      "sources": [
+        "sources/faction-implementation.json#/sections/11"
+      ],
+      "assets": [
+        "QuestProgressRecord",
+        "Record_CommandReceipt"
+      ],
+      "phases": [
+        13,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_content_version_mismatch_rejected",
+        "test_personal_choice_is_immutable",
+        "FQA-10"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-032",
+      "requirement": "Regional consequences cannot remove essential PvE or construction",
+      "sources": [
+        "sources/factions.json#/policy/resolution",
+        "sources/hearthward-campaign.json#/visuals"
+      ],
+      "assets": [
+        "Record_Region",
+        "ARegionProjectionActor"
+      ],
+      "phases": [
+        22,
+        23,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_region_permanence_and_free_solo_contract",
+        "FQA-05"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-033",
+      "requirement": "Cross-zone admission revalidates durable faction, lease, ticket and safe spawn",
+      "sources": [
+        "sources/faction-implementation.json#/sections/10",
+        "tools/tests/test_faction_readiness_regressions.py"
+      ],
+      "assets": [
+        "Record_Transfer",
+        "Record_SessionLease",
+        "AZoneGate"
+      ],
+      "phases": [
+        7,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_transfer_fences_source_replays_and_keeps_identity",
+        "test_invalid_destination_and_relationship_version_rejected",
+        "FQA-11",
+        "test_onward_spawn_must_admit_the_quest_faction"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-034",
+      "requirement": "Destination/expiry races leave one active writer",
+      "sources": [
+        "sources/faction-implementation.json#/sections/10"
+      ],
+      "assets": [
+        "Record_Transfer",
+        "Record_SessionLease"
+      ],
+      "phases": [
+        7,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_transfer_expiry_and_admission_race_has_one_terminal_winner",
+        "test_disconnect_after_destination_commit_and_resnapshot"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-035",
+      "requirement": "Designer-tuned policy and deployment overrides, no live GM console",
+      "sources": [
+        "sources/factions.json#/policy",
+        "sources/faction-implementation.json#/sections/8"
+      ],
+      "assets": [
+        "UFactionPolicyDefinition",
+        "Record_RealmFactionPolicy"
+      ],
+      "phases": [
+        5,
+        23,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_four_facing_and_deployment_evidence_gate",
+        "FQA-12"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-036",
+      "requirement": "Stable namespaces, versions, keys and uniqueness constraints",
+      "sources": [
+        "sources/faction-data.schema.json",
+        "sources/faction-wire.schema.json",
+        "sources/faction-implementation.json#/sections/4"
+      ],
+      "assets": [
+        "Record_CommandReceipt",
+        "Record_Character",
+        "Record_Transfer"
+      ],
+      "phases": [
+        5,
+        6,
+        7
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_duplicate_faction_id_rejected",
+        "test_atomic_creation_replay_and_starter_once"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-037",
+      "requirement": "Post-commit publication, reconnect and gap-triggered snapshots",
+      "sources": [
+        "sources/faction-implementation.json#/sections/3"
+      ],
+      "assets": [
+        "UDurableStateClient",
+        "ABriarwakeGameState",
+        "UCharacterStateComponent"
+      ],
+      "phases": [
+        6,
+        7,
+        22
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_disconnect_after_destination_commit_and_resnapshot",
+        "FQA-08"
+      ],
+      "documentation_status": "Documented outbox/snapshot contract; fixture stores outbox but does not simulate transport delivery",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-038",
+      "requirement": "Rejected, unknown-outcome retries and committed results are distinct",
+      "sources": [
+        "sources/faction-implementation.json#/sections/5"
+      ],
+      "assets": [
+        "Record_CommandReceipt",
+        "UDurableStateClient"
+      ],
+      "phases": [
+        6,
+        7
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_create_fault_before_and_after_commit",
+        "test_stale_region_and_after_commit_contribution_recovery"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-039",
+      "requirement": "No mandatory PvP or allegiance-based damage path",
+      "sources": [
+        "sources/factions.json#/policy",
+        "sources/hearthward-campaign.json#/quests"
+      ],
+      "assets": [
+        "UFactionPolicyDefinition",
+        "UCombatAttributeSet"
+      ],
+      "phases": [
+        9,
+        13,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_no_mandatory_pvp_or_group",
+        "test_neutral_services_and_no_player_damage",
+        "FQA-09"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-040",
+      "requirement": "Bounded rival NPC conflict and safe guest/neutral alternate routes",
+      "sources": [
+        "sources/factions.json#/policy",
+        "sources/faction-implementation.json#/sections/7"
+      ],
+      "assets": [
+        "UNpcServiceDefinition",
+        "ANpcServiceActor",
+        "UZoneDefinition"
+      ],
+      "phases": [
+        13,
+        25,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_neutral_services_and_no_player_damage",
+        "FQA-09"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-041",
+      "requirement": "Future opt-in PvP seam only, no speculative feature or required reward",
+      "sources": [
+        "sources/faction-implementation.json#/sections/9"
+      ],
+      "assets": [
+        "UCombatAttributeSet"
+      ],
+      "phases": [
+        9,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_no_mandatory_pvp_or_group",
+        "FQA-09"
+      ],
+      "documentation_status": "Extension boundary documented; no PvP implementation or working toggle",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-042",
+      "requirement": "Solo story, projects, reputation, resources and core travel",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests",
+        "sources/hearthward-campaign.json#/project"
+      ],
+      "assets": [
+        "UQuestDefinition",
+        "DA_Project_NorthRoad",
+        "Record_Transfer"
+      ],
+      "phases": [
+        13,
+        22,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_region_permanence_and_free_solo_contract",
+        "FQA-05"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-043",
+      "requirement": "Optional group pressure and safe concurrent contributions at30",
+      "sources": [
+        "sources/region-state-contracts.json",
+        "sources/faction-implementation.json#/sections/8"
+      ],
+      "assets": [
+        "Record_Region",
+        "ProjectContributionRecord"
+      ],
+      "phases": [
+        22,
+        23,
+        31
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_five_ten_thirty_sqlite_writers_create_consistent_unique_characters",
+        "tools/simulate_population_scaling.py",
+        "FQA-07"
+      ],
+      "documentation_status": "Offline model/arithmetic checks, not thirty actual clients",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-044",
+      "requirement": "Deterministic versioned conflicting public choice resolution",
+      "sources": [
+        "sources/factions.json#/policy/resolution"
+      ],
+      "assets": [
+        "Record_Region",
+        "Record_RealmFactionPolicy"
+      ],
+      "phases": [
+        23,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_two_accounts_tied_ballots_ignore_submission_order_and_preserve_history",
+        "test_same_account_cannot_cast_multiple_character_ballots"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-045",
+      "requirement": "Cross-faction friend/party/guild/chat/trade security",
+      "sources": [
+        "sources/faction-implementation.json#/sections/9",
+        "sources/manual-pages.json"
+      ],
+      "assets": [
+        "Record_SocialMembership",
+        "TradeEscrowRecord"
+      ],
+      "phases": [
+        25,
+        27
+      ],
+      "pages": [
+        "systems/social.html"
+      ],
+      "checks": [
+        "FQA-06",
+        "FQA-09"
+      ],
+      "documentation_status": "Integration contract authored; actual social system not executed",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-046",
+      "requirement": "Faction economy parity and neutral essential materials/services",
+      "sources": [
+        "sources/hearthward-campaign.json#/recipes",
+        "sources/faction-implementation.json#/sections/7"
+      ],
+      "assets": [
+        "UEconomyPolicy",
+        "DA_Recipe_BridgeSupport",
+        "DA_Resource_ElderwoodTimber"
+      ],
+      "phases": [
+        13,
+        20,
+        25
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_branch_advancement_parity",
+        "test_missing_spawn_npc_recipe_reward_and_travel_rejected",
+        "FQA-05"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-047",
+      "requirement": "Existing randomized gathering/fishing claims remain server-owned",
+      "sources": [
+        "sources/hearthward-campaign.json#/resource_routes",
+        "sources/manual-pages.json"
+      ],
+      "assets": [
+        "AResourceSite",
+        "ResourceSiteRecord",
+        "AFishingWater"
+      ],
+      "phases": [
+        14,
+        16,
+        20
+      ],
+      "pages": [
+        "systems/gathering.html"
+      ],
+      "checks": [
+        "FQA-05"
+      ],
+      "documentation_status": "Faction-neutral integration specified; live harvest/fishing not executed",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-048",
+      "requirement": "Contribution and reputation cannot double claim across alts/factions",
+      "sources": [
+        "sources/faction-implementation.json#/sections/4"
+      ],
+      "assets": [
+        "ProjectContributionRecord",
+        "Record_CommandReceipt"
+      ],
+      "phases": [
+        15,
+        23
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_work_requires_owned_complete_evidence_and_replay_protection",
+        "test_same_account_cannot_cast_multiple_character_ballots"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-049",
+      "requirement": "Complete authored quest: Oath of the Road",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests/0"
+      ],
+      "assets": [
+        "DA_Quest_OathRoad",
+        "QuestProgressRecord"
+      ],
+      "phases": [
+        13
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_quest_prerequisite_version_and_bad_evidence_rejected",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-050",
+      "requirement": "Complete authored quest: The Missing Caravan",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests/1"
+      ],
+      "assets": [
+        "DA_Quest_MissingCaravan",
+        "QuestProgressRecord"
+      ],
+      "phases": [
+        13
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_quest_prerequisite_version_and_bad_evidence_rejected",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-051",
+      "requirement": "Complete authored quest: Briars at the Crossing",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests/2"
+      ],
+      "assets": [
+        "DA_Quest_BriarsCrossing",
+        "QuestProgressRecord"
+      ],
+      "phases": [
+        13
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_quest_prerequisite_version_and_bad_evidence_rejected",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-052",
+      "requirement": "Complete authored quest: The North Road Compact",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests/3"
+      ],
+      "assets": [
+        "DA_Quest_NorthRoadCompact",
+        "QuestProgressRecord"
+      ],
+      "phases": [
+        22
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_quest_prerequisite_version_and_bad_evidence_rejected",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-053",
+      "requirement": "Complete authored quest: Who Holds the Crossing?",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests/4"
+      ],
+      "assets": [
+        "DA_Quest_CrossingChoice",
+        "QuestProgressRecord"
+      ],
+      "phases": [
+        23
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_quest_prerequisite_version_and_bad_evidence_rejected",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-054",
+      "requirement": "Complete authored quest: Bell at Dusk",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests/5"
+      ],
+      "assets": [
+        "DA_Quest_BellDusk",
+        "QuestProgressRecord"
+      ],
+      "phases": [
+        26
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_quest_prerequisite_version_and_bad_evidence_rejected",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-055",
+      "requirement": "Exact dialogue choices, localization, cast placement and interactions",
+      "sources": [
+        "sources/hearthward-campaign.json#/npcs",
+        "sources/hearthward-campaign.json#/interactions",
+        "sources/faction-localization.en.json"
+      ],
+      "assets": [
+        "DA_NPC_MarenVale",
+        "DA_NPC_TalanReed",
+        "DA_NPC_ErenDusk",
+        "WBP_Dialogue"
+      ],
+      "phases": [
+        13,
+        26,
+        30
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_authored_catalog_and_campaign",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-056",
+      "requirement": "Exact rewards, recipes, source IDs and branch progression parity",
+      "sources": [
+        "sources/hearthward-campaign.json#/recipes",
+        "sources/hearthward-campaign.json#/quests"
+      ],
+      "assets": [
+        "UQuestDefinition",
+        "URecipeDefinition",
+        "Record_CommandReceipt"
+      ],
+      "phases": [
+        13,
+        21,
+        26
+      ],
+      "pages": [
+        "architecture/faction-contracts.html"
+      ],
+      "checks": [
+        "test_branch_advancement_parity",
+        "test_missing_spawn_npc_recipe_reward_and_travel_rejected",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-057",
+      "requirement": "Failure/retry and late-entry story continuity",
+      "sources": [
+        "sources/hearthward-campaign.json#/quests",
+        "sources/hearthward-campaign.json#/legacy_arcs"
+      ],
+      "assets": [
+        "QuestProgressRecord",
+        "WBP_QuestJournal",
+        "Record_Region"
+      ],
+      "phases": [
+        13,
+        26
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "FQA-05"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-058",
+      "requirement": "Visible dialogue, merchant, discovery, journal and regional consequences",
+      "sources": [
+        "sources/hearthward-campaign.json#/visuals",
+        "sources/hearthward-campaign.json#/quests"
+      ],
+      "assets": [
+        "WBP_QuestJournal",
+        "WBP_Merchant",
+        "CharacterDiscoveryRecord",
+        "ARegionProjectionActor"
+      ],
+      "phases": [
+        19,
+        23,
+        25,
+        26
+      ],
+      "pages": [
+        "walkthroughs/hearthward-campaign.html"
+      ],
+      "checks": [
+        "FQA-04"
+      ],
+      "documentation_status": "Authored presentation/commit mapping; actual UI/visuals not verified",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-059",
+      "requirement": "Complete creation-to-Elderwood-to-reconnect acceptance route",
+      "sources": [
+        "sources/hearthward-campaign.json#/acceptance_route"
+      ],
+      "assets": [
+        "Record_Character",
+        "DA_Quest_BellDusk",
+        "Record_Transfer"
+      ],
+      "phases": [
+        26
+      ],
+      "pages": [
+        "first-vertical-slice.html"
+      ],
+      "checks": [
+        "test_solo_full_campaign_branches_and_restart",
+        "test_disconnect_after_destination_commit_and_resnapshot",
+        "FQA-11"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-060",
+      "requirement": "Other three openings have precise authoring/readiness checklist",
+      "sources": [
+        "sources/factions.json#/factions",
+        "sources/faction-acceptance.json#/sections/2"
+      ],
+      "assets": [
+        "UFactionDefinition",
+        "UGameCatalog"
+      ],
+      "phases": [
+        5,
+        31
+      ],
+      "pages": [
+        "design/factions-and-allegiance.html"
+      ],
+      "checks": [
+        "test_future_faction_cannot_be_enabled_without_content",
+        "FQA-12"
+      ],
+      "documentation_status": "Future identity/entry contracts complete; real campaigns intentionally not authored",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-061",
+      "requirement": "Canonical JSON generation and offline search integration",
+      "sources": [
+        "sources/manual-pages.json",
+        "tools/faction_manual.py",
+        "tools/build_manual_indexes.py"
+      ],
+      "assets": [],
+      "phases": [
+        0,
+        31
+      ],
+      "pages": [
+        "sources-verification.html"
+      ],
+      "checks": [
+        "python3 tools/build_manual_indexes.py --check",
+        "python3 tools/validate_documentation.py"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-062",
+      "requirement": "Full asset identity/parent/path/property/lifecycle/authority contracts",
+      "sources": [
+        "sources/current-asset-manifest.json",
+        "sources/faction-asset-integration.json"
+      ],
+      "assets": [
+        "UFactionDefinition",
+        "FFactionAccessDecision",
+        "Record_RealmFactionPolicy"
+      ],
+      "phases": [
+        5,
+        6,
+        13
+      ],
+      "pages": [
+        "asset-index.html"
+      ],
+      "checks": [
+        "tools/validate_documentation.py",
+        "FQA-12"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-063",
+      "requirement": "Direct/reverse dependencies and phase creation/activation order",
+      "sources": [
+        "sources/dependency-edges.json",
+        "sources/phase-creation-order.json",
+        "sources/phase-integration.json"
+      ],
+      "assets": [],
+      "phases": [
+        5,
+        6,
+        13,
+        22,
+        23,
+        26
+      ],
+      "pages": [
+        "dependency-map.html"
+      ],
+      "checks": [
+        "tools/check_phase_integration.py",
+        "tools/validate_documentation.py"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-064",
+      "requirement": "Preserve32phases,NPC13,project15,SliceB19; full faction later",
+      "sources": [
+        "sources/faction-asset-integration.json#/phase_assignments",
+        "sources/design-decisions.json"
+      ],
+      "assets": [
+        "DA_Quest_NorthRoadCompact",
+        "DA_Quest_BellDusk"
+      ],
+      "phases": [
+        13,
+        15,
+        19,
+        26
+      ],
+      "pages": [
+        "first-vertical-slice.html"
+      ],
+      "checks": [
+        "tools/check_phase_integration.py",
+        "FQA-04"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-065",
+      "requirement": "Read-only actual game inspection, planned types and rename distinction",
+      "sources": [
+        "sources/faction-compatibility.json#/revisions",
+        "sources/faction-compatibility.json#/discrepancies/1"
+      ],
+      "assets": [],
+      "phases": [
+        0,
+        31
+      ],
+      "pages": [
+        "architecture/faction-compatibility.html"
+      ],
+      "checks": [
+        "FQA-12"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-066",
+      "requirement": "Do not overwrite master prompt, history or unrelated incomplete coverage",
+      "sources": [
+        "sources/feature-coverage.json",
+        "sources/design-decisions.json",
+        "verification/faction-checks.json"
+      ],
+      "assets": [],
+      "phases": [
+        0,
+        31
+      ],
+      "pages": [
+        "feature-coverage.html"
+      ],
+      "checks": [
+        "tools/check_feature_coverage.py --require-complete",
+        "tools/validate_documentation.py"
+      ],
+      "documentation_status": "Original strict completion remains failing; unrelated requirement statuses preserved",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-067",
+      "requirement": "Automated uniqueness, gating, continuity and malformed-ID checks",
+      "sources": [
+        "tools/validate_factions.py",
+        "tools/tests/test_factions.py"
+      ],
+      "assets": [],
+      "phases": [
+        5,
+        6
+      ],
+      "pages": [
+        "testing/faction-acceptance.html"
+      ],
+      "checks": [
+        "test_duplicate_faction_id_rejected",
+        "test_creation_forgery_and_disabled_factions_leave_no_mutation",
+        "test_continuation_is_independent_of_new_selection"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-068",
+      "requirement": "Automated graph/missing dependency/version/migration/neutral/PvP checks",
+      "sources": [
+        "tools/validate_factions.py",
+        "tools/tests/test_factions.py"
+      ],
+      "assets": [],
+      "phases": [
+        5,
+        6,
+        13,
+        26
+      ],
+      "pages": [
+        "testing/faction-acceptance.html"
+      ],
+      "checks": [
+        "test_quest_dag_cycle_and_orphan_rejected",
+        "test_missing_spawn_npc_recipe_reward_and_travel_rejected",
+        "test_no_mandatory_pvp_or_group"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-069",
+      "requirement": "All existing check exit codes and strict failure separately recorded",
+      "sources": [
+        "verification/faction-checks.json",
+        "verification/faction-test-output.txt"
+      ],
+      "assets": [],
+      "phases": [
+        31
+      ],
+      "pages": [
+        "testing/faction-acceptance.html"
+      ],
+      "checks": [
+        "FQA-07"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-070",
+      "requirement": "Browser desktop/mobile inspection only when actually possible",
+      "sources": [
+        "verification/faction-checks.json",
+        "tools/browser_checks.py"
+      ],
+      "assets": [],
+      "phases": [
+        30,
+        31
+      ],
+      "pages": [
+        "testing/faction-acceptance.html"
+      ],
+      "checks": [
+        "Recorded browser command/results",
+        "no inferred UI pass"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-071",
+      "requirement": "Compatibility register covers lore, owners, saves, social, phases and coverage",
+      "sources": [
+        "sources/faction-compatibility.json"
+      ],
+      "assets": [],
+      "phases": [
+        0,
+        31
+      ],
+      "pages": [
+        "architecture/faction-compatibility.html"
+      ],
+      "checks": [
+        "Registry source-reference validation"
+      ],
+      "documentation_status": "Authored contract; offline checks only",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FA-072",
+      "requirement": "Task branch, final main comparison, intentional commit, push and PR attempt",
+      "sources": [
+        "sources/faction-compatibility.json#/discrepancies/17",
+        "verification/faction-publication.json"
+      ],
+      "assets": [],
+      "phases": [
+        31
+      ],
+      "pages": [
+        "testing/faction-acceptance.html"
+      ],
+      "checks": [
+        "Actual publication receipt",
+        "no force-push or merge"
+      ],
+      "documentation_status": "Publication result recorded separately after observed attempt",
+      "runtime_status": "not_run"
+    }
+  ]
+}

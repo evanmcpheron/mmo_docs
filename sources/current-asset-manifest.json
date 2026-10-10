@@ -49,6 +49,8 @@
         "UDurableStateClient",
         "UEconomyPolicy",
         "UEncounterDefinition",
+        "UFactionDefinition",
+        "UFactionPolicyDefinition",
         "UFishSpeciesDefinition",
         "UGameCatalog",
         "UInteractionComponent",
@@ -302,9 +304,10 @@
       ],
       "consumers": [
         "ABriarwakeGameMode",
-        "UCharacterAppearanceComponent"
+        "UCharacterAppearanceComponent",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "One read-only registry of stable authored definition IDs; extend its entries as phases activate.",
+      "description": "One read-only registry of stable authored definition IDs; extend its entries as phases activate. Faction extension: Resolve registered immutable faction/policy IDs and historical content versions; no mutable character standings.",
       "doc_path": "assets/Core/UGameCatalog.html",
       "domain": "Core",
       "work_kind": "Custom C++ future work",
@@ -325,6 +328,13 @@
           "1",
           "EditDefaultsOnly",
           "Author"
+        ],
+        [
+          "FactionDefinitionIds / FactionPolicyDefinitionId",
+          "TArray<FPrimaryAssetId> / FPrimaryAssetId",
+          "Index UFactionDefinition instances and one UFactionPolicyDefinition without changing existing Entries ownership",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -333,7 +343,9 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_phase": 5,
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "DA_GameCatalog",
@@ -354,9 +366,10 @@
       "reverse_users": [],
       "consumers": [
         "ABriarwakeGameMode",
-        "BP_BriarwakePreview"
+        "BP_BriarwakePreview",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Root authored catalog assigned to game mode and preview consumers.",
+      "description": "Root authored catalog assigned to game mode and preview consumers. Faction extension: At Phase05 register all four faction definitions and policy. Only Hearthward is selectable in authored configuration; resolve later quest/NPC/map assignments at their stated phase, never require future assets at catalog creation.",
       "doc_path": "assets/Core/DA_GameCatalog.html",
       "domain": "Core",
       "work_kind": "Blueprint authoring",
@@ -377,6 +390,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "Faction registrations",
+          "existing Entries ID map",
+          "DA_Faction_Hearthward, DA_Faction_Briarbound, DA_Faction_Ironfang, DA_Faction_Tidebound, DA_FactionPolicy_PveFirst",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -385,7 +405,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "UCharacterAppearanceComponent",
@@ -2901,9 +2922,10 @@
       "reverse_users": [],
       "consumers": [
         "ABriarwakeGameMode",
-        "WBP_RegionBoard"
+        "WBP_RegionBoard",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Public zone/region snapshot projection, not canonical inventory or global database.",
+      "description": "Public zone/region snapshot projection, not canonical inventory or global database. Faction extension: Publish relevant regional pressure/outcome and policy revision as a projection of durable owners; no cross-zone treaty manager.",
       "doc_path": "assets/Core/ABriarwakeGameState.html",
       "domain": "Core",
       "work_kind": "Custom C++ future work",
@@ -2924,6 +2946,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "FactionPolicyRevision / RegionPoliticalView",
+          "uint64 / filtered value",
+          "Only public pair/context summary; never ballots AccountIds or admin audit",
+          "Public relevant-zone replication",
+          "Server durable projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -2932,7 +2961,9 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_phase": 22,
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "ABriarwakePlayerState",
@@ -2953,9 +2984,10 @@
       "reverse_users": [],
       "consumers": [
         "ABriarwakePlayerController",
-        "ABriarwakeCharacter"
+        "ABriarwakeCharacter",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Public identity/appearance plus explicitly owner-only private projections; GAS owner added at Phase 09.",
+      "description": "Public identity/appearance plus explicitly owner-only private projections; GAS owner added at Phase 09. Faction extension: Public faction badge derives only from admitted Record_Character. It is not a faction selection or standing write API.",
       "doc_path": "assets/Player/ABriarwakePlayerState.html",
       "domain": "Player",
       "work_kind": "Custom C++ future work",
@@ -2976,6 +3008,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "FactionId / FactionBadgeVersion",
+          "FName / int32",
+          "Approved public badge; OnRep rebuilds presentation only",
+          "Public replication; BlueprintReadOnly",
+          "Server admission projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -2984,7 +3023,9 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_phase": 5,
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "UConnectionSubsystem",
@@ -3429,9 +3470,10 @@
       "reverse_users": [],
       "consumers": [
         "ABriarwakeGameMode",
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Server-only transport to the durable service; no local SaveGame fallback for MMO truth.",
+      "description": "Server-only transport to the durable service; no local SaveGame fallback for MMO truth. Faction extension: Use existing authenticated service adapter for faction operations and receipt resynchronization. No client HTTP credentials, local SaveGame authority or speculative faction backend client.",
       "doc_path": "assets/Persistence/UDurableStateClient.html",
       "domain": "Persistence",
       "work_kind": "Custom C++ future work",
@@ -3466,6 +3508,20 @@
           "External secret store",
           "Not Blueprint exposed",
           "Operator"
+        ],
+        [
+          "Faction protocol envelope",
+          "existing typed command transport",
+          "Version/revisions/lease/content digest; operations defined in faction-implementation.json",
+          "Owner request wrappers, no arbitrary method names",
+          "Authenticated service/zone server"
+        ],
+        [
+          "Committed / Rejected / UnknownOutcome events",
+          "proposed native delegates",
+          "OnCommittedReceipt, OnCommandRejected, OnRecoveryRequired; bind/pull/unbind by character epoch",
+          "Blueprint observer only",
+          "Adapter"
         ]
       ],
       "command": "SubmitDurableCommand(Envelope, Completion); preserve RequestId through timeout/retry",
@@ -3474,7 +3530,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "UCharacterStateComponent",
@@ -3496,9 +3553,10 @@
       "consumers": [
         "ABriarwakePlayerState",
         "WBP_Inventory",
-        "WBP_QuestJournal"
+        "WBP_QuestJournal",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "One approved private projection of inventory, quest and progression snapshots; not a second writer.",
+      "description": "One approved private projection of inventory, quest and progression snapshots; not a second writer. Faction extension: Expose read-only owner projection of permanent allegiance, personal standings and branch history. Revision remains existing aggregate/build revision; server never accepts client-written replicated state.",
       "doc_path": "assets/Player/UCharacterStateComponent.html",
       "domain": "Player",
       "work_kind": "Custom C++ future work",
@@ -3533,6 +3591,20 @@
           "false",
           "BlueprintReadOnly",
           "Replication initialization"
+        ],
+        [
+          "FactionId / FactionDefinitionVersion",
+          "FName / int32",
+          "Committed durable identity",
+          "BlueprintReadOnly",
+          "Character owner"
+        ],
+        [
+          "Faction/organization standing and campaign views",
+          "read-only snapshot",
+          "Owner-only; update after committed receipt/resnapshot",
+          "Owner-only replication",
+          "Character owner"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -3541,7 +3613,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "Record_Account",
@@ -3624,9 +3697,10 @@
       "reverse_users": [],
       "consumers": [
         "UDurableStateClient",
-        "identity durable command"
+        "identity durable command",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Canonical character identities, independent combat progression and retained per-vocation histories; active VocationId is not a second progression record.",
+      "description": "Canonical character identities, independent combat progression and retained per-vocation histories; active VocationId is not a second progression record. Faction extension: Preserve permanent class and changeable active vocation histories. Add schema3 faction version/standings/migration fields under this existing owner; no duplicate progression revision.",
       "doc_path": "assets/Persistence/Record_Character.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -3707,9 +3781,37 @@
         [
           "Revision / SchemaVersion",
           "integer / positive integer",
-          "Revision is the existing aggregate AND progression/build revision; proposed schema-2 contract, not evidence of a deployed migration",
+          "Revision is the existing aggregate AND progression/build revision; proposed schema-3 contract preserving the schema-2 class/vocation fields, not evidence of a deployed migration",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
+        ],
+        [
+          "FactionDefinitionVersion",
+          "positive int32",
+          "Pinned historical faction content version;1 for authored MVP",
+          "Server only",
+          "Durable character owner"
+        ],
+        [
+          "Progression.FactionStandings",
+          "map<FactionId,int32>",
+          "-1000..1000; audited accepted sources only",
+          "Owner-only committed view",
+          "Durable character owner"
+        ],
+        [
+          "Progression.OrganizationStandings",
+          "map<OrganizationId,int32>",
+          "Independent civic axis; -1000..1000",
+          "Owner-only committed view",
+          "Durable character owner"
+        ],
+        [
+          "FactionMigrationState",
+          "versioned finite state",
+          "Ready / NeedsFactionConfirmation / NeedsReview; never automatic default faction",
+          "Owner recovery UI only",
+          "Durable character owner"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -3718,7 +3820,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "Record_Inventory",
@@ -3808,9 +3911,10 @@
       "reverse_users": [],
       "consumers": [
         "UDurableStateClient",
-        "crafting durable command"
+        "crafting durable command",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Scoped RequestId, canonical payload digest, result, aggregate revisions, commit sequence",
+      "description": "Scoped RequestId, canonical payload digest, result, aggregate revisions, commit sequence Faction extension: Include canonical faction semantic fields in digest and standing old/new deltas in committed result. Creation account-scoped; quest/contribution character-scoped; never store raw travel bearer tickets.",
       "doc_path": "assets/Persistence/Record_CommandReceipt.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -3845,6 +3949,13 @@
           "Retention must preserve domain uniqueness",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
+        ],
+        [
+          "Faction result projection",
+          "existing committed result",
+          "Exact CharacterId, accepted BranchId, reward/standing deltas, content/character/region/policy revisions",
+          "Owner-authorized lookup only",
+          "Durable service"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -3853,7 +3964,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "Record_SessionLease",
@@ -3872,9 +3984,10 @@
       "reverse_users": [],
       "consumers": [
         "UDurableStateClient",
-        "operations durable command"
+        "operations durable command",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "CharacterId, ZoneId, OwnerInstanceId, Epoch, ExpiresAt, Status",
+      "description": "CharacterId, ZoneId, OwnerInstanceId, Epoch, ExpiresAt, Status Faction extension: Faction-aware login and transfer retain one lease authority. InTransit source is fenced before destination Active; a stale owner cannot mutate via an NPC.",
       "doc_path": "assets/Persistence/Record_SessionLease.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -3916,6 +4029,13 @@
           "State transition requires compare-and-set",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
+        ],
+        [
+          "Faction admission context",
+          "existing admission metadata",
+          "Validate durable FactionId; never use claimed UI faction",
+          "Server only",
+          "Session owner"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -3924,7 +4044,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "Record_Transfer",
@@ -3943,9 +4064,10 @@
       "reverse_users": [],
       "consumers": [
         "UDurableStateClient",
-        "exploration durable command"
+        "exploration durable command",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "TransferId, CharacterId, source/destination epochs, token digest, expiry, terminal state",
+      "description": "TransferId, CharacterId, source/destination epochs, token digest, expiry, terminal state Faction extension: Bind target to authenticated faction/content/policy and current lease epoch. New-selection disable never invalidates supported existing identity.",
       "doc_path": "assets/Persistence/Record_Transfer.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -3987,6 +4109,27 @@
           "Atomic consume versus timeout recovery",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
+        ],
+        [
+          "FactionDefinitionVersion / PolicyVersion",
+          "positive integers",
+          "Pinned validation inputs rechecked against supported current policy on activation",
+          "Server only",
+          "Transfer owner"
+        ],
+        [
+          "SafeFallbackSpawnId",
+          "FName",
+          "spawn.thornmere.neutral-infirmary; no identity rewrite",
+          "Owner-visible recovery location",
+          "Transfer owner"
+        ],
+        [
+          "TicketDigest / Resume policy",
+          "SHA256 / authenticated operation",
+          "Raw bearer ticket never in durable receipts; rotate digest for resume or expiry recovery",
+          "Never public",
+          "Transfer owner"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -3995,7 +4138,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "QuestProgressRecord",
@@ -4014,9 +4158,10 @@
       "reverse_users": [],
       "consumers": [
         "UDurableStateClient",
-        "quests durable command"
+        "quests durable command",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "CharacterId, QuestId, Version, Objectives, RewardReceiptId",
+      "description": "CharacterId, QuestId, Version, Objectives, RewardReceiptId Faction extension: Same quest state owner stores faction entry/objective occurrences, immutable branch and historical definition version. Completion/standing/rewards commit together.",
       "doc_path": "assets/Persistence/QuestProgressRecord.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -4058,6 +4203,20 @@
           "Reject stale choices",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
+        ],
+        [
+          "BranchId / RewardGeneration",
+          "FName optional / uint32",
+          "Only accepted authored immutable choice; generation1",
+          "Owner-only view",
+          "Quest transaction owner"
+        ],
+        [
+          "ObjectiveSourceReceipts",
+          "existing objective evidence relation",
+          "Unique(CharacterId,QuestId,ObjectiveId,SourceOccurrenceId)",
+          "Not public raw receipt store",
+          "Quest transaction owner"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -4066,7 +4225,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "MerchantStockRecord",
@@ -4220,9 +4380,10 @@
       "reverse_users": [],
       "consumers": [
         "UDurableStateClient",
-        "regions durable command"
+        "regions durable command",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "RealmId, RegionId, SchemaVersion, development/danger/discovery axes, Revision",
+      "description": "RealmId, RegionId, SchemaVersion, development/danger/discovery axes, Revision Faction extension: Keep construction/danger/discovery owners and NorthRoad storage key. Add bounded pressure and reversible consultation outcome alongside—not over—permanent construction.",
       "doc_path": "assets/Persistence/Record_Region.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -4264,6 +4425,20 @@
           "Atomic snapshots and compatible content",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
+        ],
+        [
+          "FactionPressureById",
+          "map<FactionId,int32>",
+          "-100..100; at most10 change/accepted round",
+          "Public filtered projection",
+          "Region durable owner"
+        ],
+        [
+          "PoliticalRound",
+          "RoundId,PolicyVersion,Cutoff,Options,Ballots,Resolution",
+          "Ballot unique account/round; majority, tie/empty shared-passage; store exact frozen rule",
+          "Public summary only; no account IDs",
+          "Region durable owner"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -4272,7 +4447,9 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_phase": 22,
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "ProjectContributionRecord",
@@ -4291,9 +4468,10 @@
       "reverse_users": [],
       "consumers": [
         "UDurableStateClient",
-        "regions durable command"
+        "regions durable command",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "ContributionId, CharacterId, ProjectId, StageId, ObjectiveId, units, receipt",
+      "description": "ContributionId, CharacterId, ProjectId, StageId, ObjectiveId, units, receipt Faction extension: Resolve project.north-road alias to project.elderwood.north-road before uniqueness. Personal maintenance after completion is distinct from reconstructing/rewarding the world.",
       "doc_path": "assets/Persistence/ProjectContributionRecord.html",
       "domain": "Persistence",
       "work_kind": "Backend contract",
@@ -4335,6 +4513,13 @@
           "Recover result and stage transition once",
           "Server-only contract; client receives filtered view",
           "Persistence boundary"
+        ],
+        [
+          "SourceOccurrenceId / ProjectGeneration / Maintenance",
+          "stable ID / positive int32 / bool",
+          "Owned material, work order or discovery once; generation1",
+          "Owner receipt and public aggregate units only",
+          "Region/character transaction"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -4343,7 +4528,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "Record_CraftReservation",
@@ -4777,9 +4963,10 @@
       ],
       "consumers": [
         "AZoneGate",
-        "DA_GameCatalog"
+        "DA_GameCatalog",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Authoritative zone/map/spawn and allowed transfer edges.",
+      "description": "Authoritative zone/map/spawn and allowed transfer edges. Faction extension: Author faction-safe spawns, guest and neutral routes as configuration, not hardcoded faction switch statements.",
       "doc_path": "assets/World/UZoneDefinition.html",
       "domain": "World",
       "work_kind": "Custom C++ future work",
@@ -4814,6 +5001,13 @@
           "Validated directed edges",
           "EditDefaultsOnly",
           "Author"
+        ],
+        [
+          "AllowedFactionIds / SafeSpawnIds / GuestRouteIds",
+          "TArray<FName> each",
+          "Validate selected entry and fallback, no mandatory route gated solely by political winner",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -4822,7 +5016,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "AZoneGate",
@@ -4844,9 +5039,10 @@
       "reverse_users": [],
       "consumers": [
         "L_ThornmereVillage",
-        "L_ElderwoodRoad"
+        "L_ElderwoodRoad",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Requests fenced per-character destination handoff; never calls whole-server travel for one player.",
+      "description": "Requests fenced per-character destination handoff; never calls whole-server travel for one player. Faction extension: Owned intent revalidates durable identity, policy, safe spawn and quest guest unlock through existing transfer service; never ClientTravel based only on widget faction.",
       "doc_path": "assets/World/AZoneGate.html",
       "domain": "World",
       "work_kind": "Custom C++ future work",
@@ -4867,6 +5063,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "Faction admission policy ID",
+          "FName",
+          "policy.factions.pve-first; current server evaluates gate context",
+          "Blueprint config/query only",
+          "Zone server"
         ]
       ],
       "command": "RequestZoneTransfer(CharacterId, DestinationZoneId, SpawnId); server validates gate eligibility",
@@ -4875,7 +5078,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "L_ElderwoodRoad",
@@ -5501,7 +5705,8 @@
       "reverse_users": [
         "ABriarwakeAIController",
         "ABriarwakeEnemy",
-        "DA_Encounter_RoadAmbush"
+        "DA_Encounter_RoadAmbush",
+        "DA_Encounter_SplitBell"
       ],
       "consumers": [
         "ABriarwakeAIController",
@@ -5611,9 +5816,10 @@
       ],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakeEnemy"
+        "ABriarwakeEnemy",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Server perception, leash and 2D navigation decisions; no client AI authority.",
+      "description": "Server perception, leash and 2D navigation decisions; no client AI authority. Faction extension: Guard aggression consumes the same policy decision as NPC services. Explicit conflict-zone and neutral/guest rules precede target acquisition; no player-vs-player allegiance path.",
       "doc_path": "assets/Enemies/ABriarwakeAIController.html",
       "domain": "Enemies",
       "work_kind": "Custom C++ future work",
@@ -5634,6 +5840,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "FactionAccessDecision",
+          "FFactionAccessDecision",
+          "Runtime cache keyed by Character/Region/Policy revisions; no durable write",
+          "BlueprintReadOnly filtered",
+          "Zone server"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -5642,7 +5855,9 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_phase": 13,
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "DA_Encounter_RoadAmbush",
@@ -5725,6 +5940,7 @@
         "DA_Item_RepairKit",
         "DA_Item_SalvagePlate",
         "DA_Item_StarterSword",
+        "DA_Item_StraightGrainTimber",
         "DA_Item_WatchFitting",
         "ULootTableDefinition"
       ],
@@ -5926,6 +6142,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.iron-ore",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -5976,6 +6199,13 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.salvage-plate",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -6030,6 +6260,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.starter-sword",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6080,6 +6317,13 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.watch-fitting",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -6238,6 +6482,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.goldenroot",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6288,6 +6539,13 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.field-loaf",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -6342,6 +6600,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.bridge-support",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6392,6 +6657,13 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.blight-reagent",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -6446,6 +6718,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.blight-remedy",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6496,6 +6775,13 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Faction content item ID",
+          "FName",
+          "item.repair-kit",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -6852,13 +7138,20 @@
         "Briarwake"
       ],
       "reverse_users": [
-        "DA_Quest_FirstSupplies"
+        "DA_Quest_BellDusk",
+        "DA_Quest_BriarsCrossing",
+        "DA_Quest_CrossingChoice",
+        "DA_Quest_FirstSupplies",
+        "DA_Quest_MissingCaravan",
+        "DA_Quest_NorthRoadCompact",
+        "DA_Quest_OathRoad"
       ],
       "consumers": [
         "DA_GameCatalog",
-        "Relevant system chapter"
+        "Relevant system chapter",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Versioned objective graph and once-only rewards.",
+      "description": "Versioned objective graph and once-only rewards. Faction extension: Extend existing evaluator definitions with faction eligibility and branch options; do not add faction quest subclasses or manager. Objectives consume trusted sources, not widgets.",
       "doc_path": "assets/Quests/UQuestDefinition.html",
       "domain": "Quests",
       "work_kind": "Custom C++ future work",
@@ -6879,6 +7172,41 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "RequiredFactionId",
+          "FName optional",
+          "Null for shared quests; stable faction ID for faction-only offers",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RequiredPolicyContextIds",
+          "TArray<FName>",
+          "Explicit neutral/shared-threat contexts; party membership alone is not eligibility",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "BranchChoiceIds / BranchRewardSourceIds",
+          "TArray<FName> each",
+          "Authored immutable branch table resolved through quest content; same progression tier",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "FactionStandingDeltas / OrganizationStandingDeltas",
+          "existing reward definition entries",
+          "SubjectId + signed int32 delta; clamp/audit at accepted transaction",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "ObjectivePredicateId / AcceptedSourceIds",
+          "FName / TArray<FName>",
+          "AND/OR compound alternatives in campaign objective_rules; not arbitrary client booleans",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6887,7 +7215,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "UNpcServiceDefinition",
@@ -6906,13 +7235,17 @@
         "Briarwake"
       ],
       "reverse_users": [
-        "DA_NPC_MentorVesa"
+        "DA_NPC_ErenDusk",
+        "DA_NPC_MarenVale",
+        "DA_NPC_MentorVesa",
+        "DA_NPC_TalanReed"
       ],
       "consumers": [
         "DA_GameCatalog",
-        "Relevant system chapter"
+        "Relevant system chapter",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Composable dialogue, mentor, merchant and project services.",
+      "description": "Composable dialogue, mentor, merchant and project services. Faction extension: Store authored political and civic affiliations separately. Essential service access may be neutral even for a faction-affiliated NPC.",
       "doc_path": "assets/NPCs/UNpcServiceDefinition.html",
       "domain": "NPCs",
       "work_kind": "Custom C++ future work",
@@ -6933,6 +7266,20 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "FactionId / OrganizationId",
+          "FName optional each",
+          "Independent axes, not inherited species morality",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "FactionPolicyId / EssentialServiceIds / RestrictedServiceIds",
+          "FName / TArray<FName> / TArray<FName>",
+          "One policy evaluation; essential neutral alternatives required",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6941,7 +7288,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "ANpcServiceActor",
@@ -6962,9 +7310,10 @@
       "reverse_users": [],
       "consumers": [
         "L_ThornmereVillage",
-        "Relevant system chapter"
+        "Relevant system chapter",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "World interaction projection over authored NPC service definitions.",
+      "description": "World interaction projection over authored NPC service definitions. Faction extension: On accepted interaction resolve current faction access, lease, distance and line of sight. Bind/pull/re-evaluate on relevant revisions; no stored durable attitude or player-reward mutation.",
       "doc_path": "assets/NPCs/ANpcServiceActor.html",
       "domain": "NPCs",
       "work_kind": "Custom C++ future work",
@@ -6985,6 +7334,20 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "InteractionSessionId / Expiry / QuestVersion",
+          "UUID / server timestamp / int32",
+          "120seconds maximum, owned character/NPC/context; cancel on teardown",
+          "Owner-only conversation context",
+          "Zone server"
+        ],
+        [
+          "AccessDecision",
+          "FFactionAccessDecision",
+          "Ephemeral current policy result, revalidated on action",
+          "Filtered BlueprintReadOnly",
+          "Zone server"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -6993,7 +7356,9 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_phase": 13,
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "UEconomyPolicy",
@@ -7066,6 +7431,7 @@
         "Briarwake"
       ],
       "reverse_users": [
+        "DA_Resource_ElderwoodTimber",
         "DA_Resource_ThornmereOre"
       ],
       "consumers": [
@@ -7285,9 +7651,10 @@
       ],
       "consumers": [
         "DA_GameCatalog",
-        "Relevant system chapter"
+        "Relevant system chapter",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Small initial project schema expanded at Phase 22/23.",
+      "description": "Small initial project schema expanded at Phase 22/23. Faction extension: Existing essential12 and optional frozen population model stay. Author equivalent profession and free contract sources; contribution faction never creates a second project.",
       "doc_path": "assets/Regions/UConstructionProjectDefinition.html",
       "domain": "Regions",
       "work_kind": "Custom C++ future work",
@@ -7308,6 +7675,20 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "AcceptedFactionContributionSourceIds",
+          "TArray<FName>",
+          "Five vocation sources and public-contract; current ownership validated",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "PostCompletionContributionPolicy",
+          "authored rule ID",
+          "Personal maintenance only; never decrease or re-award permanent completion",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -7316,7 +7697,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "URegionDefinition",
@@ -7391,9 +7773,10 @@
       "reverse_users": [],
       "consumers": [
         "L_ThornmereVillage",
-        "Relevant system chapter"
+        "Relevant system chapter",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Starter contribution board and stage projection; grows without changing owner.",
+      "description": "Starter contribution board and stage projection; grows without changing owner. Faction extension: Apply durable visual IDs after coherent region/policy snapshot. Political banners/patrols cannot remove constructed collision/safe access or replay contributions.",
       "doc_path": "assets/Regions/ARegionProjectionActor.html",
       "domain": "Regions",
       "work_kind": "Custom C++ future work",
@@ -7414,6 +7797,13 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "PoliticalVisualVariantId",
+          "FName",
+          "Shared passage / fortified signage on same permanent repaired crossing",
+          "Relevant-zone public view",
+          "Region projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -7422,7 +7812,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "UFishSpeciesDefinition",
@@ -7815,9 +8206,10 @@
       "reverse_users": [],
       "consumers": [
         "DA_GameCatalog",
-        "Relevant route actor/widget"
+        "Relevant route actor/widget",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "NPC MentorVesa authored route fixture. Final content values require review. ",
+      "description": "NPC MentorVesa authored route fixture. Final content values require review.  Faction extension: Preserve mentor.vesa and quest.thornmere.first-supplies. Vesa belongs to the independent Hearth Assembly, not the Hearthward League; mentors every active vocation under existing trainer rules.",
       "doc_path": "assets/NPCs/DA_NPC_MentorVesa.html",
       "domain": "NPCs",
       "work_kind": "Blueprint authoring",
@@ -7838,6 +8230,20 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "DefinitionId / FactionId / OrganizationId",
+          "FName / optional / FName",
+          "mentor.vesa / none / organization.hearth-assembly",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Faction campaign assignment",
+          "existing NPC service list",
+          "Vocation introductions, free public bound work order, legacy First Supplies; no faction privilege for essential services",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -7846,7 +8252,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "DA_Economy_Baseline",
@@ -7968,7 +8375,9 @@
       "dependencies": [
         "URecipeDefinition"
       ],
-      "reverse_users": [],
+      "reverse_users": [
+        "DA_Quest_NorthRoadCompact"
+      ],
       "consumers": [
         "DA_GameCatalog",
         "Relevant route actor/widget"
@@ -7992,6 +8401,34 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "DefinitionId / OutputId / OutputQuantity",
+          "FName / FName / int32",
+          "recipe.watch-fitting / item.watch-fitting / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Inputs",
+          "existing item ID and count entries",
+          "`[{\"id\": \"item.iron-ore\", \"quantity\": 3}, {\"id\": \"item.salvage-plate\", \"quantity\": 1}]`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Active vocation / minimum level",
+          "FName / int32",
+          "vocation.forgekeeper / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Station / duration",
+          "FName / seconds",
+          "station.thornmere.forge / 0",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -8020,12 +8457,15 @@
       "dependencies": [
         "UConstructionProjectDefinition"
       ],
-      "reverse_users": [],
+      "reverse_users": [
+        "DA_Quest_NorthRoadCompact"
+      ],
       "consumers": [
         "DA_GameCatalog",
-        "Relevant route actor/widget"
+        "Relevant route actor/widget",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Project NorthRoad authored route fixture. Final content values require review. ",
+      "description": "Project NorthRoad authored route fixture. Final content values require review.  Faction extension: Use canonical project.elderwood.north-road, legacy serialized storage key NorthRoad, read/migrate project.north-road alias; one essential milestone and one contribution ledger.",
       "doc_path": "assets/Regions/DA_Project_NorthRoad.html",
       "domain": "Regions",
       "work_kind": "Blueprint authoring",
@@ -8046,6 +8486,27 @@
           "1 (fixture)",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
+        ],
+        [
+          "DefinitionId / StorageKey / legacy alias",
+          "FName each",
+          "project.elderwood.north-road / NorthRoad / project.north-road",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "EssentialUnits / PersonalIntroUnits",
+          "int32 each",
+          "12 / 3",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Contribution routes",
+          "authored route IDs",
+          "sources/hearthward-campaign.json quests[3].contribution_routes",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -8054,7 +8515,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "DA_Region_Elderwood",
@@ -8228,7 +8690,9 @@
       "dependencies": [
         "URecipeDefinition"
       ],
-      "reverse_users": [],
+      "reverse_users": [
+        "DA_Quest_NorthRoadCompact"
+      ],
       "consumers": [
         "DA_GameCatalog",
         "Relevant route actor/widget"
@@ -8252,6 +8716,34 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "DefinitionId / OutputId / OutputQuantity",
+          "FName / FName / int32",
+          "recipe.field-loaf / item.field-loaf / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Inputs",
+          "existing item ID and count entries",
+          "`[{\"id\": \"item.goldenroot\", \"quantity\": 2}]`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Active vocation / minimum level",
+          "FName / int32",
+          "vocation.hearthkeeper / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Station / duration",
+          "FName / seconds",
+          "station.thornmere.oven / 0",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -8278,9 +8770,12 @@
       "persistence": "Save stable IDs only; not this object",
       "status": "design",
       "dependencies": [
-        "URecipeDefinition"
+        "URecipeDefinition",
+        "DA_Item_StraightGrainTimber"
       ],
-      "reverse_users": [],
+      "reverse_users": [
+        "DA_Quest_NorthRoadCompact"
+      ],
       "consumers": [
         "DA_GameCatalog",
         "Relevant route actor/widget"
@@ -8304,6 +8799,34 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "DefinitionId / OutputId / OutputQuantity",
+          "FName / FName / int32",
+          "recipe.bridge-support / item.bridge-support / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Inputs",
+          "existing item ID and count entries",
+          "`[{\"id\": \"item.straight-grain-timber\", \"quantity\": 3}]`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Active vocation / minimum level",
+          "FName / int32",
+          "vocation.woodwright / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Station / duration",
+          "FName / seconds",
+          "station.thornmere.carpentry / 0",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -8332,7 +8855,9 @@
       "dependencies": [
         "URecipeDefinition"
       ],
-      "reverse_users": [],
+      "reverse_users": [
+        "DA_Quest_NorthRoadCompact"
+      ],
       "consumers": [
         "DA_GameCatalog",
         "Relevant route actor/widget"
@@ -8356,6 +8881,34 @@
           "ContentVersion",
           "int32, positive",
           "1 (fixture)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "DefinitionId / OutputId / OutputQuantity",
+          "FName / FName / int32",
+          "recipe.blight-remedy / item.blight-remedy / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Inputs",
+          "existing item ID and count entries",
+          "`[{\"id\": \"item.blight-reagent\", \"quantity\": 2}]`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Active vocation / minimum level",
+          "FName / int32",
+          "vocation.apothecary / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Station / duration",
+          "FName / seconds",
+          "station.thornmere.apothecary / 0",
           "EditDefaultsOnly; BlueprintReadOnly",
           "Content author"
         ]
@@ -9010,9 +9563,10 @@
       "dependencies": [],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Login screen: request/observe only, explicit focus and teardown contract. ",
+      "description": "Login screen: request/observe only, explicit focus and teardown contract.  Faction extension: Authenticate account before catalog/character access; receipt queries remain owner-authorized. Missing/corrupt faction opens explicit recovery, not auto-assignment or endless retry.",
       "doc_path": "assets/UI/Frontend/WBP_Login.html",
       "domain": "UI/Frontend",
       "work_kind": "Blueprint authoring",
@@ -9040,6 +9594,13 @@
           "Retain for unknown-outcome recovery",
           "Local request correlation",
           "Local controller; not a reward ID"
+        ],
+        [
+          "FactionView / PendingRequestId / LastRevision",
+          "read-only view / UUID optional / uint64",
+          "Bind then snapshot; controller/keyboard focus and non-color locked states; no mutation authority",
+          "Widget local presentation only",
+          "Authenticated owner projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -9048,7 +9609,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "WBP_CharacterSelect",
@@ -9066,9 +9628,10 @@
       "dependencies": [],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "CharacterSelect screen: request/observe only, explicit focus and teardown contract. ",
+      "description": "CharacterSelect screen: request/observe only, explicit focus and teardown contract.  Faction extension: Display committed badge and class, plus active vocation; account may hold characters with different allegiances. Selection uses CharacterId ownership. A locked new-signup faction stays visible/playable for existing supported saves. Show migration/recovery action without deleting or changing a character.",
       "doc_path": "assets/UI/Frontend/WBP_CharacterSelect.html",
       "domain": "UI/Frontend",
       "work_kind": "Blueprint authoring",
@@ -9096,6 +9659,13 @@
           "Retain for unknown-outcome recovery",
           "Local request correlation",
           "Local controller; not a reward ID"
+        ],
+        [
+          "FactionView / PendingRequestId / LastRevision",
+          "read-only view / UUID optional / uint64",
+          "Bind then snapshot; controller/keyboard focus and non-color locked states; no mutation authority",
+          "Widget local presentation only",
+          "Authenticated owner projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -9104,7 +9674,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "WBP_CharacterCreate",
@@ -9122,9 +9693,10 @@
       "dependencies": [],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "CharacterCreate screen: request/observe only, explicit focus and teardown contract. ",
+      "description": "CharacterCreate screen: request/observe only, explicit focus and teardown contract.  Faction extension: Fetch catalog revision; show all four labels and locked reasons. Confirm requires name/appearance/faction/permanent class/one active vocation. Explicit permanent-faction/class warning and editable vocation explanation. Disable while unknown-outcome request is unresolved; retain RequestId. Selection is a request, not local identity.",
       "doc_path": "assets/UI/Frontend/WBP_CharacterCreate.html",
       "domain": "UI/Frontend",
       "work_kind": "Blueprint authoring",
@@ -9152,6 +9724,13 @@
           "Retain for unknown-outcome recovery",
           "Local request correlation",
           "Local controller; not a reward ID"
+        ],
+        [
+          "FactionView / PendingRequestId / LastRevision",
+          "read-only view / UUID optional / uint64",
+          "Bind then snapshot; controller/keyboard focus and non-color locked states; no mutation authority",
+          "Widget local presentation only",
+          "Authenticated owner projection"
         ]
       ],
       "command": "CreateCharacter(RequestId, Name, AppearanceIds, FactionId, CombatDisciplineId, VocationId); authenticated account context, no authoritative state in the widget",
@@ -9160,7 +9739,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "WBP_HUD",
@@ -9514,9 +10094,10 @@
       "dependencies": [],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Dialogue screen: request/observe only, explicit focus and teardown contract. ",
+      "description": "Dialogue screen: request/observe only, explicit focus and teardown contract.  Faction extension: Render localized text and choice/response keys; bind owned expiring NPC conversation. Q5 confirmation displays exact standing costs and permanent personal branch, distinct optional public preference. Never dispatch an objective completion boolean from a rendered line.",
       "doc_path": "assets/UI/WBP_Dialogue.html",
       "domain": "UI",
       "work_kind": "Blueprint authoring",
@@ -9544,6 +10125,13 @@
           "Retain for unknown-outcome recovery",
           "Local request correlation",
           "Local controller; not a reward ID"
+        ],
+        [
+          "FactionView / PendingRequestId / LastRevision",
+          "read-only view / UUID optional / uint64",
+          "Bind then snapshot; controller/keyboard focus and non-color locked states; no mutation authority",
+          "Widget local presentation only",
+          "Authenticated owner projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -9552,7 +10140,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "WBP_QuestJournal",
@@ -9570,9 +10159,10 @@
       "dependencies": [],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "QuestJournal screen: request/observe only, explicit focus and teardown contract. ",
+      "description": "QuestJournal screen: request/observe only, explicit focus and teardown contract.  Faction extension: Show Your allegiance, personal choice, organization standings and Current regional policy separately. Retain historical completed text; provide late-arrival witness objectives. Common rewards equal across Q5 branches; no player quest data leakage.",
       "doc_path": "assets/UI/WBP_QuestJournal.html",
       "domain": "UI",
       "work_kind": "Blueprint authoring",
@@ -9600,6 +10190,13 @@
           "Retain for unknown-outcome recovery",
           "Local request correlation",
           "Local controller; not a reward ID"
+        ],
+        [
+          "FactionView / PendingRequestId / LastRevision",
+          "read-only view / UUID optional / uint64",
+          "Bind then snapshot; controller/keyboard focus and non-color locked states; no mutation authority",
+          "Widget local presentation only",
+          "Authenticated owner projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -9608,7 +10205,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "WBP_Merchant",
@@ -9626,9 +10224,10 @@
       "dependencies": [],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "Merchant screen: request/observe only, explicit focus and teardown contract. ",
+      "description": "Merchant screen: request/observe only, explicit focus and teardown contract.  Faction extension: Display server access decision and price quote revision. Essential neutral services remain available to rivals; private faction commission denial has localized safe-alternative directions. Recheck price/access in purchase transaction.",
       "doc_path": "assets/UI/WBP_Merchant.html",
       "domain": "UI",
       "work_kind": "Blueprint authoring",
@@ -9656,6 +10255,13 @@
           "Retain for unknown-outcome recovery",
           "Local request correlation",
           "Local controller; not a reward ID"
+        ],
+        [
+          "FactionView / PendingRequestId / LastRevision",
+          "read-only view / UUID optional / uint64",
+          "Bind then snapshot; controller/keyboard focus and non-color locked states; no mutation authority",
+          "Widget local presentation only",
+          "Authenticated owner projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -9664,7 +10270,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "WBP_Crafting",
@@ -9738,9 +10345,10 @@
       "dependencies": [],
       "reverse_users": [],
       "consumers": [
-        "ABriarwakePlayerController"
+        "ABriarwakePlayerController",
+        "Faction contracts: architecture/faction-contracts.html"
       ],
-      "description": "RegionBoard screen: request/observe only, explicit focus and teardown contract. ",
+      "description": "RegionBoard screen: request/observe only, explicit focus and teardown contract.  Faction extension: Display public essential12, your units3, optional enhancements and current/frozen consultation. Post-completion contributions explicitly maintenance, not a reset bridge. Debits only after current revision confirmation. Free three-marker work order always visible.",
       "doc_path": "assets/UI/WBP_RegionBoard.html",
       "domain": "UI",
       "work_kind": "Blueprint authoring",
@@ -9768,6 +10376,13 @@
           "Retain for unknown-outcome recovery",
           "Local request correlation",
           "Local controller; not a reward ID"
+        ],
+        [
+          "FactionView / PendingRequestId / LastRevision",
+          "read-only view / UUID optional / uint64",
+          "Bind then snapshot; controller/keyboard focus and non-color locked states; no mutation authority",
+          "Widget local presentation only",
+          "Authenticated owner projection"
         ]
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
@@ -9776,7 +10391,8 @@
         "engine_compile": "not_run",
         "runtime": "not_run",
         "source_asset_audit": "not_applicable"
-      }
+      },
+      "faction_extension_documentation_status": "authored_contract; Unreal not run"
     },
     {
       "name": "WBP_Fishing",
@@ -11529,6 +12145,1942 @@
       ],
       "command": "No executable command is supplied on this definition/view contract. The owning system chapter specifies the future validated operation and observable result.",
       "documentation_status": "initial_contract",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "FFactionRelationshipDefinition",
+      "type": "Native struct",
+      "parent/native_base": "USTRUCT(BlueprintType)",
+      "exact_game_path_or_source_path": "Source/Briarwake/Public/Factions/FactionRelationshipDefinition.h",
+      "content_browser_path": null,
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Value contract; retained by owning aggregate, no independent lifetime",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [],
+      "reverse_users": [
+        "UFactionPolicyDefinition"
+      ],
+      "consumers": [
+        "UFactionPolicyDefinition"
+      ],
+      "description": "An authored symmetric political relationship; no enum value per faction and no mutable standings.",
+      "doc_path": "assets/Factions/FFactionRelationshipDefinition.html",
+      "domain": "Factions",
+      "work_kind": "Proposed native contract; no runtime files in this repository",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "FirstFactionId / SecondFactionId",
+          "FName / FName",
+          "Two distinct registered faction IDs, normalized to byte-sorted pair",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "BaseScore",
+          "int32",
+          "-100..100, symmetric",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Motive",
+          "FText",
+          "Localized political disagreement / alliance rationale",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "UFactionDefinition",
+      "type": "Native data schema",
+      "parent/native_base": "UPrimaryDataAsset",
+      "exact_game_path_or_source_path": "Source/Briarwake/Public/Factions/FactionDefinition.h",
+      "content_browser_path": null,
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "Briarwake"
+      ],
+      "reverse_users": [
+        "DA_Faction_Briarbound",
+        "DA_Faction_Hearthward",
+        "DA_Faction_Ironfang",
+        "DA_Faction_Tidebound"
+      ],
+      "consumers": [
+        "UGameCatalog indexes by stable ID",
+        "WBP_CharacterCreate requests catalog view",
+        "Record_Character creation and continuation",
+        "UQuestDefinition and UNpcServiceDefinition resolve IDs at Phase13"
+      ],
+      "description": "Mandatory political allegiance configuration, independent of class, vocation, cosmetic appearance and civic reputation.",
+      "doc_path": "assets/Factions/UFactionDefinition.html",
+      "domain": "Factions",
+      "work_kind": "Proposed native contract; no runtime files in this repository",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "Faction stable ID / positive version; registered, never renamed in place",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "DisplayName / Description",
+          "FText / FText",
+          "Localization keys and authored ideology, not storage identity",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "bSelectableForNewCharacter",
+          "bool",
+          "True only Hearthward in authored MVP; deployment readiness remains separately required",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "bAllowExistingCharacterContinuation",
+          "bool",
+          "true; deployment validation rejects false without an explicit offline reviewed migration",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "StartingRegionId / StartingZoneId / StartingMapId / StartingSpawnId",
+          "FName each",
+          "Resolve source start record; map/spawn must match enabled faction and safe navigation",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "FallbackSpawnId",
+          "FName",
+          "spawn.thornmere.neutral-infirmary, shared neutral recovery; never rewrite faction",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RootQuestId / MentorId / CastIds",
+          "FName / FName / TArray<FName>",
+          "Future identities may be reserved while selection is false; enabled references must resolve",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "InitialFactionStandings / InitialOrganizationStandings",
+          "TMap<FName,int32> each",
+          "Complete distinct axes; -1000..1000",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "InitialNarrativeFlagIds",
+          "TArray<FName>",
+          "Versioned initial flags; immutable definition, not current character state",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "StarterGrantSourceId / StarterItemId / StarterQuantity",
+          "FName / FName / int32",
+          "Server one-time source; item.starter-sword x1 under MVP fixture",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "AppearanceCatalogId / StarterOutfitId",
+          "FName / FName",
+          "DA_AppearanceCatalog logical reference / appearance.starter.common-four-facing",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "JournalKey / DialogueKey / CutsceneKey / LockedReasonKey",
+          "FName each",
+          "Localized entry/presentation; full future dialogue not yet authored",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "GuardPolicyId / MerchantPolicyId / TrainerPolicyId / RewardTableId",
+          "FName each",
+          "Catalog policy selectors; essential neutral access survives rivalry",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "StarterCopper",
+          "int32, 0..1000000",
+          "40; atomically granted with starter source once",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "UFactionPolicyDefinition",
+      "type": "Native data schema",
+      "parent/native_base": "UPrimaryDataAsset",
+      "exact_game_path_or_source_path": "Source/Briarwake/Public/Factions/FactionPolicyDefinition.h",
+      "content_browser_path": null,
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "Briarwake",
+        "FFactionRelationshipDefinition"
+      ],
+      "reverse_users": [
+        "DA_FactionPolicy_PveFirst"
+      ],
+      "consumers": [
+        "UGameCatalog",
+        "Record_RealmFactionPolicy override validation",
+        "ANpcServiceActor and AI",
+        "Record_Region policy rounds"
+      ],
+      "description": "Versioned server faction tuning consumed by existing owners; no live editor and no faction manager.",
+      "doc_path": "assets/Factions/UFactionPolicyDefinition.html",
+      "domain": "Factions",
+      "work_kind": "Proposed native contract; no runtime files in this repository",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "policy.factions.pve-first / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Relationships",
+          "TArray<FFactionRelationshipDefinition>",
+          "Every unordered pair once; self=100; missing/reverse duplicate rejects",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "StandingMin / StandingMax",
+          "int32 each",
+          "-1000 / 1000",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "PressureMin / PressureMax",
+          "int32 each",
+          "-100 / 100",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "PersonalDivisor / PersonalModifierCap / PressureDivisor / PressureModifierCap",
+          "int32 each",
+          "50 / 20 / 10 / 10; truncation toward zero",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "FriendlyThreshold / NeutralThreshold / WaryThreshold",
+          "int32 each",
+          "50 / 0 / -30; descending; lower score hostile",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "NeutralZoneIds / ConflictZoneIds / SafeRouteIds",
+          "TArray<FName> each",
+          "Explicit authored subzones, never global all-rivals aggro",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "EssentialServiceIds / SharedThreatContextIds",
+          "TArray<FName> each",
+          "Neutral alternatives and common-threat cooperation",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RoundDurationSeconds / MaximumPressureDelta",
+          "int32 each",
+          "1800 / 10, frozen per round",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "PoliticalOptionIds / TieBreakOptionId",
+          "TArray<FName> / FName",
+          "shared-passage, fortified-crossing / shared-passage",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "bAllowOpenWorldPlayerDamage",
+          "bool",
+          "false; validator rejects true, not a functional PvP toggle",
+          "Read-only invariant assertion, not an editor/gameplay toggle",
+          "Baseline combat policy"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_FactionPolicy_PveFirst",
+      "type": "Data Asset",
+      "parent/native_base": "UFactionPolicyDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Factions/DA_FactionPolicy_PveFirst.uasset",
+      "content_browser_path": "/Game/Game/Factions/DA_FactionPolicy_PveFirst.DA_FactionPolicy_PveFirst",
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UFactionPolicyDefinition"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "UGameCatalog",
+        "Faction content validation and existing quest/character/region owners"
+      ],
+      "description": "Canonical PvE-first policy instance; all faction rows share this implementation.",
+      "doc_path": "assets/Factions/DA_FactionPolicy_PveFirst.html",
+      "domain": "Factions",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "PolicySource",
+          "validated faction policy",
+          "sources/factions.json#/policy and /relations",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "policy.factions.pve-first / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_Faction_Hearthward",
+      "type": "Data Asset",
+      "parent/native_base": "UFactionDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Factions/DA_Faction_Hearthward.uasset",
+      "content_browser_path": "/Game/Game/Factions/DA_Faction_Hearthward.DA_Faction_Hearthward",
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UFactionDefinition"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "DA_GameCatalog faction registration Phase05",
+        "Character creation and continuation policy",
+        "Quest/NPC assignments only when content ready"
+      ],
+      "description": "Hearthward League: A human-led federation of frontier towns: defended homes, restored roads and open trade. Its survey charters can dispossess earlier occupants and treat sacred places as unused land.",
+      "doc_path": "assets/Factions/DA_Faction_Hearthward.html",
+      "domain": "Factions",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "faction.hearthward-league / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "SelectableForNewCharacter",
+          "bool",
+          "true",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "ExistingCharacterContinuation",
+          "retained identity + safe recovery",
+          "Always independent of new selection",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Start / fallback",
+          "region, zone, map, spawn",
+          "`{\"region_id\": \"thornmere\", \"zone_id\": \"zone.thornmere\", \"map_id\": \"L_ThornmereVillage\", \"spawn_id\": \"spawn.thornmere.hearthward-arrival\", \"fallback_spawn_id\": \"spawn.thornmere.neutral-infirmary\", \"spawn_authentication\": \"Resolve only from pinned catalog and durable FactionId; never from client map coordinates.\"}`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Story root / mentor",
+          "FName / FName",
+          "quest.hearthward.oath-road / npc.hearthward.maren-vale",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Content source",
+          "validated record",
+          "sources/factions.json#/factions/0",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_Faction_Briarbound",
+      "type": "Data Asset",
+      "parent/native_base": "UFactionDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Factions/DA_Faction_Briarbound.uasset",
+      "content_browser_path": "/Game/Game/Factions/DA_Faction_Briarbound.DA_Faction_Briarbound",
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "blocked",
+      "dependencies": [
+        "UFactionDefinition"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "DA_GameCatalog faction registration Phase05",
+        "Character creation and continuation policy",
+        "Quest/NPC assignments only when content ready"
+      ],
+      "description": "Briarbound Clans: Woodland guardians and ancestral communities: stewardship, negotiated access and protection of sacred places. Blanket exclusion can leave neighboring families without winter supplies. Definition registration is active, NOT playable selection. Map, NPC, dialogue, quest and solo/cooked production content remain unauthored/unverified.",
+      "doc_path": "assets/Factions/DA_Faction_Briarbound.html",
+      "domain": "Factions",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "faction.briarbound-clans / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "SelectableForNewCharacter",
+          "bool",
+          "false",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "ExistingCharacterContinuation",
+          "retained identity + safe recovery",
+          "Always independent of new selection",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Start / fallback",
+          "region, zone, map, spawn",
+          "`{\"region_id\": \"elderwood\", \"zone_id\": \"zone.elderwood\", \"map_id\": \"L_ElderwoodRoad\", \"spawn_id\": \"spawn.elderwood.briarbound-sanctuary\", \"fallback_spawn_id\": \"spawn.thornmere.neutral-infirmary\", \"spawn_authentication\": \"Resolve only from pinned catalog and durable FactionId; never from client map coordinates.\"}`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Story root / mentor",
+          "FName / FName",
+          "quest.briarbound.roots-of-passage / npc.briarbound.ashren-moss",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Content source",
+          "validated record",
+          "sources/factions.json#/factions/1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_Faction_Ironfang",
+      "type": "Data Asset",
+      "parent/native_base": "UFactionDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Factions/DA_Faction_Ironfang.uasset",
+      "content_browser_path": "/Game/Game/Factions/DA_Faction_Ironfang.DA_Faction_Ironfang",
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "blocked",
+      "dependencies": [
+        "UFactionDefinition"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "DA_GameCatalog faction registration Phase05",
+        "Character creation and continuation policy",
+        "Quest/NPC assignments only when content ready"
+      ],
+      "description": "Ironfang Warbands: Orc-like martial clans seek political recognition and ancestral territory. Korra advocates witnessed agreements; aggressive captains favor reprisals. Neither ancestry nor species determines moral worth. Definition registration is active, NOT playable selection. Map, NPC, dialogue, quest and solo/cooked production content remain unauthored/unverified.",
+      "doc_path": "assets/Factions/DA_Faction_Ironfang.html",
+      "domain": "Factions",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "faction.ironfang-warbands / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "SelectableForNewCharacter",
+          "bool",
+          "false",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "ExistingCharacterContinuation",
+          "retained identity + safe recovery",
+          "Always independent of new selection",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Start / fallback",
+          "region, zone, map, spawn",
+          "`{\"region_id\": \"cairnstep\", \"zone_id\": \"zone.cairnstep\", \"map_id\": \"L_CairnstepHeights\", \"spawn_id\": \"spawn.cairnstep.ironfang-camp\", \"fallback_spawn_id\": \"spawn.thornmere.neutral-infirmary\", \"spawn_authentication\": \"Resolve only from pinned catalog and durable FactionId; never from client map coordinates.\"}`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Story root / mentor",
+          "FName / FName",
+          "quest.ironfang.claim-of-the-stones / npc.ironfang.korra-stonevoice",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Content source",
+          "validated record",
+          "sources/factions.json#/factions/2",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_Faction_Tidebound",
+      "type": "Data Asset",
+      "parent/native_base": "UFactionDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Factions/DA_Faction_Tidebound.uasset",
+      "content_browser_path": "/Game/Game/Factions/DA_Faction_Tidebound.DA_Faction_Tidebound",
+      "first_phase": 5,
+      "first_active_phase": 5,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "blocked",
+      "dependencies": [
+        "UFactionDefinition"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "DA_GameCatalog faction registration Phase05",
+        "Character creation and continuation policy",
+        "Quest/NPC assignments only when content ready"
+      ],
+      "description": "Tidebound Compact: Independent coastal communities defend maritime autonomy, navigation and negotiated trade. Unrestricted private commerce can evade responsibility for inland damage. Definition registration is active, NOT playable selection. Map, NPC, dialogue, quest and solo/cooked production content remain unauthored/unverified.",
+      "doc_path": "assets/Factions/DA_Faction_Tidebound.html",
+      "domain": "Factions",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "faction.tidebound-compact / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "SelectableForNewCharacter",
+          "bool",
+          "false",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "ExistingCharacterContinuation",
+          "retained identity + safe recovery",
+          "Always independent of new selection",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Start / fallback",
+          "region, zone, map, spawn",
+          "`{\"region_id\": \"galehaven\", \"zone_id\": \"zone.galehaven\", \"map_id\": \"L_GalehavenCoast\", \"spawn_id\": \"spawn.galehaven.tidebound-harbor\", \"fallback_spawn_id\": \"spawn.thornmere.neutral-infirmary\", \"spawn_authentication\": \"Resolve only from pinned catalog and durable FactionId; never from client map coordinates.\"}`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Story root / mentor",
+          "FName / FName",
+          "quest.tidebound.free-water / npc.tidebound.sera-vane",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Content source",
+          "validated record",
+          "sources/factions.json#/factions/3",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "Record_RealmFactionPolicy",
+      "type": "Backend record",
+      "parent/native_base": "Proposed versioned service schema; storage technology undecided",
+      "exact_game_path_or_source_path": "Services/Contracts/Persistence/Record_RealmFactionPolicy.schema.json",
+      "content_browser_path": null,
+      "first_phase": 6,
+      "first_active_phase": 6,
+      "owner": "Existing authenticated durable service, realm aggregate",
+      "lifetime": "Durable versioned realm record",
+      "replication": "Never raw; filtered policy revision and relevant public pair/treaty values only",
+      "persistence": "Canonical durable realm policy; audit and command receipt atomic",
+      "status": "design",
+      "dependencies": [],
+      "reverse_users": [],
+      "consumers": [
+        "UDurableStateClient authenticated service",
+        "ANpcServiceActor / guard access decisions",
+        "Record_Region freezes PolicyVersion",
+        "Record_Transfer admission checks"
+      ],
+      "description": "Single durable realm owner for adjustable faction relations, treaties and policy revision; does not store personal choices or regional construction.",
+      "doc_path": "assets/Persistence/Record_RealmFactionPolicy.html",
+      "domain": "Persistence",
+      "work_kind": "Backend contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "RealmId",
+          "stable realm ID",
+          "Required unique realm key",
+          "Server only",
+          "Durable service"
+        ],
+        [
+          "SchemaVersion / PolicyVersion / Revision",
+          "uint32 / uint32 / uint64",
+          "1 / validated authored version / monotonic CAS revision",
+          "Server only",
+          "Durable service"
+        ],
+        [
+          "RelationshipOverrides",
+          "array<FirstFactionId,SecondFactionId,Score>",
+          "Canonical pair unique; score -100..100; immutable audit per accepted change",
+          "Server only",
+          "Durable service"
+        ],
+        [
+          "GuestTreaties / CooperationPolicies",
+          "versioned ID-keyed values",
+          "Cannot deny all neutral essential paths",
+          "Filtered current projection",
+          "Durable service"
+        ],
+        [
+          "AuditReceiptId / ChangedBy / Reason / ChangedAt",
+          "UUID / authenticated principal / bounded string / UTC timestamp",
+          "Required for every privileged change",
+          "Never public audit identities",
+          "Durable service"
+        ]
+      ],
+      "command": "ApplyRealmFactionPolicy: privileged authenticated deployment role only; validate complete configuration, expected Revision and reason; atomically write new policy, audit, receipt and outbox. Ordinary clients have no setter.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "EFactionAttitude",
+      "type": "Native enum",
+      "parent/native_base": "UENUM(BlueprintType)",
+      "exact_game_path_or_source_path": "Source/Briarwake/Public/Factions/FactionAttitude.h",
+      "content_browser_path": null,
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Value contract; retained by owning aggregate, no independent lifetime",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [],
+      "reverse_users": [
+        "FFactionAccessDecision"
+      ],
+      "consumers": [
+        "FFactionAccessDecision",
+        "ANpcServiceActor / AI / dialogue presentation"
+      ],
+      "description": "Finite derived NPC attitude vocabulary. Adding a playable faction never changes this enum.",
+      "doc_path": "assets/Factions/EFactionAttitude.html",
+      "domain": "Factions",
+      "work_kind": "Proposed native contract; no runtime files in this repository",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "Values",
+          "uint8 enum",
+          "Friendly, Neutral, Wary, Hostile; stable finite attitudes, not faction identities",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "FFactionAccessDecision",
+      "type": "Native struct",
+      "parent/native_base": "USTRUCT(BlueprintType)",
+      "exact_game_path_or_source_path": "Source/Briarwake/Public/Factions/FactionAccessDecision.h",
+      "content_browser_path": null,
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Value contract; retained by owning aggregate, no independent lifetime",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "EFactionAttitude"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "ANpcServiceActor",
+        "ABriarwakeAIController",
+        "UQuestDefinition evaluator",
+        "WBP_Dialogue / WBP_Merchant filtered result"
+      ],
+      "description": "Ephemeral read-only access result shared by services, guards and quest offers, never an independently durable authority.",
+      "doc_path": "assets/Factions/FFactionAccessDecision.html",
+      "domain": "Factions",
+      "work_kind": "Proposed native contract; no runtime files in this repository",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "Attitude",
+          "EFactionAttitude",
+          "Derived from one policy evaluation",
+          "BlueprintReadOnly",
+          "Zone server"
+        ],
+        [
+          "bMayUseEssentialService / bMayUseFactionService / bMayGuardAggro / bMayOfferQuest",
+          "bool each",
+          "Validated current actor/context permissions",
+          "BlueprintReadOnly",
+          "Zone server"
+        ],
+        [
+          "bMayPlayerDamage",
+          "bool",
+          "Always false in baseline",
+          "BlueprintReadOnly",
+          "Zone server"
+        ],
+        [
+          "ReasonId",
+          "FName",
+          "Localized public denial reason, no secrets",
+          "BlueprintReadOnly",
+          "Zone server"
+        ],
+        [
+          "CharacterRevision / RegionRevision / PolicyRevision",
+          "int64 each, 0..INT64_MAX",
+          "Versions used for evaluation; stale action re-evaluates",
+          "BlueprintReadOnly",
+          "Zone server"
+        ]
+      ],
+      "command": "Proposed native EvaluateFactionAccess(immutable faction/policy definitions, authenticated character view, current region/realm policy, NPC affiliation, context) returns FFactionAccessDecision without writes. No client-supplied attitude or authority flag is accepted.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_NPC_MarenVale",
+      "type": "Data Asset",
+      "parent/native_base": "UNpcServiceDefinition",
+      "exact_game_path_or_source_path": "Content/Game/NPCs/DA_NPC_MarenVale.uasset",
+      "content_browser_path": "/Game/Game/NPCs/DA_NPC_MarenVale.DA_NPC_MarenVale",
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UNpcServiceDefinition"
+      ],
+      "reverse_users": [
+        "DA_Quest_BriarsCrossing",
+        "DA_Quest_CrossingChoice",
+        "DA_Quest_MissingCaravan",
+        "DA_Quest_NorthRoadCompact",
+        "DA_Quest_OathRoad"
+      ],
+      "consumers": [
+        "ANpcServiceActor placement on L_ThornmereVillage",
+        "Hearthward quest givers/turn-ins",
+        "UGameCatalog"
+      ],
+      "description": "Maren Vale, road clerk: hearthward-campaign, hearthward-commissions",
+      "doc_path": "assets/NPCs/DA_NPC_MarenVale.html",
+      "domain": "NPCs",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId",
+          "FName",
+          "npc.hearthward.maren-vale",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "FactionId / OrganizationId",
+          "FName optional",
+          "faction.hearthward-league / None",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Placement / facing",
+          "map, tile anchor, EFacing4",
+          "`{\"map_id\": \"L_ThornmereVillage\", \"tile\": [26, 18], \"facing\": \"West\"}`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Interaction radius",
+          "int32 tiles",
+          "2; line of sight and owned conversation session",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored source",
+          "record",
+          "sources/hearthward-campaign.json#/npcs",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_NPC_TalanReed",
+      "type": "Data Asset",
+      "parent/native_base": "UNpcServiceDefinition",
+      "exact_game_path_or_source_path": "Content/Game/NPCs/DA_NPC_TalanReed.uasset",
+      "content_browser_path": "/Game/Game/NPCs/DA_NPC_TalanReed.DA_NPC_TalanReed",
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UNpcServiceDefinition"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "ANpcServiceActor placement on L_ThornmereVillage",
+        "Hearthward quest givers/turn-ins",
+        "UGameCatalog"
+      ],
+      "description": "Talan Reed, crossing witness: crossing-parley",
+      "doc_path": "assets/NPCs/DA_NPC_TalanReed.html",
+      "domain": "NPCs",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId",
+          "FName",
+          "npc.briarbound.talan-reed",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "FactionId / OrganizationId",
+          "FName optional",
+          "faction.briarbound-clans / organization.roadward-accord",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Placement / facing",
+          "map, tile anchor, EFacing4",
+          "`{\"map_id\": \"L_ThornmereVillage\", \"tile\": [42, 8], \"facing\": \"South\"}`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Interaction radius",
+          "int32 tiles",
+          "2; line of sight and owned conversation session",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored source",
+          "record",
+          "sources/hearthward-campaign.json#/npcs",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_NPC_ErenDusk",
+      "type": "Data Asset",
+      "parent/native_base": "UNpcServiceDefinition",
+      "exact_game_path_or_source_path": "Content/Game/NPCs/DA_NPC_ErenDusk.uasset",
+      "content_browser_path": "/Game/Game/NPCs/DA_NPC_ErenDusk.DA_NPC_ErenDusk",
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UNpcServiceDefinition"
+      ],
+      "reverse_users": [
+        "DA_Quest_BellDusk"
+      ],
+      "consumers": [
+        "ANpcServiceActor placement on L_ThornmereVillage",
+        "Hearthward quest givers/turn-ins",
+        "UGameCatalog"
+      ],
+      "description": "Eren Dusk, bell keeper: bell-investigation, story-recovery",
+      "doc_path": "assets/NPCs/DA_NPC_ErenDusk.html",
+      "domain": "NPCs",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId",
+          "FName",
+          "npc.neutral.eren-dusk",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "FactionId / OrganizationId",
+          "FName optional",
+          "None / organization.veil-survey",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Placement / facing",
+          "map, tile anchor, EFacing4",
+          "`{\"map_id\": \"L_ThornmereVillage\", \"tile\": [30, 20], \"facing\": \"South\"}`",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Interaction radius",
+          "int32 tiles",
+          "2; line of sight and owned conversation session",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored source",
+          "record",
+          "sources/hearthward-campaign.json#/npcs",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_Quest_OathRoad",
+      "type": "Data Asset",
+      "parent/native_base": "UQuestDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Quests/DA_Quest_OathRoad.uasset",
+      "content_browser_path": "/Game/Game/Quests/DA_Quest_OathRoad.DA_Quest_OathRoad",
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UQuestDefinition",
+        "DA_NPC_MarenVale"
+      ],
+      "reverse_users": [
+        "DA_Quest_MissingCaravan"
+      ],
+      "consumers": [
+        "UGameCatalog and existing quest evaluator",
+        "QuestProgressRecord objective state",
+        "WBP_Dialogue / WBP_QuestJournal",
+        "Complete faction slice Phase26"
+      ],
+      "description": "Oath of the Road: The League recognizes the character as a named contributor, not disposable labor. The player learns the permanent allegiance they already chose and the obligations that accompany safe passage.",
+      "doc_path": "assets/Quests/DA_Quest_OathRoad.html",
+      "domain": "Quests",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "quest.hearthward.oath-road / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RequiredFactionId",
+          "FName",
+          "faction.hearthward-league",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Prerequisites / next",
+          "TArray<FName> each",
+          "Prerequisites: none; next: quest.hearthward.missing-caravan",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Objectives / alternatives",
+          "versioned objective receipts",
+          "Canonical campaign field: objectives (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Reward / source guard",
+          "existing quest reward plan",
+          "Canonical campaign field: reward (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Branch choices",
+          "immutable accepted BranchId",
+          "Canonical campaign field: branches (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored campaign source",
+          "validated record",
+          "sources/hearthward-campaign.json#/quests/0",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Accept current eligible quest; trusted objective receipts satisfy the authored predicate; CompleteFactionQuest validates version, faction, objectives, choice, lease and revision, then commits exactly one source-generation reward and next-quest eligibility through the existing transaction engine.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      },
+      "faction_content_record": "quest.hearthward.oath-road"
+    },
+    {
+      "name": "DA_Quest_MissingCaravan",
+      "type": "Data Asset",
+      "parent/native_base": "UQuestDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Quests/DA_Quest_MissingCaravan.uasset",
+      "content_browser_path": "/Game/Game/Quests/DA_Quest_MissingCaravan.DA_Quest_MissingCaravan",
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UQuestDefinition",
+        "DA_NPC_MarenVale",
+        "DA_Quest_OathRoad"
+      ],
+      "reverse_users": [
+        "DA_Quest_BriarsCrossing"
+      ],
+      "consumers": [
+        "UGameCatalog and existing quest evaluator",
+        "QuestProgressRecord objective state",
+        "WBP_Dialogue / WBP_QuestJournal",
+        "Complete faction slice Phase26"
+      ],
+      "description": "The Missing Caravan: The caravan carried provisions and a waystone rubbing. Finding it keeps Thornmere supplied and gives the character a credible reason to investigate the disturbance.",
+      "doc_path": "assets/Quests/DA_Quest_MissingCaravan.html",
+      "domain": "Quests",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "quest.hearthward.missing-caravan / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RequiredFactionId",
+          "FName",
+          "faction.hearthward-league",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Prerequisites / next",
+          "TArray<FName> each",
+          "Prerequisites: quest.hearthward.oath-road; next: quest.hearthward.briars-crossing",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Objectives / alternatives",
+          "versioned objective receipts",
+          "Canonical campaign field: objectives (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Reward / source guard",
+          "existing quest reward plan",
+          "Canonical campaign field: reward (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Branch choices",
+          "immutable accepted BranchId",
+          "Canonical campaign field: branches (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored campaign source",
+          "validated record",
+          "sources/hearthward-campaign.json#/quests/1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Accept current eligible quest; trusted objective receipts satisfy the authored predicate; CompleteFactionQuest validates version, faction, objectives, choice, lease and revision, then commits exactly one source-generation reward and next-quest eligibility through the existing transaction engine.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      },
+      "faction_content_record": "quest.hearthward.missing-caravan"
+    },
+    {
+      "name": "DA_Quest_BriarsCrossing",
+      "type": "Data Asset",
+      "parent/native_base": "UQuestDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Quests/DA_Quest_BriarsCrossing.uasset",
+      "content_browser_path": "/Game/Game/Quests/DA_Quest_BriarsCrossing.DA_Quest_BriarsCrossing",
+      "first_phase": 13,
+      "first_active_phase": 13,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UQuestDefinition",
+        "DA_NPC_MarenVale",
+        "DA_Quest_MissingCaravan"
+      ],
+      "reverse_users": [
+        "DA_Quest_NorthRoadCompact"
+      ],
+      "consumers": [
+        "UGameCatalog and existing quest evaluator",
+        "QuestProgressRecord objective state",
+        "WBP_Dialogue / WBP_QuestJournal",
+        "Complete faction slice Phase26"
+      ],
+      "description": "Briars at the Crossing: The player learns why the woodland communities dispute the road and obtains physical evidence that the Hollow Covenant is exploiting that dispute.",
+      "doc_path": "assets/Quests/DA_Quest_BriarsCrossing.html",
+      "domain": "Quests",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "quest.hearthward.briars-crossing / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RequiredFactionId",
+          "FName",
+          "faction.hearthward-league",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Prerequisites / next",
+          "TArray<FName> each",
+          "Prerequisites: quest.hearthward.missing-caravan; next: quest.hearthward.north-road-compact",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Objectives / alternatives",
+          "versioned objective receipts",
+          "Canonical campaign field: objectives (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Reward / source guard",
+          "existing quest reward plan",
+          "Canonical campaign field: reward (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Branch choices",
+          "immutable accepted BranchId",
+          "Canonical campaign field: branches (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored campaign source",
+          "validated record",
+          "sources/hearthward-campaign.json#/quests/2",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Accept current eligible quest; trusted objective receipts satisfy the authored predicate; CompleteFactionQuest validates version, faction, objectives, choice, lease and revision, then commits exactly one source-generation reward and next-quest eligibility through the existing transaction engine.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      },
+      "faction_content_record": "quest.hearthward.briars-crossing"
+    },
+    {
+      "name": "DA_Quest_NorthRoadCompact",
+      "type": "Data Asset",
+      "parent/native_base": "UQuestDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Quests/DA_Quest_NorthRoadCompact.uasset",
+      "content_browser_path": "/Game/Game/Quests/DA_Quest_NorthRoadCompact.DA_Quest_NorthRoadCompact",
+      "first_phase": 22,
+      "first_active_phase": 22,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UQuestDefinition",
+        "DA_NPC_MarenVale",
+        "DA_Quest_BriarsCrossing",
+        "DA_Project_NorthRoad",
+        "DA_Recipe_WatchFitting",
+        "DA_Recipe_FieldLoaf",
+        "DA_Recipe_BridgeSupport",
+        "DA_Recipe_BlightRemedy"
+      ],
+      "reverse_users": [
+        "DA_Quest_CrossingChoice"
+      ],
+      "consumers": [
+        "UGameCatalog and existing quest evaluator",
+        "QuestProgressRecord objective state",
+        "WBP_Dialogue / WBP_QuestJournal",
+        "Complete faction slice Phase26"
+      ],
+      "description": "The North Road Compact: A restored route creates practical access and services, with the character credited for their own work even on a realm whose bridge was repaired before they arrived.",
+      "doc_path": "assets/Quests/DA_Quest_NorthRoadCompact.html",
+      "domain": "Quests",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "quest.hearthward.north-road-compact / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RequiredFactionId",
+          "FName",
+          "faction.hearthward-league",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Prerequisites / next",
+          "TArray<FName> each",
+          "Prerequisites: quest.hearthward.briars-crossing; next: quest.hearthward.crossing-choice",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Objectives / alternatives",
+          "versioned objective receipts",
+          "Canonical campaign field: objectives (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Reward / source guard",
+          "existing quest reward plan",
+          "Canonical campaign field: reward (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Branch choices",
+          "immutable accepted BranchId",
+          "Canonical campaign field: branches (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored campaign source",
+          "validated record",
+          "sources/hearthward-campaign.json#/quests/3",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Accept current eligible quest; trusted objective receipts satisfy the authored predicate; CompleteFactionQuest validates version, faction, objectives, choice, lease and revision, then commits exactly one source-generation reward and next-quest eligibility through the existing transaction engine.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      },
+      "faction_content_record": "quest.hearthward.north-road-compact"
+    },
+    {
+      "name": "DA_Quest_CrossingChoice",
+      "type": "Data Asset",
+      "parent/native_base": "UQuestDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Quests/DA_Quest_CrossingChoice.uasset",
+      "content_browser_path": "/Game/Game/Quests/DA_Quest_CrossingChoice.DA_Quest_CrossingChoice",
+      "first_phase": 23,
+      "first_active_phase": 23,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UQuestDefinition",
+        "DA_NPC_MarenVale",
+        "DA_Quest_NorthRoadCompact"
+      ],
+      "reverse_users": [
+        "DA_Quest_BellDusk"
+      ],
+      "consumers": [
+        "UGameCatalog and existing quest evaluator",
+        "QuestProgressRecord objective state",
+        "WBP_Dialogue / WBP_QuestJournal",
+        "Complete faction slice Phase26"
+      ],
+      "description": "Who Holds the Crossing?: The character decides what the League should stand for at the crossing. Personal relationships and later dialogue remember that decision regardless of the realm policy outcome.",
+      "doc_path": "assets/Quests/DA_Quest_CrossingChoice.html",
+      "domain": "Quests",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "quest.hearthward.crossing-choice / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RequiredFactionId",
+          "FName",
+          "faction.hearthward-league",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Prerequisites / next",
+          "TArray<FName> each",
+          "Prerequisites: quest.hearthward.north-road-compact; next: quest.hearthward.bell-dusk",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Objectives / alternatives",
+          "versioned objective receipts",
+          "Canonical campaign field: objectives (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Reward / source guard",
+          "existing quest reward plan",
+          "Canonical campaign field: reward (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Branch choices",
+          "immutable accepted BranchId",
+          "Canonical campaign field: branches (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored campaign source",
+          "validated record",
+          "sources/hearthward-campaign.json#/quests/4",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Accept current eligible quest; trusted objective receipts satisfy the authored predicate; CompleteFactionQuest validates version, faction, objectives, choice, lease and revision, then commits exactly one source-generation reward and next-quest eligibility through the existing transaction engine.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      },
+      "faction_content_record": "quest.hearthward.crossing-choice"
+    },
+    {
+      "name": "DA_Quest_BellDusk",
+      "type": "Data Asset",
+      "parent/native_base": "UQuestDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Quests/DA_Quest_BellDusk.uasset",
+      "content_browser_path": "/Game/Game/Quests/DA_Quest_BellDusk.DA_Quest_BellDusk",
+      "first_phase": 26,
+      "first_active_phase": 26,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UQuestDefinition",
+        "DA_NPC_ErenDusk",
+        "DA_Quest_CrossingChoice",
+        "DA_Encounter_SplitBell"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "UGameCatalog and existing quest evaluator",
+        "QuestProgressRecord objective state",
+        "WBP_Dialogue / WBP_QuestJournal",
+        "Complete faction slice Phase26"
+      ],
+      "description": "Bell at Dusk: The warning proves that the factions face a danger none understands alone. The player gains a concrete lead into Elderwood and the remaining regional story.",
+      "doc_path": "assets/Quests/DA_Quest_BellDusk.html",
+      "domain": "Quests",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId / ContentVersion",
+          "FName / int32",
+          "quest.hearthward.bell-dusk / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "RequiredFactionId",
+          "FName",
+          "faction.hearthward-league",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Prerequisites / next",
+          "TArray<FName> each",
+          "Prerequisites: quest.hearthward.crossing-choice; next: shared-story eligibility",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Objectives / alternatives",
+          "versioned objective receipts",
+          "Canonical campaign field: objectives (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Reward / source guard",
+          "existing quest reward plan",
+          "Canonical campaign field: reward (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Branch choices",
+          "immutable accepted BranchId",
+          "Canonical campaign field: branches (resolved by generator)",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Authored campaign source",
+          "validated record",
+          "sources/hearthward-campaign.json#/quests/5",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Accept current eligible quest; trusted objective receipts satisfy the authored predicate; CompleteFactionQuest validates version, faction, objectives, choice, lease and revision, then commits exactly one source-generation reward and next-quest eligibility through the existing transaction engine.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      },
+      "faction_content_record": "quest.hearthward.bell-dusk"
+    },
+    {
+      "name": "DA_Encounter_SplitBell",
+      "type": "Data Asset",
+      "parent/native_base": "UEncounterDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Enemies/DA_Encounter_SplitBell.uasset",
+      "content_browser_path": "/Game/Game/Enemies/DA_Encounter_SplitBell.DA_Encounter_SplitBell",
+      "first_phase": 24,
+      "first_active_phase": 26,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UEncounterDefinition"
+      ],
+      "reverse_users": [
+        "DA_Quest_BellDusk"
+      ],
+      "consumers": [
+        "DA_Quest_BellDusk",
+        "Existing encounter/AI/receipt owners",
+        "Phase26 NPC assistance assignment"
+      ],
+      "description": "Greater-threat finale at the Split Bell with NPC-assisted combat or full noncombat evidence route.",
+      "doc_path": "assets/Enemies/DA_Encounter_SplitBell.html",
+      "domain": "Enemies",
+      "work_kind": "Authored data contract",
+      "system": "quests",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId",
+          "FName",
+          "encounter.split-bell",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Count / health / damage",
+          "int32 each",
+          "3 / 24 / 4",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Attack interval / telegraph",
+          "float seconds",
+          "2 / 0.8; shape/text cue",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Leash / reset",
+          "int32 tiles / seconds",
+          "7 / 15",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Participant policy",
+          "per-character scene context",
+          "Only eligible consenting quest participant and NPC helpers; no allegiance-based player damage",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "NPC assist assignment",
+          "Phase26 existing assistance definition",
+          "Two assistants, each60health/4damage per2s; no reward authority",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Noncombat equivalent",
+          "ordered clue receipt",
+          "Road, Root, Bell, three readable tablet clues; same quest reward",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_Item_StraightGrainTimber",
+      "type": "Data Asset",
+      "parent/native_base": "UItemDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Items/DA_Item_StraightGrainTimber.uasset",
+      "content_browser_path": "/Game/Game/Items/DA_Item_StraightGrainTimber.DA_Item_StraightGrainTimber",
+      "first_phase": 20,
+      "first_active_phase": 20,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UItemDefinition"
+      ],
+      "reverse_users": [
+        "DA_Recipe_BridgeSupport",
+        "DA_Resource_ElderwoodTimber"
+      ],
+      "consumers": [
+        "DA_Resource_ElderwoodTimber",
+        "DA_Recipe_BridgeSupport",
+        "Existing inventory/crafting owners"
+      ],
+      "description": "Structural timber stack used by the existing Woodwright construction recipe; no new inventory authority or licensed art.",
+      "doc_path": "assets/Items/DA_Item_StraightGrainTimber.html",
+      "domain": "Items",
+      "work_kind": "Authored data contract",
+      "system": "crafting",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId",
+          "FName",
+          "item.straight-grain-timber",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Kind / stack limit",
+          "existing material kind / int32",
+          "Material / 99",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Rarity / vendor base value",
+          "existing common rarity / copper",
+          "Common / 1; tuning fixture",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Gameplay role",
+          "structural ingredient",
+          "3 units -> 1 BridgeSupport; generic material icon/text fallback",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Required faction",
+          "none",
+          "Neutral access; no faction monopoly",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
+      "verification": {
+        "engine_compile": "not_run",
+        "runtime": "not_run",
+        "source_asset_audit": "not_applicable"
+      }
+    },
+    {
+      "name": "DA_Resource_ElderwoodTimber",
+      "type": "Data Asset",
+      "parent/native_base": "UResourceSiteDefinition",
+      "exact_game_path_or_source_path": "Content/Game/Resources/DA_Resource_ElderwoodTimber.uasset",
+      "content_browser_path": "/Game/Game/Resources/DA_Resource_ElderwoodTimber.DA_Resource_ElderwoodTimber",
+      "first_phase": 20,
+      "first_active_phase": 20,
+      "owner": "Validated content author",
+      "lifetime": "Immutable retained content version; no character/realm state",
+      "replication": "Definitions are not replicated; public views carry approved IDs and content revisions only",
+      "persistence": "Stable IDs/content version only; owner records store mutable values",
+      "status": "design",
+      "dependencies": [
+        "UResourceSiteDefinition",
+        "DA_Item_StraightGrainTimber"
+      ],
+      "reverse_users": [],
+      "consumers": [
+        "AResourceSite",
+        "ResourceSiteRecord",
+        "DA_Recipe_BridgeSupport"
+      ],
+      "description": "Minimal authored timber site configuration for the faction contribution route, reusing server-randomized resource owners.",
+      "doc_path": "assets/Resources/DA_Resource_ElderwoodTimber.html",
+      "domain": "Resources",
+      "work_kind": "Authored data contract",
+      "system": "gathering",
+      "source_art_path": null,
+      "source_art_verification": "not applicable",
+      "properties": [
+        [
+          "DefinitionId",
+          "FName",
+          "resource.elderwood.structural-timber",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Yield item / range",
+          "FName / int32 bounds",
+          "item.straight-grain-timber / 1..2",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Respawn / claim limit",
+          "seconds / int32",
+          "120 / 1",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Eligible cells",
+          "authored L_ElderwoodRoad tile anchors",
+          "(12,32), (16,30), (18,28); random server selection among eligible cells",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Safety / fallback",
+          "policy",
+          "Neutral Willow Cut route; free public contract bypasses timber requirement",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ],
+        [
+          "Persistence",
+          "existing ResourceSiteRecord",
+          "SiteId/Generation/Claim owner/expiry/next eligible; no client reroll",
+          "EditDefaultsOnly; BlueprintReadOnly",
+          "Content author"
+        ]
+      ],
+      "command": "Validate definition and resolve through UGameCatalog; no mutation API on this immutable authored content. Accepted actions use the existing quest/transaction boundary described in architecture/faction-contracts.html.",
+      "documentation_status": "faction_contract_authored_runtime_unverified",
       "verification": {
         "engine_compile": "not_run",
         "runtime": "not_run",

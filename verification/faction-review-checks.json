@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-10T01:09:25.620245+00:00",
+  "repository": "evanmcpheron/mmo_docs",
+  "branch": "docs/faction-allegiance-campaign",
+  "main_commit": "468d9430b5492ee5b6d1777ae021b59085c7a507",
+  "reviewed_parent_commit": "e9921e2aec167e69f108b5118419ffa0c567af20",
+  "scope": "Independent local documentation/schema/SQLite conformance review; not Unreal, production persistence or connected-client execution.",
+  "commands": [
+    {
+      "command": "python3 tools/build_manual_indexes.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.95
+    },
+    {
+      "command": "python3 tools/build_manual_indexes.py --check",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.934
+    },
+    {
+      "command": "python3 tools/validate_documentation.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 1.751
+    },
+    {
+      "command": "python3 tools/check_phase_integration.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.719
+    },
+    {
+      "command": "python3 tools/check_feature_coverage.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.783
+    },
+    {
+      "command": "python3 tools/simulate_population_scaling.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.754
+    },
+    {
+      "command": "python3 -m unittest discover -s tools/tests -v",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 2.385
+    },
+    {
+      "command": "python3 tools/check_feature_coverage.py --require-complete",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "duration_seconds": 0.668
+    },
+    {
+      "command": "python3 tools/validate_factions.py",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.683
+    },
+    {
+      "command": "python3 tools/validate_factions.py --deployment",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "duration_seconds": 0.695
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "duration_seconds": 0.051
+    }
+  ],
+  "unit_tests": {
+    "baseline_before_review": 79,
+    "new_regression_methods": 10,
+    "executed": 89,
+    "passed": 89,
+    "new_regressions_failed_before_fixes": true
+  },
+  "schema_validation": {
+    "status": "pass",
+    "validator": "jsonschema 4.26.0",
+    "schemas_checked": 2,
+    "authored_faction_records_validated": 4
+  },
+  "browser": {
+    "in_memory": {
+      "exit_code": 0,
+      "desktop_pages": 12,
+      "desktop_width": 1440,
+      "mobile_pages": 8,
+      "mobile_width": 390,
+      "javascript_errors": []
+    },
+    "visual_review": "Inspected faction desktop and Hearthward campaign mobile viewport screenshots; no clipping in these samples.",
+    "navigation_commands": [
+      {
+        "command": "python3 tools/browser_checks.py --chromium /usr/bin/chromium",
+        "exit_code": 1
+      },
+      {
+        "command": "python3 tools/browser_checks.py --chromium /usr/bin/chromium --serve-local",
+        "exit_code": 1
+      }
+    ],
+    "navigation_obstacle": "Chromium ERR_BLOCKED_BY_ADMINISTRATOR for both file:// and local HTTP. Actual navigation, storage persistence and downloads remain unverified."
+  },
+  "full_guide_incomplete_blocks": 46,
+  "expected_nonpassing_gates": [
+    "Whole-guide --require-complete: existing 46 incomplete requirement blocks",
+    "Faction --deployment: missing cooked-content and solo-runtime proof"
+  ],
+  "not_run": [
+    "Unreal/native/UHT compilation",
+    "Blueprint compilation and cooked map validation",
+    "Real game character/save migration",
+    "Production backend transaction and crash-recovery tests",
+    "Actual 1/2/5/10/30 network-client gameplay or load benchmarks"
+  ],
+  "source_sha256": {
+    "sources/faction-implementation.json": "68ad9e1a2016a13cbaf004d44d39a63b59f5f4fbc653eeee62c55bac6443aa6c",
+    "sources/faction-traceability.json": "9c32c2e6ee693846be8e332b78d08ee6dc4a2a36c5b3f23d78c6161c9f7fd2bd",
+    "sources/verification.json": "099ec6513c4145189f45c963052f158081c84d45a98ff3dd5e04c0f19fe2f10e",
+    "tools/tests/faction_model.py": "0d95830b8155be5df76af1c2030e7ae9e85f33b82f789e7fb9ec420a0839c2cf",
+    "tools/validate_factions.py": "be5292543b93dffea14418fbf90ed5ba5892b7aa9ced529d320b1f6b7d3c5883",
+    "tools/tests/test_faction_readiness_regressions.py": "f138e9e1df13e4725bc3358e8db969026ac307aa015a5fcce96b70d8b0fac015"
+  },
+  "other_repositories_modified": false,
+  "status": "pass_with_explicit_blocked_gates"
+}

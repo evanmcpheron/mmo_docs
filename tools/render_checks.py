@@ -33,11 +33,11 @@ def main() -> int:
                 page.add_script_tag(content=(ROOT / 'site/search-data.js').read_text(encoding='utf-8'))
                 page.add_script_tag(content=(ROOT / 'site/app.js').read_text(encoding='utf-8'))
                 page.evaluate('window.scrollTo(0,0); if(document.activeElement) document.activeElement.blur();')
-            for path in ['index.html', 'phases/phase-15.html', 'systems/fishing.html', 'assets/Items/DA_Item_IronOre.html', 'professions/hearthkeeper.html', 'architecture/zone-transfers.html', 'asset-index.html', 'dependency-map.html']:
+            for path in ['index.html', 'phases/phase-15.html', 'systems/fishing.html', 'assets/Items/DA_Item_IronOre.html', 'professions/hearthkeeper.html', 'architecture/zone-transfers.html', 'asset-index.html', 'dependency-map.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html', 'faction-traceability.html']:
                 render(path)
                 assert page.locator('h1').count() == 1, path
                 assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), path + ' overflow'
-            checks.append('Eight representative page layouts render without page-width overflow at 1440px.')
+            checks.append('Twelve representative page layouts render without page-width overflow at 1440px.')
             render('index.html')
             if args.screenshots:
                 args.screenshots.mkdir(parents=True, exist_ok=True)
@@ -83,7 +83,7 @@ def main() -> int:
             assert not page.locator('#check-15').is_checked()
             checks.append('Checklist changes, exported JSON Blob content, invalid import rejection and confirmed replacement import work in memory. Actual download and persistence not verified.')
             page.set_viewport_size({'width': 390, 'height': 844})
-            for path in ['index.html', 'phases/phase-15.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'checklist.html']:
+            for path in ['index.html', 'phases/phase-15.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'checklist.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html']:
                 render(path)
                 assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), path + ' mobile overflow'
             render('index.html')
@@ -94,7 +94,13 @@ def main() -> int:
             page.evaluate('window.scrollTo(0,0); if(document.activeElement) document.activeElement.blur();')
             if args.screenshots:
                 page.screenshot(path=str(args.screenshots / 'home-mobile.png'), full_page=True)
-            checks.append('Five layouts fit 390px; mobile menu opens and Escape closes it.')
+            checks.append('Eight layouts fit 390px; mobile menu opens and Escape closes it.')
+            if args.screenshots:
+                for width, height, suffix in [(1440, 1000, 'desktop'), (390, 844, 'mobile')]:
+                    page.set_viewport_size({'width': width, 'height': height})
+                    for relative, name in [('design/factions-and-allegiance.html', 'factions'), ('walkthroughs/hearthward-campaign.html', 'campaign')]:
+                        render(relative)
+                        page.screenshot(path=str(args.screenshots / (name + '-' + suffix + '.png')))
             version = browser.version
             browser.close()
         assert not errors, errors

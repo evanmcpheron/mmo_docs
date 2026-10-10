@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "sections": [
+    {
+      "title": "Executed scope versus required gameplay proof",
+      "paragraphs": [
+        "Run records are in verification/faction-checks.json and verification/faction-test-output.txt. The baseline full-guide strict coverage gate remains intentionally failing because original unrelated requirements are incomplete; no coverage statuses are downgraded or marked complete to make it pass.",
+        "tools/validate_factions.py validates authored IDs, taxonomy, dependency closure, graph/branch/solo rules and deployment readiness. tools/tests/faction_model.py is a SQLite relational conformance fixture, not an Unreal implementation or production backend. Authentication and complete objective receipts are trusted fixture inputs, inventory uses quantities rather than real instances, and worker jobs are not clients."
+      ]
+    },
+    {
+      "title": "Not executed here",
+      "paragraphs": [
+        "Unreal native/UHT, Blueprint compile, cooked-content validation, real dedicated server, production database service, original save migration, actual1/2/5/10/30network clients, AI navigation and combat, party/trade integration and timed process crash recovery are not_run. They require the authorized Briarwake companion implementation and verified assets/toolchain.",
+        "No FPS, bandwidth, real client capacity or production readiness claim follows from static HTML tests, source validation or SQLite worker success."
+      ]
+    },
+    {
+      "title": "Enabling Briarbound, Ironfang or Tidebound",
+      "paragraphs": [
+        "Keep new-selection false. Author the faction’s reserved map/spawn with authenticated neutral fallback, real root graph and all dialogue/scene/localization keys, mentor/cast placements, services, critical rewards and profession-neutral/solo routes. Preserve historical definition/version IDs. Supply current relationship rows and complete initial standings for every registered faction.",
+        "Resolve all dependency IDs against the cooked catalog; validate guard/merchant/guest context and onward safe transfer. Use four-facing shared starter appearance unless a separate sprite audit proves additional art. Confirm selection and continuation policies are independent. Run both schema/deployment gates, character/save/quest migrations, solo full story, opposed neutral cooperation and thirty-client contention/admission tests. Record evidence per faction before switching its selected configuration; never alter C++ branches to recognize its display name."
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "FQA-01",
+      "title": "Create, persist and inspect Hearthward identity",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Start dedicated Thornmere and the frontend client. Create a character named Road Witness with faction.hearthward-league, discipline.vanguard and vocation.hearthkeeper plus the common four-facing outfit. Read and confirm the permanent faction/class warning.",
+        "Verify arrival at spawn.thornmere.hearthward-arrival, charter desk anchor(24,18). Inspect owner identity/history and public PlayerState from a second observer account.",
+        "Record CharacterId, starter source receipt, item instance IDs and character revision. Disconnect after acknowledged creation; restart service/zone and log back in."
+      ],
+      "expected": "Exactly one faction and class, one active vocation with one saved history. One starter sword and40copper under faction fixture, no other class/vocation reset. Observer sees badge, not account identity/standings/history/tokens. Restart retains original character and grants no kit again.",
+      "offline_scope": "test_atomic_creation_replay_and_starter_once; test_private_public_fields_do_not_leak; test_create_fault_before_and_after_commit use SQLite values/receipts, not real UI, item instances or restart processes.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-02",
+      "title": "Disabled, missing and forged faction selection",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Open creator: Briarbound/Ironfang/Tidebound are visibly locked with explanation; Hearthward alone can be selected.",
+        "Send missing, unknown and each locked FactionId through the normal authorized test request harness, not by enabling UI controls.",
+        "Repeat with stale CatalogVersion/AvailabilityRevision, unavailable class/vocation, invalid appearance, duplicate normalized name and over-limit character slot."
+      ],
+      "expected": "Typed rejection before any character/name/slot/inventory/standing mutation. Client refreshes catalog without silently selecting another faction.",
+      "offline_scope": "test_creation_forgery_and_disabled_factions_leave_no_mutation; test_creation_validation_name_class_vocation_appearance_and_versions; test_slot_constraint.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-03",
+      "title": "Independent characters and permanent identity",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Use only the explicitly synthetic test catalog to enable all faction IDs on one account. Create one character per faction with independent class/vocation choices.",
+        "Change a standing and finish an objective on one character; select another character and compare all personal values.",
+        "Attempt an ordinary permanent faction/class change. Change active vocation through the existing approved trainer, then return to the earlier vocation."
+      ],
+      "expected": "Independent character progress with no leakage. Ordinary faction/class changes reject. Existing vocation histories are retained exactly, and never-trained vocation starts at Level1 under existing ADR006. Synthetic enabling never reaches a production catalog.",
+      "offline_scope": "Four-faction SQLite creation fixture and cross-character test cover selected values; existing character-progression tests cover retained histories as static/model fixtures. Real trainer flow not_run.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-04",
+      "title": "Full Hearthward campaign, both branches",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Complete Oath of the Road at Maren and Vesa. For Missing Caravan inspect axle/chest/witness, or defeat the two distinct sentries and inspect the chest; return manifest evidence to Vesa.",
+        "Hear both crossing positions, then inspect the carved stake and Eren’s interpretation. Complete North Road using four free three-marker orders on an unrepaired realm, or one maintenance order when already repaired.",
+        "On separate new characters, confirm shared-passage and fortified-crossing at Who Holds the Crossing? Record exact branch reputation and cosmetic badge. Do not treat the optional public preference as the personal quest choice.",
+        "Complete Bell at Dusk using three echoes with NPC assistance on one run and the readable Road, Root, Bell tablet sequence on the other. Report to Maren; inspect journal, discovery and merchant reaction.",
+        "Finish Elderwood guest transfer and restart/reconnect. Verify original reward sources and public project completion remain unchanged."
+      ],
+      "expected": "All six authored quests form a connected story and converge on shared progression. Common quest total360combatXP and155copper (195including starter), two repair kits, no vocation XP from these generic story rewards. Branch cosmetic/standing differs but no essential route or recipe is exclusive. Personal and public outcome histories remain separate.",
+      "offline_scope": "test_solo_full_campaign_branches_and_restart consumes trusted complete objective receipts and exercises free work/branch/reward/SQLite reopen. It does not execute raw NPC dialogue, compound clue/encounter predicates, visual discovery or actual travel processes.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-05",
+      "title": "One human, every vocation and late arrival",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "With no other human connected, repeat the campaign on each vocation. Use neutral basic public work rather than relying on another specialist, trade, timed event or PvP.",
+        "Inspect optional fitting/loaf/bridge-support/remedy and Wayfinder discovery routes through their existing active-vocation permissions. Verify raw material sources and neutral service fallback.",
+        "Seed completed NorthRoad construction before creating a new character; also return a character paused before Q3 after another group changed public policy."
+      ],
+      "expected": "Essential progression remains possible with one human; four free orders reach12publicunits. Late arrivals retain all personal story steps via current-world witnesses; existing construction and old builders’ credit remain. No repeated faction reward for post-completion maintenance.",
+      "offline_scope": "Source validation checks solo flags, recipes/references and free route; model tests cover work receipts and completed project behavior. All five actual profession loops and late-arrival narrative presentation require runtime QA.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-06",
+      "title": "Opposed parties and deterministic public policy",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Use two synthetic opposed-faction characters. At Phase27 accept a cross-faction party invite in neutral/shared-threat content; attempt a private faction headquarters service as the guest.",
+        "On two eligible accounts, choose different personal Q5 branches. Cast opposing preferences in the same frozen30-minute round, reverse submission order in a second fixture and resolve exactly at service cutoff.",
+        "Attempt two ballots from different characters on the same account. Attempt a late ballot and re-resolve an already terminal round."
+      ],
+      "expected": "Neutral cooperation works while private quest/service eligibility stays individual. Tie/empty resolves shared-passage, independent of last UI submission; one account vote. Both historical personal choices remain unchanged.",
+      "offline_scope": "NPC policy function and SQLite round/ballot tests cover decisions and uniqueness, not actual social/RPC integration.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-07",
+      "title": "Five, ten and thirty actual connected clients",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "For each population1,2,5,10,30 launch real dedicated zones and independent authenticated clients; record engine build, OS, hardware, network conditions, database configuration and content versions.",
+        "Run concurrent creation, quest claims, final project contributions, snapshot rejoin and cross-zone admission/transfer. Inject duplicate requests and disconnect a subset during commit response.",
+        "Measure observed median/p95 server frame time, command latency, commit errors, rejected stale epochs, outbox lag, bytes per relevant snapshot and converged final counts. Stop/restart both zones/service and verify durable outcomes."
+      ],
+      "expected": "No duplicate grant, partial debit, permanently stale projection or simultaneous writers. Performance targets require actual measured budget approval; no fabricated rates or latency numbers.",
+      "offline_scope": "SQLite tests run5/10/30 worker jobs using up to10 threads and check45unique creations. These are not networked clients or gameplay performance/load benchmarks. Existing population script is arithmetic-only.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-08",
+      "title": "Malicious requests and unknown-outcome faults",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Replay identical and changed-payload CreateCharacter/quest/contribution RequestIds. Use new RequestIds for the same consumed source. Submit another character’s source, fake completion or unauthorized RPC principal.",
+        "Reject stale character/region revisions and expired/stale lease epochs. Kill storage/adapter before commit, after commit before response, and after commit before outbox publish using an isolated harness.",
+        "On reconnect query the original receipt before retrying or issuing another request. Ensure replayed projections do not trigger reward callbacks."
+      ],
+      "expected": "Known rejection leaves values unchanged; unknown outcome is reconciled; confirmed result is returned without repeated effects. Stale source cannot write after transfer fencing.",
+      "offline_scope": "SQLite fault injection covers selected rollback/after-commit and ownership scenarios. Real process termination, transport authentication, RPC spoofing and outbox delivery races not_run.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-09",
+      "title": "Hostile territory and viable neutral route",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Configure a bounded optional conflict subzone with a hostile rival guard and restricted merchant; enter without guest passage and observe warning/guard behavior.",
+        "Return using the marked Reedbank/Willow Cut bypass or a valid diplomatic guest context. Obtain neutral repairs, provisions, training and required raw materials.",
+        "Attempt to target the opposing player through basic melee, projectile, spell and support-damage paths."
+      ],
+      "expected": "NPC service/guard access comes from one current decision. Guest/neutral context suppresses aggression but not private privilege. Essential progress is always viable. No allegiance-based player damage is accepted.",
+      "offline_scope": "test_neutral_services_and_no_player_damage and test_headquarters_restriction_and_override_symmetry are pure policy checks; actual AI/navigation/combat targeting not_run.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-10",
+      "title": "Continuation and reviewed save migration",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Create a supported character, then disable only new signups for its faction. Reconnect and inspect retained identity/progress.",
+        "Load an isolated schema2 save lacking FactionId: account remains accessible and shows explicit faction confirmation; preserve class, all vocation histories, inventory and currency.",
+        "Load unknown/corrupt non-null FactionId and unsupported quest/faction versions: require review or explicit supported mapping, not silent default. Test rollback with compatible readers and retained versioned definitions."
+      ],
+      "expected": "No new signup bypass, no orphaned supported character, no automatic Hearthward assignment, no kit/XP replay or destructive rollback. Privileged repair is separately audited and fences sessions.",
+      "offline_scope": "Model tests cover missing identity and corrupt ID with selected retained values. Original28savefixtures and production migration adapter not inspected/executed.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-11",
+      "title": "Transfer admission and expiry races",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Finish Q6, begin Elderwood transfer, and attempt a source mutation after fencing. Ensure ticket is single-use and stored only as digest.",
+        "Lose begin response; resolve via authenticated ticket rotation or deterministic expiry recovery. Race destination activation versus expiry at boundary; repeat destination response after commit loss.",
+        "Change policy/content while transfer is pending; destination rejects incompatible admission and returns to safe supported recovery without changing faction or enabling two writers."
+      ],
+      "expected": "One terminal transfer and active lease owner. Reconnect uses committed terminal state; invalid spawn/content never silently mutates allegiance. Raw tickets are not in receipt/outbox/log history.",
+      "offline_scope": "SQLite transfer tests cover fencing, digest storage, version mismatch, terminal replay and expiry path. Authenticated ticket rotation is documented companion work, not implemented by the fixture.",
+      "runtime_status": "not_run"
+    },
+    {
+      "id": "FQA-12",
+      "title": "Future content readiness and fifth-faction expansion",
+      "prerequisites": "Authorized Briarwake implementation through the indicated phase; UE5.8.3/toolchain, verified Paper2D/PaperZD and session plugin compatibility, authenticated durable service, isolated test realm, cooked Thornmere/Elderwood, source catalog1/policy1/schema3, test accounts with at least2 slots. No live player saves.",
+      "steps": [
+        "Validate the production authored catalog: only Hearthward selected, three future identities locked with reserved roots/mentors/maps.",
+        "Attempt to enable each future faction while removing its root, NPC, spawn, travel, reward, recipe/neutral or solo dependency. The catalog must fail before release.",
+        "Run the explicitly synthetic four-faction fixture, then a fifth data-defined test faction. Validate expanded relationships/standings, create characters and complete synthetic roots without changing any faction enum/class dispatch. Do not deploy these roots as story content."
+      ],
+      "expected": "Missing mandatory dependency prevents activation. Stable historical identities and continuation remain supported. Enabling real future factions is content/configuration plus verification, not core code branches.",
+      "offline_scope": "Source mutation tests and synthetic SQLite fixture. Real future maps, casts, opening dialogue, quests, art, balancing and solo playthroughs remain unauthored/not_run.",
+      "runtime_status": "not_run"
+    }
+  ],
+  "runtime_status": "not_run"
+}

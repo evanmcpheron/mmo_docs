@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "scope": "Fresh Linux documentation/schema/SQLite conformance only; no Unreal or multiplayer execution",
+  "run_url": "https://github.com/evanmcpheron/mmo_docs/actions/runs/38009955528",
+  "base_commit": "468d9430b5492ee5b6d1777ae021b59085c7a507",
+  "reviewed_local_commit": "423b72a73b1c634c132224d59f621d0fe2ff4d1b",
+  "matched_reviewed_files": 175,
+  "hash_mismatches": [],
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "tools/build_manual_indexes.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "tools/build_manual_indexes.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "tools/validate_documentation.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_phase_integration.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_feature_coverage.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "tools/simulate_population_scaling.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "tools/check_feature_coverage.py",
+        "--require-complete"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1
+    },
+    {
+      "command": [
+        "python3",
+        "tools/validate_factions.py"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "tools/validate_factions.py",
+        "--deployment"
+      ],
+      "exit_code": 1,
+      "expected_exit_code": 1
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "expected_exit_code": 0
+    }
+  ],
+  "expected_nonpassing_gates": [
+    "Unmodified full-guide completeness gate",
+    "Missing cooked-content and solo-runtime deployment proof"
+  ],
+  "runtime": "not_run",
+  "passed": true
+}

@@ -23,7 +23,7 @@
         "Reserve a session lease before admitting the body. Bind the local view to the admitted CharacterId and pull its snapshot.",
         "Reconnect from another client after logging out. Display the same permanent faction/class, active vocation, saved vocation histories and appearance without granting another kit or replaying progression rewards."
       ],
-      "fixture": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; no real faction ID is authored on the audited main baseline. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
+      "fixture": "Account fixture acct-bw-001 has two permitted slots; char-bw-hearth uses discipline.vanguard and vocation.hearthkeeper at zone.thornmere / spawn.square. Resolve FactionId from the approved faction fixture; the authored faction.hearthward-league fixture now resolves via sources/factions.json; runtime deployment remains gated. Slot counts and locations remain test values, not a replacement faction starting-region policy.",
       "solo": "Create the Vanguard/Hearthkeeper with an approved faction, enter Thornmere, log out, restart and reconnect. Permanent identities, independent progression and all vocation records persist; one character, one starter kit and one active lease exist. See Fixture_identity for trainer-switch and migration acceptance.",
       "duo": "Race two requests for the same normalized name, then race two logins for the same character. Exactly one name reservation and one current lease win; the losing session cannot spend inventory.",
       "load": "At 30 simulated admissions measure name-constraint conflicts, admission latency and lease cleanup. These are future connected-client tests, not results from this package.",
@@ -33,7 +33,16 @@
       "refs": [
         "UE-NET",
         "UE-DEDICATED"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {
+          "5": "Register faction schemas, all four ID definitions and the PvE-first policy. Creator displays desired Hearthward-only selection and permanent warning; fixtures disposable until durable/content gates pass."
+        },
+        "runtime": "not_run",
+        "contract": "The former approved-faction-content gap is addressed by UFactionDefinition and sources/factions.json. Phase05 creator uses a clearly disposable content fixture; real end-to-end durable faction release requires Phase26 and all readiness gates. Production target selects only faction.hearthward-league; the other three records are registered but unavailable for new creation. Mandatory selection remains independent of permanent combat discipline and active vocation. Existing characters retain their faction when new signups are disabled. Schema3 is additive to the recently authored schema2 class/vocation contract; migration never clears trained vocation histories."
+      }
     },
     {
       "id": "movement",
@@ -136,7 +145,14 @@
       "refs": [
         "UE-GAS",
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {},
+        "runtime": "not_run",
+        "contract": "Faction is independent of permanent CombatDisciplineId. Do not add class-specific political filters or faction damage against players. NPC hostility is bounded to authored PvE conflict contexts using the shared access decision; neutral/guest/shared-threat rules override guard aggression. The future opt-in PvP integration boundary is the existing authoritative damage validator with an independently authorized match context. No arena, duel, battleground, required PvP reward or functional toggle is implemented."
+      }
     },
     {
       "id": "enemies",
@@ -237,7 +253,14 @@
       "scope": "No unrestricted terrain destruction. Replanting and sustainability operate through authored grove states, not a simulated global ecosystem.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {},
+        "runtime": "not_run",
+        "contract": "Server-randomized resource sites retain their existing ownership/generation/claim rules. Structural timber uses DA_Resource_ElderwoodTimber in neutral Willow Cut cells; contested groves are optional. Every faction may use basic gathering and essential material alternatives. A faction contribution consumes a verified owned source once. Selecting a faction never grants arbitrary resource yields or a second claim on a depleted generation."
+      }
     },
     {
       "id": "fishing",
@@ -270,7 +293,14 @@
       "scope": "No real-world-time story lock. Seasonal fish needed for mandatory progression receive an authored substitute or predictable in-game window.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {},
+        "runtime": "not_run",
+        "contract": "Fishing remains server-randomized and independent of allegiance. Neither crossing policy nor a hostile optional border removes the neutral Reedbank fishing route, cooking inputs or vocation progress. Existing accessible timing and CastId uniqueness apply unchanged."
+      }
     },
     {
       "id": "farming",
@@ -336,7 +366,16 @@
       "scope": "NPC commissions provide essential cross-vocation goods with fair bounded costs. Specialists offer variants and control, not a monopoly over mandatory progression.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {
+          "15": "Retain early project board and one region owner. Prepare faction-neutral bound work receipts alongside the existing Forgekeeper fitting route; do not claim the full campaign or all five recipes exist."
+        },
+        "runtime": "not_run",
+        "contract": "The four authored construction recipes are optional specialist routes through the existing craft transaction. Active vocation permissions, ingredients and capacity are still checked. The faction package adds no crafting owner and never activates skills of an inactive vocation. The Hearthward public work order supplies equal essential project progress without materials, a recipe, another player or a particular vocation. Item/reward sources remain catalog-driven and replay-safe."
+      }
     },
     {
       "id": "quests",
@@ -369,7 +408,16 @@
       "scope": "Factions use bounded reputation and authored benefits, not unrestricted political simulation. Main progress always has a viable alternative route.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {
+          "13": "Extend existing NPC/quest definitions and evaluate one faction access decision. Author Vesa plus Maren/Talan/Eren and Q1–Q3 while retaining First Supplies. No project or later recipe is required by these early quests."
+        },
+        "runtime": "not_run",
+        "contract": "Political FactionId is permanent identity, not the Roadward/Hearth Assembly/Veil Survey relationship value. Existing quest definitions own faction conditions, objective receipts and branch rewards. Full six-quest source: sources/hearthward-campaign.json. Existing quest.thornmere.first-supplies remains valid and is never reset or regranted. Personal choices commit with their rewards; public crossing preference is separate, optional, versioned and bounded. Later public change does not rewrite personal history. Late arrivals receive a witness/investigation route through all personal story steps even when construction already exists."
+      }
     },
     {
       "id": "economy",
@@ -402,7 +450,16 @@
       "scope": "Auction house and player storefronts are deferred. Taxes, conquest and player political governance are outside the committed scope.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {
+          "25": "Bind faction commission/access/discount policy to existing merchant transactions; neutral essentials remain available."
+        },
+        "runtime": "not_run",
+        "contract": "NPC offers, trainer access and prices use one server-derived faction decision, revalidated at transaction commit. Restricted commissions and cosmetic rewards may be faction flavored; neutral repair, food, basic trade, essential recipes and vocation resources remain viable. No faction monopolizes mandatory raw materials. Q5 branch rewards provide equivalent essential advancement and cosmetic-only differentiation. Repeating a quest, donation source, alternate faction character or new request ID cannot bypass per-character source-generation guards; public consultation additionally allows one ballot per account per round."
+      }
     },
     {
       "id": "exploration",
@@ -469,7 +526,16 @@
       "scope": "No universal ecological simulation, freeform terrain editing or offline punishment. Population scaling may never revoke credited progress or essential access.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {
+          "22": "Create Q4 with all recipe/project prerequisites already present. Extend same region owner with pressure fields; retain permanent construction and late-arrival maintenance."
+        },
+        "runtime": "not_run",
+        "contract": "Record_Region adds bounded faction pressure and a reversible consultation outcome; permanent construction/danger/discovery stay separate. Canonical project.elderwood.north-road retains NorthRoad storage key; legacy walkthrough project.north-road resolves through a versioned alias before contribution/reward uniqueness. No second project is created. Three personal units and the existing twelve-unit public milestone complete Q4. Free bound work orders supply all twelve solo; after public completion, maintenance supplies personal credit without rebuilding or duplicating completion rewards. Political winner affects signage/patrol/commission emphasis, never essential safe routes."
+      }
     },
     {
       "id": "social",
@@ -502,7 +568,16 @@
       "scope": "PvP, taxation, political elections, conquest, player housing and massive mandatory raids remain deferred optional extensions.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {
+          "27": "Enable neutral/shared-threat cross-faction party/guild cooperation using existing social security; private faction rewards remain individual."
+        },
+        "runtime": "not_run",
+        "contract": "Cross-faction friends, guilds, chat and consenting parties are allowed. Shared-threat/neutral settings use per-character access and reward checks; party membership grants no private faction quest or headquarters access. Existing consent, moderation, trade escrow and anti-spam requirements remain. Party/guild mechanics are still Phase27; the Phase26 campaign does not require them. Faction rivalry does not create irreversible social partitioning or authorize player damage."
+      }
     },
     {
       "id": "dungeons",
@@ -569,7 +644,16 @@
       "scope": "Screen-reader integration and platform accessibility APIs require actual platform testing. Text alternatives in the design are not proof of native assistive-technology support.",
       "refs": [
         "UE-NET"
-      ]
+      ],
+      "faction_extension": {
+        "source": "sources/faction-implementation.json",
+        "content": "sources/factions.json; sources/hearthward-campaign.json",
+        "phase_notes": {
+          "30": "Review localized permanent warning, locked future identities, journal public/personal distinction, non-color hostility, controller focus and narrow layout."
+        },
+        "runtime": "not_run",
+        "contract": "Use localized labels/locked reasons and an explicit permanent-allegiance confirmation. Hearthward League and Hearth Assembly must appear with distinct political/civic descriptions. Show pending save/unknown outcome separately from rejection; provide keyboard/controller focus, text cues and no color-only hostility. Journal separates personal story from public regional outcome. Cutscene skips never auto-complete objectives or erase story text; all essential information remains readable."
+      }
     },
     {
       "id": "operations",
