@@ -459,7 +459,8 @@
       "requirement": "Reject enabling missing mandatory content or solo dependencies",
       "sources": [
         "sources/factions.json#/factions",
-        "tools/validate_factions.py"
+        "tools/validate_factions.py",
+        "tools/tests/test_faction_readiness_regressions.py"
       ],
       "assets": [
         "UGameCatalog",
@@ -475,7 +476,14 @@
       "checks": [
         "test_future_faction_cannot_be_enabled_without_content",
         "test_missing_spawn_npc_recipe_reward_and_travel_rejected",
-        "FQA-12"
+        "FQA-12",
+        "test_unauthored_starter_reward_rejected",
+        "test_unauthored_quest_reward_rejected",
+        "test_unauthored_recipe_output_rejected",
+        "test_unauthored_recipe_input_rejected",
+        "test_unauthored_nonroot_quest_rejected",
+        "test_unauthored_onward_spawn_rejected",
+        "test_authored_spawn_requires_a_registered_map_contract"
       ],
       "documentation_status": "Authored contract; offline checks only",
       "runtime_status": "not_run"
@@ -660,7 +668,8 @@
       "id": "FA-027",
       "requirement": "One NPC policy decision drives attitudes, guards, services and offers",
       "sources": [
-        "sources/faction-implementation.json#/sections/7"
+        "sources/faction-implementation.json#/sections/7",
+        "tools/tests/test_faction_readiness_regressions.py"
       ],
       "assets": [
         "FFactionAccessDecision",
@@ -677,7 +686,8 @@
       "checks": [
         "test_headquarters_restriction_and_override_symmetry",
         "test_neutral_services_and_no_player_damage",
-        "FQA-09"
+        "FQA-09",
+        "test_unknown_npc_faction_rejected_before_neutral_or_guest_policy"
       ],
       "documentation_status": "Authored contract; offline checks only",
       "runtime_status": "not_run"
@@ -686,7 +696,8 @@
       "id": "FA-028",
       "requirement": "Adjustable durable realm overrides with validated config and audit",
       "sources": [
-        "sources/faction-implementation.json#/sections/8"
+        "sources/faction-implementation.json#/sections/8",
+        "tools/tests/test_faction_readiness_regressions.py"
       ],
       "assets": [
         "Record_RealmFactionPolicy",
@@ -703,7 +714,8 @@
       "checks": [
         "test_base_relations_are_symmetric_and_complete",
         "test_reverse_duplicate_relation_rejected",
-        "FQA-06"
+        "FQA-06",
+        "test_policy_versions_and_modifier_caps_reject_invalid_values"
       ],
       "documentation_status": "Schema/policy contract and pure evaluation tests; deployment mutation adapter not implemented",
       "runtime_status": "not_run"
@@ -819,7 +831,8 @@
       "id": "FA-033",
       "requirement": "Cross-zone admission revalidates durable faction, lease, ticket and safe spawn",
       "sources": [
-        "sources/faction-implementation.json#/sections/10"
+        "sources/faction-implementation.json#/sections/10",
+        "tools/tests/test_faction_readiness_regressions.py"
       ],
       "assets": [
         "Record_Transfer",
@@ -836,7 +849,8 @@
       "checks": [
         "test_transfer_fences_source_replays_and_keeps_identity",
         "test_invalid_destination_and_relationship_version_rejected",
-        "FQA-11"
+        "FQA-11",
+        "test_onward_spawn_must_admit_the_quest_faction"
       ],
       "documentation_status": "Authored contract; offline checks only",
       "runtime_status": "not_run"

@@ -1,8 +1,8 @@
 # Delivery status — Briarwake
 
-## Delivered locally; remote publishing blocked
+## Original edition — historical publishing limitations
 
-This directory is a **partial initial documentation repository**, not a complete fulfillment of the full master prompt. The target repository was initially inaccessible (404), then became readable. A create-file attempt was rejected with HTTP 403: Resource not accessible by integration. No remote changes were made. The GitHub connection needs write authorization for mmo_docs; game_docs is unchanged.
+The original edition was a **partial initial documentation repository**, not a complete fulfillment of the full master prompt. Its publication attempt encountered 404 and then HTTP 403 (Resource not accessible by integration), with no remote changes in that attempt. These are historical limitations, not the current faction branch status; see `verification/faction-publication.json`. The historical guide is unchanged.
 
 The package contains 320 generated HTML pages: 32 phases, 18 system chapters, 205 initial asset contracts, five vocation pages, six original region-family pages, 15 worked interaction scenarios, and supporting design/architecture/source/reference pages. Offline search, filtering, progress controls, generators and validators are included.
 
@@ -41,3 +41,9 @@ Creation/catalog policy is Phase05 with a bounded fixture; schema/migration06, N
 Actual checks are recorded in `verification/faction-checks.json`; baseline results are in `faction-baseline.json`. SQLite tests include trusted-evidence branch completion, duplicate/replay handling, writer contention, migration and transfer fencing. They are not actual server/client or PostgreSQL crash tests. In-memory desktop/mobile checks are separate from environment-blocked file/HTTP navigation. Strict full-guide completion and faction deployment readiness remain explicit non-passing gates.
 
 Publication is recorded in `verification/faction-publication.json`. The earlier edition’s access failures remain historical. Neither the game repository nor the historical guide is changed. Game PR12’s rename and plugin-build statements were inspected as unmerged/reported evidence, not rerun or adopted as merged facts.
+
+## Independent faction conformance review
+
+The existing published campaign branch was recovered at `e9921e2aec167e69f108b5118419ffa0c567af20`, confirmed to include current main, and revalidated before extending it. Its commit history and the separate older faction-foundation branch were preserved. Ten additional regression tests exposed and then verified fixes for unknown NPC allegiance under neutral/guest policy, unfinished item/recipe/quest references, invalid onward-spawn eligibility, missing authored map contracts and invalid policy versions/modifier caps. The full suite now passes 89 tests.
+
+Current commands, exit codes, source hashes and browser limitations are in `verification/faction-review-checks.json`. The earlier 79-test and CI records remain historical evidence for their original scope, not evidence of the new changes. Whole-guide strict completion and cooked-content/solo-runtime deployment readiness still fail explicitly. No source-only Unreal package is included because AGENTS.md prohibits game runtime files.

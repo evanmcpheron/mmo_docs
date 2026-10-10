@@ -53,6 +53,11 @@ def validate(catalog: dict, campaign: dict, *, deployment: bool = False,
     if set(factions) & (set(organizations) | set(enemies)):
         errors.append("Political, civic and antagonist namespaces overlap")
     policy = catalog.get("policy", {})
+    if type(policy.get("version")) is not int or policy["version"] < 1:
+        errors.append("Invalid policy version")
+    for field in ["personal_modifier_cap", "pressure_modifier_cap"]:
+        if type(policy.get(field)) is not int or not 0 <= policy[field] <= 100:
+            errors.append(f"Invalid {field}")
     if policy.get("open_world_player_damage") is not False:
         errors.append("Mandatory baseline player damage must remain disabled")
     for prefix in ["reputation", "relationship", "regional_pressure"]:
@@ -106,6 +111,8 @@ def validate(catalog: dict, campaign: dict, *, deployment: bool = False,
         if not set(spawn.get("allowed_factions", [])) <= set(factions):
             errors.append(f"Unknown faction in spawn {spawn['id']}")
         if spawn.get("authored"):
+            if asset_names is not None and spawn.get("map_id") not in asset_names:
+                errors.append(f"Missing authored spawn map contract {spawn['id']}")
             position = spawn.get("tile")
             if not isinstance(position, list) or len(position) != 2 or not all(type(value) is int and 0 <= value <= 4095 for value in position):
                 errors.append(f"Invalid authored spawn coordinate {spawn['id']}")
@@ -115,12 +122,12 @@ def validate(catalog: dict, campaign: dict, *, deployment: bool = False,
         if npc.get("organization_id") is not None and npc["organization_id"] not in organizations:
             errors.append(f"Unknown NPC civic organization {npc['id']}")
     for recipe in recipes.values():
-        if recipe.get("output_id") not in items or not recipe.get("authored"):
+        if items.get(recipe.get("output_id"), {}).get("authored") is not True or recipe.get("authored") is not True:
             errors.append(f"Missing recipe output {recipe['id']}")
         if type(recipe.get("output_quantity")) is not int or recipe["output_quantity"] <= 0:
             errors.append(f"Invalid recipe output quantity {recipe['id']}")
         for ingredient in recipe.get("inputs", []):
-            if ingredient.get("id") not in items or type(ingredient.get("quantity")) is not int or ingredient["quantity"] <= 0:
+            if items.get(ingredient.get("id"), {}).get("authored") is not True or type(ingredient.get("quantity")) is not int or ingredient["quantity"] <= 0:
                 errors.append(f"Missing or invalid recipe input {recipe['id']}")
     for identifier, faction in factions.items():
         required = {"id", "display_name", "display_key", "content_version", "kind", "ideology", "selection", "start", "story", "initial_reputation", "services", "starter", "readiness"}
@@ -137,7 +144,7 @@ def validate(catalog: dict, campaign: dict, *, deployment: bool = False,
         starter = faction["starter"]
         if starter.get("facing_count") != 4 or starter.get("unique_art_required") is not False:
             errors.append(f"Unsupported starter art requirement {identifier}")
-        if starter.get("item_id") not in items or starter.get("quantity") != 1:
+        if items.get(starter.get("item_id"), {}).get("authored") is not True or starter.get("quantity") != 1:
             errors.append(f"Missing critical starter reward {identifier}")
         if not all(faction["story"].get(key) for key in ["root_quest_id", "mentor_id", "cast_ids", "initial_flags", "journal_key", "dialogue_key", "cutscene_key", "concept"]):
             errors.append(f"Incomplete future story entry contract {identifier}")
@@ -178,7 +185,7 @@ def validate(catalog: dict, campaign: dict, *, deployment: bool = False,
             errors.append(f"Unknown quest allegiance {quest['id']}")
         if quest.get("minimum_humans") != 1 or quest.get("pvp_required") is not False or quest.get("party_required") is not False:
             errors.append(f"Mandatory PvP/group dependency {quest['id']}")
-        if not quest.get("objectives") or not quest.get("dialogue") or not quest.get("why"):
+        if quest.get("authored") is not True or not quest.get("objectives") or not quest.get("dialogue") or not quest.get("why"):
             errors.append(f"Incomplete authored quest {quest['id']}")
         if quest.get("quest_giver_id") not in npcs or quest.get("turn_in_npc_id") not in npcs:
             errors.append(f"Missing quest NPC {quest['id']}")
@@ -199,7 +206,7 @@ def validate(catalog: dict, campaign: dict, *, deployment: bool = False,
             if type(reward.get(field)) is not int or not 0 <= reward[field] <= 1000000:
                 errors.append(f"Invalid reward amount {quest['id']}/{field}")
         for item in reward.get("items", []):
-            if item.get("item_id") not in items or type(item.get("quantity")) is not int or not 1 <= item["quantity"] <= 100:
+            if items.get(item.get("item_id"), {}).get("authored") is not True or type(item.get("quantity")) is not int or not 1 <= item["quantity"] <= 100:
                 errors.append(f"Missing critical reward {quest['id']}")
         for objective in quest.get("objectives", []):
             if objective.get("id") in objective_ids or type(objective.get("required_units")) is not int or objective["required_units"] <= 0:
@@ -274,8 +281,10 @@ def validate(catalog: dict, campaign: dict, *, deployment: bool = False,
         errors.append("Missing attainable profession-neutral contribution path")
     for quest in quests.values():
         follow_up = quest.get("follow_up")
-        if follow_up and (follow_up.get("travel_spawn_id") not in spawns or not spawns[follow_up["travel_spawn_id"]].get("safe")):
-            errors.append("Missing safe onward travel dependency")
+        if follow_up:
+            destination = spawns.get(follow_up.get("travel_spawn_id"), {})
+            if destination.get("authored") is not True or destination.get("safe") is not True or quest.get("faction_id") not in destination.get("allowed_factions", []):
+                errors.append(f"Missing authored faction-safe onward travel dependency {quest['id']}")
     return errors
 
 

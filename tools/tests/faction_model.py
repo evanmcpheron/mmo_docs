@@ -59,8 +59,11 @@ def npc_access(catalog: dict, faction_id: str, npc_faction_id: str | None,
                guest: bool = False, hostility_zone: bool = False,
                service: str = "basic-trade", overrides: dict | None = None) -> dict:
     policy = catalog["policy"]
-    if faction_id not in {row["id"] for row in catalog["factions"]}:
+    faction_ids = {row["id"] for row in catalog["factions"]}
+    if faction_id not in faction_ids:
         raise Rejected("UnknownFaction")
+    if npc_faction_id is not None and npc_faction_id not in faction_ids:
+        raise Rejected("UnknownNpcFaction")
     if neutral or npc_faction_id is None:
         return {"attitude": "neutral", "guard_can_attack": False, "service_allowed": not service.startswith("faction-only:") or faction_id == npc_faction_id}
     base = relationship(catalog, faction_id, npc_faction_id, overrides)

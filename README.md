@@ -50,3 +50,5 @@ python3 tools/validate_factions.py --deployment
 ```
 
 The first checks authored contracts; the second must remain blocked while cooked-content and solo-runtime evidence is absent. This is separate from the unchanged full-guide `--require-complete` failure. Exact command outcomes and bounded browser evidence are in `verification/faction-checks.json`, `faction-test-output.txt`, `faction-render.json` and the two `faction-browser-*.json` reports. No 1–30-player runtime measurements are claimed.
+
+Latest independent conformance review: `verification/faction-review-checks.json` and `faction-review-test-output.txt`. The suite now contains 89 tests, including 10 regressions for fail-closed NPC access and authored-content/travel readiness. These checks do not change the runtime evidence boundary.
