@@ -53,8 +53,15 @@ def registry_errors(assets: list[dict]) -> list[str]:
             errors.append(f'{name}: invalid phase range')
         if not asset['owner'] or not asset['consumers']:
             errors.append(f'{name}: missing owner or consumer contract')
-        if asset['status'] not in {'design', 'fixture', 'art-present', 'blocked', 'verified'}:
+        if asset['status'] not in {'design', 'fixture', 'art-present', 'blocked', 'verified', 'source-inspected'}:
             errors.append(f'{name}: unknown status')
+        creation_mode = asset.get('creation_mode', 'create')
+        if creation_mode not in {'create', 'verify_existing'}:
+            errors.append(f'{name}: unknown creation mode')
+        if creation_mode == 'verify_existing' and (asset['status'] != 'source-inspected' or not asset.get('source_evidence')):
+            errors.append(f'{name}: existing prerequisite requires source-inspected evidence')
+        if asset['status'] == 'source-inspected' and creation_mode != 'verify_existing':
+            errors.append(f'{name}: source-inspected asset must be an existing prerequisite')
         if asset['status'] == 'verified' and (not asset.get('evidence')):
             errors.append(f'{name}: verified without evidence')
         if not asset['doc_path'].startswith('assets/'):
@@ -149,7 +156,16 @@ def validate(root: Path) -> dict:
     for asset in assets:
         if not (root / asset['doc_path']).exists():
             errors.append('Missing asset page: ' + asset['name'])
-    order = json.loads((root / 'sources/phase-creation-order.json').read_text(encoding='utf-8'))['order']
+    preparation = json.loads((root / 'sources/phase-creation-order.json').read_text(encoding='utf-8'))
+    order = preparation['order']
+    existing = {asset['name'] for asset in assets if asset.get('creation_mode') == 'verify_existing'}
+    if set(preparation.get('verifies_existing', [])) != existing:
+        errors.append('Preparation order existing-prerequisite set is stale')
+    for asset in assets:
+        if asset['name'] in existing:
+            evidence_path = (root / asset.get('source_evidence', '')).resolve()
+            if not evidence_path.is_relative_to(root.resolve()) or not evidence_path.is_file():
+                errors.append(f"{asset['name']}: missing existing-prerequisite source evidence")
     if len(order) != len(assets) or set(order) != {asset['name'] for asset in assets}:
         errors.append('Creation order does not contain exactly the registered assets')
     position = {name: index for index, name in enumerate(order)}

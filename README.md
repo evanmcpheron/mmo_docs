@@ -4,15 +4,23 @@
 
 Extract the whole directory and open `index.html` in a desktop browser. Keep the folders together. The site is designed for offline use without a web server or CDN. URL-based browser verification was blocked by environment policy; isolated rendering/control checks are recorded separately. Browser storage is best effort; export checkmarks before moving the manual.
 
+## Original game and existing project
+
+Briarwake is an original 2D pixel-art fantasy MMORPG being developed from the ground up in Unreal Engine 5.8.3. The existing Briarwake Unreal repository is the development starting point. No previous game implementation, port or conversion is required. Earlier game_docs material is optional historical and engineering reference. Each phase introduces or extends Briarwake’s own systems; planned contracts are not runtime evidence.
+
+Briarwake is the public game name; RPG is the verified physical project and runtime module identifier. Open RPG.uproject and use Source/RPG/RPG.Build.cs, Source/RPG.Target.cs and Source/RPGEditor.Target.cs. Keep Content/Game/, existing classes, targets and configured assets intact. Do not create a second project or require a rename.
+
+The read-only baseline is recorded in `verification/greenfield-project-baseline.json` at game commit `89231883e1e124cda9db65aa0feaa7febdc8f4cb`. Start with Phase 00 to verify that checkout, not to create a module. `Source/RPG` is the native destination for future types; stable documentation keys and public names may still say Briarwake. The preserved master prompt and historical `game_docs` pages do not override ADR-011.
+
 ## Contents
 
-349 HTML pages, 32 planned phases, 18 system chapters, 228 asset contracts (205 pre-existing and 23 faction-related additions), five vocation routes, six original region-family pages and 16 worked interaction examples. The register is intentionally non-exhaustive. Individual asset pages are initial contracts, not fully specified or compiled implementations.
+349 HTML pages, 32 planned phases, 18 system chapters, 228 asset contracts (205 prior documentation contracts and 23 faction-related additions; not 228 implemented game assets), five vocation routes, six original region-family pages and 16 worked interaction examples. The register is intentionally non-exhaustive. Individual asset pages are initial contracts, not fully specified or compiled implementations.
 
 ## Destination and source boundaries
 
 Authorized destination: `https://github.com/evanmcpheron/mmo_docs`. The original edition recorded 404/403 access failures; those are historical, not the current publication status. See `verification/faction-publication.json` for this task’s branch and PR record. Neither `Briarwake` nor `game_docs` is modified by this change.
 
-The actual art ZIP, multiplayer-plugin ZIP, companion audit documents, installed Unreal Engine 5.8.3 and installed PaperZD were unavailable. Plugin findings are reported by the brief, not independently verified source findings. The original brief is retained unchanged; its tentative `RPG` name is superseded by **Briarwake**.
+The actual art ZIP, multiplayer-plugin ZIP, companion audit documents, installed Unreal Engine 5.8.3 and installed PaperZD were unavailable. Plugin findings are reported by the brief, not independently verified source findings. The original brief is retained unchanged; its tentative public `RPG` name is superseded by **Briarwake**, while the verified physical Unreal project and module remain `RPG`.
 
 ## Rebuild and validate
 
@@ -40,7 +48,7 @@ Start at `design/factions-and-allegiance.html`, then `architecture/faction-contr
 
 The six Hearthward quests include dialogue, NPC/tile anchors, objective predicates and alternatives, exact reward sources, both permanent personal branches, a separately resolved public NorthRoad policy, neutral services, solo public work, and fenced Elderwood travel. Permanent faction/class and retained vocation-history rules are preserved. Phases00–31 stay intact: NPC13, board15 and SliceB19 remain; the full faction slice is26, not05.
 
-`AGENTS.md` prohibits game runtime files in this repository. This extension therefore contains **no executable Unreal feature or production backend**. New native types are implementation contracts; SQLite fixtures exercise selected transaction semantics with trusted principals/evidence, not real clients, AI, compound clue evaluation or production persistence. Actual integration requires a separately authorized Briarwake change, its user-led C++ class-creation workflow, real assets and engine/backend tests. The unmerged game rename PR is a compatibility consideration, not a merged fact.
+`AGENTS.md` prohibits game runtime files in this repository. This extension therefore contains **no executable Unreal feature or production backend**. New native types are implementation contracts; SQLite fixtures exercise selected transaction semantics with trusted principals/evidence, not real clients, AI, compound clue evaluation or production persistence. Actual integration requires a separately authorized Briarwake change, its user-led C++ class-creation workflow, real assets and engine/backend tests. The earlier unmerged game rename PR is historical evidence, not a prerequisite. ADR-011 uses the verified current RPG identifiers without waiting for a rename.
 
 Authoritative faction inputs are `sources/factions.json`, `hearthward-campaign.json`, `faction-implementation.json`, the two `faction-*.schema.json` files, and the integration/acceptance/compatibility/traceability registries. The generator derives the faction pages, quest property values and **`sources/faction-localization.en.json`**; do not hand-edit that English export. The 72-requirement traceability page and 18-entry contradiction register identify scope, sources, phases, checks and runtime limitations.
 
@@ -52,3 +60,7 @@ python3 tools/validate_factions.py --deployment
 The first checks authored contracts; the second must remain blocked while cooked-content and solo-runtime evidence is absent. This is separate from the unchanged full-guide `--require-complete` failure. Exact command outcomes and bounded browser evidence are in `verification/faction-checks.json`, `faction-test-output.txt`, `faction-render.json` and the two `faction-browser-*.json` reports. No 1–30-player runtime measurements are claimed.
 
 Latest independent conformance review: `verification/faction-review-checks.json` and `faction-review-test-output.txt`. The suite now contains 89 tests, including 10 regressions for fail-closed NPC access and authored-content/travel readiness. These checks do not change the runtime evidence boundary.
+
+## Greenfield correction verification
+
+`verification/greenfield-audit.json` classifies the project-port, historical-reference, technical-migration and existing-project findings. `verification/greenfield-checks.json` records this correction’s commands separately from the historical 89-test review above. Browser results are in `verification/greenfield-render.json` and `greenfield-browser-*.json`; in-memory rendering is not ordinary file/HTTP navigation or runtime gameplay verification. The historical game_docs site is published separately and remains unchanged.

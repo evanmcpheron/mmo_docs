@@ -2,6 +2,12 @@
 
 This repository documents the future game **Briarwake**. It does not contain a game implementation. The authorized destination is `evanmcpheron/mmo_docs`; never overwrite or publish changes to `evanmcpheron/game_docs` as a substitute.
 
+## Project premise and existing workspace
+
+Briarwake is an original MMORPG, not a port of game_docs or another game. The existing Briarwake Unreal checkout is the development starting point. ADR-011 and `verification/greenfield-project-baseline.json` distinguish public Briarwake branding from the verified `RPG.uproject` and `Source/RPG` identifiers. Do not require a replacement project or hypothetical rename. Preserve the historical master prompt and legitimate within-Briarwake schema migrations.
+
+The stable documentation asset ID `Briarwake` describes the existing RPG module. Its `creation_mode: verify_existing` and Phase 00 `verifies_existing` entry are prerequisite verification, not creation/activation instructions. Planned native types remain planned; source inspection is not a compile or runtime pass.
+
 ## Canonical editing inputs
 
 - `sources/manual-pages.json`: authored page prose and section records.

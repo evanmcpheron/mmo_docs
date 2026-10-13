@@ -8,7 +8,7 @@ The package contains 320 generated HTML pages: 32 phases, 18 system chapters, 20
 
 ## Important corrections recorded
 
-- Game/module naming uses Briarwake rather than the master prompt's tentative RPG.
+- The original edition used Briarwake for both public and proposed module naming. ADR-011 supersedes the physical-module assumption: public Briarwake, existing project/module RPG. The earlier proposal is retained in the decision history.
 - Slice B moves from Phase 18 to Phase 19 because Wayfinder cartography is introduced at Phase 19.
 - Minimal NPC baseline services begin at Phase 13. A small durable contribution board begins at Phase 15. Later economy/region phases extend these same authorities rather than introducing duplicates.
 - Basic combat fixture abilities precede the complete discipline definitions; no Phase 09 instruction requires a Phase 12 asset.
@@ -17,7 +17,7 @@ The package contains 320 generated HTML pages: 32 phases, 18 system chapters, 20
 
 The actual `2d_game_assets.zip`, `Plugin+-+Unreal+Engine+5.zip` and companion documents were unavailable. Therefore there are **zero inventoried source-art files**, no verified sprite/action compatibility matrix, no actual plugin source-line audit and no independently established redistribution rights. The plugin page accurately labels the brief's reported findings.
 
-The existing reference repository was sampled, not read exhaustively. Complete source migration and standards comparison remain open.
+The existing reference repository was sampled, not read exhaustively. An exhaustive historical standards comparison was not completed. It is optional reference work, not a requirement to port a source game or a blocker to original Briarwake development.
 
 The asset manifest is provisional and non-exhaustive. Pages provide initial identities, ownership, paths, properties, sequences, tests and consumers; many still need full per-field validation, exact installed Editor/API steps, concrete assignments and complete content instances. Full vocation talent graphs, balance tables, quests, dialogue, recipe catalogs, six-biome map production, effects/audio and UI details remain incomplete. The feature registry preserves 46 grouped source blocks, not a fully decomposed proof of every atomic requirement.
 
@@ -47,3 +47,13 @@ Publication is recorded in `verification/faction-publication.json`. The earlier 
 The existing published campaign branch was recovered at `e9921e2aec167e69f108b5118419ffa0c567af20`, confirmed to include current main, and revalidated before extending it. Its commit history and the separate older faction-foundation branch were preserved. Ten additional regression tests exposed and then verified fixes for unknown NPC allegiance under neutral/guest policy, unfinished item/recipe/quest references, invalid onward-spawn eligibility, missing authored map contracts and invalid policy versions/modifier caps. The full suite now passes 89 tests.
 
 Current commands, exit codes, source hashes and browser limitations are in `verification/faction-review-checks.json`. The earlier 79-test and CI records remain historical evidence for their original scope, not evidence of the new changes. Whole-guide strict completion and cooked-content/solo-runtime deployment readiness still fail explicitly. No source-only Unreal package is included because AGENTS.md prohibits game runtime files.
+
+## Greenfield project correction — 13 October 2026
+
+Briarwake is an original 2D pixel-art fantasy MMORPG being developed from the ground up in Unreal Engine 5.8.3. The existing Briarwake Unreal repository is the development starting point. No previous game implementation, port or conversion is required. Earlier game_docs material is optional historical and engineering reference. Each phase introduces or extends Briarwake’s own systems; planned contracts are not runtime evidence.
+
+Briarwake is the public game name; RPG is the verified physical project and runtime module identifier. Open RPG.uproject and use Source/RPG/RPG.Build.cs, Source/RPG.Target.cs and Source/RPGEditor.Target.cs. Keep Content/Game/, existing classes, targets and configured assets intact. Do not create a second project or require a rename.
+
+The correction retains all 32 phases, stable asset IDs and links, and the existing gameplay contracts. It reframes the historical source-comparison page, corrects native paths, separates Phase 00 verification from asset creation, and preserves legitimate within-Briarwake migrations. Existing ARPGGameMode, URPGGameInstance and configured startup assets are read-only integration facts, not renamed implementations.
+
+Source evidence and classified findings are recorded in `verification/greenfield-project-baseline.json` and `verification/greenfield-audit.json`. Current validation is recorded separately in `verification/greenfield-checks.json`; earlier reports retain their historical scope. No Unreal compilation, Blueprint graph inspection or multiplayer execution is claimed. The historical game_docs site, including its assets/Core/RPG.html URL, is outside this change and remains unchanged.

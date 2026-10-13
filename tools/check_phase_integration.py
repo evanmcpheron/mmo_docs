@@ -19,10 +19,17 @@ def check() -> dict:
         for field in ['editor_steps', 'native_contract', 'reopen_consumers', 'run_now', 'rejection', 'regression']:
             if not phase.get(field):
                 errors.append(f'Phase {number}: missing {field}')
-        if set(phase['creates']) != {asset['name'] for asset in assets if asset['first_phase'] == number}:
+        if set(phase['creates']) != {asset['name'] for asset in assets if asset['first_phase'] == number and asset.get('creation_mode', 'create') == 'create'}:
             errors.append(f'Phase {number}: incorrect creation set')
-        if set(phase['activates']) != {asset['name'] for asset in assets if asset['first_active_phase'] == number}:
+        if set(phase['activates']) != {asset['name'] for asset in assets if asset['first_active_phase'] == number and asset.get('creation_mode', 'create') == 'create'}:
             errors.append(f'Phase {number}: incorrect activation set')
+        expected_existing = {asset['name'] for asset in assets if asset['first_phase'] == number and asset.get('creation_mode') == 'verify_existing'}
+        if set(phase.get('verifies_existing', [])) != expected_existing:
+            errors.append(f'Phase {number}: incorrect existing-prerequisite verification set')
+        for field in ['creates', 'activates', 'verifies_existing']:
+            values = phase.get(field, [])
+            if len(values) != len(set(values)):
+                errors.append(f'Phase {number}: duplicate {field} entry')
         if phase['dependencies'] != ([number - 1] if number else []):
             errors.append(f'Phase {number}: sequential prerequisite mismatch')
         if phase['runtime_test'] != 'not_run':

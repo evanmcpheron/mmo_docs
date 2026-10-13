@@ -58,7 +58,11 @@ def make_table(table: dict, current: str, assets: dict, extra: str='') -> str:
     return f'<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable reference table"><table {extra}><thead><tr>{headers}</tr></thead><tbody>{rows}</tbody></table></div>'
 
 def asset_identity(asset: dict) -> dict:
-    return {'headers': ['Property', 'Value'], 'rows': [['Type', asset['type']], ['Parent / native base', asset['parent/native_base']], ['Planned physical path', asset['exact_game_path_or_source_path']], ['Content object path', asset.get('content_browser_path') or 'Not a Content Browser object'], ['Create / activate', f"{asset['first_phase']:02d} / {asset['first_active_phase']:02d}"], ['Work / status', asset['work_kind'] + ' / ' + asset['status']]]}
+    existing = asset.get('creation_mode') == 'verify_existing'
+    path_label = 'Existing physical path' if existing else 'Planned physical path'
+    phase_label = 'Verify existing' if existing else 'Create / activate'
+    phase_value = f"{asset['first_phase']:02d}" if existing else f"{asset['first_phase']:02d} / {asset['first_active_phase']:02d}"
+    return {'headers': ['Property', 'Value'], 'rows': [['Type', asset['type']], ['Parent / native base', asset['parent/native_base']], [path_label, asset['exact_game_path_or_source_path']], ['Content object path', asset.get('content_browser_path') or 'Not a Content Browser object'], [phase_label, phase_value], ['Work / status', asset['work_kind'] + ' / ' + asset['status']]]}
 
 def prepare_page(source: dict, assets: dict, phases: list) -> dict:
     page = copy.deepcopy(source)
@@ -74,8 +78,10 @@ def prepare_page(source: dict, assets: dict, phases: list) -> dict:
     match = re.fullmatch('phases/phase-(\\d\\d)\\.html', page['path'])
     if match:
         phase = phases[int(match[1])]
+        existing_entries = [assets[name] for name in phase.get('verifies_existing', [])]
         entries = [assets[name] for name in phase['creates']]
-        page['sections'][2]['table']['rows'] = [[f"[[asset:{asset['name']}]]", asset['type'] + ' / ' + asset['parent/native_base'], asset['exact_game_path_or_source_path'], f"{asset['first_active_phase']:02d}"] for asset in entries] or [['No new registered identity', 'Extend existing consumers', 'See phase recipe', 'This phase']]
+        existing_rows = [[f"[[asset:{asset['name']}]]", asset['type'] + ' / ' + asset['parent/native_base'], asset['exact_game_path_or_source_path'], 'Verify existing; do not create'] for asset in existing_entries]
+        page['sections'][2]['table']['rows'] = existing_rows + [[f"[[asset:{asset['name']}]]", asset['type'] + ' / ' + asset['parent/native_base'], asset['exact_game_path_or_source_path'], f"{asset['first_active_phase']:02d}"] for asset in entries] or [['No new registered identity', 'Extend existing consumers', 'See phase recipe', 'This phase']]
     if page.get('faction_source'):
         page['sections'].extend(faction_sections(page['faction_source'], ROOT))
     return page
@@ -94,8 +100,9 @@ def dynamic_content(page: dict, pages: list, assets: dict, phases: list) -> str:
         options = ''.join((f'<option>{html.escape(cell_text)}</option>' for cell_text in types))
         rows = []
         for asset in assets.values():
-            rows.append(f'''<tr data-asset-row data-name="{html.escape(asset['name'].lower())}" data-type="{html.escape(asset['type'])}" data-status="{asset['status']}" data-phase="{asset['first_phase']}"><td>{render('[[asset:' + asset['name'] + ']]')}</td><td>{html.escape(asset['type'])}</td><td>{asset['first_phase']:02d} / {asset['first_active_phase']:02d}</td><td>{asset['status']}</td></tr>''')
-        return f"""<div class="control-panel filters"><label>Name<input id="asset-query" type="search" placeholder="WatchFitting"></label><label>Type<select id="asset-type"><option value="">All types</option>{options}</select></label><label>Status<select id="asset-status"><option value="">All statuses</option><option>design</option><option>blocked</option><option>fixture</option></select></label><label>Creation phase<input id="asset-phase" type="number" min="0" max="31" placeholder="0–31"></label></div><p id="asset-count" role="status">{len(assets)} assets</p><div class="table-scroll" tabindex="0" role="region" aria-label="Filtered asset register"><table><thead><tr><th scope="col">Asset</th><th scope="col">Type</th><th scope="col">Create / activate</th><th scope="col">Status</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>"""
+            phase_text = f"Verify {asset['first_phase']:02d}" if asset.get('creation_mode') == 'verify_existing' else f"{asset['first_phase']:02d} / {asset['first_active_phase']:02d}"
+            rows.append(f'''<tr data-asset-row data-name="{html.escape(asset['name'].lower())}" data-type="{html.escape(asset['type'])}" data-status="{asset['status']}" data-phase="{asset['first_phase']}"><td>{render('[[asset:' + asset['name'] + ']]')}</td><td>{html.escape(asset['type'])}</td><td>{phase_text}</td><td>{asset['status']}</td></tr>''')
+        return f"""<div class="control-panel filters"><label>Name<input id="asset-query" type="search" placeholder="WatchFitting"></label><label>Type<select id="asset-type"><option value="">All types</option>{options}</select></label><label>Status<select id="asset-status"><option value="">All statuses</option><option>design</option><option>blocked</option><option>fixture</option><option>source-inspected</option></select></label><label>Creation / verification phase<input id="asset-phase" type="number" min="0" max="31" placeholder="0–31"></label></div><p id="asset-count" role="status">{len(assets)} assets</p><div class="table-scroll" tabindex="0" role="region" aria-label="Filtered asset register"><table><thead><tr><th scope="col">Asset</th><th scope="col">Type</th><th scope="col">Create / activate or verify</th><th scope="col">Status</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>"""
     if kind == 'dependencies':
         return make_table({'headers': ['Asset', 'Creation prerequisites', 'Registered reverse users'], 'rows': [[f"[[asset:{asset['name']}]]", ', '.join((f'[[asset:{name}]]' for name in asset['dependencies'])) or 'None', ', '.join((f'[[asset:{name}]]' for name in asset['reverse_users'])) or 'None'] for asset in assets.values()]}, path, assets)
     if kind == 'checklist':

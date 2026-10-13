@@ -3,24 +3,23 @@
   "phases": [
     {
       "phase": 0,
-      "build_target": "Source/asset/plugin audit, Unreal engine evidence, rights, development environment, authoritative registries and C++/Blueprint rules",
-      "required_proof": "Document all known/unverified dependencies; develop an actual import/build verification checklist and no false pass claims",
-      "title": "Evidence, rights and environment",
-      "editor_steps": "Inventory the original prompt, exact ZIP hashes and license statements before authoring imports. Record the source-engine version, toolchain and installed plugin descriptors in sources/verification.json. Missing inputs stop their dependent verification, not unrelated documentation work.",
-      "native_contract": "This phase establishes evidence and naming only. Do not create every gameplay class now. Keep Source/Briarwake as the future native module path and Content/Game as the content-domain root.",
-      "reopen_consumers": "sources/current-asset-manifest.json; sources/design-decisions.json; sources/plugin-audit.json",
-      "run_now": "Read the requirements and audit screens. On the future development machine, inspect Help → About Unreal Editor and the installed engine Build.version. Hash both local archives and inspect creator guidance without publishing their files.",
-      "rejection": "Reject a verified status without a file/build/log reference; reject an archive with unsafe paths. Record unavailable ZIPs and an untested PaperZD release as blockers.",
-      "regression": "No game fixture exists yet. Static guide tests are separate from all future Unreal tests.",
-      "creates": [
-        "Briarwake"
-      ],
-      "activates": [
-        "Briarwake"
-      ],
+      "build_target": "Verify the existing Briarwake checkout, RPG project/module/targets, engine and plugin prerequisites, content baseline and documentation authority",
+      "required_proof": "Record source presence separately from actual Editor/build observations; preserve the existing project and report unavailable prerequisites without inventing a pass",
+      "title": "Existing project baseline, evidence and environment",
+      "editor_steps": "Obtain or open the existing evanmcpheron/Briarwake repository, not a blank replacement project. Read its AGENTS.md, Docs/GIT_WORKFLOW.md and applicable local engineering guidance. Inspect status and preserve local work. Verify RPG.uproject, Source/RPG/RPG.Build.cs, RPG.Target.cs and RPGEditor.Target.cs; inspect Content/Game/ and configured startup assets. Confirm installed Unreal 5.8.3 using About / Build.version; EngineAssociation 5.8 alone is insufficient. Inspect enabled plugin descriptors, required licenses and the platform C++ toolchain. Verify Paper2D/PaperZD compatibility before Phase 01 imports. Hash and audit licensed art/plugin archives when available; missing art blocks its imports, not the existing-project baseline.",
+      "native_contract": "Briarwake is the public game name; RPG is the verified physical project and runtime module identifier. Open RPG.uproject and use Source/RPG/RPG.Build.cs, Source/RPG.Target.cs and Source/RPGEditor.Target.cs. Keep Content/Game/, existing classes, targets and configured assets intact. Do not create a second project or require a rename. The stable documentation asset ID Briarwake refers to the existing RPG module, not a native class or new module. No gameplay classes are created in Phase 00. Preserve ARPGGameMode and URPGGameInstance; later feature tasks must inspect actual Blueprint parents before choosing integration.",
+      "reopen_consumers": "RPG.uproject; Source/RPG/RPG.Build.cs; Source/RPG.Target.cs; Source/RPGEditor.Target.cs; Config/DefaultEngine.ini; Content/Game/Core/BP_GameMode; Content/Game/Core/BP_GameInstance; Content/Game/World/Levels/Test_Level",
+      "run_now": "On a development machine with verified prerequisites, generate/refresh IDE files for the existing RPG.uproject as needed, build its RPGEditor target and open that project. Check the configured Test_Level and BP_GameInstance/BP_GameMode references, Editor logs and plugin loading without replacing them. Record commit, platform, exact engine/toolchain/plugin versions, command, exit result and log location. If Unreal or a dependency is unavailable, record Not run and the blocker; never infer successful compilation from repository files.",
+      "rejection": "Stop on a missing descriptor/module/target, unsupported engine/toolchain/plugin version, unresolved content pointer or failed build. Resolve the actual prerequisite; do not create a replacement project, rename RPG identifiers, assume a pending rename merged, or require an earlier game.",
+      "regression": "Confirm no game file, configured asset or class was renamed/recreated and that Phase 01 still targets RPG. Baseline source inspection is not Blueprint compile, multiplayer or gameplay acceptance. Preserve previous evidence and add dated results.",
+      "creates": [],
+      "activates": [],
       "dependencies": [],
       "status": "planned",
-      "runtime_test": "not_run"
+      "runtime_test": "not_run",
+      "verifies_existing": [
+        "Briarwake"
+      ]
     },
     {
       "phase": 1,
@@ -171,9 +170,9 @@
       "required_proof": "Two clients see a server-owned avatar and cannot modify authoritative location/state; plugin gaps remain visible",
       "title": "Session adapter and dedicated two-client baseline",
       "editor_steps": "Audit the supplied plugin before adaptation. Configure exactly one UConnectionSubsystem route. Set the server map and GameMode/PlayerController/PlayerState/Character classes, build and cook future dedicated/client targets, and launch two separate clients against a headless server.",
-      "native_contract": "The zone owns gameplay state; a listen-host prototype is a separate test mode. Delegate callbacks carry an operation generation, and a join travels only after a successful provider result plus a valid resolved address.",
+      "native_contract": "The zone owns gameplay state; a listen-host prototype is a separate test mode. Delegate callbacks carry an operation generation, and a join travels only after a successful provider result plus a valid resolved address. Dedicated-server/client targets are future additive build configuration in the RPG project, not a module rename. Only RPG and RPGEditor targets were observed on the verified main. Before this phase’s process fixture, authorize and validate RPGServer/RPGClient targets as appropriate to the installed engine build; neither is a Phase 00 prerequisite.",
       "reopen_consumers": "ABriarwakeGameMode; ABriarwakeGameState; BP_BriarwakeCharacter; ABriarwakePlayerController; WBP_HUD",
-      "run_now": "After actual builds exist, start BriarwakeServer on port 7777 and two BriarwakeClient processes. Move each independently and inspect server logs, replicated identity and remote four-facing presentation.",
+      "run_now": "After actual builds exist, start RPGServer on port 7777 and two RPGClient processes. Move each independently and inspect server logs, replicated identity and remote four-facing presentation. These names are proposed Phase 04 targets, not binaries verified by this guide.",
       "rejection": "Test no matching sessions, provider unavailable, host-while-destroying, failed address resolution and a dedicated process without a local player. UI controls recover; no null dereference or unvalidated travel.",
       "regression": "Rerun village traversal on both clients. Record the plugin ZIP unavailable here; no source fixes, Steam or network proof are claimed.",
       "creates": [
@@ -259,7 +258,7 @@
       "required_proof": "Solo character and second client preserve identical canonical progression without duplication",
       "title": "Durable records, receipts and reconnect",
       "editor_steps": "Define and implement the future server persistence endpoint and versioned account/character/inventory/receipt/lease records. Wire UDurableStateClient on the server only. Replace disposable character fixtures with service-backed creation and one active fenced lease. Faction extension: Extend Record_Character to proposed schema3 preserving schema2 class/vocation histories. Create realm policy record and enforce atomic identity/kit/standing/receipt creation; test explicit legacy confirmation.",
-      "native_contract": "Extend Record_Character in place: permanent FactionId/CombatDisciplineId, active VocationId, independent Progression.Combat and Progression.Vocations keyed by stable vocation ID. Its existing Revision versions progression/build snapshots. Commit mutations, domain uniqueness, receipt/digest and outbox atomically with in-transaction lease checks; UCharacterStateComponent remains an owner-only projection. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs.",
+      "native_contract": "Extend Record_Character in place: permanent FactionId/CombatDisciplineId, active VocationId, independent Progression.Combat and Progression.Vocations keyed by stable vocation ID. Its existing Revision versions progression/build snapshots. Commit mutations, domain uniqueness, receipt/digest and outbox atomically with in-transaction lease checks; UCharacterStateComponent remains an owner-only projection. Reuse the existing authenticated character/quest/region/lease owners; no faction runtime package is delivered in mmo_docs. Schema upgrades here concern versioned Briarwake records and fixtures, not importing player profiles from game_docs or another game.",
       "reopen_consumers": "ABriarwakeGameMode; UCharacterStateComponent; WBP_CharacterSelect; ABriarwakePlayerState; Record_Character; Record_CommandReceipt; Record_SessionLease; UDurableStateClient",
       "run_now": "Create a character, record IDs/revisions, disconnect after an acknowledged commit, restart the zone and reconnect. Retry the same request after dropping only its response. Faction acceptance: Run duplicate CreateCharacter and before/after-commit faults; demonstrate no auto-faction migration.",
       "rejection": "Duplicate login, stale epoch, changed payload under the same RequestId and unsupported schema reject. An unknown outcome must query/replay the original request, not issue an untracked second grant.",

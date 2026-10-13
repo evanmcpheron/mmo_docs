@@ -33,11 +33,11 @@ def main() -> int:
                 page.add_script_tag(content=(ROOT / 'site/search-data.js').read_text(encoding='utf-8'))
                 page.add_script_tag(content=(ROOT / 'site/app.js').read_text(encoding='utf-8'))
                 page.evaluate('window.scrollTo(0,0); if(document.activeElement) document.activeElement.blur();')
-            for path in ['index.html', 'phases/phase-15.html', 'systems/fishing.html', 'assets/Items/DA_Item_IronOre.html', 'professions/hearthkeeper.html', 'architecture/zone-transfers.html', 'asset-index.html', 'dependency-map.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html', 'faction-traceability.html']:
+            for path in ['index.html', 'phases/phase-15.html', 'systems/fishing.html', 'assets/Items/DA_Item_IronOre.html', 'professions/hearthkeeper.html', 'architecture/zone-transfers.html', 'asset-index.html', 'dependency-map.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html', 'faction-traceability.html', 'getting-started.html', 'architecture.html', 'architecture/source-migration.html', 'architecture/roadmap-decisions.html', 'assets/Core/Briarwake.html', 'phases/phase-00.html', 'phases/phase-01.html', 'phases/phase-04.html']:
                 render(path)
                 assert page.locator('h1').count() == 1, path
                 assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), path + ' overflow'
-            checks.append('Twelve representative page layouts render without page-width overflow at 1440px.')
+            checks.append('Twenty representative page layouts render without page-width overflow at 1440px.')
             render('index.html')
             if args.screenshots:
                 args.screenshots.mkdir(parents=True, exist_ok=True)
@@ -53,19 +53,26 @@ def main() -> int:
             assert page.locator('#search-results a[href="./systems/fishing.html"]').count() == 1
             page.locator('#search-input').fill('lease epoch')
             assert page.locator('#search-results li').count() > 0
+            page.locator('#search-input').fill('RPG module')
+            assert page.locator('#search-results a[href="./assets/Core/Briarwake.html"]').count() == 1
+            page.locator('#search-input').fill('Historical Documentation Reference')
+            assert page.locator('#search-results a[href="./architecture/source-migration.html"]').count() == 1
             page.locator('#search-input').fill('unfindable9876543')
             assert page.locator('#search-results li').count() == 0
-            checks.append('Search results, multiple terms and no-results state work with the packaged index in memory.')
+            checks.append('Search results, module/historical routes, multiple terms and no-results state work with the packaged index in memory.')
             render('asset-index.html')
             page.locator('#asset-query').fill('WatchFitting')
             assert page.locator('[data-asset-row]:visible').count() == 2
             page.locator('#asset-query').fill('')
             page.locator('#asset-status').select_option('blocked')
             assert page.locator('[data-asset-row]:visible').evaluate_all('(rows)=>rows.length>0 && rows.every(row=>row.dataset.status==="blocked")')
+            page.locator('#asset-status').select_option('source-inspected')
+            assert page.locator('[data-asset-row]:visible').count() == 1
+            assert 'Verify 00' in page.locator('[data-asset-row]:visible').inner_text()
             page.locator('#asset-status').select_option('')
             page.locator('#asset-type').select_option('Native enum')
             assert page.locator('[data-asset-row]:visible').evaluate_all('(rows)=>rows.length>0 && rows.every(row=>row.dataset.type==="Native enum")')
-            checks.append('Name, type and status asset filters work in memory.')
+            checks.append('Name, type and status filters work in memory; source-inspected returns only the existing module with Verify 00.')
             render('checklist.html')
             page.locator('#check-00').check()
             page.locator('#check-15').check()
@@ -83,7 +90,7 @@ def main() -> int:
             assert not page.locator('#check-15').is_checked()
             checks.append('Checklist changes, exported JSON Blob content, invalid import rejection and confirmed replacement import work in memory. Actual download and persistence not verified.')
             page.set_viewport_size({'width': 390, 'height': 844})
-            for path in ['index.html', 'phases/phase-15.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'checklist.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html']:
+            for path in ['index.html', 'phases/phase-15.html', 'assets/Items/DA_Item_IronOre.html', 'asset-index.html', 'checklist.html', 'design/factions-and-allegiance.html', 'architecture/faction-contracts.html', 'walkthroughs/hearthward-campaign.html', 'getting-started.html', 'architecture.html', 'architecture/source-migration.html', 'architecture/roadmap-decisions.html', 'assets/Core/Briarwake.html', 'phases/phase-00.html', 'phases/phase-01.html', 'phases/phase-04.html']:
                 render(path)
                 assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth'), path + ' mobile overflow'
             render('index.html')
@@ -94,11 +101,11 @@ def main() -> int:
             page.evaluate('window.scrollTo(0,0); if(document.activeElement) document.activeElement.blur();')
             if args.screenshots:
                 page.screenshot(path=str(args.screenshots / 'home-mobile.png'), full_page=True)
-            checks.append('Eight layouts fit 390px; mobile menu opens and Escape closes it.')
+            checks.append('Sixteen layouts fit 390px; mobile menu opens and Escape closes it.')
             if args.screenshots:
                 for width, height, suffix in [(1440, 1000, 'desktop'), (390, 844, 'mobile')]:
                     page.set_viewport_size({'width': width, 'height': height})
-                    for relative, name in [('design/factions-and-allegiance.html', 'factions'), ('walkthroughs/hearthward-campaign.html', 'campaign')]:
+                    for relative, name in [('design/factions-and-allegiance.html', 'factions'), ('walkthroughs/hearthward-campaign.html', 'campaign'), ('getting-started.html', 'getting-started'), ('architecture/source-migration.html', 'historical-reference'), ('assets/Core/Briarwake.html', 'existing-module'), ('phases/phase-00.html', 'phase-00')]:
                         render(relative)
                         page.screenshot(path=str(args.screenshots / (name + '-' + suffix + '.png')))
             version = browser.version

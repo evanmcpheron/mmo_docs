@@ -153,7 +153,7 @@ def faction_sections(kind: str, root: Path) -> list[dict]:
         data = read("faction-compatibility.json")
         return [section("Inspection scope", data["scope"], rows=record_rows(data["revisions"]))] + [section(row["id"] + " — " + row["subsystem"],
             "Sources: " + "; ".join(row["sources"]), "Observed: " + row["current"], "Required: " + row["requested"],
-            "Resolution: " + row["resolution"], "Migration/test: " + row["migration_test"], "Evidence: " + row["evidence"]) for row in data["discrepancies"]]
+            "Resolution: " + row["resolution"] + (" Historical resolution (superseded): " + row["historical_resolution"] if row.get("historical_resolution") else ""), "Migration/test: " + row["migration_test"], "Evidence: " + row["evidence"]) for row in data["discrepancies"]]
     if kind == "traceability":
         data = read("faction-traceability.json")
         return [section("Traceability scope", data["scope"])] + [section(row["id"] + " — " + row["requirement"],
