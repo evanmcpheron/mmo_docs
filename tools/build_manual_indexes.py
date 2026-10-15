@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 from urllib.parse import urlsplit
 from faction_manual import faction_localization, faction_properties, faction_sections
+from art_manual import art_pages, integrate_art_links, render_art_section, decorate_art_page, art_search_output
 ROOT = Path(__file__).resolve().parents[1]
 NAVIGATION = [('index.html', 'Guide home'), ('getting-started.html', 'Start here'), ('development-roadmap.html', 'Phases 00–31'), ('first-vertical-slice.html', 'Vertical slices'), ('systems/index.html', 'System contracts'), ('professions/index.html', 'Five vocations'), ('world/authored-biomes.html', 'World and regions'), ('walkthroughs/index.html', 'Worked examples'), ('architecture.html', 'Architecture'), ('asset-index.html', 'Asset register'), ('dependency-map.html', 'Dependencies'), ('engineering/index.html', 'Engineering standard'), ('search.html', 'Search'), ('checklist.html', 'My phase progress'), ('feature-coverage.html', 'Coverage and gaps'), ('sources-verification.html', 'Sources and tests'), ('glossary.html', 'Glossary'), ('site-map.html', 'All pages')]
 
@@ -136,6 +137,8 @@ def render_page(page: dict, pages: list, assets: dict, phases: list) -> str:
             parts.append('<pre><code>' + html.escape(section['code']) + '</code></pre>')
         if 'table' in section and page.get('dynamic') not in {'assets', 'dependencies'}:
             parts.append(make_table(section['table'], path, assets))
+        if page.get('art_bible'):
+            parts.append(render_art_section(section, path, ROOT))
         parts.append('</section>')
     extra = dynamic_content(page, pages, assets, phases)
     body = '' + extra + ''.join(parts) if page.get('dynamic') == 'home' else ''.join(parts) + extra
@@ -154,13 +157,20 @@ def render_page(page: dict, pages: list, assets: dict, phases: list) -> str:
     title = html.escape(page['title'])
     category = html.escape(page['category'])
     summary = html.escape(page['summary'])
-    return f'''<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="{html.escape(page['summary'], quote=True)}"><title>{title} · Briarwake</title><link rel="stylesheet" href="{root}site/style.css"><script defer src="{root}site/search-data.js"></script><script defer src="{root}site/app.js"></script></head>\n<body data-root="{root}"><a class="skip" href="#main">Skip to content</a><header class="mobile-bar"><a href="{root}index.html">Briarwake</a><button id="menu-toggle" type="button" aria-expanded="false" aria-controls="sidebar">Navigation</button></header>\n<aside id="sidebar" class="sidebar"><a class="brand" href="{root}index.html"><small>DEVELOPMENT GUIDE</small><strong>Briarwake</strong></a><p class="sidebar-description">Entirely 2D · Persistent world<br>Solo-capable · 1–30 test target</p><nav aria-label="Main navigation">{navigation}</nav><div class="sidebar-footer"><button id="theme-toggle" type="button">Change theme</button><p>Offline edition · 09 October 2026<br>Partial documentation. No game build.</p></div></aside>\n<div class="layout"><div class="breadcrumbs"><a href="{root}index.html">Guide</a><span aria-hidden="true"> / </span>{category}</div><main id="main"><header class="page-header"><p class="eyebrow">{category}</p><h1>{title}</h1><p class="lead">{summary}</p><p class="status-tag">{html.escape(page['maturity'])}</p></header>\n<details class="toc"><summary>On this page</summary><ol>{''.join(toc)}</ol></details>{body}\n<footer class="page-footer"><p>Planned game behavior is not runtime evidence. <a href="{root}sources-verification.html">Read sources and limitations</a>.</p><a href="#main">Back to top</a></footer></main></div></body></html>\n'''
+    markup = f'''<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="{html.escape(page['summary'], quote=True)}"><title>{title} · Briarwake</title><link rel="stylesheet" href="{root}site/style.css"><script defer src="{root}site/search-data.js"></script><script defer src="{root}site/app.js"></script></head>\n<body data-root="{root}"><a class="skip" href="#main">Skip to content</a><header class="mobile-bar"><a href="{root}index.html">Briarwake</a><button id="menu-toggle" type="button" aria-expanded="false" aria-controls="sidebar">Navigation</button></header>\n<aside id="sidebar" class="sidebar"><a class="brand" href="{root}index.html"><small>DEVELOPMENT GUIDE</small><strong>Briarwake</strong></a><p class="sidebar-description">Entirely 2D · Persistent world<br>Solo-capable · 1–30 test target</p><nav aria-label="Main navigation">{navigation}</nav><div class="sidebar-footer"><button id="theme-toggle" type="button">Change theme</button><p>Offline edition · 09 October 2026<br>Partial documentation. No game build.</p></div></aside>\n<div class="layout"><div class="breadcrumbs"><a href="{root}index.html">Guide</a><span aria-hidden="true"> / </span>{category}</div><main id="main"><header class="page-header"><p class="eyebrow">{category}</p><h1>{title}</h1><p class="lead">{summary}</p><p class="status-tag">{html.escape(page['maturity'])}</p></header>\n<details class="toc"><summary>On this page</summary><ol>{''.join(toc)}</ol></details>{body}\n<footer class="page-footer"><p>Planned game behavior is not runtime evidence. <a href="{root}sources-verification.html">Read sources and limitations</a>.</p><a href="#main">Back to top</a></footer></main></div></body></html>\n'''
 
-def build_outputs() -> dict[str, str]:
+    return decorate_art_page(markup, page, ROOT)
+
+def build_outputs(art_only=False) -> dict[str, str]:
+    if art_only:
+        pages = art_pages(ROOT)
+        return {**{p['path']: render_page(p, pages, {}, []) for p in pages}, 'site/art-search-data.js': art_search_output(pages)}
     assets = {asset['name']: asset for asset in load_json('sources/current-asset-manifest.json')['assets']}
     phases = load_json('sources/phase-integration.json')['phases']
     pages = [prepare_page(page, assets, phases) for page in load_json('sources/manual-pages.json')['pages']]
+    pages = integrate_art_links(pages, ROOT) + art_pages(ROOT)
     outputs = {page['path']: render_page(page, pages, assets, phases) for page in pages}
+    outputs['site/art-search-data.js'] = art_search_output(art_pages(ROOT))
     search = []
     for page in pages:
         text = ' '.join((str(section.get(key, '')) for section in page['sections'] for key in ['title', 'paragraphs', 'steps', 'bullets', 'table']))
@@ -172,8 +182,9 @@ def build_outputs() -> dict[str, str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true', help='Check generated files without changing them.')
+    parser.add_argument('--art-only', action='store_true', help='Build the Art Bible subset in a focused authoring workspace; full CI remains required.')
     args = parser.parse_args()
-    outputs = build_outputs()
+    outputs = build_outputs(args.art_only)
     stale = []
     for relative, content in outputs.items():
         destination = ROOT / relative
@@ -186,7 +197,7 @@ def main() -> int:
     if stale:
         print('FAIL: stale or missing generated files:\n' + '\n'.join(stale))
         return 1
-    print(('PASS: generated files are current; ' if args.check else 'Built ') + f'{sum(path.endswith(".html") for path in outputs)} HTML pages, one offline search index and the faction English export.')
+    print(('PASS: generated files are current; ' if args.check else 'Built ') + f'{sum(path.endswith(".html") for path in outputs)} HTML pages and the applicable offline indices.')
     return 0
 if __name__ == '__main__':
     raise SystemExit(main())

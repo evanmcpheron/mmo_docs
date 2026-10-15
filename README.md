@@ -1,5 +1,15 @@
 # Briarwake Development Guide
 
+## Current art-production standard
+
+The [Briarwake Official Pixel Art Bible](art-style/index.html) is the current artist-facing standard for **Godot 4.7 and Aseprite**, traditional top-down 2D pixel art, 16×16 terrain and approximately 32-pixel humanoids in 64×64 animation cells. Historical Unreal/Paper2D/PaperZD art instructions below are superseded for new art. This documentation change does not convert gameplay systems or modify the game repository.
+
+The Art Bible includes 33 source-driven chapters, original local study assets, reusable map recipes, complete binary terrain transitions, actual editable Aseprite templates, interactive pixel/animation viewers, and artist delivery checklists. New palettes and sprites require owner approval. The installed Aseprite app could not start; its source templates are structurally checked, with application-open/export and Godot integration still pending.
+
+Authoritative art inputs live in `sources/art-bible/`; `tools/art_manual.py` extends the existing manual renderer. Run the existing full validation suite, plus `python3 tools/create_art_references.py --check` and `python3 tools/validate_art_bible.py`. Focused authoring uses `python3 tools/build_manual_indexes.py --art-only`; this does not replace full CI. Browser QA is a separate workflow job and produces rendered review artifacts. See `verification/art-bible-*.json` for evidence boundaries.
+
+## Historical development-guide edition
+
 **Partial documentation edition — 9 October 2026.** This is an offline build manual, not a generated Unreal game. It contains initial implementation contracts and worked test specifications; it is not complete against the attached master prompt.
 
 Extract the whole directory and open `index.html` in a desktop browser. Keep the folders together. The site is designed for offline use without a web server or CDN. URL-based browser verification was blocked by environment policy; isolated rendering/control checks are recorded separately. Browser storage is best effort; export checkmarks before moving the manual.
