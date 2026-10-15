@@ -86,6 +86,22 @@ class ArtBibleTests(unittest.TestCase):
             actual = read_png((ROOT / ('art-style/assets/' + name + '.png')).read_bytes())
             self.assertEqual(render_scene(maps[name], atlas, transitions, objects).pixels, actual.pixels)
 
+    def test_path_proof_contains_an_isolated_patch(self):
+        image = read_png((ROOT / 'art-style/assets/path-crossing.png').read_bytes())
+        path_color = terrain('dirt').pixel(8, 8)
+        cells = {(x, y) for y in range(10) for x in range(16) if image.pixel(x * 16 + 8, y * 16 + 8) == path_color}
+        components = 0
+        while cells:
+            components += 1
+            pending = [cells.pop()]
+            while pending:
+                x, y = pending.pop()
+                for neighbor in [(x - 1,y),(x + 1,y),(x,y - 1),(x,y + 1)]:
+                    if neighbor in cells:
+                        cells.remove(neighbor)
+                        pending.append(neighbor)
+        self.assertEqual(components, 2)
+
 
 if __name__ == '__main__':
     unittest.main()
