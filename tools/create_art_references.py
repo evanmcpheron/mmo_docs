@@ -438,7 +438,10 @@ def build_outputs():
                 kind = 'ore' if region == 'mountain' else 'bush'
             natural.append({'object': kind, 'at': [x * 16, y * 16]})
         for i in range(16):
-            natural.append({'object': 'reeds' if region == 'marsh' else 'herb' if region == 'forest' else 'flowers', 'at': [(i * 43 + 9) % 350, (i * 31 + 17) % 220]})
+            px, py = (i * 43 + 9) % 350, (i * 31 + 17) % 220
+            if any(px + 32 > hx * 16 and px < (hx + 5) * 16 and py + 32 > hy * 16 and py < (hy + 5) * 16 for hx, hy in house_origins):
+                continue
+            natural.append({'object': 'reeds' if region == 'marsh' else 'herb' if region == 'forest' else 'flowers', 'at': [px, py]})
         actors = [{'facing': DIRECTIONS[i % 8], 'at': [((i * 41 + 150) % 280) + 30, ((i * 19 + 130) % 110) + 120]} for i in range(crowded or 1)]
         recipe = {'id': name, 'region': region, 'grid': [width, height], 'cell': [16, 16], 'ground': ground, 'shore_overlays': overlays, 'modules': placements, 'objects': natural, 'actors': actors, 'source_atlas': BASE + 'atlas.png', 'transition_atlas': BASE + 'transitions.png', 'status': 'Proposed reference'}
         maps[name] = recipe
@@ -489,7 +492,7 @@ def build_outputs():
     for i in range(4):
         image = composite(layers[:i + 1])
         diagrams.paste(image, i * 64, 0)
-    save('paper-doll', diagrams, 'customization', 'Body, outfit, hair, equipment; fifth cell demonstrates incorrect equipment shift.', 'Technical demonstration')
+    save('paper-doll', diagrams.crop(0, 0, 256, 64), 'customization', 'Four progressive assemblies: body, outfit, hair, equipment.', 'Technical demonstration')
     bad = composite(layers[:3])
     bad.paste(layers[3], 5, -4)
     diagrams.paste(bad, 256, 0)
@@ -541,7 +544,7 @@ def build_outputs():
         variants.paste(composite(variant_layers), i * 64, 0)
     save('vocation-outfits', variants, 'outfits', 'Five proposed material/apron variants in Forgekeeper, Hearthkeeper, Wayfinder, Woodwright, Apothecary order. Themes, not mandatory equipped cosmetics.')
     boundary_test = Raster(256, 160)
-    field = {(x, y) for y in range(10) for x in range(16) if x in {5, 6} or y in {4, 5} or (x - 12) ** 2 + (y - 2) ** 2 < 3}
+    field = {(x, y) for y in range(10) for x in range(16) if x in {5, 6} or y in {4, 5} or (x in {11, 12} and y in {1, 2})}
     for y in range(10):
         for x in range(16):
             boundary_test.paste(terrain('grass', (x + y) % 3), x * 16, y * 16)
