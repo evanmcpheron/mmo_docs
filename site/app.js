@@ -1,5 +1,13 @@
 (function () {
   'use strict';
+  const manualNav = document.querySelector('nav[aria-label="Main navigation"]');
+  if (manualNav) {
+    const artLink = document.createElement('a');
+    artLink.href = (document.body.dataset.root || './') + 'art-style/index.html';
+    artLink.textContent = 'Official Art Bible';
+    manualNav.prepend(artLink);
+  }
+
   const storageKey = 'briarwake.manual.progress.v1';
   const allowedPhases = new Set(Array.from({ length: 32 }, (_, index) => String(index).padStart(2, '0')));
   const rootPath = document.body.dataset.root || './';

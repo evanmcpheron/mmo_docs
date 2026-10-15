@@ -149,7 +149,8 @@ def validate(root: Path) -> dict:
     assets = json.loads((root / 'sources/current-asset-manifest.json').read_text(encoding='utf-8'))['assets']
     errors.extend(registry_errors(assets))
     pages = json.loads((root / 'sources/manual-pages.json').read_text(encoding='utf-8'))['pages']
-    authored_paths = {page['path'] for page in pages}
+    from art_manual import art_pages
+    authored_paths = {page['path'] for page in pages + art_pages(root)}
     actual_paths = {str(path.relative_to(root)).replace('\\', '/') for path in html_files}
     if authored_paths != actual_paths:
         errors.append('Canonical page registry differs from generated HTML set')
@@ -180,9 +181,13 @@ def validate(root: Path) -> dict:
     digest = hashlib.sha256((root / 'sources/MASTER_PROMPT.original.md').read_bytes()).hexdigest()
     if digest != evidence['brief_sha256']:
         errors.append('Original brief hash changed')
-    forbidden = {'.uasset', '.umap', '.uproject', '.cpp', '.h', '.dll', '.so', '.exe', '.png', '.jpg', '.wav', '.mp3', '.zip'}
+    art_manifest = json.loads((root / 'sources/art-bible/references.json').read_text())
+    allowed_art = {item['path'] for item in art_manifest['assets'] + art_manifest['templates']}
+    from validate_art_bible import validate as validate_art
+    errors.extend(validate_art(root)['errors'])
+    forbidden = {'.uasset', '.umap', '.uproject', '.cpp', '.h', '.dll', '.so', '.exe', '.png', '.jpg', '.wav', '.mp3', '.zip', '.aseprite', '.ase'}
     for path in root.rglob('*'):
-        if path.is_file() and path.suffix.lower() in forbidden:
+        if path.is_file() and path.suffix.lower() in forbidden and str(path.relative_to(root)) not in allowed_art:
             errors.append('Unexpected game/art/binary payload: ' + str(path.relative_to(root)))
     for path in (root / 'site').glob('*.js'):
         if re.search('\\bfetch\\s*\\(', path.read_text(encoding='utf-8')):
