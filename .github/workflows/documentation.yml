@@ -1,0 +1,35 @@
+name: Documentation validation
+on:
+  push:
+    branches: [main, 'art-bible/**']
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check generated manual
+        run: python3 tools/build_manual_indexes.py --check
+      - name: Validate documentation
+        run: python3 tools/validate_documentation.py
+      - name: Check phase integration
+        run: python3 tools/check_phase_integration.py
+      - name: Check feature coverage
+        run: python3 tools/check_feature_coverage.py
+      - name: Run regression tests
+        run: python3 -m unittest discover -s tools/tests -v
+      - name: Package documentation for review
+        if: always()
+        run: git archive --format=zip HEAD -o /tmp/briarwake-documentation.zip
+      - name: Retain review artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: briarwake-documentation
+          path: /tmp/briarwake-documentation.zip
+          retention-days: 14
