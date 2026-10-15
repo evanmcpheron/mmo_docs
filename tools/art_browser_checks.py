@@ -65,7 +65,7 @@ def run(chromium=None, output=None):
             report['checks'].append('Offline search and theme controls work')
             visit('palette')
             page.locator('[data-copy]').first.click()
-            assert '#' in page.locator('.copy-status').inner_text()
+            page.wait_for_function("document.querySelector('.copy-status').textContent.includes('#')")
             report['checks'].append('Palette copy reports copied value or explicit fallback')
             visit('gallery')
             viewer = page.locator('.pixel-viewer').first
