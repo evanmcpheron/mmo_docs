@@ -1,0 +1,65 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Supporting gameplay · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a aria-current=page href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Engineering</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Engineering</div><h1>Supporting gameplay</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<p>These mechanics are necessary to connect the character, item and profession systems. They are included as bounded gameplay contracts, not worldbuilding or a claim that a complete MMO service has been implemented.</p>
+<h2 id="party-raid-and-loot-ownership">Party, raid and loot ownership</h2>
+<p>A standard dungeon group is one tank, one healer and three DPS. Raid size is a content parameter; prototype at ten players before assuming larger sizes. Party invitations, leadership, kicks and loot settings are server-owned. Lock disruptive membership changes during an encounter where they could alter loot rights or reset mechanics.</p>
+<p>An encounter creates a reward-eligibility snapshot from participating players and party membership, then tracks actual eligible contribution. Healing, tanking and support count; raw damage alone is not eligibility. Joining at the final hit, hitting a friendly summon or standing outside encounter bounds cannot create a full reward.</p>
+<p>Use personal reward ownership for ordinary instanced equipment initially. Tradable world materials and explicit shared drops use declared roll rules. Items enter durable reward delivery when bags are full. A unique encounter-completion key prevents reconnects or repeat death events from awarding the same reward twice. Loot corpse expiry never deletes an already awarded item.</p>
+<p>For open-world creatures, reserve first valid engagement for an individual or group, with clearly advertised public-event exceptions. Participation credit and skinning rights are distinct. A player cannot skin a creature while another eligible player still has an unclaimed loot reservation. Resource-node claim rules are defined on the profession page.</p>
+<h2 id="death-recovery-and-travel-safety">Death, recovery and travel safety</h2>
+<p>PvE death imposes repairable durability loss, not loss of levels or talent points. A defeated character chooses a legal recovery option; the server validates revival state and destination. A resurrection does not erase cooldown debt or restore consumed items. Encounters define wipe/reset behavior, including owned summons and ground effects.</p>
+<p>Travel, recall and instance entry fail safely when a character is in combat, crafting under a locked transaction, carrying a prohibited objective or crossing into an unavailable server. Durable ownership remains with one process. Explicit loading transitions are acceptable initially; seamless travel is not a prerequisite for a large world.</p>
+<h2 id="guilds-banks-and-communication">Guilds, banks and communication</h2>
+<p>Guild permissions distinguish invite, remove, rank-edit, bank deposit, item withdrawal and currency withdrawal. Apply per-rank limits and audit logs. A withdrawal is the same transactional inventory operation as personal trading; it is not a special unaudited pathway.</p>
+<p>Provide party, raid, guild, local and private chat with rate limits, mute/block/report and moderation history. Do not expose hidden players through nearby-player chat queries. Private-message and trade restrictions should have explicit anti-spam policies. Voice chat is optional and not a dependency of class mechanics.</p>
+<h2 id="content-tools">Content tools</h2>
+<p>Create versioned editors or importers for abilities, statuses, talents, items, recipes, NPC kits, loot tables and encounter triggers. Validate stable IDs, missing references, caps, mutually exclusive options, illegal target relations, invalid resource types and impossible progression before a server accepts a content package.</p>
+<p>Every enabled ability needs a successful validation fixture, a legal execution fixture, an invalid-target fixture and a reconnect/state-reconstruction fixture. Every behavior-changing talent needs at least one positive and one exclusion test. Reusing an effect operation is desirable; inventing an unrestricted scripting language for every small content change is unnecessary.</p>
+<h2 id="security-operations-and-support">Security, operations and support</h2>
+<p>Server logs must identify the action ID, account/character owner, content version and inventory/ledger versions for important changes. Record enough detail to investigate duplicates and economy exploits without logging passwords or unnecessary personal data. Keep administrative grants auditable and permission-limited.</p>
+<p>Plan account recovery, login/session expiry, bans and appeals, chat moderation, backup restoration, database migrations, deployment rollback and support tools. Test a restore, not just creation of backup files. Exact hosting capacity and operational cost remain unmeasured.</p>
+<p>A rollback must distinguish restoring corrupted state from undoing legitimate completed trades. Do not rewind only currency while leaving the purchased item in circulation. Emergency market or crafting suspension is a service flag with a user-visible reason, not an undocumented data edit.</p>
+<h2 id="implementation-order">Implementation order</h2>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Concrete completion gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Combat kernel</td>
+<td>Authority, targeting, movement, effect ordering, numerical tests and duplicate-action handling</td>
+</tr>
+<tr>
+<td>2. Role slice</td>
+<td>One tank, healer and DPS kit work from level 10 through a small encounter; no optional talent supplies a mandatory role function</td>
+</tr>
+<tr>
+<td>3. Playstyle proof</td>
+<td>Two builds in one specialization change measured action/resource/positioning decisions; two specializations visibly differ</td>
+</tr>
+<tr>
+<td>4. Item transactions</td>
+<td>Loot, equip, inventory, durability, trade and full-bag delivery survive concurrent requests and process restarts</td>
+</tr>
+<tr>
+<td>5. Profession slice</td>
+<td>One gathering/manufacturing chain produces useful band-1, band-3 and band-6 output; commissions use bound customer cores safely</td>
+</tr>
+<tr>
+<td>6. Secondary systems</td>
+<td>Summons, songs, shapeshifting, damage debt and faction-exclusive coverage are validated</td>
+</tr>
+<tr>
+<td>7. Scale and usability</td>
+<td>Automated network load plus human playtests, economic simulation, accessibility and support procedures</td>
+</tr>
+<tr>
+<td>8. Content expansion</td>
+<td>Bind and certify remaining catalog entries; do not equate data count with a tested launch roster</td>
+</tr>
+</tbody>
+</table>
+<p>A prototype can begin with Warrior, Bard and Mage because all are shared, then add Cleric and Necromancer to test exclusive-side differences. Faction test parties must also prove shared Bard/Shaman/Druid/Monk healers can complete every required healing/cleansing mechanic.</p>
+</div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#party-raid-and-loot-ownership">Party, raid and loot ownership</a><a href="#death-recovery-and-travel-safety">Death, recovery and travel safety</a><a href="#guilds-banks-and-communication">Guilds, banks and communication</a><a href="#content-tools">Content tools</a><a href="#security-operations-and-support">Security, operations and support</a><a href="#implementation-order">Implementation order</a></aside></div></div></body></html>

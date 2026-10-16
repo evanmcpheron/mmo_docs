@@ -1,0 +1,888 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Class identity, unlocks, specialization loops, contrasting builds and complete node tables."><title>Shaman · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" open><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a aria-current=page href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Classes</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Classes</div><h1>Shaman</h1><p class="page-description">Class identity, unlocks, specialization loops, contrasting builds and complete node tables.</p><div class="article-body"><div class="summary-strip"><span class="badge">Both sides</span><span class="badge">Mail armor</span><span class="badge">3 specializations</span></div><p class="lead">Maelstrom is generated by qualifying elemental abilities; totems have ownership and active-object limits.</p><p><strong>Starting primary:</strong> Intellect. <strong>Weakness to retain:</strong> Totem placement dependency and interruptions.</p><div class="callout"><strong>Reading the catalog</strong><p>Ability profiles are numerical prototypes. Named secondary behavior and resource hooks still need binding and tests. Free-text intent cannot override the global execution rules. Talents below are not a verified in-game implementation.</p><a href="../guide/execution.html">Execution rules</a> · <a href="../guide/progression.html">118-point progression</a> · <a href="../guide/audit.html">Open gates</a></div><h2 id="specializations-at-a-glance">Specializations at a glance</h2><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Discipline</th><th scope="col">Role</th><th scope="col">Primary / resource</th><th scope="col">Main decision</th></tr></thead><tbody><tr><td><a href="#stormcaller">Stormcaller</a></td><td>DPS</td><td>Intellect / Mana</td><td>Alternate elemental attacks and release Stormcharge through a line, field or priority-target strike.</td></tr><tr><td><a href="#spiritmender">Spiritmender</a></td><td>HEALER</td><td>Intellect / Mana</td><td>Create temporary links with direct heals and choose a limited path for later recovery.</td></tr><tr><td><a href="#totemist">Totemist</a></td><td>DPS</td><td>Intellect / Mana</td><td>Allocate four static-object capacity units and define at most three links; placement and timing determine damage and support.</td></tr></tbody></table></div><h2 id="shared-class-abilities">Shared class abilities</h2><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.shaman.sparkstone"><td><strong>Sparkstone</strong><br/><span class="muted">Shaman · Level 1</span></td><td>enemy target<br/>Range 8</td><td>Strike an enemy with elemental energy and generate a small amount of Maelstrom.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "D",
+  "target_mode": "enemy_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Measured direct spell",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 3,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 3,
+    "nonmana_user_units": 15,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 3,
+  "nonmana_user_units": 15,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.healing_rainlet"><td><strong>Healing Rainlet</strong><br/><span class="muted">Shaman · Level 3</span></td><td>friendly<br/>Range 8</td><td>Restore a modest amount of health to an ally.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "H",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Direct heal",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 1.7
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.ember_totem"><td><strong>Ember Totem</strong><br/><span class="muted">Shaman · Level 5</span></td><td>summon static<br/>Range 8</td><td>Place one capped-duration elemental totem on valid terrain.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "TS",
+  "target_mode": "summon_static",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Offensive totem",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 4,
+    "duration_seconds": 15,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "power_coefficient_per_tick": 0.15,
+        "tick_seconds": 1,
+        "lifetime_seconds": 15
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.spirit_path"><td><strong>Spirit Path</strong><br/><span class="muted">Shaman · Level 7</span></td><td>self<br/>Range 8</td><td>Gain short movement acceleration and limited terrain traversal utility.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "SP",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Movement acceleration",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 4,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "movement_speed",
+        "amount": 0.3,
+        "stack_group": "personal_movement"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>30s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.ancestor_s_vigil"><td><strong>Ancestor's Vigil</strong><br/><span class="muted">Shaman · Level 9</span></td><td>passive<br/>Range 8</td><td>Enables the class equipment and resource rules. No unlisted racial, profession-yield or combat-stat bonus.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PA",
+  "target_mode": "passive",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Class proficiency",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "PASSIVE",
+        "policy": "class_equipment_and_resource_rules"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>0s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.purifying_current"><td><strong>Purifying Current</strong><br/><span class="muted">Shaman · Level 14</span></td><td>friendly<br/>Range 8</td><td>Remove one valid poison or curse effect.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PU",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Friendly cleanse",
+    "cast_seconds": 0,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 2,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DISPEL",
+        "relation": "ally",
+        "families": [
+          "harmful_magic"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 2,
+    "nonmana_user_units": 10,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>8s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 2,
+  "nonmana_user_units": 10,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.storm_chain"><td><strong>Storm Chain</strong><br/><span class="muted">Shaman · Level 22</span></td><td>enemy target<br/>Range 8</td><td>Damage an enemy and bounce to a capped number of nearby eligible targets.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "CL",
+  "target_mode": "enemy_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Bounded chain attack",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 5,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "CHAIN_DAMAGE",
+        "power_coefficient": 1.0,
+        "falloff_per_jump": 0.25,
+        "target_cap": 3,
+        "jump_range": 3
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 5,
+    "nonmana_user_units": 25,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>8s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 5,
+  "nonmana_user_units": 25,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.earthen_guard"><td><strong>Earthen Guard</strong><br/><span class="muted">Shaman · Level 32</span></td><td>friendly<br/>Range 8</td><td>Provide a short protective ward to an ally.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "SH",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Absorption ward",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "ABSORB",
+        "power_coefficient": 1.0,
+        "recipient_health_cap": 0.3
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>12s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.shaman.spirit_muster"><td><strong>Spirit Muster</strong><br/><span class="muted">Shaman · Level 44</span></td><td>self aoe<br/>Range 8</td><td>Grant a non-stacking, temporary allied resistance to environmental impairments.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "ST",
+  "target_mode": "self_aoe",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Forced-movement protection",
+    "cast_seconds": 0,
+    "cooldown_seconds": 90,
+    "mana_cost_percent": 0,
+    "duration_seconds": 4,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "displacement_immunity",
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>90s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h2 id="shared-class-talent-tree">Shared class talent tree</h2><p>59 class points at level 60; 36 nodes. Tier II and VI each contain one exclusive three-way choice. Every deeper tier requires a purchased node in the previous tier as well as its lower-tier point threshold.</p><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.shaman.stable_spark"><td><strong>Stable Spark</strong><br/><small>Ranked modifier</small></td><td>Level 2<br/>3 ranks</td><td>Each rank increases Sparkstone's primary damage by 2%.</td><td>Sparkstone<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.river_touch"><td><strong>River Touch</strong><br/><small>Ranked modifier</small></td><td>Level 3<br/>3 ranks</td><td>Each rank improves Healing Rainlet by 2%.</td><td>Healing Rainlet<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.spirit_stone"><td><strong>Spirit Stone</strong><br/><small>Ranked modifier</small></td><td>Level 5<br/>3 ranks</td><td>Each rank increases Ember Totem health by 3%.</td><td>Ember Totem<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.traveler_s_spirit"><td><strong>Traveler's Spirit</strong><br/><small>Ranked modifier</small></td><td>Level 7<br/>3 ranks</td><td>Each rank lengthens Spirit Path by 0.2 seconds.</td><td>Spirit Path<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 2<br/>3 ranks</td><td>Primary action: Sparkstone. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 2<br/>3 ranks</td><td>Primary action: Sparkstone. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.shaman.anchored_totem"><td><strong>Anchored Totem</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Ember Totem resists small enemy knockbacks and remains within its placed boundary.</td><td>Ember Totem<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.conductive_path"><td><strong>Conductive Path</strong><br/><small>Exclusive transformation</small></td><td>Level 22<br/>1 rank</td><td>Storm Chain spreads a weaker elemental mark to its last valid target.</td><td>Storm Chain<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.listening_earth"><td><strong>Listening Earth</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Spirit Path briefly reveals hazards and unstable terrain without granting invisible-player tracking.</td><td>Spirit Path<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.shaman.maelstrom_tending"><td><strong>Maelstrom Tending</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank increases Maelstrom gained on valid elemental hits by 2%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.totem_placement"><td><strong>Totem Placement</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank increases legal totem placement range by 0.1 tile units.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.purifying_flow"><td><strong>Purifying Flow</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank reduces Purifying Current mana cost by 3%.</td><td>Purifying Current<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.chain_discipline"><td><strong>Chain Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 22<br/>3 ranks</td><td>Each rank decreases damage falloff on Storm Chain's later bounces by 2 percentage points.</td><td>Storm Chain<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Sparkstone. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Sparkstone. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.shaman.storm_and_stone"><td><strong>Storm and Stone</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank strengthens Sparkstone immediately after placing a totem by 2%.</td><td>Sparkstone<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.protected_path"><td><strong>Protected Path</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank provides 1% resistance to environmental slow while Spirit Path is active.</td><td>Spirit Path<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.ancestral_cover"><td><strong>Ancestral Cover</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank increases Earthen Guard's capacity by 3%.</td><td>Earthen Guard<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.ritual_muster"><td><strong>Ritual Muster</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Each rank improves Spirit Muster duration by 0.3 seconds.</td><td>Spirit Muster<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Sparkstone. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Sparkstone. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.shaman.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.shaman.confluence_of_elements"><td><strong>Confluence of Elements</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Alternating elemental damage schools charges a bounded spell enhancement.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.ancestral_relay"><td><strong>Ancestral Relay</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>An ally near a totem briefly receives a weaker version of your next valid supportive spell.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.hearth_of_the_storm"><td><strong>Hearth of the Storm</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>A temporary central totem coordinates existing totems while respecting all active-object limits.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.shaman.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sparkstone. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sparkstone. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.shaman.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sparkstone. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h2 id="stormcaller">Stormcaller · DPS</h2><h3 id="mechanical-identity">Mechanical identity</h3><p>Alternate elemental attacks and release Stormcharge through a line, field or priority-target strike.</p><p><strong>Resource contract:</strong> 100 Stormcharge; alternating eligible elements +15, repeated element +5; spender 30; major discharge 60; one gain per root action, not per target.</p><div class="route-grid"><section class="route"><h4>Approach A</h4><p>Focused discharge: pool for a high-value target with limited chaining.</p></section><section class="route"><h4>Approach B</h4><p>Distributed storm: spend through fields and capped chains against groups.</p></section></div><p><strong>Real cost of the choice:</strong> Focus loses area output; field damage requires enemies to remain inside the area.</p><p><strong>Equipment scaling:</strong> Intellect. <strong>Sustained resource:</strong> Mana. Class, specialization and talent bonuses use the same modifier order, rather than separate additive implementations.</p><h3 id="specialization-abilities">Specialization abilities</h3><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.stormcaller.forked_spark"><td><strong>Forked Spark</strong><br/><span class="muted">Stormcaller · Level 10</span></td><td>enemy target<br/>Range 8</td><td>Strike with lightning and build Stormcharge.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "D",
+  "target_mode": "enemy_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Measured direct spell",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 3,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 3,
+    "nonmana_user_units": 15,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 3,
+  "nonmana_user_units": 15,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.stormcaller.stonefall"><td><strong>Stonefall</strong><br/><span class="muted">Stormcaller · Level 10</span></td><td>ground<br/>Range 8</td><td>Call down a small delayed stone strike that builds earth attunement.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "ZD",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Persistent damage area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 6,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.2,
+        "tick_seconds": 1,
+        "tick_count": 6
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 6,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 6,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.stormcaller.thunder_conduit"><td><strong>Thunder Conduit</strong><br/><span class="muted">Stormcaller · Level 10</span></td><td>enemy line<br/>Range 8</td><td>Fire an electric line whose power depends on recently used element.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "CA",
+  "target_mode": "enemy_line",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Area strike",
+    "cast_seconds": 0,
+    "cooldown_seconds": 10,
+    "mana_cost_percent": 5,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.65
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 5,
+    "nonmana_user_units": 25,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>10s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 5,
+  "nonmana_user_units": 25,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.stormcaller.updraft_step"><td><strong>Updraft Step</strong><br/><span class="muted">Stormcaller · Level 20</span></td><td>dash point<br/>Range 8</td><td>Make a short air-assisted reposition through legal terrain.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "DD",
+  "target_mode": "dash_point",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Legal reposition",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "MOVE",
+        "movement": "dash_to_point",
+        "distance_cap": 3
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.stormcaller.cloudburst"><td><strong>Cloudburst</strong><br/><span class="muted">Stormcaller · Level 35</span></td><td>ground<br/>Range 8</td><td>Consume Stormcharge to generate a brief persistent storm zone.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "ZD",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Persistent damage area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 6,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.2,
+        "tick_seconds": 1,
+        "tick_count": 6
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 6,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 6,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.stormcaller.tempest_equation"><td><strong>Tempest Equation</strong><br/><span class="muted">Stormcaller · Level 50</span></td><td>enemy target<br/>Range 8</td><td>Release stored Stormcharge into a focused or chained strike depending on target count.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "F",
+  "target_mode": "enemy_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Committed finisher",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 6,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.8
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 6,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>12s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 6,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h3 id="specialization-talent-tree">Specialization talent tree</h3><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.stormcaller.forked_spark_refinement"><td><strong>Forked Spark Refinement</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Forked Spark.</td><td>Forked Spark<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.stonefall_discipline"><td><strong>Stonefall Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Stonefall.</td><td>Stonefall<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.thunder_conduit_practice"><td><strong>Thunder Conduit Practice</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Thunder Conduit.</td><td>Thunder Conduit<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.storm_reservoir"><td><strong>Storm Reservoir</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank slows Stormcharge decay during target switches by 3%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Forked Spark. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Forked Spark. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.stormcaller.chainstorm"><td><strong>Chainstorm</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Thunder Conduit reaches extra targets but weakens on each bounce.</td><td>Thunder Conduit<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.focused_bolt"><td><strong>Focused Bolt</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Thunder Conduit remains single-target and penetrates resistance.</td><td>Thunder Conduit<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.walking_storm"><td><strong>Walking Storm</strong><br/><small>Exclusive transformation</small></td><td>Level 35<br/>1 rank</td><td>Cloudburst follows the caster at reduced strength.</td><td>Cloudburst<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Forked Spark. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Forked Spark. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Forked Spark. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.stormcaller.forked_spark_to_stonefall"><td><strong>Forked Spark to Stonefall</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Forked Spark, your next Stonefall within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Forked Spark<br/>Stonefall<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.stonefall_to_thunder_conduit"><td><strong>Stonefall to Thunder Conduit</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Stonefall, your next Thunder Conduit within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Stonefall<br/>Thunder Conduit<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.thunder_conduit_to_updraft_step"><td><strong>Thunder Conduit to Updraft Step</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Thunder Conduit, your next Updraft Step within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Thunder Conduit<br/>Updraft Step<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.earthen_anchor"><td><strong>Earthen Anchor</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank reduces casting interruption while inside Stonefall by 2%.</td><td>Stonefall<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Forked Spark. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Forked Spark. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.stormcaller.forked_spark_and_thunder_conduit"><td><strong>Forked Spark and Thunder Conduit</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After successfully activating both Forked Spark and Thunder Conduit within 8 seconds, your next Forked Spark gains 2% eligible effect per rank; once per 8 seconds.</td><td>Forked Spark<br/>Thunder Conduit<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.updraft_step_into_forked_spark"><td><strong>Updraft Step into Forked Spark</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After using Updraft Step, your next Forked Spark within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Forked Spark<br/>Updraft Step<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.forking_discipline"><td><strong>Forking Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank improves Thunder Conduit's second valid hit by 2%.</td><td>Thunder Conduit<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.charged_wind"><td><strong>Charged Wind</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank increases Updraft Step movement by 2% within distance cap.</td><td>Updraft Step<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Forked Spark. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Forked Spark. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.stormcaller.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Forked Spark. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Forked Spark. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Forked Spark. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Forked Spark. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Forked Spark. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Forked Spark. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.stormcaller.storm_of_many"><td><strong>Storm of Many</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor chain attacks and area pressure.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.storm_of_one"><td><strong>Storm of One</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor concentrated single-target elemental release.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.storm_of_stone"><td><strong>Storm of Stone</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor defensive positioning and earth-lightning combinations.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.stormcaller.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Forked Spark. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Forked Spark. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr><tr id="talent.stormcaller.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Forked Spark. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Forked Spark<br/><small>Shared handling contract</small></td></tr></tbody></table></div><details class="definition"><summary>Two structurally valid 59-point allocation examples</summary><p>These examples demonstrate legal point spending and capstone access. They are not optimized builds, are not automatically the two narrative-free playstyle approaches above, and do not establish balance.</p><h4>Allocation 1</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Forked Spark Refinement</td><td>3</td></tr><tr><td>Stonefall Discipline</td><td>3</td></tr><tr><td>Thunder Conduit Practice</td><td>3</td></tr><tr><td>Storm Reservoir</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Chainstorm</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Forked Spark to Stonefall</td><td>3</td></tr><tr><td>Stonefall to Thunder Conduit</td><td>3</td></tr><tr><td>Thunder Conduit to Updraft Step</td><td>3</td></tr><tr><td>Earthen Anchor</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Forked Spark and Thunder Conduit</td><td>1</td></tr><tr><td>Updraft Step into Forked Spark</td><td>1</td></tr><tr><td>Forking Discipline</td><td>1</td></tr><tr><td>Charged Wind</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Storm of Many</td><td>1</td></tr></tbody></table></div><h4>Allocation 2</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Forked Spark Refinement</td><td>3</td></tr><tr><td>Stonefall Discipline</td><td>3</td></tr><tr><td>Thunder Conduit Practice</td><td>3</td></tr><tr><td>Storm Reservoir</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Focused Bolt</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Forked Spark to Stonefall</td><td>3</td></tr><tr><td>Stonefall to Thunder Conduit</td><td>3</td></tr><tr><td>Thunder Conduit to Updraft Step</td><td>3</td></tr><tr><td>Earthen Anchor</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Forked Spark and Thunder Conduit</td><td>1</td></tr><tr><td>Updraft Step into Forked Spark</td><td>1</td></tr><tr><td>Forking Discipline</td><td>1</td></tr><tr><td>Charged Wind</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Storm of One</td><td>1</td></tr></tbody></table></div></details><h2 id="spiritmender">Spiritmender · HEALER</h2><h3 id="mechanical-identity-2">Mechanical identity</h3><p>Create temporary links with direct heals and choose a limited path for later recovery.</p><p><strong>Resource contract:</strong> Maximum four linked allies per caster; a link lasts ten seconds; chain jumps within three units, maximum four targets; no target visited twice in one chain.</p><div class="route-grid"><section class="route"><h4>Approach A</h4><p>Close kinship: heal a compact group through efficient short chain jumps.</p></section><section class="route"><h4>Approach B</h4><p>Focused memory: spend links on protection and direct recovery of threatened recipients.</p></section></div><p><strong>Real cost of the choice:</strong> Chains lose value when allies spread; focused protection reduces group throughput.</p><p><strong>Equipment scaling:</strong> Intellect. <strong>Sustained resource:</strong> Mana. Class, specialization and talent bonuses use the same modifier order, rather than separate additive implementations.</p><h3 id="specialization-abilities-2">Specialization abilities</h3><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.spiritmender.ancestor_s_palm"><td><strong>Ancestor's Palm</strong><br/><span class="muted">Spiritmender · Level 10</span></td><td>friendly<br/>Range 8</td><td>Heal one ally and establish a short Ancestral Thread.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "H",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Direct heal",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 1.7
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.spiritmender.river_remedy"><td><strong>River Remedy</strong><br/><span class="muted">Spiritmender · Level 10</span></td><td>friendly<br/>Range 8</td><td>Apply a regenerative water blessing to an ally.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "HOT",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Sustained recovery",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.3,
+        "tick_seconds": 2,
+        "tick_count": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.spiritmender.kinship_wave"><td><strong>Kinship Wave</strong><br/><span class="muted">Spiritmender · Level 10</span></td><td>friendly chain<br/>Range 8</td><td>Send healing along a capped number of nearby connected allies.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "AH",
+  "target_mode": "friendly_chain",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Group recovery",
+    "cast_seconds": 2,
+    "cooldown_seconds": 10,
+    "mana_cost_percent": 8,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 1.0,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 8,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>2s cast<br/>10s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 8,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.spiritmender.spirit_lantern"><td><strong>Spirit Lantern</strong><br/><span class="muted">Spiritmender · Level 20</span></td><td>summon static<br/>Range 8</td><td>Place a temporary totem emitting small pulses of recovery.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "TH0",
+  "target_mode": "summon_static",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Healing totem",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 4,
+    "duration_seconds": 15,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "healing_power_coefficient_per_tick": 0.12,
+        "target_cap": 5,
+        "tick_seconds": 1,
+        "lifetime_seconds": 15
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.spiritmender.memory_of_warmth"><td><strong>Memory of Warmth</strong><br/><span class="muted">Spiritmender · Level 35</span></td><td>friendly<br/>Range 8</td><td>Spend Threads to prevent part of the next eligible hit on a target.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "SH",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Absorption ward",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "ABSORB",
+        "power_coefficient": 1.0,
+        "recipient_health_cap": 0.3
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>12s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.spiritmender.ancestral_gathering"><td><strong>Ancestral Gathering</strong><br/><span class="muted">Spiritmender · Level 50</span></td><td>self aoe<br/>Range 8</td><td>Convene ancestral spirits for a temporary group healing period.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "GH",
+  "target_mode": "self_aoe",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Group regenerative area",
+    "cast_seconds": 2,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 8,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.25,
+        "tick_seconds": 2,
+        "tick_count": 5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 8,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>2s cast<br/>20s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 8,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h3 id="specialization-talent-tree-2">Specialization talent tree</h3><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.spiritmender.ancestor_s_palm_refinement"><td><strong>Ancestor's Palm Refinement</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Ancestor's Palm.</td><td>Ancestor's Palm<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.river_remedy_discipline"><td><strong>River Remedy Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: River Remedy.</td><td>River Remedy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.kinship_wave_practice"><td><strong>Kinship Wave Practice</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Kinship Wave.</td><td>Kinship Wave<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.deep_kinship"><td><strong>Deep Kinship</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank lengthens Ancestral Threads by 0.25 seconds.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Ancestor's Palm. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.spiritmender.long_threads"><td><strong>Long Threads</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Kinship Wave reaches farther but heals each subsequent target less.</td><td>Kinship Wave<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.deep_river"><td><strong>Deep River</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>River Remedy grants stronger individual recovery with fewer simultaneous targets.</td><td>River Remedy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.moving_lantern"><td><strong>Moving Lantern</strong><br/><small>Exclusive transformation</small></td><td>Level 20<br/>1 rank</td><td>Spirit Lantern may be repositioned once during its lifetime.</td><td>Spirit Lantern<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Ancestor's Palm. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.spiritmender.ancestor_s_palm_to_river_remedy"><td><strong>Ancestor's Palm to River Remedy</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Ancestor's Palm, your next River Remedy within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Ancestor's Palm<br/>River Remedy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.river_remedy_to_kinship_wave"><td><strong>River Remedy to Kinship Wave</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using River Remedy, your next Kinship Wave within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Kinship Wave<br/>River Remedy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.kinship_wave_to_spirit_lantern"><td><strong>Kinship Wave to Spirit Lantern</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Kinship Wave, your next Spirit Lantern within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Kinship Wave<br/>Spirit Lantern<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.river_listening"><td><strong>River Listening</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank improves Kinship Wave healing on previously wounded targets by 2%.</td><td>Kinship Wave<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Ancestor's Palm. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.spiritmender.ancestor_s_palm_and_kinship_wave"><td><strong>Ancestor's Palm and Kinship Wave</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After successfully activating both Ancestor's Palm and Kinship Wave within 8 seconds, your next Ancestor's Palm gains 2% eligible effect per rank; once per 8 seconds.</td><td>Ancestor's Palm<br/>Kinship Wave<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.spirit_lantern_into_ancestor_s_palm"><td><strong>Spirit Lantern into Ancestor's Palm</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After using Spirit Lantern, your next Ancestor's Palm within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Ancestor's Palm<br/>Spirit Lantern<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.quiet_ancestors"><td><strong>Quiet Ancestors</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank increases Spirit Lantern healing to its least-healed ally by 2%.</td><td>Spirit Lantern<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.ward_of_memory"><td><strong>Ward of Memory</strong><br/><small>Ranked modifier</small></td><td>Level 35<br/>3 ranks</td><td>Each rank improves Memory of Warmth's absorb capacity by 2%.</td><td>Memory of Warmth<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Ancestor's Palm. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Ancestor's Palm. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.spiritmender.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Ancestor's Palm. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Ancestor's Palm. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Ancestor's Palm. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Ancestor's Palm. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.spiritmender.river_of_kin"><td><strong>River of Kin</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor distributed healing through connected targets.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.sentinel_ancestors"><td><strong>Sentinel Ancestors</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor prevention, wards, and defensive support.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.the_living_memory"><td><strong>The Living Memory</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor strong recovery after sustained team damage.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.spiritmender.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Ancestor's Palm. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr><tr id="talent.spiritmender.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Ancestor's Palm. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Ancestor's Palm<br/><small>Shared handling contract</small></td></tr></tbody></table></div><details class="definition"><summary>Two structurally valid 59-point allocation examples</summary><p>These examples demonstrate legal point spending and capstone access. They are not optimized builds, are not automatically the two narrative-free playstyle approaches above, and do not establish balance.</p><h4>Allocation 1</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Ancestor's Palm Refinement</td><td>3</td></tr><tr><td>River Remedy Discipline</td><td>3</td></tr><tr><td>Kinship Wave Practice</td><td>3</td></tr><tr><td>Deep Kinship</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Long Threads</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Ancestor's Palm to River Remedy</td><td>3</td></tr><tr><td>River Remedy to Kinship Wave</td><td>3</td></tr><tr><td>Kinship Wave to Spirit Lantern</td><td>3</td></tr><tr><td>River Listening</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Ancestor's Palm and Kinship Wave</td><td>1</td></tr><tr><td>Spirit Lantern into Ancestor's Palm</td><td>1</td></tr><tr><td>Quiet Ancestors</td><td>1</td></tr><tr><td>Ward of Memory</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>River of Kin</td><td>1</td></tr></tbody></table></div><h4>Allocation 2</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Ancestor's Palm Refinement</td><td>3</td></tr><tr><td>River Remedy Discipline</td><td>3</td></tr><tr><td>Kinship Wave Practice</td><td>3</td></tr><tr><td>Deep Kinship</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Deep River</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Ancestor's Palm to River Remedy</td><td>3</td></tr><tr><td>River Remedy to Kinship Wave</td><td>3</td></tr><tr><td>Kinship Wave to Spirit Lantern</td><td>3</td></tr><tr><td>River Listening</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Ancestor's Palm and Kinship Wave</td><td>1</td></tr><tr><td>Spirit Lantern into Ancestor's Palm</td><td>1</td></tr><tr><td>Quiet Ancestors</td><td>1</td></tr><tr><td>Ward of Memory</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Sentinel Ancestors</td><td>1</td></tr></tbody></table></div></details><h2 id="totemist">Totemist · DPS</h2><h3 id="mechanical-identity-3">Mechanical identity</h3><p>Allocate four static-object capacity units and define at most three links; placement and timing determine damage and support.</p><p><strong>Resource contract:</strong> Four total combat totems including shared-class totems; at most three explicit links; placement cost 4% mana; relocation follows its own cooldown and cannot duplicate old objects.</p><div class="route-grid"><section class="route"><h4>Approach A</h4><p>Anchored constellation: retain a stable layout for sustained area effects.</p></section><section class="route"><h4>Approach B</h4><p>Portable pattern: relocate a smaller layout more often with lower peak output.</p></section></div><p><strong>Real cost of the choice:</strong> Anchoring loses value against movement; portability sacrifices stationary uptime and throughput.</p><p><strong>Equipment scaling:</strong> Intellect. <strong>Sustained resource:</strong> Mana. Class, specialization and talent bonuses use the same modifier order, rather than separate additive implementations.</p><h3 id="specialization-abilities-3">Specialization abilities</h3><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.totemist.calling_stone"><td><strong>Calling Stone</strong><br/><span class="muted">Totemist · Level 10</span></td><td>summon static<br/>Range 8</td><td>Place a central totem that defines one Constellation anchor.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "TS",
+  "target_mode": "summon_static",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Offensive totem",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 4,
+    "duration_seconds": 15,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "lifetime_seconds": 15,
+        "inner_profile_id": "TS",
+        "radius": 2.5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.totemist.thunder_post"><td><strong>Thunder Post</strong><br/><span class="muted">Totemist · Level 10</span></td><td>summon static<br/>Range 8</td><td>Place a lightning totem which attacks nearby engaged enemies.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "TS",
+  "target_mode": "summon_static",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Offensive totem",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 4,
+    "duration_seconds": 15,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "lifetime_seconds": 15,
+        "inner_profile_id": "TS",
+        "radius": 2.5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.totemist.earthen_post"><td><strong>Earthen Post</strong><br/><span class="muted">Totemist · Level 10</span></td><td>summon static<br/>Range 8</td><td>Place an earth totem that slows enemy approach to its area.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "ZC",
+  "target_mode": "summon_static",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Slowing area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 3,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "lifetime_seconds": 15,
+        "inner_profile_id": "ZC",
+        "radius": 2.5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 3,
+    "nonmana_user_units": 15,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 3,
+  "nonmana_user_units": 15,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.totemist.elemental_link"><td><strong>Elemental Link</strong><br/><span class="muted">Totemist · Level 20</span></td><td>ground<br/>Range 8</td><td>Create one bounded connection between eligible totems; links apply explicit effects.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PAT",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Bounded pattern resolver",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 6,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "RESOLVE_PATTERN",
+        "max_sources": 4,
+        "max_links": 3,
+        "output_budget_power_coefficient": 1.8
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 6,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>20s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 6,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.totemist.tide_post"><td><strong>Tide Post</strong><br/><span class="muted">Totemist · Level 35</span></td><td>summon static<br/>Range 8</td><td>Place a water totem that grants modest non-stacking ally support.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "BU",
+  "target_mode": "summon_static",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Group readiness",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 3,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "lifetime_seconds": 15,
+        "inner_profile_id": "BU",
+        "radius": 2.5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 3,
+    "nonmana_user_units": 15,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>30s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 3,
+  "nonmana_user_units": 15,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.totemist.grand_constellation"><td><strong>Grand Constellation</strong><br/><span class="muted">Totemist · Level 50</span></td><td>ground<br/>Range 8</td><td>Activate the current link pattern for a timed area damage-and-support event.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PAT",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Bounded pattern resolver",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 6,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "RESOLVE_PATTERN",
+        "max_sources": 4,
+        "max_links": 3,
+        "output_budget_power_coefficient": 1.8
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 6,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>20s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 6,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h3 id="specialization-talent-tree-3">Specialization talent tree</h3><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.totemist.calling_stone_refinement"><td><strong>Calling Stone Refinement</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases Calling Stone summon health by 2%, without adding summons or changing active-object limits.</td><td>Calling Stone<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.thunder_post_discipline"><td><strong>Thunder Post Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases Thunder Post summon health by 2%, without adding summons or changing active-object limits.</td><td>Thunder Post<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.earthen_post_practice"><td><strong>Earthen Post Practice</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases Earthen Post summon health by 2%, without adding summons or changing active-object limits.</td><td>Earthen Post<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.anchored_layout"><td><strong>Anchored Layout</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases Constellation link duration by 0.25 seconds.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.totemist.storm_circuit"><td><strong>Storm Circuit</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Linking thunder and earth yields damage-focused pulses.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.hearth_circuit"><td><strong>Hearth Circuit</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Linking earth and tide yields defensive utility with weaker damage.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.wandering_posts"><td><strong>Wandering Posts</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Totems may be repositioned a limited distance with reduced duration.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sparkstone. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.totemist.calling_stone_to_thunder_post"><td><strong>Calling Stone to Thunder Post</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Calling Stone, your next Thunder Post within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Calling Stone<br/>Thunder Post<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.thunder_post_to_earthen_post"><td><strong>Thunder Post to Earthen Post</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Thunder Post, your next Earthen Post within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Earthen Post<br/>Thunder Post<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.earthen_post_to_elemental_link"><td><strong>Earthen Post to Elemental Link</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Earthen Post, your next Elemental Link within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Earthen Post<br/>Elemental Link<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.living_circuit"><td><strong>Living Circuit</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank improves elemental-link damage by 2% when two totems remain active.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Sparkstone. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Sparkstone. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.totemist.calling_stone_and_earthen_post"><td><strong>Calling Stone and Earthen Post</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After successfully activating both Calling Stone and Earthen Post within 8 seconds, your next Calling Stone gains 2% eligible effect per rank; once per 8 seconds.</td><td>Calling Stone<br/>Earthen Post<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.elemental_link_into_calling_stone"><td><strong>Elemental Link into Calling Stone</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After using Elemental Link, your next Calling Stone within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Calling Stone<br/>Elemental Link<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.defensive_topology"><td><strong>Defensive Topology</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank increases ally protection while inside a valid totem triangle by 1%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.repositioning_rite"><td><strong>Repositioning Rite</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank reduces Totem redeployment cooldown by 2% without adding more active objects.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Sparkstone. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Sparkstone. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.totemist.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sparkstone. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.totemist.architect_of_storms"><td><strong>Architect of Storms</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor offensive totem interactions and fast activation.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.architect_of_refuge"><td><strong>Architect of Refuge</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor defensive area control and team support.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.architect_of_motion"><td><strong>Architect of Motion</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor repositionable totem constellations with reduced potency.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.totemist.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sparkstone. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sparkstone. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr><tr id="talent.totemist.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sparkstone. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Sparkstone<br/><small>Shared handling contract</small></td></tr></tbody></table></div><details class="definition"><summary>Two structurally valid 59-point allocation examples</summary><p>These examples demonstrate legal point spending and capstone access. They are not optimized builds, are not automatically the two narrative-free playstyle approaches above, and do not establish balance.</p><h4>Allocation 1</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Calling Stone Refinement</td><td>3</td></tr><tr><td>Thunder Post Discipline</td><td>3</td></tr><tr><td>Earthen Post Practice</td><td>3</td></tr><tr><td>Anchored Layout</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Storm Circuit</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Calling Stone to Thunder Post</td><td>3</td></tr><tr><td>Thunder Post to Earthen Post</td><td>3</td></tr><tr><td>Earthen Post to Elemental Link</td><td>3</td></tr><tr><td>Living Circuit</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Calling Stone and Earthen Post</td><td>1</td></tr><tr><td>Elemental Link into Calling Stone</td><td>1</td></tr><tr><td>Defensive Topology</td><td>1</td></tr><tr><td>Repositioning Rite</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Architect of Storms</td><td>1</td></tr></tbody></table></div><h4>Allocation 2</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Calling Stone Refinement</td><td>3</td></tr><tr><td>Thunder Post Discipline</td><td>3</td></tr><tr><td>Earthen Post Practice</td><td>3</td></tr><tr><td>Anchored Layout</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Hearth Circuit</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Calling Stone to Thunder Post</td><td>3</td></tr><tr><td>Thunder Post to Earthen Post</td><td>3</td></tr><tr><td>Earthen Post to Elemental Link</td><td>3</td></tr><tr><td>Living Circuit</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Calling Stone and Earthen Post</td><td>1</td></tr><tr><td>Elemental Link into Calling Stone</td><td>1</td></tr><tr><td>Defensive Topology</td><td>1</td></tr><tr><td>Repositioning Rite</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Architect of Refuge</td><td>1</td></tr></tbody></table></div></details></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#specializations-at-a-glance">Specializations at a glance</a><a href="#shared-class-abilities">Shared class abilities</a><a href="#shared-class-talent-tree">Shared class talent tree</a><a href="#stormcaller">Stormcaller · DPS</a><a href="#spiritmender">Spiritmender · HEALER</a><a href="#totemist">Totemist · DPS</a></aside></div></div></body></html>

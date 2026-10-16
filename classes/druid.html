@@ -1,0 +1,1083 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Class identity, unlocks, specialization loops, contrasting builds and complete node tables."><title>Druid · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" open><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a aria-current=page href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Classes</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Classes</div><h1>Druid</h1><p class="page-description">Class identity, unlocks, specialization loops, contrasting builds and complete node tables.</p><div class="article-body"><div class="summary-strip"><span class="badge">Both sides</span><span class="badge">Leather armor</span><span class="badge">4 specializations</span></div><p class="lead">Available form and resource are server-validated; all forms share common transformation lockout policy.</p><p><strong>Starting primary:</strong> Intellect. <strong>Weakness to retain:</strong> Form-specific lockouts and specialization tradeoffs.</p><div class="callout"><strong>Reading the catalog</strong><p>Ability profiles are numerical prototypes. Named secondary behavior and resource hooks still need binding and tests. Free-text intent cannot override the global execution rules. Talents below are not a verified in-game implementation.</p><a href="../guide/execution.html">Execution rules</a> · <a href="../guide/progression.html">118-point progression</a> · <a href="../guide/audit.html">Open gates</a></div><h2 id="specializations-at-a-glance">Specializations at a glance</h2><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Discipline</th><th scope="col">Role</th><th scope="col">Primary / resource</th><th scope="col">Main decision</th></tr></thead><tbody><tr><td><a href="#wildguard">Wildguard</a></td><td>TANK</td><td>Agility / Mana</td><td>Enter the tank form, generate Resolve through real defensive work and spend it before large incoming hits.</td></tr><tr><td><a href="#feral">Feral</a></td><td>DPS</td><td>Agility / Energy</td><td>Build Combo Points through claw attacks and decide between immediate finishing damage and maintained bleeds.</td></tr><tr><td><a href="#grovekeeper">Grovekeeper</a></td><td>HEALER</td><td>Intellect / Mana</td><td>Apply growing healing seeds, decide when to consume a mature seed and position recovery areas before group damage.</td></tr><tr><td><a href="#starcaller">Starcaller</a></td><td>DPS</td><td>Intellect / Mana</td><td>Alternate solar and lunar spells to control a Cycle state, then release the appropriate spender.</td></tr></tbody></table></div><h2 id="shared-class-abilities">Shared class abilities</h2><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.druid.briar_seed"><td><strong>Briar Seed</strong><br/><span class="muted">Druid · Level 1</span></td><td>enemy target<br/>Range 8</td><td>Apply a short nature damage effect to a hostile target.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "DOT",
+  "target_mode": "enemy_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Periodic affliction",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 12,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.15,
+        "tick_seconds": 2,
+        "tick_count": 6
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.verdant_touch"><td><strong>Verdant Touch</strong><br/><span class="muted">Druid · Level 3</span></td><td>friendly<br/>Range 8</td><td>Restore a small amount of health with nature magic.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "H",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Direct heal",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 1.7
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.rootsnare"><td><strong>Rootsnare</strong><br/><span class="muted">Druid · Level 5</span></td><td>ground<br/>Range 8</td><td>Create tangled roots that slow eligible enemies entering the area.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "ZC",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Slowing area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 3,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "slow",
+        "amount": 0.3,
+        "tick_seconds": 1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 3,
+    "nonmana_user_units": 15,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 3,
+  "nonmana_user_units": 15,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.way_of_forms"><td><strong>Way of Forms</strong><br/><span class="muted">Druid · Level 7</span></td><td>toggle<br/>Range 8</td><td>Switch between humanoid and an early utility animal form outside forbidden states.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "FO",
+  "target_mode": "toggle",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Validated form",
+    "cast_seconds": 0,
+    "cooldown_seconds": 1.5,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SET_FORM",
+        "policy": "selected_specialization_and_shared_form_rules"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>1.5s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.grove_instinct"><td><strong>Grove Instinct</strong><br/><span class="muted">Druid · Level 9</span></td><td>passive<br/>Range 8</td><td>Enables the class equipment and resource rules. No unlisted racial, profession-yield or combat-stat bonus.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PA",
+  "target_mode": "passive",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Class proficiency",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "PASSIVE",
+        "policy": "class_equipment_and_resource_rules"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>0s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.wildstride"><td><strong>Wildstride</strong><br/><span class="muted">Druid · Level 14</span></td><td>self<br/>Range 8</td><td>Briefly improve movement on traversable terrain.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "SP",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Movement acceleration",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 4,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "movement_speed",
+        "amount": 0.3,
+        "stack_group": "personal_movement"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>30s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.cleansing_dew"><td><strong>Cleansing Dew</strong><br/><span class="muted">Druid · Level 22</span></td><td>friendly<br/>Range 8</td><td>Remove an eligible poison or curse.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PU",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Friendly cleanse",
+    "cast_seconds": 0,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 2,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DISPEL",
+        "relation": "ally",
+        "families": [
+          "harmful_magic"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 2,
+    "nonmana_user_units": 10,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>8s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 2,
+  "nonmana_user_units": 10,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.nature_s_refuge"><td><strong>Nature's Refuge</strong><br/><span class="muted">Druid · Level 32</span></td><td>self<br/>Range 8</td><td>Gain a limited barrier from surrounding natural energy.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "SH",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Absorption ward",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "ABSORB",
+        "power_coefficient": 1.0,
+        "recipient_health_cap": 0.3
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>12s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.druid.seed_of_return"><td><strong>Seed of Return</strong><br/><span class="muted">Druid · Level 44</span></td><td>friendly<br/>Range 8</td><td>Restore a fallen ally outside restricted encounters through a nature rite.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "RE",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Out-of-combat revival",
+    "cast_seconds": 8,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 10,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "REVIVE",
+        "health_fraction": 0.2,
+        "mana_fraction": 0.2,
+        "combat_allowed": false
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 10,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>8s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 10,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h2 id="shared-class-talent-tree">Shared class talent tree</h2><p>59 class points at level 60; 36 nodes. Tier II and VI each contain one exclusive three-way choice. Every deeper tier requires a purchased node in the previous tier as well as its lower-tier point threshold.</p><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.druid.seedcraft"><td><strong>Seedcraft</strong><br/><small>Ranked modifier</small></td><td>Level 2<br/>3 ranks</td><td>Each rank improves Briar Seed periodic damage by 2%.</td><td>Briar Seed<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.wild_mercy"><td><strong>Wild Mercy</strong><br/><small>Ranked modifier</small></td><td>Level 3<br/>3 ranks</td><td>Each rank improves Verdant Touch by 2%.</td><td>Verdant Touch<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.root_weaving"><td><strong>Root Weaving</strong><br/><small>Ranked modifier</small></td><td>Level 5<br/>3 ranks</td><td>Each rank extends Rootsnare duration by 0.2 seconds against eligible enemies.</td><td>Rootsnare<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.form_fluency"><td><strong>Form Fluency</strong><br/><small>Ranked modifier</small></td><td>Level 7<br/>3 ranks</td><td>Each rank reduces Way of Forms transition recovery by 2%.</td><td>Way of Forms<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 2<br/>3 ranks</td><td>Primary action: Briar Seed. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 2<br/>3 ranks</td><td>Primary action: Briar Seed. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.druid.swift_transition"><td><strong>Swift Transition</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Switching forms temporarily reduces movement impairment without cleansing hard control.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.bramble_shelter"><td><strong>Bramble Shelter</strong><br/><small>Exclusive transformation</small></td><td>Level 32<br/>1 rank</td><td>Nature's Refuge applies a minor retaliatory slow to attackers.</td><td>Nature's Refuge<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.restoring_trail"><td><strong>Restoring Trail</strong><br/><small>Exclusive transformation</small></td><td>Level 14<br/>1 rank</td><td>Wildstride leaves a short-lived minor healing effect for allies along the path.</td><td>Wildstride<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Briar Seed. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Briar Seed. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Briar Seed. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.druid.natural_reserves"><td><strong>Natural Reserves</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank improves mana regeneration in humanoid form by 2%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.quiet_stride"><td><strong>Quiet Stride</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank improves Wildstride duration by 0.3 seconds.</td><td>Wildstride<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.tender_dew"><td><strong>Tender Dew</strong><br/><small>Ranked modifier</small></td><td>Level 22<br/>3 ranks</td><td>Each rank decreases Cleansing Dew mana cost by 3%.</td><td>Cleansing Dew<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.grove_bond"><td><strong>Grove Bond</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank strengthens Nature's Refuge by 3%.</td><td>Nature's Refuge<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Briar Seed. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Briar Seed. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.druid.leaf_and_thorn"><td><strong>Leaf and Thorn</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank improves Briar Seed after a valid Verdant Touch by 2%.</td><td>Briar Seed<br/>Verdant Touch<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.reclaimed_ground"><td><strong>Reclaimed Ground</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank makes Rootsnare grant the caster 1% area-damage reduction while inside.</td><td>Rootsnare<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.form_memory"><td><strong>Form Memory</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank preserves 2% more allowed resources when leaving a form, within caps.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.returning_sapling"><td><strong>Returning Sapling</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Each rank decreases Seed of Return out-of-combat cast time by 2%.</td><td>Seed of Return<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Briar Seed. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Briar Seed. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.druid.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Briar Seed. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Briar Seed. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Briar Seed. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Briar Seed. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Briar Seed. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Briar Seed. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.druid.many_faced_guardian"><td><strong>Many-Faced Guardian</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Form transitions grant temporary protection against the first matching attack type.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.heart_of_the_grove"><td><strong>Heart of the Grove</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Maintaining a form for a sustained period improves its specialized resource efficiency.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.circle_of_seasons"><td><strong>Circle of Seasons</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>A temporary grove rewards deliberate transitions between nature attacks and restoration.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.druid.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Briar Seed. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Briar Seed. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr><tr id="talent.druid.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Briar Seed. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Briar Seed<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h2 id="wildguard">Wildguard · TANK</h2><h3 id="mechanical-identity">Mechanical identity</h3><p>Enter the tank form, generate Resolve through real defensive work and spend it before large incoming hits.</p><p><strong>Resource contract:</strong> 100 Resolve; eligible mitigated enemy hit +10, maximum once per second; defensive spend 30; active tank form required; no resource from zero-damage friendly effects.</p><div class="route-grid"><section class="route"><h4>Approach A</h4><p>Anchored bear: strong self-defense and controlled area threat while holding position.</p></section><section class="route"><h4>Approach B</h4><p>Mobile guardian: use defensive movement and ally coverage with reduced stationary mitigation.</p></section></div><p><strong>Real cost of the choice:</strong> Anchoring is less flexible; mobile coverage gives up some personal defense. Humanoid utility does not preserve full tank mitigation.</p><p><strong>Equipment scaling:</strong> Agility. <strong>Sustained resource:</strong> Mana. Class, specialization and talent bonuses use the same modifier order, rather than separate additive implementations.</p><h3 id="specialization-abilities">Specialization abilities</h3><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.wildguard.greatbear_shape"><td><strong>Greatbear Shape</strong><br/><span class="muted">Wildguard · Level 10</span></td><td>toggle<br/>Range 8</td><td>Enter combat bear form with tank attributes and bear-specific resource rules.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "FO",
+  "target_mode": "toggle",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Validated form",
+    "cast_seconds": 0,
+    "cooldown_seconds": 1.5,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SET_FORM",
+        "policy": "selected_specialization_and_shared_form_rules"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>1.5s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.wildguard.thornhide"><td><strong>Thornhide</strong><br/><span class="muted">Wildguard · Level 10</span></td><td>self<br/>Range 8</td><td>Spend Resolve to reduce sustained physical damage taken.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "DR",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Personal defense",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 6,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "damage_reduction",
+        "amount": 0.3,
+        "stack_group": "personal_defense"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>30s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.wildguard.mauling_sweep"><td><strong>Mauling Sweep</strong><br/><span class="muted">Wildguard · Level 10</span></td><td>cone<br/>Range 8</td><td>Strike in a broad front arc and raise engaged NPC threat.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "CA",
+  "target_mode": "cone",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Area strike",
+    "cast_seconds": 0,
+    "cooldown_seconds": 10,
+    "mana_cost_percent": 5,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.65
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 5,
+    "nonmana_user_units": 25,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>10s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 5,
+  "nonmana_user_units": 25,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.wildguard.guardian_roar"><td><strong>Guardian Roar</strong><br/><span class="muted">Wildguard · Level 20</span></td><td>self aoe<br/>Range 8</td><td>Taunt nearby engaged NPCs with protected PvP limitations.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "TA",
+  "target_mode": "self_aoe",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Area challenge",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "TAUNT",
+        "duration_seconds": 3,
+        "threat_factor_of_highest": 1.1,
+        "target_cap": 5,
+        "engaged_npc_only": true
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>20s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.wildguard.earthroot_anchor"><td><strong>Earthroot Anchor</strong><br/><span class="muted">Wildguard · Level 35</span></td><td>ground<br/>Range 8</td><td>Create a protective root zone that restrains minor NPCs and stabilizes the tank.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "ZA",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Area defensive preparation",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 5,
+    "duration_seconds": 8,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_ZONE",
+        "status": "damage_reduction",
+        "amount": 0.1,
+        "radius": 2.5,
+        "target_cap": 5,
+        "stack_group": "group_defense"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 5,
+    "nonmana_user_units": 25,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>30s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 5,
+  "nonmana_user_units": 25,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.wildguard.ancient_hide"><td><strong>Ancient Hide</strong><br/><span class="muted">Wildguard · Level 50</span></td><td>self<br/>Range 8</td><td>Spend Resolve for a major timed defense that converts partial mitigation into regeneration.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "DR",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Personal defense",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 6,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "damage_reduction",
+        "amount": 0.3,
+        "stack_group": "personal_defense"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>30s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h3 id="specialization-talent-tree">Specialization talent tree</h3><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.wildguard.greatbear_shape_refinement"><td><strong>Greatbear Shape Refinement</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank reduces Greatbear Shape form or stance transition resource cost by 2%; no extra combat role access.</td><td>Greatbear Shape<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.thornhide_discipline"><td><strong>Thornhide Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Thornhide.</td><td>Thornhide<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.mauling_sweep_practice"><td><strong>Mauling Sweep Practice</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Mauling Sweep.</td><td>Mauling Sweep<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.bear_endurance"><td><strong>Bear Endurance</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases Resolve from true mitigations by 2%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Mauling Sweep. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Mauling Sweep. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.wildguard.roaming_bear"><td><strong>Roaming Bear</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Greatbear Shape has stronger mobile defense but lower static threat.</td><td>Greatbear Shape<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.rooted_protector"><td><strong>Rooted Protector</strong><br/><small>Exclusive transformation</small></td><td>Level 35<br/>1 rank</td><td>Earthroot Anchor grants stronger mitigation while standing inside.</td><td>Earthroot Anchor<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.feral_shield"><td><strong>Feral Shield</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Thornhide produces a brief counterattack when it absorbs melee damage.</td><td>Thornhide<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Mauling Sweep. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Mauling Sweep. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Mauling Sweep. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.wildguard.greatbear_shape_to_thornhide"><td><strong>Greatbear Shape to Thornhide</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Greatbear Shape, your next Thornhide within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Greatbear Shape<br/>Thornhide<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.thornhide_to_mauling_sweep"><td><strong>Thornhide to Mauling Sweep</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Thornhide, your next Mauling Sweep within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Mauling Sweep<br/>Thornhide<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.mauling_sweep_to_guardian_roar"><td><strong>Mauling Sweep to Guardian Roar</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Mauling Sweep, your next Guardian Roar within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Guardian Roar<br/>Mauling Sweep<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.thorned_hide"><td><strong>Thorned Hide</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank strengthens Thornhide while guarding multiple targets by 2%.</td><td>Thornhide<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Mauling Sweep. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Mauling Sweep. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.wildguard.greatbear_shape_and_mauling_sweep"><td><strong>Greatbear Shape and Mauling Sweep</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After successfully activating both Greatbear Shape and Mauling Sweep within 8 seconds, your next Greatbear Shape gains 2% eligible effect per rank; once per 8 seconds.</td><td>Greatbear Shape<br/>Mauling Sweep<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.guardian_roar_into_greatbear_shape"><td><strong>Guardian Roar into Greatbear Shape</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After using Guardian Roar, your next Greatbear Shape within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Greatbear Shape<br/>Guardian Roar<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.grounded_charge"><td><strong>Grounded Charge</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank reduces movement penalties of defensive bear actions by 2%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.defensive_roar"><td><strong>Defensive Roar</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank increases legitimate NPC threat from Guardian Roar by 3%.</td><td>Guardian Roar<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Mauling Sweep. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Mauling Sweep. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.wildguard.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Mauling Sweep. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Mauling Sweep. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Mauling Sweep. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Mauling Sweep. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Mauling Sweep. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Mauling Sweep. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.wildguard.guardian_of_soil"><td><strong>Guardian of Soil</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor durable stationary defense and protecting ground.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.guardian_of_the_path"><td><strong>Guardian of the Path</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor moving enemies, intercepting and mobile tanking.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.guardian_of_the_pack"><td><strong>Guardian of the Pack</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor short defensive benefits to nearby allies.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.wildguard.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Mauling Sweep. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Mauling Sweep. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr><tr id="talent.wildguard.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Mauling Sweep. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Mauling Sweep<br/><small>Shared handling contract</small></td></tr></tbody></table></div><details class="definition"><summary>Two structurally valid 59-point allocation examples</summary><p>These examples demonstrate legal point spending and capstone access. They are not optimized builds, are not automatically the two narrative-free playstyle approaches above, and do not establish balance.</p><h4>Allocation 1</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Greatbear Shape Refinement</td><td>3</td></tr><tr><td>Thornhide Discipline</td><td>3</td></tr><tr><td>Mauling Sweep Practice</td><td>3</td></tr><tr><td>Bear Endurance</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Roaming Bear</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Greatbear Shape to Thornhide</td><td>3</td></tr><tr><td>Thornhide to Mauling Sweep</td><td>3</td></tr><tr><td>Mauling Sweep to Guardian Roar</td><td>3</td></tr><tr><td>Thorned Hide</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Greatbear Shape and Mauling Sweep</td><td>1</td></tr><tr><td>Guardian Roar into Greatbear Shape</td><td>1</td></tr><tr><td>Grounded Charge</td><td>1</td></tr><tr><td>Defensive Roar</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Guardian of Soil</td><td>1</td></tr></tbody></table></div><h4>Allocation 2</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Greatbear Shape Refinement</td><td>3</td></tr><tr><td>Thornhide Discipline</td><td>3</td></tr><tr><td>Mauling Sweep Practice</td><td>3</td></tr><tr><td>Bear Endurance</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Rooted Protector</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Greatbear Shape to Thornhide</td><td>3</td></tr><tr><td>Thornhide to Mauling Sweep</td><td>3</td></tr><tr><td>Mauling Sweep to Guardian Roar</td><td>3</td></tr><tr><td>Thorned Hide</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Greatbear Shape and Mauling Sweep</td><td>1</td></tr><tr><td>Guardian Roar into Greatbear Shape</td><td>1</td></tr><tr><td>Grounded Charge</td><td>1</td></tr><tr><td>Defensive Roar</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Guardian of the Path</td><td>1</td></tr></tbody></table></div></details><h2 id="feral">Feral · DPS</h2><h3 id="mechanical-identity-2">Mechanical identity</h3><p>Build Combo Points through claw attacks and decide between immediate finishing damage and maintained bleeds.</p><p><strong>Resource contract:</strong> Energy plus five owner Combo Points; Raking Claw +1; Savage Finish consumes 1–5; form changes preserve no additional duplicate resource pool.</p><div class="route-grid"><section class="route"><h4>Approach A</h4><p>Bleeding pursuit: maintain bleeds while moving between positional opportunities.</p></section><section class="route"><h4>Approach B</h4><p>Focused predation: spend more points in short direct windows against one target.</p></section></div><p><strong>Real cost of the choice:</strong> Bleeds are slower on fragile enemies; direct windows require uptime and careful resource pooling.</p><p><strong>Equipment scaling:</strong> Agility. <strong>Sustained resource:</strong> Energy. Class, specialization and talent bonuses use the same modifier order, rather than separate additive implementations.</p><h3 id="specialization-abilities-2">Specialization abilities</h3><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.feral.wildcat_shape"><td><strong>Wildcat Shape</strong><br/><span class="muted">Feral · Level 10</span></td><td>toggle<br/>Range 8</td><td>Enter cat form with Energy and Combo Point rules.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "FO",
+  "target_mode": "toggle",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Validated form",
+    "cast_seconds": 0,
+    "cooldown_seconds": 1.5,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SET_FORM",
+        "policy": "selected_specialization_and_shared_form_rules"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>1.5s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.feral.raking_claw"><td><strong>Raking Claw</strong><br/><span class="muted">Feral · Level 10</span></td><td>enemy melee<br/>Range 1.5</td><td>Strike and apply a limited bleed, gaining a Combo Point.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PO",
+  "target_mode": "enemy_melee",
+  "base_range": 1.5,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Weapon poison",
+    "cast_seconds": 0,
+    "cooldown_seconds": 6,
+    "mana_cost_percent": 0,
+    "duration_seconds": 12,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.2
+      },
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.12,
+        "tick_seconds": 2,
+        "tick_count": 6
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 25
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>6s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 25
+}</code></pre></details></td></tr><tr id="ability.feral.pouncing_route"><td><strong>Pouncing Route</strong><br/><span class="muted">Feral · Level 10</span></td><td>dash target<br/>Range 8</td><td>Leap toward a target along a legal path and gain a brief flanking opportunity.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "G",
+  "target_mode": "dash_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Targeted advance",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "MOVE",
+        "movement": "dash_to_target",
+        "distance_cap": 6
+      },
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.25
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.feral.savage_finish"><td><strong>Savage Finish</strong><br/><span class="muted">Feral · Level 20</span></td><td>enemy melee<br/>Range 1.5</td><td>Spend Combo Points to deepen an existing bleed or deal direct damage.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "F",
+  "target_mode": "enemy_melee",
+  "base_range": 1.5,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Committed finisher",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 6,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.8
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 6,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>12s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 6,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.feral.moonclaw_reflex"><td><strong>Moonclaw Reflex</strong><br/><span class="muted">Feral · Level 35</span></td><td>self<br/>Range 8</td><td>Briefly increase dodge response after a successful positional attack.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "PR",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Timed parry",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 0,
+    "duration_seconds": 2,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "next_physical_hit_reduction",
+        "amount": 0.5,
+        "charges": 1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>12s cooldown<br/>Off GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.feral.predator_s_moon"><td><strong>Predator's Moon</strong><br/><span class="muted">Feral · Level 50</span></td><td>self<br/>Range 8</td><td>Enter a timed heightened hunt state empowering deliberate bleed and finisher sequencing.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "CD",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Major output window",
+    "cast_seconds": 0,
+    "cooldown_seconds": 90,
+    "mana_cost_percent": 0,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "personal_output",
+        "amount": 0.15,
+        "stack_group": "major_output"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>90s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h3 id="specialization-talent-tree-2">Specialization talent tree</h3><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.feral.wildcat_shape_refinement"><td><strong>Wildcat Shape Refinement</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank reduces Wildcat Shape form or stance transition resource cost by 2%; no extra combat role access.</td><td>Wildcat Shape<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.raking_claw_discipline"><td><strong>Raking Claw Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Raking Claw.</td><td>Raking Claw<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.pouncing_route_practice"><td><strong>Pouncing Route Practice</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank reduces Pouncing Route recovery cooldown by 2% without increasing travel range.</td><td>Pouncing Route<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.wild_rhythm"><td><strong>Wild Rhythm</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank reduces Predatory Rhythm loss on target swaps by 3%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Raking Claw. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Raking Claw. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.feral.patient_claw"><td><strong>Patient Claw</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Raking Claw bleeds longer with lower immediate output.</td><td>Raking Claw<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.quick_claw"><td><strong>Quick Claw</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Raking Claw has shorter duration but faster resource generation.</td><td>Raking Claw<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.hunter_s_reflex"><td><strong>Hunter's Reflex</strong><br/><small>Exclusive transformation</small></td><td>Level 35<br/>1 rank</td><td>Moonclaw Reflex increases movement rather than passive defense.</td><td>Moonclaw Reflex<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Raking Claw. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Raking Claw. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Raking Claw. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.feral.wildcat_shape_to_raking_claw"><td><strong>Wildcat Shape to Raking Claw</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Wildcat Shape, your next Raking Claw within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Raking Claw<br/>Wildcat Shape<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.raking_claw_to_pouncing_route"><td><strong>Raking Claw to Pouncing Route</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Raking Claw, your next Pouncing Route within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Pouncing Route<br/>Raking Claw<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.pouncing_route_to_savage_finish"><td><strong>Pouncing Route to Savage Finish</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Pouncing Route, your next Savage Finish within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Pouncing Route<br/>Savage Finish<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.primal_bleeding"><td><strong>Primal Bleeding</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank strengthens bleed ticks after two distinct cat abilities by 2%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Raking Claw. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Raking Claw. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.feral.wildcat_shape_and_pouncing_route"><td><strong>Wildcat Shape and Pouncing Route</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After successfully activating both Wildcat Shape and Pouncing Route within 8 seconds, your next Wildcat Shape gains 2% eligible effect per rank; once per 8 seconds.</td><td>Pouncing Route<br/>Wildcat Shape<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.savage_finish_into_wildcat_shape"><td><strong>Savage Finish into Wildcat Shape</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After using Savage Finish, your next Wildcat Shape within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Savage Finish<br/>Wildcat Shape<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.sure_leap"><td><strong>Sure Leap</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank reduces Pouncing Route resource cost by 2%.</td><td>Pouncing Route<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.final_claw"><td><strong>Final Claw</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank improves Savage Finish after a maintained full bleed cycle by 2%.</td><td>Savage Finish<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Raking Claw. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Raking Claw. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.feral.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Raking Claw. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Raking Claw. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Raking Claw. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Raking Claw. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Raking Claw. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Raking Claw. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.feral.bloodtrail_hunt"><td><strong>Bloodtrail Hunt</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor extended single-target bleeding and pursuit.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.clawstorm_hunt"><td><strong>Clawstorm Hunt</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor short multi-target strike windows and swaps.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.shadowleaf_hunt"><td><strong>Shadowleaf Hunt</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor stealth openings and positioning rewards.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.feral.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Raking Claw. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Raking Claw. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr><tr id="talent.feral.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Raking Claw. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Raking Claw<br/><small>Shared handling contract</small></td></tr></tbody></table></div><details class="definition"><summary>Two structurally valid 59-point allocation examples</summary><p>These examples demonstrate legal point spending and capstone access. They are not optimized builds, are not automatically the two narrative-free playstyle approaches above, and do not establish balance.</p><h4>Allocation 1</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Wildcat Shape Refinement</td><td>3</td></tr><tr><td>Raking Claw Discipline</td><td>3</td></tr><tr><td>Pouncing Route Practice</td><td>3</td></tr><tr><td>Wild Rhythm</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Patient Claw</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Wildcat Shape to Raking Claw</td><td>3</td></tr><tr><td>Raking Claw to Pouncing Route</td><td>3</td></tr><tr><td>Pouncing Route to Savage Finish</td><td>3</td></tr><tr><td>Primal Bleeding</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Wildcat Shape and Pouncing Route</td><td>1</td></tr><tr><td>Savage Finish into Wildcat Shape</td><td>1</td></tr><tr><td>Sure Leap</td><td>1</td></tr><tr><td>Final Claw</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Bloodtrail Hunt</td><td>1</td></tr></tbody></table></div><h4>Allocation 2</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Wildcat Shape Refinement</td><td>3</td></tr><tr><td>Raking Claw Discipline</td><td>3</td></tr><tr><td>Pouncing Route Practice</td><td>3</td></tr><tr><td>Wild Rhythm</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Quick Claw</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Wildcat Shape to Raking Claw</td><td>3</td></tr><tr><td>Raking Claw to Pouncing Route</td><td>3</td></tr><tr><td>Pouncing Route to Savage Finish</td><td>3</td></tr><tr><td>Primal Bleeding</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Wildcat Shape and Pouncing Route</td><td>1</td></tr><tr><td>Savage Finish into Wildcat Shape</td><td>1</td></tr><tr><td>Sure Leap</td><td>1</td></tr><tr><td>Final Claw</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Clawstorm Hunt</td><td>1</td></tr></tbody></table></div></details><h2 id="grovekeeper">Grovekeeper · HEALER</h2><h3 id="mechanical-identity-3">Mechanical identity</h3><p>Apply growing healing seeds, decide when to consume a mature seed and position recovery areas before group damage.</p><p><strong>Resource contract:</strong> Three growth stages per seed at 0/4/8 seconds; one seed per caster/target; consuming removes that seed and its remaining healing budget; no duplicate tick at consumption.</p><div class="route-grid"><section class="route"><h4>Approach A</h4><p>Sustained garden: maintain several HoTs and let them mature naturally.</p></section><section class="route"><h4>Approach B</h4><p>Reactive bloom: consume prepared seeds for immediate recovery, then spend time and mana replanting.</p></section></div><p><strong>Real cost of the choice:</strong> Sustained healing is slower to rescue; consuming seeds trades future healing for current health.</p><p><strong>Equipment scaling:</strong> Intellect. <strong>Sustained resource:</strong> Mana. Class, specialization and talent bonuses use the same modifier order, rather than separate additive implementations.</p><h3 id="specialization-abilities-3">Specialization abilities</h3><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.grovekeeper.new_growth"><td><strong>New Growth</strong><br/><span class="muted">Grovekeeper · Level 10</span></td><td>friendly<br/>Range 8</td><td>Apply a healing-over-time seed that grows stronger during its duration.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "HOT",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Sustained recovery",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.3,
+        "tick_seconds": 2,
+        "tick_count": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.grovekeeper.open_bloom"><td><strong>Open Bloom</strong><br/><span class="muted">Grovekeeper · Level 10</span></td><td>friendly<br/>Range 8</td><td>Consume a mature healing seed for immediate health restoration.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "H",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Direct heal",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 1.7
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.grovekeeper.spring_canopy"><td><strong>Spring Canopy</strong><br/><span class="muted">Grovekeeper · Level 10</span></td><td>ground<br/>Range 8</td><td>Place a regenerative area with limited simultaneous blooms.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "GH",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Group regenerative area",
+    "cast_seconds": 2,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 8,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.25,
+        "tick_seconds": 2,
+        "tick_count": 5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 8,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>2s cast<br/>20s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 8,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.grovekeeper.tending_hands"><td><strong>Tending Hands</strong><br/><span class="muted">Grovekeeper · Level 20</span></td><td>friendly<br/>Range 8</td><td>Extend a nearby valid healing-over-time effect without duplicating ownership.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "HOT",
+  "target_mode": "friendly",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Sustained recovery",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.3,
+        "tick_seconds": 2,
+        "tick_count": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.grovekeeper.wild_refuge"><td><strong>Wild Refuge</strong><br/><span class="muted">Grovekeeper · Level 35</span></td><td>self aoe<br/>Range 8</td><td>Grant allies temporary regeneration and resistance to minor damage-over-time effects.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "GH",
+  "target_mode": "self_aoe",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Group regenerative area",
+    "cast_seconds": 2,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 8,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.25,
+        "tick_seconds": 2,
+        "tick_count": 5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 8,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>2s cast<br/>20s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 8,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.grovekeeper.season_s_return"><td><strong>Season's Return</strong><br/><span class="muted">Grovekeeper · Level 50</span></td><td>ground<br/>Range 8</td><td>Create a large delayed group heal that is stronger where Bloom effects are present.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "GH",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Group regenerative area",
+    "cast_seconds": 2,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 8,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.25,
+        "tick_seconds": 2,
+        "tick_count": 5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 8,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>2s cast<br/>20s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 8,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h3 id="specialization-talent-tree-3">Specialization talent tree</h3><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.grovekeeper.new_growth_refinement"><td><strong>New Growth Refinement</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: New Growth.</td><td>New Growth<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.open_bloom_discipline"><td><strong>Open Bloom Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Open Bloom.</td><td>Open Bloom<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.spring_canopy_practice"><td><strong>Spring Canopy Practice</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Spring Canopy.</td><td>Spring Canopy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.patient_bloom"><td><strong>Patient Bloom</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank extends mature Bloom duration by 0.3 seconds.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: New Growth. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: New Growth. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.grovekeeper.early_blossom"><td><strong>Early Blossom</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Open Bloom can consume immature growth with reduced healing.</td><td>Open Bloom<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.patient_grove"><td><strong>Patient Grove</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>New Growth lasts longer but has lower initial healing.</td><td>New Growth<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.moving_canopy"><td><strong>Moving Canopy</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Spring Canopy follows the caster slowly at reduced strength.</td><td>Spring Canopy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: New Growth. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: New Growth. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: New Growth. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.grovekeeper.new_growth_to_open_bloom"><td><strong>New Growth to Open Bloom</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using New Growth, your next Open Bloom within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>New Growth<br/>Open Bloom<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.open_bloom_to_spring_canopy"><td><strong>Open Bloom to Spring Canopy</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Open Bloom, your next Spring Canopy within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Open Bloom<br/>Spring Canopy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.spring_canopy_to_tending_hands"><td><strong>Spring Canopy to Tending Hands</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Spring Canopy, your next Tending Hands within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Spring Canopy<br/>Tending Hands<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.planting_season"><td><strong>Planting Season</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank reduces mana cost of establishing New Growth on a new ally by 2%.</td><td>New Growth<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: New Growth. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: New Growth. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.grovekeeper.new_growth_and_spring_canopy"><td><strong>New Growth and Spring Canopy</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After successfully activating both New Growth and Spring Canopy within 8 seconds, your next New Growth gains 2% eligible effect per rank; once per 8 seconds.</td><td>New Growth<br/>Spring Canopy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.tending_hands_into_new_growth"><td><strong>Tending Hands into New Growth</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After using Tending Hands, your next New Growth within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>New Growth<br/>Tending Hands<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.grove_memory"><td><strong>Grove Memory</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank improves Open Bloom on a mature seed by 2%.</td><td>Open Bloom<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.tending_circle"><td><strong>Tending Circle</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank extends Spring Canopy radius by 0.1 tile units.</td><td>Spring Canopy<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: New Growth. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: New Growth. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.grovekeeper.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: New Growth. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: New Growth. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: New Growth. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: New Growth. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: New Growth. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: New Growth. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.grovekeeper.verdant_flood"><td><strong>Verdant Flood</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor area and group healing through synchronized Blooms.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.old_root"><td><strong>Old Root</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor reliable long-duration single-target maintenance.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.swift_spring"><td><strong>Swift Spring</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor mobile emergency healing and quick Bloom consumption.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.grovekeeper.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: New Growth. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: New Growth. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr><tr id="talent.grovekeeper.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: New Growth. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>New Growth<br/><small>Shared handling contract</small></td></tr></tbody></table></div><details class="definition"><summary>Two structurally valid 59-point allocation examples</summary><p>These examples demonstrate legal point spending and capstone access. They are not optimized builds, are not automatically the two narrative-free playstyle approaches above, and do not establish balance.</p><h4>Allocation 1</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>New Growth Refinement</td><td>3</td></tr><tr><td>Open Bloom Discipline</td><td>3</td></tr><tr><td>Spring Canopy Practice</td><td>3</td></tr><tr><td>Patient Bloom</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Early Blossom</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>New Growth to Open Bloom</td><td>3</td></tr><tr><td>Open Bloom to Spring Canopy</td><td>3</td></tr><tr><td>Spring Canopy to Tending Hands</td><td>3</td></tr><tr><td>Planting Season</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>New Growth and Spring Canopy</td><td>1</td></tr><tr><td>Tending Hands into New Growth</td><td>1</td></tr><tr><td>Grove Memory</td><td>1</td></tr><tr><td>Tending Circle</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Verdant Flood</td><td>1</td></tr></tbody></table></div><h4>Allocation 2</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>New Growth Refinement</td><td>3</td></tr><tr><td>Open Bloom Discipline</td><td>3</td></tr><tr><td>Spring Canopy Practice</td><td>3</td></tr><tr><td>Patient Bloom</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Patient Grove</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>New Growth to Open Bloom</td><td>3</td></tr><tr><td>Open Bloom to Spring Canopy</td><td>3</td></tr><tr><td>Spring Canopy to Tending Hands</td><td>3</td></tr><tr><td>Planting Season</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>New Growth and Spring Canopy</td><td>1</td></tr><tr><td>Tending Hands into New Growth</td><td>1</td></tr><tr><td>Grove Memory</td><td>1</td></tr><tr><td>Tending Circle</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Old Root</td><td>1</td></tr></tbody></table></div></details><h2 id="starcaller">Starcaller · DPS</h2><h3 id="mechanical-identity-4">Mechanical identity</h3><p>Alternate solar and lunar spells to control a Cycle state, then release the appropriate spender.</p><p><strong>Resource contract:</strong> Cycle meter −3 to +3; solar adds one, lunar subtracts one; eligible finisher consumes three units toward zero; no benefit from toggling a phase without a successful action.</p><div class="route-grid"><section class="route"><h4>Approach A</h4><p>Alternating balance: use both spell families to maintain access to repeated balanced finishes.</p></section><section class="route"><h4>Approach B</h4><p>Committed phase: stay in one phase longer for stronger short output before an explicit recovery phase.</p></section></div><p><strong>Real cost of the choice:</strong> Balance loses maximum phase burst; commitment is more vulnerable to target loss and forced movement.</p><p><strong>Equipment scaling:</strong> Intellect. <strong>Sustained resource:</strong> Mana. Class, specialization and talent bonuses use the same modifier order, rather than separate additive implementations.</p><h3 id="specialization-abilities-4">Specialization abilities</h3><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Ability / unlock</th><th scope="col">Targeting</th><th scope="col">Intent and numerical profile</th><th scope="col">Timing / cost</th></tr></thead><tbody><tr id="ability.starcaller.sunthorn"><td><strong>Sunthorn</strong><br/><span class="muted">Starcaller · Level 10</span></td><td>enemy projectile<br/>Range 8</td><td>Deal bright nature damage and advance the solar half of Cycle.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "D",
+  "target_mode": "enemy_projectile",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Measured direct spell",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 3,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 3,
+    "nonmana_user_units": 15,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 3,
+  "nonmana_user_units": 15,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.starcaller.moonseed"><td><strong>Moonseed</strong><br/><span class="muted">Starcaller · Level 10</span></td><td>enemy target<br/>Range 8</td><td>Apply a lunar damage effect and advance the lunar half of Cycle.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "DOT",
+  "target_mode": "enemy_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Periodic affliction",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 12,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.15,
+        "tick_seconds": 2,
+        "tick_count": 6
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 4,
+    "nonmana_user_units": 20,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 4,
+  "nonmana_user_units": 20,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.starcaller.equinox"><td><strong>Equinox</strong><br/><span class="muted">Starcaller · Level 10</span></td><td>self<br/>Range 8</td><td>Balance the Cycle meter and prepare the next spender.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "MR",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "channel_start_commit",
+  "execution": {
+    "name": "Resource recovery channel",
+    "cast_seconds": 3,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "RESOURCE_RESTORE",
+        "primary_max_fraction": 0.15,
+        "ticks": 3
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>3s cast<br/>30s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.starcaller.falling_starleaf"><td><strong>Falling Starleaf</strong><br/><span class="muted">Starcaller · Level 20</span></td><td>ground<br/>Range 8</td><td>Call down a delayed celestial strike in an area.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "ZD",
+  "target_mode": "ground",
+  "base_range": 8,
+  "radius": 2.5,
+  "target_cap": 5,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Persistent damage area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 6,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.2,
+        "tick_seconds": 1,
+        "tick_count": 6
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 6,
+    "nonmana_user_units": 30,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>15s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 6,
+  "nonmana_user_units": 30,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.starcaller.celestial_current"><td><strong>Celestial Current</strong><br/><span class="muted">Starcaller · Level 35</span></td><td>enemy target<br/>Range 8</td><td>Spend Cycle power for a single-target astral beam with phase-dependent effect.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "D",
+  "target_mode": "enemy_target",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Measured direct spell",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 3,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.1
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 3,
+    "nonmana_user_units": 15,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>1.5s cast<br/>0s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 3,
+  "nonmana_user_units": 15,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr><tr id="ability.starcaller.skygrove_alignment"><td><strong>Skygrove Alignment</strong><br/><span class="muted">Starcaller · Level 50</span></td><td>self<br/>Range 8</td><td>Enter a timed balanced phase that rewards alternating solar and lunar spells.<details class="definition"><summary>Prototype execution details</summary><pre><code>{
+  "profile_id": "CD",
+  "target_mode": "self",
+  "base_range": 8,
+  "radius": 0,
+  "target_cap": 1,
+  "timing_policy": "release_commit",
+  "execution": {
+    "name": "Major output window",
+    "cast_seconds": 0,
+    "cooldown_seconds": 90,
+    "mana_cost_percent": 0,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "personal_output",
+        "amount": 0.15,
+        "stack_group": "major_output"
+      }
+    ]
+  },
+  "cost_policy": {
+    "mana_user_percent": 0,
+    "nonmana_user_units": 0,
+    "martial_energy_cost": 0
+  },
+  "content_status": "prototype_profile_assigned_bespoke_binding_review"
+}</code></pre></details></td><td>0s cast<br/>90s cooldown<br/>GCD<details class="definition"><summary>Resource-cost rule</summary><pre><code>{
+  "mana_user_percent": 0,
+  "nonmana_user_units": 0,
+  "martial_energy_cost": 0
+}</code></pre></details></td></tr></tbody></table></div><h3 id="specialization-talent-tree-4">Specialization talent tree</h3><h4>Tier 1 · 0 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.starcaller.sunthorn_refinement"><td><strong>Sunthorn Refinement</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Sunthorn.</td><td>Sunthorn<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.moonseed_discipline"><td><strong>Moonseed Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Moonseed.</td><td>Moonseed<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.equinox_practice"><td><strong>Equinox Practice</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank increases the explicitly authored damage, healing or absorb coefficient of the named ability by 2%. If that profile contains no such coefficient, reduce its nonzero cooldown by 2% per rank instead. Never modifies crowd control, movement distance, resource generation or threat directly. Named ability: Equinox.</td><td>Equinox<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.balanced_cycles"><td><strong>Balanced Cycles</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Each rank reduces overflow loss on Cycle switching by 3%.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.v2_intentional_footing"><td><strong>Intentional Footing</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sunthorn. After moving at least one unit between successful primary actions, the next primary action gains 2% output per rank. Six-second internal cooldown; no movement-only trigger.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_measured_recovery"><td><strong>Measured Recovery</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sunthorn. The first eligible primary action after spending at least 20% of the main resource costs 3% less per rank. If it already costs zero, grant 1% output per rank instead; eight-second internal cooldown.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 2 · 8 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.starcaller.solar_path"><td><strong>Solar Path</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Advance Cycle faster through Sunthorn but weaken lunar effects.</td><td>Sunthorn<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.lunar_path"><td><strong>Lunar Path</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Advance Cycle faster through Moonseed but weaken solar effects.</td><td>Moonseed<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.true_equinox"><td><strong>True Equinox</strong><br/><small>Exclusive transformation</small></td><td>Level 10<br/>1 rank</td><td>Equinox can bank a small amount of overflow Cycle.</td><td>Equinox<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.v2_moving_commitment"><td><strong>Moving Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sunthorn. After a successful defensive action, permit the next stationary primary cast to move for 0.5 seconds per rank within a four-second window. For instant/melee kits, grant 2% movement speed per rank for two seconds instead. Ten-second internal cooldown.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_settled_commitment"><td><strong>Settled Commitment</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sunthorn. After two seconds stationary, the next primary output gains 2% per rank. Moving clears preparation. This does not multiply racial offsets or control duration.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_resource_reserve"><td><strong>Resource Reserve</strong><br/><small>Ranked modifier</small></td><td>Level 10<br/>3 ranks</td><td>Primary action: Sunthorn. Increase the sustained resource maximum by 2% per rank without refilling it. Does not increase capped marks, summon capacity, damage debt or Combo Points.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 3 · 18 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.starcaller.sunthorn_to_moonseed"><td><strong>Sunthorn to Moonseed</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Sunthorn, your next Moonseed within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Moonseed<br/>Sunthorn<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.moonseed_to_equinox"><td><strong>Moonseed to Equinox</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Moonseed, your next Equinox within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Equinox<br/>Moonseed<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.equinox_to_falling_starleaf"><td><strong>Equinox to Falling Starleaf</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>After using Equinox, your next Falling Starleaf within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Equinox<br/>Falling Starleaf<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.sunward_step"><td><strong>Sunward Step</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Each rank enhances Sunthorn cast continuity during movement by 2%.</td><td>Sunthorn<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.v2_target_transfer"><td><strong>Target Transfer</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Sunthorn. The first eligible primary action against a different valid target costs 3% less per rank; if free, gains 1% output per rank instead. Six-second internal cooldown; retargeting without an action grants nothing.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_defensive_follow_through"><td><strong>Defensive Follow-through</strong><br/><small>Ranked modifier</small></td><td>Level 20<br/>3 ranks</td><td>Primary action: Sunthorn. After real damage is blocked, absorbed or prevented by an owned ability, the next primary action gains 2% output per rank. Ten-second internal cooldown; redirected/debt damage cannot trigger it.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 4 · 30 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.starcaller.sunthorn_and_equinox"><td><strong>Sunthorn and Equinox</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After successfully activating both Sunthorn and Equinox within 8 seconds, your next Sunthorn gains 2% eligible effect per rank; once per 8 seconds.</td><td>Equinox<br/>Sunthorn<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.falling_starleaf_into_sunthorn"><td><strong>Falling Starleaf into Sunthorn</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>After using Falling Starleaf, your next Sunthorn within 6 seconds gains 2% primary effect per rank; no stacking.</td><td>Falling Starleaf<br/>Sunthorn<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.moonlit_stillness"><td><strong>Moonlit Stillness</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Each rank extends Moonseed by 0.3 seconds, capped.</td><td>Moonseed<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.twin_alignment"><td><strong>Twin Alignment</strong><br/><small>Ranked modifier</small></td><td>Level 35<br/>3 ranks</td><td>Each rank improves Celestial Current when both phases were used by 2%.</td><td>Celestial Current<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.v2_conserved_momentum"><td><strong>Conserved Momentum</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Sunthorn. Retain ordinary combat-generated resource for one additional out-of-combat second per rank before normal decay. Excludes target marks, damage debt, temporary invulnerabilities and instance transfers.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_decisive_window"><td><strong>Decisive Window</strong><br/><small>Ranked modifier</small></td><td>Level 32<br/>3 ranks</td><td>Primary action: Sunthorn. The first direct primary action against an enemy below 25% health, or a healing recipient below 40%, gains 2% output per rank. Six-second internal cooldown; no gain from overhealing or overkill.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 5 · 42 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.starcaller.v2_efficient_setup"><td><strong>Efficient Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sunthorn. After two distinct successful owned ability families in six seconds, reduce the next paid primary action cost by 2% per rank. One consumption per sequence; periodic ticks are not new families.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_extended_setup"><td><strong>Extended Setup</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sunthorn. Extend an eligible non-control owner mark or preparation window by 0.5 seconds per rank, to at most 15 seconds. Where none exists, extend this tree's preparation consumption window by the same amount. Does not create extra periodic ticks.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_careful_coverage"><td><strong>Careful Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sunthorn. Increase an owned non-control area radius by 0.1 units per rank while reducing per-target output by 1% per rank. Target caps and server interest rules still apply; without an area, extend normal primary range by 0.05 units per rank.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_compact_coverage"><td><strong>Compact Coverage</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sunthorn. The primary action gains 2% per rank when it affects exactly one eligible target. For an area, actual server-selected target count is used; no targeting dummy or summoned-object loopholes.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_coordinated_timing"><td><strong>Coordinated Timing</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sunthorn. After another eligible player successfully acts on the same target, the next primary action within two seconds gains 1% per rank. Eight-second internal cooldown; pets and self-owned effects do not qualify.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_independent_practice"><td><strong>Independent Practice</strong><br/><small>Ranked modifier</small></td><td>Level 44<br/>3 ranks</td><td>Primary action: Sunthorn. While solo and not participating in a group encounter, primary direct output gains 2% per rank. Party changes during combat cannot turn the benefit on. Disabled in rated PvP.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr></tbody></table></div><h4>Tier 6 · 52 points in lower tiers</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Talent</th><th scope="col">Unlock / ranks</th><th scope="col">Effect and tradeoff</th><th scope="col">Ability dependency / status</th></tr></thead><tbody><tr id="talent.starcaller.noonday_caller"><td><strong>Noonday Caller</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor concentrated solar burst and movement windows.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.moonlit_caller"><td><strong>Moonlit Caller</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor long-duration lunar damage and resource conservation.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.twilight_caller"><td><strong>Twilight Caller</strong><br/><small>Exclusive capstone</small></td><td>Level 54<br/>1 rank</td><td>Favor precise alternation for balanced sustained pressure.</td><td>Tree gate only<br/><small>Bespoke binding required</small></td></tr><tr id="talent.starcaller.v2_recovery_discipline"><td><strong>Recovery Discipline</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sunthorn. After an enemy interrupts a paid primary cast, reduce the next accepted primary cast's cost by 3% per rank. Once per 15 seconds; cancellation by the player does not qualify. Instant-only kits instead trigger after a hostile hard control ends.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_reserved_finish"><td><strong>Reserved Finish</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sunthorn. An eligible finisher used above 70% sustained resource gains 1% output per rank. Where no finisher exists, apply to the first paid primary action after a major cooldown. No increase to resource generation, control or transfer fractions.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr><tr id="talent.starcaller.v2_flexible_response"><td><strong>Flexible Response</strong><br/><small>Ranked modifier</small></td><td>Level 54<br/>3 ranks</td><td>Primary action: Sunthorn. After an eligible primary action on a target at least three units away, the next paid primary action within three units costs 2% less per rank. Reverse the distances for melee-only kits using their defensive follow-up. Eight-second internal cooldown; free actions receive no refund.</td><td>Sunthorn<br/><small>Shared handling contract</small></td></tr></tbody></table></div><details class="definition"><summary>Two structurally valid 59-point allocation examples</summary><p>These examples demonstrate legal point spending and capstone access. They are not optimized builds, are not automatically the two narrative-free playstyle approaches above, and do not establish balance.</p><h4>Allocation 1</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Sunthorn Refinement</td><td>3</td></tr><tr><td>Moonseed Discipline</td><td>3</td></tr><tr><td>Equinox Practice</td><td>3</td></tr><tr><td>Balanced Cycles</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Solar Path</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Sunthorn to Moonseed</td><td>3</td></tr><tr><td>Moonseed to Equinox</td><td>3</td></tr><tr><td>Equinox to Falling Starleaf</td><td>3</td></tr><tr><td>Sunward Step</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Sunthorn and Equinox</td><td>1</td></tr><tr><td>Falling Starleaf into Sunthorn</td><td>1</td></tr><tr><td>Moonlit Stillness</td><td>1</td></tr><tr><td>Twin Alignment</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Noonday Caller</td><td>1</td></tr></tbody></table></div><h4>Allocation 2</h4><div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Selected talent</th><th scope="col">Ranks</th></tr></thead><tbody><tr><td>Sunthorn Refinement</td><td>3</td></tr><tr><td>Moonseed Discipline</td><td>3</td></tr><tr><td>Equinox Practice</td><td>3</td></tr><tr><td>Balanced Cycles</td><td>3</td></tr><tr><td>Intentional Footing</td><td>3</td></tr><tr><td>Measured Recovery</td><td>3</td></tr><tr><td>Lunar Path</td><td>1</td></tr><tr><td>Moving Commitment</td><td>3</td></tr><tr><td>Settled Commitment</td><td>3</td></tr><tr><td>Resource Reserve</td><td>3</td></tr><tr><td>Sunthorn to Moonseed</td><td>3</td></tr><tr><td>Moonseed to Equinox</td><td>3</td></tr><tr><td>Equinox to Falling Starleaf</td><td>3</td></tr><tr><td>Sunward Step</td><td>3</td></tr><tr><td>Target Transfer</td><td>3</td></tr><tr><td>Defensive Follow-through</td><td>3</td></tr><tr><td>Sunthorn and Equinox</td><td>1</td></tr><tr><td>Falling Starleaf into Sunthorn</td><td>1</td></tr><tr><td>Moonlit Stillness</td><td>1</td></tr><tr><td>Twin Alignment</td><td>1</td></tr><tr><td>Conserved Momentum</td><td>1</td></tr><tr><td>Decisive Window</td><td>1</td></tr><tr><td>Efficient Setup</td><td>1</td></tr><tr><td>Extended Setup</td><td>1</td></tr><tr><td>Careful Coverage</td><td>1</td></tr><tr><td>Compact Coverage</td><td>1</td></tr><tr><td>Coordinated Timing</td><td>1</td></tr><tr><td>Independent Practice</td><td>1</td></tr><tr><td>Moonlit Caller</td><td>1</td></tr></tbody></table></div></details></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#specializations-at-a-glance">Specializations at a glance</a><a href="#shared-class-abilities">Shared class abilities</a><a href="#shared-class-talent-tree">Shared class talent tree</a><a href="#wildguard">Wildguard · TANK</a><a href="#feral">Feral · DPS</a><a href="#grovekeeper">Grovekeeper · HEALER</a><a href="#starcaller">Starcaller · DPS</a></aside></div></div></body></html>

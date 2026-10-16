@@ -1,0 +1,113 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Statuses, control &amp; summons · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a aria-current=page href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Combat</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Combat</div><h1>Statuses, control &amp; summons</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<h2 id="status-definitions">Status definitions</h2>
+<p>Every status has a stable ID, source entity, owner ability, category, duration, periodic interval if any, maximum stacks, dispel family, PvP override, refresh policy, exclusivity group and persistence policy. A status without these fields is invalid content, not an invitation for implementation-specific defaults.</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Baseline stacking</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Damage over time</td>
+<td>One instance per caster/ability/target; different casters coexist within encounter budgets</td>
+</tr>
+<tr>
+<td>Healing over time</td>
+<td>One instance per caster/ability/target; distinct casters coexist</td>
+</tr>
+<tr>
+<td>Ordinary shield</td>
+<td>Same-source reapplication replaces with the greater remaining/new amount; no additive refill exploit</td>
+</tr>
+<tr>
+<td>Group offensive enhancement</td>
+<td>Strongest eligible effect within category; combined category cap applies</td>
+</tr>
+<tr>
+<td>Movement slow</td>
+<td>Strongest slow; ordinary slow cap 50%</td>
+</tr>
+<tr>
+<td>Armor/Ward reduction</td>
+<td>Strongest same-category reduction; PvP ceiling 15% defense reduction</td>
+</tr>
+<tr>
+<td>Resource generator</td>
+<td>Per validated root event, with explicit internal cooldown</td>
+</tr>
+<tr>
+<td>Summon aura</td>
+<td>Source-owned; ends when owner/object becomes invalid</td>
+</tr>
+</tbody>
+</table>
+<p>Periodic refresh carries at most 30% of the base duration, preserving the next scheduled tick. Recasting a periodic effect never creates an extra immediate tick. The source power snapshot is captured on application, but temporary group-amplification buffs are evaluated per tick; this avoids retaining an expired party burst buff for a long DoT. Refreshing updates the snapshot for future ticks only.</p>
+<p>Dispel removes one eligible instance unless the ability explicitly states otherwise. Server priority is harmful severity category, shortest remaining dangerous effect, then stable ID. PvP dispel backlash must have a declared ceiling and cannot trigger another backlash recursively. A failed cleanse on a target with no eligible debuff consumes neither cost nor cooldown at acceptance.</p>
+<h2 id="crowd-control-rules">Crowd-control rules</h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th style="text-align:right">PvE baseline cap</th>
+<th style="text-align:right">PvP baseline cap</th>
+<th>Diminishing-return group</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stun</td>
+<td style="text-align:right">4 seconds</td>
+<td style="text-align:right">3 seconds</td>
+<td>Hard control</td>
+</tr>
+<tr>
+<td>Fear / disorient</td>
+<td style="text-align:right">6 seconds; breaks on qualifying damage</td>
+<td style="text-align:right">3 seconds; breaks on qualifying damage</td>
+<td>Hard control</td>
+</tr>
+<tr>
+<td>Root</td>
+<td style="text-align:right">6 seconds</td>
+<td style="text-align:right">4 seconds</td>
+<td>Root</td>
+</tr>
+<tr>
+<td>Silence</td>
+<td style="text-align:right">3 seconds</td>
+<td style="text-align:right">2 seconds</td>
+<td>Silence</td>
+</tr>
+<tr>
+<td>Interrupt school lock</td>
+<td style="text-align:right">3 seconds</td>
+<td style="text-align:right">2 seconds</td>
+<td>Interrupt lockout; no extension stacking</td>
+</tr>
+<tr>
+<td>Displacement</td>
+<td style="text-align:right">Three units</td>
+<td style="text-align:right">Two units</td>
+<td>One accepted forced movement per six seconds</td>
+</tr>
+</tbody>
+</table>
+<p>Within a diminishing-return group, durations progress through 100%, 50%, 25%, then immunity. Reset the group 18 seconds after the most recent effect ends. As an additional anti-chain rule, a player cannot spend more than six seconds in hard control in a rolling 15-second interval; shorten a newly applied effect to the remaining allowance. Roots have an eight-second rolling allowance. Reapplying another source does not reset this history.</p>
+<p>Normal bosses are immune to ordinary hard control and displacement. Interruptible boss actions must be explicitly flagged. A class whose resource depends on root or stun gets its authored non-control alternative against immune bosses; it must not generate an unlimited proc merely by repeatedly failing to control them.</p>
+<p>All characters receive the same PvP control-break action in rated modes: 120-second cooldown, removes eligible hard control and grants two seconds of immunity to that same category. This is a mode rule, not a racial power. It does not clear unrelated damage-over-time effects or reset movement cooldowns.</p>
+<h2 id="trigger-ordering">Trigger ordering</h2>
+<p>A root action carries <code>action_id</code>, <code>effect_sequence</code>, <code>source_entity_id</code>, <code>owner_entity_id</code>, <code>build_version</code>, <code>content_version</code>, <code>parent_event_id</code> and <code>trigger_depth</code>. Process initial effects in authored order and targets in stable entity-ID order. Generated effects enter a bounded event queue.</p>
+<p>Allow at most depth two and eight triggered child effects per root target event in the baseline. Each trigger declares eligible source tags. Periodic ticks, reflected damage, redirected damage, minion dismissals, empty toggles and cosmetic repeats are excluded from generic on-hit resource triggers unless specifically allowed. A self-trigger may fire only once for a root event. Duplicate network requests never create another root event.</p>
+<p>Reflects cannot reflect reflected damage. Heal echoes cannot echo other echoes. Damage redirected to a protector cannot be redirected again. Consuming a disease cannot count its removed remaining damage as both a periodic tick and a burst without explicitly dividing the budget.</p>
+<h2 id="pets-totems-and-formations">Pets, totems and formations</h2>
+<p>A character has one four-unit summon-capacity budget. A lesser mobile servant costs one, an elite companion costs four, and a normal static combat totem costs one. Specialization-specific allowances select within this budget; class and specialization summon skills do not create separate uncapped pools. A cosmetic pet costs zero and has no combat behavior.</p>
+<p>At equal equipment, the full capacity pool receives one authored aggregate damage budget, divided across entities. Four servants do not each inherit the same full-strength coefficient as an elite pet. Totem links are evaluated from owner-defined pairs, not all possible pairs: maximum three active links and four controlled objects. Replacement removes the old object before creating the new one.</p>
+<p>Default pet commands are follow, hold, attack my eligible target and return. Aggressive free-roaming mode is omitted. Pets cannot discover enemies outside the owner's permitted information set. Combat recall follows normal path and control rules; out-of-combat leash recovery may teleport a stuck pet after five seconds. Never use that recovery to teleport a pet across a wall into combat.</p>
+<p>On disconnect, pets stop accepting commands and follow the persisted owner-disconnect policy. Offensive auras and unattended summons end after the grace period; no offline combat farming. A zone transfer transfers or reconstructs one owner budget, not a second independent set.</p>
+<h2 id="persistence-policy">Persistence policy</h2>
+<p>Store long cooldown expiry as absolute authoritative time. Store combat status snapshots and damage ledgers with the session's ownership token. Short combat events are not individual database writes; checkpoints and recovery policy govern them. Death, logout and graceful transfer have explicit cleanup. An unclean restart applies a conservative encounter reset and restores durable inventory, not a fabricated exact replay of every lost combat tick.</p>
+<h2 id="required-tests">Required tests</h2>
+<p>Recast a DoT one millisecond before a tick; attempt repeated no-target heals; reflect a reflect; redirect into a redirect; dismiss and resummon under a death-trigger talent; switch forms with delayed damage; reconnect during a dispel; change party during a beneficial aura. All must preserve caps, attribution and ownership.</p>
+</div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#status-definitions">Status definitions</a><a href="#crowd-control-rules">Crowd-control rules</a><a href="#trigger-ordering">Trigger ordering</a><a href="#pets-totems-and-formations">Pets, totems and formations</a><a href="#persistence-policy">Persistence policy</a><a href="#required-tests">Required tests</a></aside></div></div></body></html>

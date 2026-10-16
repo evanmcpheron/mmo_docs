@@ -1,0 +1,138 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Levels &amp; talent points · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a  href="../guide/races-factions.html">Races & faction rules</a><a aria-current=page href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Foundation</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Foundation</div><h1>Levels &amp; talent points</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<h2 id="exactly-two-points-per-level-up">Exactly two points per level-up</h2>
+<p>At level 1, characters have zero talent points. Each transition to levels 2–60 grants <strong>one class point and one specialization point</strong>. These currencies cannot be exchanged. By level 60, the character has <strong>118 points: 59 class points and 59 specialization points</strong>.</p>
+<p><code>class_points_earned(level) = level − 1</code></p>
+<p><code>specialization_points_earned(level) = level − 1</code></p>
+<p><code>total_points_earned(level) = 2 × (level − 1)</code></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Level</th>
+<th style="text-align:right">Class points</th>
+<th style="text-align:right">Specialization points</th>
+<th style="text-align:right">Spendable specialization points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">0</td>
+</tr>
+<tr>
+<td style="text-align:right">2</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">0; banked</td>
+</tr>
+<tr>
+<td style="text-align:right">9</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">0; banked</td>
+</tr>
+<tr>
+<td style="text-align:right">10</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">9</td>
+<td style="text-align:right">9 after selecting a specialization</td>
+</tr>
+<tr>
+<td style="text-align:right">20</td>
+<td style="text-align:right">19</td>
+<td style="text-align:right">19</td>
+<td style="text-align:right">19</td>
+</tr>
+<tr>
+<td style="text-align:right">40</td>
+<td style="text-align:right">39</td>
+<td style="text-align:right">39</td>
+<td style="text-align:right">39</td>
+</tr>
+<tr>
+<td style="text-align:right">60</td>
+<td style="text-align:right">59</td>
+<td style="text-align:right">59</td>
+<td style="text-align:right">59</td>
+</tr>
+</tbody>
+</table>
+<p>The level-10 selection screen previews the new kit and offers a starter allocation for the nine banked points. It never spends points without confirmation. This interpretation honors every level-up rather than quietly limiting the request to levels 11–60.</p>
+<h2 id="ability-progression">Ability progression</h2>
+<p>Shared class abilities unlock at levels <strong>1, 3, 5, 7, 9, 14, 22, 32 and 44</strong>. The first three specialization abilities unlock together at level 10; the remaining three unlock at <strong>20, 35 and 50</strong>. This replaces the old 10/16/24/34/44/54 specialization schedule.</p>
+<p>The defining resource loop and basic role kit must work immediately at level 10. A tank receives a single-target challenge, threat stance and mitigation regardless of optional talents. Every healer receives an affordable direct heal, a small group-recovery tool, an eligible cleanse and out-of-combat revival. Existing class abilities satisfy these requirements where possible; a role-service ability fills an actual gap rather than adding a duplicate button. These capability requirements are enumerated separately from the 330 inherited named abilities.</p>
+<p>Auto-attacks, interact, cancel cast, pet recall and out-of-combat recovery are common actions rather than talent purchases. Class passives must explain their actual mechanical effect and never conceal equipment proficiency behind a late optional node.</p>
+<h2 id="six-tiers-with-real-opportunity-cost">Six tiers, with real opportunity cost</h2>
+<p>Each of the 49 trees contains 36 nodes. Most investable nodes have three ranks. Tiers II and VI each contain a mutually exclusive three-way choice; only one node from each of those groups can be selected.</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th style="text-align:right">Points already spent in lower tiers</th>
+<th style="text-align:right">Class minimum level</th>
+<th style="text-align:right">Specialization minimum level</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I</td>
+<td style="text-align:right">0</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">10</td>
+<td>Six three-rank nodes</td>
+</tr>
+<tr>
+<td>II</td>
+<td style="text-align:right">8</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">10</td>
+<td>Three exclusive one-rank transformations; three three-rank nodes</td>
+</tr>
+<tr>
+<td>III</td>
+<td style="text-align:right">18</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">20</td>
+<td>Six three-rank nodes</td>
+</tr>
+<tr>
+<td>IV</td>
+<td style="text-align:right">30</td>
+<td style="text-align:right">32</td>
+<td style="text-align:right">32</td>
+<td>Six three-rank nodes</td>
+</tr>
+<tr>
+<td>V</td>
+<td style="text-align:right">42</td>
+<td style="text-align:right">44</td>
+<td style="text-align:right">44</td>
+<td>Six three-rank nodes</td>
+</tr>
+<tr>
+<td>VI</td>
+<td style="text-align:right">52</td>
+<td style="text-align:right">54</td>
+<td style="text-align:right">54</td>
+<td>Three exclusive one-rank capstones; three three-rank nodes</td>
+</tr>
+</tbody>
+</table>
+<p>A legal fully expanded route contains <code>18 + 10 + 18 + 18 + 18 + 10 = 92</code> ranks. With 59 points, a player leaves at least 33 purchasable ranks unselected, in addition to the four unselected exclusive alternatives. Buying every useful-looking passive is not possible.</p>
+<p>Thresholds count ranks in <strong>strictly lower tiers</strong>, not the node being purchased, not points in another tree, and not banked points. Refunds validate the whole resulting graph. A capstone requires a selected tier-II transformation. Node-specific referenced abilities must already be learned. Some class transformations consequently open later than the tier's minimum; the UI must show that requirement.</p>
+<h2 id="avoiding-point-bloat">Avoiding point bloat</h2>
+<p>Two points per level are a reward cadence, not a reason to double every percentage. Rank-based improvements stay modest. Major changes live in explicit choices: moving versus stationary casting, burst versus sustained output, concentrated versus distributed healing, one servant versus a squad, and personal damage versus party contribution.</p>
+<p>Do not award talent points from repeatable quests, purchased items, professions or random drops. That would invalidate the fixed budget and make non-combat activities mandatory for character power. New expansions may add alternative nodes before adding more points.</p>
+<h2 id="respecialization-and-loadouts">Respecialization and loadouts</h2>
+<p>Store class-tree allocation, selected specialization, specialization-tree allocation, action bars and equipment-set references in each named loadout. Applying a loadout is one version-checked server operation. The server returns either a complete accepted build or explicit validation errors; partial changes are not allowed.</p>
+<p>Reallocation is free outside combat and outside an active competitive match or locked encounter. In a dungeon, require the party to be out of combat and no encounter in progress. A three-second stationary application is interrupted by combat or damage. Town-only restrictions are unnecessary for combat experimentation.</p>
+<p>Changing builds does <strong>not</strong> reset cooldowns, restore missing resources, erase delayed damage, clear a harmful effect, or refresh consumables. Preserve health percentage but never increase absolute current health: <code>new_health = min(old_health, new_max_health × old_health / old_max_health)</code>. Preserve no more than the old percentage of mana/energy; newly introduced combat-generated resources start at zero. Defensive cooldown families survive changes even when an ability is unequipped. Remove old summons, auras and invalid action-bar entries atomically.</p>
+<h2 id="scaling-and-experience">Scaling and experience</h2>
+<p>Suggested level-up requirement: <code>xp_to_next_level(L) = round(100 × L^1.7)</code> for levels 1–59. This is a tuning curve, not a promised leveling duration. Ordinary same-level creature XP begins at <code>20 + 4L</code>; quests and activities use expected effort rather than only kill count. Award group XP using eligible participation, distance and encounter ownership. Do not give kill-credit XP for friendly summons or repeatedly created objects.</p>
+<p>Character-level progression and profession skill are distinct. Crafting does not become the fastest repeatable combat-leveling method by default. Optional introductory profession tasks may grant normal one-time activity XP.</p>
+<p>For voluntary level-synced PvE, use effective level for stats, eligible ability unlocks and point budget. Save the original build unchanged. Apply a separately saved downscaled build, or a deterministic starter build after preview; never remove arbitrary nodes mid-encounter. Ranked PvP has its own normalization policy.</p>
+<h2 id="acceptance-criteria">Acceptance criteria</h2>
+<p>Every level must expose enough legal node capacity to spend all currently spendable points. The shipped structural test checks capacity against current ability unlocks, lower-tier gates, exclusive choices and prerequisites. A separate runtime test must prove respec cannot heal, erase cooldowns, duplicate buffs or preserve an invalid pet.</p>
+</div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#exactly-two-points-per-level-up">Exactly two points per level-up</a><a href="#ability-progression">Ability progression</a><a href="#six-tiers-with-real-opportunity-cost">Six tiers, with real opportunity cost</a><a href="#avoiding-point-bloat">Avoiding point bloat</a><a href="#respecialization-and-loadouts">Respecialization and loadouts</a><a href="#scaling-and-experience">Scaling and experience</a><a href="#acceptance-criteria">Acceptance criteria</a></aside></div></div></body></html>

@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Mechanics glossary · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a aria-current=page href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Validation</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Validation</div><h1>Mechanics glossary</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning in this reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ability</td>
+<td>A server-validated active or passive action with a stable definition ID</td>
+</tr>
+<tr>
+<td>Action ID</td>
+<td>Unique request identity used to recognize retries and prevent duplicate execution</td>
+</tr>
+<tr>
+<td>Adaptive primary</td>
+<td>One equipment attribute line that resolves to the current specialization's primary stat</td>
+</tr>
+<tr>
+<td>Aggregate budget</td>
+<td>One total output allowance shared by effects, songs or summons; adding recipients or entities does not automatically add new budget</td>
+</tr>
+<tr>
+<td>Area of interest</td>
+<td>The set of world entities/effects relevant to a client's location and permissions</td>
+</tr>
+<tr>
+<td>Attribute</td>
+<td>Strength, Agility, Intellect, Stamina or Spirit</td>
+</tr>
+<tr>
+<td>Band</td>
+<td>One of six character/profession progression ranges; not a geographical region</td>
+</tr>
+<tr>
+<td>Baseline role kit</td>
+<td>Mandatory tank/healer functionality provided independently of optional talents</td>
+</tr>
+<tr>
+<td>Binding</td>
+<td>Item transfer restrictions, or—in content engineering—the conversion of a design rule into executable operations; context distinguishes them</td>
+</tr>
+<tr>
+<td>Capstone</td>
+<td>A late-tree mutually exclusive playstyle choice, not a requirement for a specialization to function</td>
+</tr>
+<tr>
+<td>Class</td>
+<td>Permanent character archetype such as Warrior or Bard</td>
+</tr>
+<tr>
+<td>Class point</td>
+<td>One of 59 points available only to the shared class tree</td>
+</tr>
+<tr>
+<td>Combat power</td>
+<td>The derived scalar P used by authored damage/healing coefficients</td>
+</tr>
+<tr>
+<td>Commission</td>
+<td>Crafting for another character using server-reserved materials and durable delivery</td>
+</tr>
+<tr>
+<td>Content version</td>
+<td>The exact revision of ability, talent, item and recipe definitions used by the simulation</td>
+</tr>
+<tr>
+<td>Crowd-control DR</td>
+<td>Diminishing returns reducing repeated control effects in a category</td>
+</tr>
+<tr>
+<td>Damage debt</td>
+<td>Deferred damage still owed by the recipient; not absorbed or prevented damage</td>
+</tr>
+<tr>
+<td>Effect</td>
+<td>An explicit operation such as damage, healing, dispel, movement or a bounded summon</td>
+</tr>
+<tr>
+<td>Equipment budget</td>
+<td>Allowed stat/effect allocation for an item level, slot and grade</td>
+</tr>
+<tr>
+<td>Escrow</td>
+<td>Items or currency reserved for a transaction without becoming available for competing uses</td>
+</tr>
+<tr>
+<td>Faction</td>
+<td>Good-aligned or evil-aligned eligibility/relationship field; no narrative is specified</td>
+</tr>
+<tr>
+<td>GCD</td>
+<td>Global cooldown shared by applicable actions</td>
+</tr>
+<tr>
+<td>Grade</td>
+<td>Standard, Refined, Masterwork or Challenge item-budget multiplier</td>
+</tr>
+<tr>
+<td>Idempotent</td>
+<td>Repeating an already-processed request does not apply its effects again</td>
+</tr>
+<tr>
+<td>Mastery rating</td>
+<td>A combat secondary stat improving a declared specialization output family</td>
+</tr>
+<tr>
+<td>Profession mastery</td>
+<td>Separate profession talent progression; not combat Mastery rating</td>
+</tr>
+<tr>
+<td>Normalized weapon damage</td>
+<td>Two seconds of allowed equipped weapon DPS for ability coefficients</td>
+</tr>
+<tr>
+<td>Outbox</td>
+<td>Durable records of events created with a committed transaction and delivered afterward</td>
+</tr>
+<tr>
+<td>Owner epoch</td>
+<td>Version of authoritative ownership used to reject stale commands after transfer</td>
+</tr>
+<tr>
+<td>Personal output</td>
+<td>Damage/healing attributable to the character's own effects before separately credited support</td>
+</tr>
+<tr>
+<td>Profile</td>
+<td>A reusable prototype timing/cost/effect definition; not necessarily an entire named ability</td>
+</tr>
+<tr>
+<td>Race</td>
+<td>One of 11 ancestry selections with fixed starting stat offsets; Human supports both factions</td>
+</tr>
+<tr>
+<td>Resource</td>
+<td>Mana, Energy, Rage, Focus, Cadence or a bounded signature meter</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>Tank, Healer or DPS; support is an important secondary characteristic</td>
+</tr>
+<tr>
+<td>Skill point</td>
+<td>In the character progression request, a class or specialization talent point; profession skill increases separately</td>
+</tr>
+<tr>
+<td>Specialization</td>
+<td>Selected role and mechanical discipline within a class</td>
+</tr>
+<tr>
+<td>Specialization point</td>
+<td>One of 59 points available only to the selected specialization tree</td>
+</tr>
+<tr>
+<td>Stack group</td>
+<td>Category defining whether effects coexist, refresh, add or select the strongest</td>
+</tr>
+<tr>
+<td>Talent</td>
+<td>Optional ranked modifier or mutually exclusive transformation inside a tree</td>
+</tr>
+<tr>
+<td>Ward</td>
+<td>Unified initial magical-defense statistic, avoiding multiple mandatory resistance sets</td>
+</tr>
+</tbody>
+</table>
+</div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p></aside></div></div></body></html>

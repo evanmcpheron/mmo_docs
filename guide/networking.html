@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Godot &amp; networking · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a aria-current=page href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Engineering</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Engineering</div><h1>Godot &amp; networking</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<h2 id="practical-initial-architecture">Practical initial architecture</h2>
+<p>Use Godot clients and authoritative headless Godot world/instance processes, with a conventional service and relational database for accounts, inventory, bazaar and durable progression. Keep backend responsibilities modular inside a small deployment before creating independent microservices.</p>
+<p>Godot supports dedicated headless exports. Its high-level multiplayer APIs provide RPC and transfer-mode building blocks, and MultiplayerSynchronizer supports visibility filtering but does not synchronize arbitrary Resource/Object values. These capabilities do not themselves provide an MMO economy or seamless cross-server ownership. See <a href="sources.html">Sources S2</a>(sources.html#s2), <a href="sources.html">Sources S3</a>(sources.html#s3) and <a href="sources.html">Sources S6</a>(sources.html#s6).</p>
+<p>Pin a tested Godot minor version and export-template version during implementation. Do not assume documentation marked “stable” remains unchanged after this reference's access date. No specific player-capacity claim is made here.</p>
+<h2 id="ownership">Ownership</h2>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Authority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Input intent</td>
+<td>Authenticated client request</td>
+</tr>
+<tr>
+<td>Movement and collision</td>
+<td>Owning world process</td>
+</tr>
+<tr>
+<td>Damage, cooldowns and resources</td>
+<td>Owning world process</td>
+</tr>
+<tr>
+<td>NPC threat and AI</td>
+<td>Owning world process</td>
+</tr>
+<tr>
+<td>Pet capacity and commands</td>
+<td>Owner's authoritative simulation</td>
+</tr>
+<tr>
+<td>Talents and loadout selection</td>
+<td>Versioned durable record, applied by world process</td>
+</tr>
+<tr>
+<td>Items, money, recipes and profession progress</td>
+<td>Durable transactional service</td>
+</tr>
+<tr>
+<td>Sprite frame, particles and local audio</td>
+<td>Client presentation</td>
+</tr>
+</tbody>
+</table>
+<p>Each active character has one session ownership epoch. A stale process cannot continue granting rewards after a transfer. Class/faction/race access is checked from authoritative records, not from the character-selection UI.</p>
+<h2 id="movement-and-traffic">Movement and traffic</h2>
+<p>Prototype simulation at 30 Hz, nearby movement snapshots at 10–20 Hz, lower-priority distant state at 2–5 Hz, and event-driven static objects. These are measurement starting points. Client rendering is independent.</p>
+<p>Send sequenced movement intent. The server simulates movement and acknowledges input sequence in snapshots. The local client predicts and reconciles; remote characters interpolate. Combat requests contain aim/target intent, not a position used to bypass server collision.</p>
+<p>Use separate traffic channels for movement snapshots, combat/control events and reliable state operations. Frequent replaceable snapshots need not queue behind chat or an inventory acknowledgment. Reliable transport delivery is not durable transaction completion.</p>
+<h2 id="area-of-interest-and-hidden-information">Area of interest and hidden information</h2>
+<p>Track nearby entities using a spatial grid and floor/instance identity. Add explicit interest for relevant projectiles and hazards whose effects can reach the player. Limit update frequency by relevance, not by silently removing a real boss hazard. Bound maximum nameplates, cosmetic effects and redundant pet updates separately from gameplay outcomes.</p>
+<p>Do not replicate hidden enemy information merely because the client promises not to render it. Stealth, fog/visibility rules, target markers and pet tracking require server filtering. Camera zoom cannot increase authoritative combat visibility beyond the agreed information envelope.</p>
+<p>Clients receive spawn/despawn plus relevant effect snapshots when entering interest. Missing an old buff event cannot leave a newly visible player permanently unbuffed in the UI. Use revisions and periodic authoritative reconciliation for health and status state.</p>
+<h2 id="latency-policy">Latency policy</h2>
+<p>Start with server-current-state validation, client prediction and modest input buffering. Do not add unrestricted rewind compensation to all spells. Directional hazards and movement must remain consistent with what the server can defend fairly. A later bounded historical-hit policy must document its maximum rewind, eligible attack categories and interaction with cover.</p>
+<p>Test 0, 50, 100, 150 and 250 ms round-trip latency, jitter and 1–5% packet loss. At 250 ms, the goal is understandable failure and recovery, not a promise of identical competitive performance. Cast rejection needs a clear reason, not silent input loss.</p>
+<h2 id="durable-operations">Durable operations</h2>
+<p>Persist experience/level awards, talents, skill progress, inventory, recipes, currency and trading orders. Avoid a database write for every movement tick or periodic damage tick. Group small character-progress checkpoints, but commit economic ownership changes transactionally and acknowledge only durable results.</p>
+<p>Use per-operation idempotency keys, item versions, ownership checks and a transactional outbox. A combat crash cannot cause the same kill reward to mint items twice. Reward identity includes encounter/creature generation and eligible recipient, not just a client request ID.</p>
+<h2 id="zone-or-instance-transfer">Zone or instance transfer</h2>
+<p>Begin with explicit transitions. Suspend new actions; settle or reject pending economic operations; checkpoint character state and cooldowns; issue a one-use transfer token with a new ownership epoch; let the destination claim it; revoke source authority; provide a full destination snapshot. A failed transfer returns to a known authoritative location without duplicating the character or inventory.</p>
+<p>Pet capacity, damage debt, active long cooldowns and profession jobs must follow an explicit transfer policy. Never reconstruct a pet from a snapshot while leaving the original authoritative pet running elsewhere.</p>
+<h2 id="disconnect-and-recovery">Disconnect and recovery</h2>
+<p>Keep an in-combat disconnected character present for a short configured grace period, initially 20 seconds, under simple server defensive behavior rather than invulnerability. Stop issuing new attacks or pet orders. A reconnect claims the existing character through a new session token and receives a snapshot. A second connection cannot operate the same character concurrently.</p>
+<p>Clean logout requires out-of-combat state or a logout countdown. Disconnecting cannot clear control, reset a boss, erase stagger debt or cancel an already committed trade. An unclean world-process crash uses a documented recovery point and encounter reset policy; do not claim perfect combat durability without a replay architecture.</p>
+<h2 id="security-and-observability">Security and observability</h2>
+<p>Authenticate before spawning an economic character. Validate payload size, IDs, permission, action rate and sequence. Encrypt account/service traffic with standard transport security. Do not put account secrets or authoritative drop tables into client-facing logs. Add audit trails for admin inventory edits and progression grants.</p>
+<p>Monitor tick duration, relevant entity counts, bytes per client, event queue depth, database latency, rejected commands, duplicate requests and settlement retries. Load-test crowded bazaars, world bosses and four-summon classes. Graphics being 2D does not prove a zone can simulate thousands of players.</p>
+</div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#practical-initial-architecture">Practical initial architecture</a><a href="#ownership">Ownership</a><a href="#movement-and-traffic">Movement and traffic</a><a href="#area-of-interest-and-hidden-information">Area of interest and hidden information</a><a href="#latency-policy">Latency policy</a><a href="#durable-operations">Durable operations</a><a href="#zone-or-instance-transfer">Zone or instance transfer</a><a href="#disconnect-and-recovery">Disconnect and recovery</a><a href="#security-and-observability">Security and observability</a></aside></div></div></body></html>

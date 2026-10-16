@@ -1,0 +1,1041 @@
+{
+  "M": {
+    "name": "Martial generator",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.55,
+        "weapon_coefficient": 0.65
+      }
+    ]
+  },
+  "D": {
+    "name": "Measured direct spell",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 3,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.1
+      }
+    ]
+  },
+  "G": {
+    "name": "Targeted advance",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "MOVE",
+        "movement": "dash_to_target",
+        "distance_cap": 6
+      },
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.25
+      }
+    ]
+  },
+  "DD": {
+    "name": "Legal reposition",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "MOVE",
+        "movement": "dash_to_point",
+        "distance_cap": 3
+      }
+    ]
+  },
+  "TP": {
+    "name": "Short teleport",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "MOVE",
+        "movement": "teleport_to_point",
+        "distance_cap": 4,
+        "requires_clear_route": true
+      }
+    ]
+  },
+  "I": {
+    "name": "Interrupt",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "INTERRUPT",
+        "lockout_seconds": 3,
+        "pvp_lockout_seconds": 2
+      }
+    ]
+  },
+  "BU": {
+    "name": "Group readiness",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 3,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "group_output",
+        "amount": 0.05,
+        "stack_group": "group_amplification",
+        "target_cap": 5
+      }
+    ]
+  },
+  "PA": {
+    "name": "Class proficiency",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "PASSIVE",
+        "policy": "class_equipment_and_resource_rules"
+      }
+    ]
+  },
+  "MS": {
+    "name": "Slowing strike",
+    "cast_seconds": 0,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.4
+      },
+      {
+        "operation": "APPLY_STATUS",
+        "status": "slow",
+        "amount": 0.3,
+        "duration_seconds": 4
+      }
+    ]
+  },
+  "DR": {
+    "name": "Personal defense",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 6,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "damage_reduction",
+        "amount": 0.3,
+        "stack_group": "personal_defense"
+      }
+    ]
+  },
+  "CA": {
+    "name": "Area strike",
+    "cast_seconds": 0,
+    "cooldown_seconds": 10,
+    "mana_cost_percent": 5,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.65
+      }
+    ]
+  },
+  "ST": {
+    "name": "Forced-movement protection",
+    "cast_seconds": 0,
+    "cooldown_seconds": 90,
+    "mana_cost_percent": 0,
+    "duration_seconds": 4,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "displacement_immunity",
+        "target_cap": 5
+      }
+    ]
+  },
+  "BK": {
+    "name": "Frontal active block",
+    "cast_seconds": 0,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 0,
+    "duration_seconds": 4,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "frontal_block",
+        "amount": 0.5,
+        "arc_degrees": 120,
+        "school": "physical",
+        "movement_multiplier": 0.5
+      }
+    ]
+  },
+  "TH": {
+    "name": "Threat counterstrike",
+    "cast_seconds": 0,
+    "cooldown_seconds": 6,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.8,
+        "threat_multiplier": 2.0
+      }
+    ]
+  },
+  "ZD": {
+    "name": "Persistent damage area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 6,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.2,
+        "tick_seconds": 1,
+        "tick_count": 6
+      }
+    ]
+  },
+  "ZC": {
+    "name": "Slowing area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 3,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "slow",
+        "amount": 0.3,
+        "tick_seconds": 1
+      }
+    ]
+  },
+  "ZM": {
+    "name": "Mixed consecrated area",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 6,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.12,
+        "tick_seconds": 1,
+        "tick_count": 6,
+        "relation": "enemy"
+      },
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.08,
+        "tick_seconds": 1,
+        "tick_count": 6,
+        "relation": "ally"
+      }
+    ]
+  },
+  "IN": {
+    "name": "Ally interception",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "MOVE",
+        "movement": "dash_to_ally",
+        "distance_cap": 5
+      },
+      {
+        "operation": "REDIRECT",
+        "fraction": 0.3,
+        "total_cap_caster_health_fraction": 0.2,
+        "duration_seconds": 6
+      }
+    ]
+  },
+  "RD": {
+    "name": "Damage transfer",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 4,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "REDIRECT",
+        "fraction": 0.3,
+        "total_cap_caster_health_fraction": 0.2,
+        "duration_seconds": 6
+      }
+    ]
+  },
+  "BW": {
+    "name": "Controlled attack weakening",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.7
+      },
+      {
+        "operation": "APPLY_STATUS",
+        "status": "next_attack_reduction",
+        "amount": 0.1,
+        "duration_seconds": 6,
+        "charges": 1
+      }
+    ]
+  },
+  "PR": {
+    "name": "Timed parry",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 0,
+    "duration_seconds": 2,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "next_physical_hit_reduction",
+        "amount": 0.5,
+        "charges": 1
+      }
+    ]
+  },
+  "HA": {
+    "name": "Temporary haste",
+    "cast_seconds": 0,
+    "cooldown_seconds": 60,
+    "mana_cost_percent": 0,
+    "duration_seconds": 8,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "haste",
+        "amount": 0.2,
+        "stack_group": "personal_haste"
+      }
+    ]
+  },
+  "F": {
+    "name": "Committed finisher",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 6,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 1.8
+      }
+    ]
+  },
+  "CD": {
+    "name": "Major output window",
+    "cast_seconds": 0,
+    "cooldown_seconds": 90,
+    "mana_cost_percent": 0,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "personal_output",
+        "amount": 0.15,
+        "stack_group": "major_output"
+      }
+    ]
+  },
+  "MK": {
+    "name": "Owner vulnerability mark",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 2,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SET_MARK",
+        "amount": 0.1,
+        "stack_group": "owner_vulnerability",
+        "max_targets_per_owner": 1
+      }
+    ]
+  },
+  "DOT": {
+    "name": "Periodic affliction",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 12,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.15,
+        "tick_seconds": 2,
+        "tick_count": 6
+      }
+    ]
+  },
+  "PO": {
+    "name": "Weapon poison",
+    "cast_seconds": 0,
+    "cooldown_seconds": 6,
+    "mana_cost_percent": 0,
+    "duration_seconds": 12,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DAMAGE",
+        "power_coefficient": 0.2
+      },
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.12,
+        "tick_seconds": 2,
+        "tick_count": 6
+      }
+    ]
+  },
+  "SH": {
+    "name": "Absorption ward",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "ABSORB",
+        "power_coefficient": 1.0,
+        "recipient_health_cap": 0.3
+      }
+    ]
+  },
+  "H": {
+    "name": "Direct heal",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 1.7
+      }
+    ]
+  },
+  "EH": {
+    "name": "Emergency direct heal",
+    "cast_seconds": 0,
+    "cooldown_seconds": 90,
+    "mana_cost_percent": 8,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 3.2
+      }
+    ]
+  },
+  "HS": {
+    "name": "Modest self-recovery",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 0.8,
+        "relation": "self"
+      }
+    ]
+  },
+  "HOT": {
+    "name": "Sustained recovery",
+    "cast_seconds": 0,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 4,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.3,
+        "tick_seconds": 2,
+        "tick_count": 5
+      }
+    ]
+  },
+  "HC": {
+    "name": "Healing channel",
+    "cast_seconds": 3,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 6,
+    "duration_seconds": 3,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.7,
+        "tick_seconds": 1,
+        "tick_count": 3
+      }
+    ]
+  },
+  "CH": {
+    "name": "Life-drain channel",
+    "cast_seconds": 3,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 5,
+    "duration_seconds": 3,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_DAMAGE",
+        "power_coefficient_per_tick": 0.5,
+        "tick_seconds": 1,
+        "tick_count": 3
+      },
+      {
+        "operation": "LIFESTEAL",
+        "effective_damage_fraction": 0.5,
+        "relation": "self"
+      }
+    ]
+  },
+  "EX": {
+    "name": "Nonlethal resource exchange",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "EXCHANGE",
+        "health_cost_max_fraction": 0.1,
+        "minimum_remaining_health_fraction": 0.35,
+        "mana_gain_max_fraction": 0.08
+      }
+    ]
+  },
+  "PU": {
+    "name": "Friendly cleanse",
+    "cast_seconds": 0,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 2,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DISPEL",
+        "relation": "ally",
+        "families": [
+          "harmful_magic"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "PD": {
+    "name": "Enemy beneficial dispel",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 3,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "DISPEL",
+        "relation": "enemy",
+        "families": [
+          "beneficial_magic"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "RE": {
+    "name": "Out-of-combat revival",
+    "cast_seconds": 8,
+    "cooldown_seconds": 0,
+    "mana_cost_percent": 10,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "REVIVE",
+        "health_fraction": 0.2,
+        "mana_fraction": 0.2,
+        "combat_allowed": false
+      }
+    ]
+  },
+  "AH": {
+    "name": "Group recovery",
+    "cast_seconds": 2,
+    "cooldown_seconds": 10,
+    "mana_cost_percent": 8,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "HEAL",
+        "power_coefficient": 1.0,
+        "target_cap": 5
+      }
+    ]
+  },
+  "GH": {
+    "name": "Group regenerative area",
+    "cast_seconds": 2,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 8,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PERIODIC_HEAL",
+        "power_coefficient_per_tick": 0.25,
+        "tick_seconds": 2,
+        "tick_count": 5,
+        "target_cap": 5
+      }
+    ]
+  },
+  "GW": {
+    "name": "Group prevention",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 7,
+    "duration_seconds": 8,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "ABSORB",
+        "power_coefficient": 0.6,
+        "target_cap": 5,
+        "recipient_health_cap": 0.2
+      }
+    ]
+  },
+  "T": {
+    "name": "Single-target challenge",
+    "cast_seconds": 0,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "TAUNT",
+        "duration_seconds": 3,
+        "threat_factor_of_highest": 1.1,
+        "engaged_npc_only": true
+      }
+    ]
+  },
+  "TA": {
+    "name": "Area challenge",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "TAUNT",
+        "duration_seconds": 3,
+        "threat_factor_of_highest": 1.1,
+        "target_cap": 5,
+        "engaged_npc_only": true
+      }
+    ]
+  },
+  "SU": {
+    "name": "Mobile summon",
+    "cast_seconds": 2,
+    "cooldown_seconds": 10,
+    "mana_cost_percent": 4,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON",
+        "capacity_pool": "owner_combat",
+        "capacity_cost": 1,
+        "aggregate_full_pool_DPS_power_coefficient": 0.3,
+        "lifetime_seconds": 0
+      }
+    ]
+  },
+  "PC": {
+    "name": "Coordinated pet attack",
+    "cast_seconds": 0,
+    "cooldown_seconds": 6,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "PET_COMMAND",
+        "command": "attack",
+        "aggregate_power_coefficient": 0.5,
+        "owner_capacity_pool": true
+      }
+    ]
+  },
+  "TS": {
+    "name": "Offensive totem",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 4,
+    "duration_seconds": 15,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "power_coefficient_per_tick": 0.15,
+        "tick_seconds": 1,
+        "lifetime_seconds": 15
+      }
+    ]
+  },
+  "TH0": {
+    "name": "Healing totem",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 4,
+    "duration_seconds": 15,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SUMMON_STATIC",
+        "capacity_cost": 1,
+        "healing_power_coefficient_per_tick": 0.12,
+        "target_cap": 5,
+        "tick_seconds": 1,
+        "lifetime_seconds": 15
+      }
+    ]
+  },
+  "FO": {
+    "name": "Validated form",
+    "cast_seconds": 0,
+    "cooldown_seconds": 1.5,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "SET_FORM",
+        "policy": "selected_specialization_and_shared_form_rules"
+      }
+    ]
+  },
+  "SE": {
+    "name": "Stealth preparation",
+    "cast_seconds": 0,
+    "cooldown_seconds": 10,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "stealth",
+        "movement_multiplier": 0.7,
+        "break_on_hostile_action": true,
+        "combat_activation": false
+      }
+    ]
+  },
+  "FE": {
+    "name": "Breakable disorientation",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 3,
+    "duration_seconds": 4,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "disorient",
+        "pvp_duration_seconds": 3,
+        "break_on_damage": true,
+        "diminishing_group": "hard_control"
+      }
+    ]
+  },
+  "RT": {
+    "name": "Root control",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 3,
+    "duration_seconds": 4,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "root",
+        "pvp_duration_seconds": 2,
+        "diminishing_group": "root"
+      }
+    ]
+  },
+  "MR": {
+    "name": "Resource recovery channel",
+    "cast_seconds": 3,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "RESOURCE_RESTORE",
+        "primary_max_fraction": 0.15,
+        "ticks": 3
+      }
+    ]
+  },
+  "BS": {
+    "name": "Moving performance",
+    "cast_seconds": 0,
+    "cooldown_seconds": 3,
+    "mana_cost_percent": 0,
+    "duration_seconds": 10,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "group_movement",
+        "amount": 0.1,
+        "stack_group": "group_movement",
+        "target_cap": 5
+      }
+    ]
+  },
+  "BF": {
+    "name": "Performance finale",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 6,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "RESOLVE_PERFORMANCE",
+        "max_active_songs_consumed": 2,
+        "damage_power_coefficient": 0.8,
+        "healing_power_coefficient": 0.8,
+        "target_cap": 5
+      }
+    ]
+  },
+  "SM": {
+    "name": "Target-acquisition smoke",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 6,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_ZONE",
+        "status": "concealment",
+        "radius": 2.5,
+        "blocks_projectiles": false,
+        "breaks_existing_casts": false
+      }
+    ]
+  },
+  "TR": {
+    "name": "Bounded tracking",
+    "cast_seconds": 0,
+    "cooldown_seconds": 15,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "REVEAL",
+        "radius": 6,
+        "duration_seconds": 4,
+        "only_authorized_tracks": true,
+        "does_not_reveal_hidden_players": true
+      }
+    ]
+  },
+  "SP": {
+    "name": "Movement acceleration",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 0,
+    "duration_seconds": 4,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "APPLY_STATUS",
+        "status": "movement_speed",
+        "amount": 0.3,
+        "stack_group": "personal_movement"
+      }
+    ]
+  },
+  "CL": {
+    "name": "Bounded chain attack",
+    "cast_seconds": 1.5,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 5,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "CHAIN_DAMAGE",
+        "power_coefficient": 1.0,
+        "falloff_per_jump": 0.25,
+        "target_cap": 3,
+        "jump_range": 3
+      }
+    ]
+  },
+  "WM": {
+    "name": "Non-combat return anchor",
+    "cast_seconds": 8,
+    "cooldown_seconds": 900,
+    "mana_cost_percent": 10,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "RETURN_ANCHOR",
+        "combat_allowed": false,
+        "cross_instance_allowed": false,
+        "destination_validation": "server_owned_safe_anchor"
+      }
+    ]
+  },
+  "ZA": {
+    "name": "Area defensive preparation",
+    "cast_seconds": 0,
+    "cooldown_seconds": 30,
+    "mana_cost_percent": 5,
+    "duration_seconds": 8,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "APPLY_ZONE",
+        "status": "damage_reduction",
+        "amount": 0.1,
+        "radius": 2.5,
+        "target_cap": 5,
+        "stack_group": "group_defense"
+      }
+    ]
+  },
+  "LED": {
+    "name": "Delayed-damage defense",
+    "cast_seconds": 0,
+    "cooldown_seconds": 12,
+    "mana_cost_percent": 0,
+    "duration_seconds": 6,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "DELAY_DAMAGE",
+        "fraction": 0.3,
+        "ledger_seconds": 6,
+        "reentry_allowed": false
+      }
+    ]
+  },
+  "CLR": {
+    "name": "Debt reduction",
+    "cast_seconds": 0,
+    "cooldown_seconds": 8,
+    "mana_cost_percent": 0,
+    "duration_seconds": 0,
+    "global_cooldown": false,
+    "effects": [
+      {
+        "operation": "CLEAR_DAMAGE_LEDGER",
+        "current_ledger_fraction": 0.25
+      }
+    ]
+  },
+  "PAT": {
+    "name": "Bounded pattern resolver",
+    "cast_seconds": 0,
+    "cooldown_seconds": 20,
+    "mana_cost_percent": 6,
+    "duration_seconds": 0,
+    "global_cooldown": true,
+    "effects": [
+      {
+        "operation": "RESOLVE_PATTERN",
+        "max_sources": 4,
+        "max_links": 3,
+        "output_budget_power_coefficient": 1.8
+      }
+    ]
+  }
+}
