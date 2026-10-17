@@ -10,7 +10,7 @@ const roadmap = JSON.parse(readFileSync(join(root, 'sources/development-roadmap.
 const phasePath = phase => `guide/roadmap-${phase.id.replace(/^phase-/, '')}.html`;
 const epicPhase = new Map(roadmap.epics.map(epic => [epic.id, roadmap.phases.find(phase => phase.id === epic.phase)]));
 const epicHref = id => `${phasePath(epicPhase.get(id)).split('/').pop()}#${id}`;
-const referencePages = ['milestones', 'decisions', 'coverage', 'maintenance'].map(name => `guide/roadmap-${name}.html`);
+const referencePages = ['milestones', 'decisions', 'coverage', 'maintenance', 'audit'].map(name => `guide/roadmap-${name}.html`);
 const executable = process.env.BRIARWAKE_CHROME_BIN || [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser',
@@ -231,6 +231,22 @@ try {
     await navigate(path);
     check(`${path.split('/').pop()} renders offline with current roadmap navigation`, await evaluate(`document.querySelector('.article-body').textContent.trim().length > 300 && [...document.querySelectorAll('.roadmap-nav a[aria-current="page"]')].some(link => link.href === location.href) && document.documentElement.scrollWidth <= innerWidth`));
   }
+  await captureRoadmap('audit-desktop');
+  await navigate('guide/development-roadmap.html');
+  check('Offline search finds the outstanding audit decision', await evaluate(`(async () => {
+    const input = document.querySelector('#site-search'); input.value = 'RA-007'; input.dispatchEvent(new Event('input'));
+    await new Promise(resolve => setTimeout(resolve, 250));
+    return [...document.querySelectorAll('#search-results a')].some(link => link.href.endsWith('guide/roadmap-audit.html#RA-007'));
+  })()`));
+  await clickNavigation(`document.querySelector('#search-results a[href$="guide/roadmap-audit.html#RA-007"]').click()`);
+  check('Audit search opens the finding and preserves all distinct finding sections', await evaluate(`(() => {
+    const findings = [...document.querySelectorAll('section[aria-labelledby^="RA-"]')];
+    return location.hash === '#RA-007' && document.querySelector(':target').textContent.includes('Rated entry')
+      && findings.length === 10 && new Set(findings.map(node => node.getAttribute('aria-labelledby'))).size === 10
+      && document.getElementById('RA-007').parentElement.textContent.includes('Medium · Open');
+  })()`));
+  await scrollRoadmap('RA-007');
+  await captureRoadmap('audit-finding');
   await navigate(phasePath(roadmap.phases[0]));
   await captureRoadmap('phase-desktop');
   await scrollRoadmap(roadmap.epics[0].id);
@@ -240,6 +256,7 @@ try {
     await navigate(path);
     check(`Mobile ${path.split('/').pop()} has no body overflow`, await evaluate('document.documentElement.scrollWidth <= innerWidth'));
   }
+  await captureRoadmap('audit-mobile');
   await navigate(phasePath(roadmap.phases[0]));
   await captureRoadmap('phase-mobile');
   await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false });
@@ -251,8 +268,14 @@ try {
     return bodies.length > 0 && bodies.every(node => node.getBoundingClientRect().height > 0 && getComputedStyle(node).display !== 'none');
   })()`));
   await captureRoadmap('print');
+  await navigate('guide/roadmap-audit.html');
+  check('Audit findings and outstanding decisions remain visible in print', await evaluate(`['RA-001', 'RA-007', 'outstanding-decisions', 'readiness'].every(id => document.getElementById(id).getBoundingClientRect().height > 0) && getComputedStyle(document.querySelector('.sidebar')).display === 'none'`));
+  await captureRoadmap('audit-print');
   await command('Emulation.setEmulatedMedia', { media: '' });
   await command('Emulation.setScriptExecutionDisabled', { value: true });
+  await navigate('guide/development-roadmap.html');
+  await navigate('guide/roadmap-audit.html#RA-007');
+  check('Audit deep link and report remain readable without JavaScript', await evaluate(`document.querySelector(':target')?.id === 'RA-007' && document.querySelector('h1').textContent === 'Roadmap Audit' && document.getElementById('readiness').getBoundingClientRect().height > 0`));
   await navigate('guide/development-roadmap.html#' + roadmap.epics[0].id);
   check('Legacy hub epic anchors remain usable without JavaScript', await evaluate(`document.querySelector(':target')?.id === ${JSON.stringify(roadmap.epics[0].id)} && document.querySelector(':target').href.endsWith(${JSON.stringify(epicHref(roadmap.epics[0].id))})`));
   await captureRoadmap('nojs');

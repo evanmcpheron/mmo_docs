@@ -300,7 +300,7 @@ def navigation(source, page):
 
 
 def roadmap_search(root=ROOT):
-    from build_development_roadmap import anchor_page, epic_page, phase_page
+    from build_development_roadmap import REFERENCE_PAGES, anchor_page, epic_page, phase_page
 
     roadmap = json.loads((root / 'sources/development-roadmap.json').read_text(encoding='utf-8'))
     records = [{'title': roadmap['title'], 'section': 'Development planning', 'url': ROADMAP_PAGE,
@@ -330,9 +330,18 @@ def roadmap_search(root=ROOT):
         ('milestones', 'Major milestones', 'Playable outcomes required epics completion requirements'),
         ('sequencing-decisions', 'Architectural sequencing decisions', 'Authority replication prediction persistence alternatives'),
         ('coverage', 'Feature coverage and open decisions', 'Documented feature families deferred scope assumptions'),
-        ('maintenance', 'Maintaining roadmap progress', 'Status updates completion evidence blockers rebuild validation')]:
+        ('maintenance', 'Maintaining roadmap progress', 'Status updates completion evidence blockers rebuild validation'),
+        ('audit', 'Roadmap Audit', 'Independent architectural review findings corrections readiness coverage dependencies decisions')]:
         records.append({'title': title, 'section': 'Development Roadmap · Reference',
                         'url': anchor_page(roadmap, anchor) + '#' + anchor, 'text': text})
+    audit_page = REFERENCE_PAGES['audit'][0]
+    audit_source = (root / audit_page).read_text(encoding='utf-8')
+    for tag, anchor, title in Document(audit_source).headings:
+        if tag == 'h3' and anchor and re.fullmatch(r'RA-\d{3}', anchor):
+            section = re.search(r'<section aria-labelledby="' + re.escape(anchor) + r'">(.*?)</section>', audit_source, re.S)
+            text = ' '.join(html.unescape(re.sub(r'<[^>]*>', ' ', section.group(1))).split())
+            records.append({'title': title, 'section': 'Roadmap Audit · Finding',
+                            'url': audit_page + '#' + anchor, 'text': text})
     return [dict(record, source='development-roadmap') for record in records]
 
 

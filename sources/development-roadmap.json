@@ -9,7 +9,8 @@
     "Hard dependencies must be Complete before the dependent epic can be completed or meaningfully verified. Recommended predecessors improve risk reduction or integration efficiency without becoming technical gates. Direct dependencies are preferred; prerequisite closure supplies inherited requirements.",
     "The displayed sequence is a reasoned engineering recommendation, not an immutable technical fact. Numerical IDs do not imply priority. Reorder an epic only after checking its dependencies and integration gates; keep its ID and anchor stable.",
     "An epic reaches Complete only when every acceptance criterion has passing, revision-specific runtime/content/operational evidence and its hard prerequisites are Complete. Criteria define observable behavior rather than internal methods. Failure scenarios are part of completion. Status does not advance automatically when a document or fixture specification is written.",
-    "Milestone requirements include their transitive hard prerequisites. Explicit integration/certification epics test connected behavior on compatible builds. Phase completion means every member epic is Complete; it does not replace those integrated proofs."
+    "Milestone requirements include their transitive hard prerequisites. Explicit integration/certification epics test connected behavior on compatible builds. Phase completion means every member epic is Complete; it does not replace those integrated proofs.",
+    "Foundations certify the state families in their tested package. An epic introducing another family must extend the applicable recipient-view, reconstruction, security and operational checks before admitting it. This never certifies a future family in advance; full-roster and release certification still cover their entire declared scope."
   ],
   "distinctions": [
     {
@@ -104,9 +105,9 @@
     {
       "id": "phase-foundations",
       "title": "1. Executable boundaries and risk probes",
-      "objective": "Establish reproducible runtime evidence and prove durable ownership independently of combat.",
+      "objective": "Establish reproducible runtime evidence, a versioned content-production route and durable ownership independently of combat.",
       "milestone": "milestone-foundations",
-      "completion_condition": "The durable retry/crash probe is executed against a real candidate store."
+      "completion_condition": "The durable retry/crash probe is executed against a real candidate store. The author/import route also produces a reproducible reviewed package and rejects invalid content."
     },
     {
       "id": "phase-first-action",
@@ -134,7 +135,7 @@
       "title": "5. Bounded mechanics and safe world evolution",
       "objective": "Prove the remaining state families, local isolation, simple distributed handoff and safe versioned updates.",
       "milestone": "milestone-extended-state",
-      "completion_condition": "Family fixtures and initial transfer/update proofs pass; the comprehensive advanced-state regression is BW-089, not inferred here."
+      "completion_condition": "Family fixtures and initial transfer/update proofs pass; the comprehensive advanced-state regression is BW-089, not inferred here. The combined-mechanic multiplayer/workload probe passes before broad kit certification."
     },
     {
       "id": "phase-roster",
@@ -207,7 +208,8 @@
         "The boundary review names an owner and lifecycle for movement, combat, durable assets, builds and client presentation, preserving documented invariants.",
         "Admission accepts a compatible package and rejects unknown references, invalid targeting/resource fields and incompatible versions before enabling its records.",
         "Unbound named behavior cannot be enabled by interpreting free-text intent; unsupported records produce explicit findings.",
-        "Compatibility fixtures preserve existing identifiers and serialized values and separate content, rules and database revisions."
+        "Compatibility fixtures preserve existing identifiers and serialized values and separate content, rules and database revisions.",
+        "Before enabling vendor/crafting/conversion routes, the complete enabled price and conversion graph passes the documented no-unlimited-guaranteed-loop gate; missing required values keep affected routes disabled. Positive and negative fixture graphs demonstrate this admission rule."
       ],
       "completion_evidence": "Reviewed responsibility map plus positive and negative content/compatibility validation results.",
       "related_docs": [
@@ -222,6 +224,10 @@
         {
           "label": "Canonical definitions",
           "href": "guide/data-inventory.html"
+        },
+        {
+          "label": "Economic content admission",
+          "href": "guide/items.html#durability-salvage-and-demand"
         }
       ],
       "status": "Not Started",
@@ -264,6 +270,44 @@
       "status": "Not Started",
       "blockers": [],
       "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests; production dashboards and retention policy can wait.",
+      "verified_evidence": [],
+      "phase": "phase-foundations"
+    },
+    {
+      "id": "BW-095",
+      "title": "Versioned content authoring and import workflow",
+      "objective": "Make documented content producible and reviewable through the same contracts used by runtime admission.",
+      "scope": "Versioned editors or importers for abilities, statuses, talents, items, recipes, NPC kits, loot tables and encounter triggers, with world/tutorial relationships. A bounded import/export route is sufficient; full content authoring and gameplay handlers remain with feature epics.",
+      "hard_dependencies": [
+        "BW-001",
+        "BW-002",
+        "BW-003"
+      ],
+      "recommended_predecessors": [],
+      "acceptance_criteria": [
+        "Representative records from each declared authoring family round-trip from reviewed source through validation/export to package admission with stable IDs, versions and traceable findings; later enabled families extend the same route.",
+        "Invalid references, target/resource fields, caps, exclusive choices, progression relationships and required binding/presentation references produce actionable record-level findings and cannot partially publish an enabled package.",
+        "The same reviewed source produces a reproducible package and fixture manifest for client/server use; unbound records remain disabled and authoring or schema validation never promotes runtime-test evidence to passed.",
+        "An accepted content edit and a rejected edit demonstrate reviewable differences, retained prior valid output and compatibility with the canonical schema bundle; no parallel authoritative contract is introduced."
+      ],
+      "completion_evidence": "Executed author/import/validate/export/admit examples, invalid-content diagnostics, reproducible package identifiers and a reviewable fixture manifest; this proves tooling, not completed gameplay content.",
+      "related_docs": [
+        {
+          "label": "Required content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Readiness boundaries",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical data contracts",
+          "href": "guide/data-inventory.html#conventions"
+        }
+      ],
+      "status": "Not Started",
+      "blockers": [],
+      "ordering_rationale": "Admission and content migration do not provide a production workflow. Establish a small author/import path before starter and catalog production; fixture-based simulation may still proceed independently.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -586,7 +630,7 @@
       "id": "BW-013",
       "title": "Interest privacy and bounded state traffic",
       "objective": "Keep disclosure correct as relevance and entity counts change.",
-      "scope": "Floor/instance/spatial interest, relevant hazards, explicit authorization removal, projection redaction and independent traffic priorities.",
+      "scope": "Floor/instance/spatial interest, relevant hazards, explicit authorization removal, projection redaction and independent traffic priorities. Initial verification covers the implemented package; later state producers extend this disclosure contract.",
       "hard_dependencies": [
         "BW-007",
         "BW-009"
@@ -594,7 +638,7 @@
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "Hidden and cross-floor entities are absent from unauthorized snapshots, targeting queries and public correlation identifiers.",
-        "Interest entry restores current cast/status/effect state; authorization loss removes or redacts the projection.",
+        "For each currently implemented cast/status/effect state kind, interest entry restores current state without historical event replay; authorization loss removes or redacts it. Each later state-producing epic must pass these same projection checks before admission.",
         "A hazard that can affect a recipient remains represented while unrelated cosmetic updates may be limited.",
         "A recorded crowded synthetic scene demonstrates finite relevant sets, queue bounds and measured traffic; reliable chat-like traffic does not stall replaceable movement.",
         "Tracking/reveal returns only authorized markers within declared bounds and cannot discover a hidden player or extend visibility through client camera zoom."
@@ -749,7 +793,8 @@
         "Cleanse selects one legal effect in documented priority; no eligible effect means no accepted cost or cooldown.",
         "PvP duration caps, shared diminishing history, rolling allowances and boss immunity obey documented rules; rated control-break uses its shared 120-second cooldown and declared two-second category immunity.",
         "Trigger depth/child bounds, proc exclusions and no-reflect/redirect/echo recursion hold; hidden status sources remain redacted.",
-        "Death/logout/transfer cleanup policies compose and preserve surviving expiry/tick/budget as declared."
+        "Death/logout/transfer cleanup policies compose and preserve surviving expiry/tick/budget as declared.",
+        "Two-client late join, interest re-entry and authorization-loss tests reconstruct current status/tick state without a missing earlier event, while public status allowlists and hidden-source redaction remain enforced."
       ],
       "completion_evidence": "Executed status edge fixtures, control histories, event traces and filtered projection captures.",
       "related_docs": [
@@ -779,6 +824,7 @@
       "scope": "Swept collision, hit budgets, lifetimes, homing/straight/piercing semantics, ground placement/ticks and relevant visual state.",
       "hard_dependencies": [
         "BW-010",
+        "BW-011",
         "BW-013"
       ],
       "recommended_predecessors": [],
@@ -786,7 +832,7 @@
         "Fast projectiles cannot skip thin solid walls, closed doors or floor boundaries; piercing actor hits never imply wall penetration.",
         "Homing impact rechecks relation/existence, straight attacks retain aim and repeated hits obey finite target budgets.",
         "Ground effects enforce placement, tick timing, overlap/target caps and current hostile/friendly relations.",
-        "Committed attacks that hit a wall do not refund costs; joining interest receives the currently relevant hazard and expiry."
+        "Committed attacks that hit a wall do not refund costs; actual damage/healing uses the shared resolver. Joining or re-entering interest receives the currently relevant hazard, schedule and expiry through independently authorized owner/public views."
       ],
       "completion_evidence": "Geometry/collision and ground-tick fixtures with two-client hazard snapshots.",
       "related_docs": [
@@ -1064,13 +1110,14 @@
       "objective": "Accept legal builds and apply their declared behavior as one versioned change.",
       "scope": "Tree budgets/prerequisites/exclusivity, previews, respec restrictions, rollback/revalidation and safe-point application; exhaustive content binding is later. Named saved loadouts contain both allocations, selected specialization, action bars and equipment-set references.",
       "hard_dependencies": [
-        "BW-023"
+        "BW-023",
+        "BW-022"
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "Both trees enforce rank, tier, prerequisite, exclusive-choice and 59-point constraints at every spendable level.",
         "Client previews never authorize a build; stale or invalid submissions preserve the previous active build and points.",
-        "Accepted named loadouts atomically apply both tree allocations, specialization, action bars and equipment-set references after the three-second stationary application; combat/damage interruption preserves the previous loadout.",
+        "Accepted named loadouts atomically apply both tree allocations, specialization, action bars and validated owned equipment-set references after the three-second stationary application; stale, missing or illegal equipment references and combat/damage interruption preserve the previous loadout.",
         "A content change requiring refunds/revalidation preserves stable IDs and restores a legal build rather than retaining obsolete effects.",
         "Application obeys party/encounter/match restrictions, never increases absolute current health or restores missing resources/cooldowns/debt, and removes old summons/auras/invalid action entries atomically."
       ],
@@ -1095,7 +1142,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "",
+      "ordering_rationale": "Build application needs the equipment ownership/slot boundary as well as progression. A legal talent allocation cannot authorize a stale or foreign equipment-set reference.",
       "verified_evidence": [],
       "phase": "phase-persistent-character"
     },
@@ -1151,7 +1198,8 @@
         "Ordinary PvE death reduces equipped durability by five percentage points; zero durability removes combat benefits while preserving ownership and repairability, and rated PvP applies no durability loss.",
         "Repair, legal upgrade and enhancement application commit payment/materials and item revision together or leave all unchanged.",
         "Confirmation/comparison discloses output and costs; binding, reserved enhancement budgets and incompatible categories cannot be bypassed.",
-        "Repair quotes use the explicit NPC-purchase-value/missing-durability formula and configured minimum; undamaged equipment costs zero and missing price/coefficient configuration rejects the quote."
+        "Repair quotes use the explicit NPC-purchase-value/missing-durability formula and configured minimum; undamaged equipment costs zero and missing price/coefficient configuration rejects the quote.",
+        "Admission of vendor values checks the current enabled recipe/conversion graph for guaranteed material, currency or progression loops; invalid or missing required prices cannot enable a route. Craft sellback stays below guaranteed NPC-purchased input cost."
       ],
       "completion_evidence": "Vendor and item-service atomicity fixtures plus durability and comparison UI demonstration.",
       "related_docs": [
@@ -1369,7 +1417,8 @@
         "One tank, one healer and three damage players complete the authored encounter using shared-faction providers.",
         "Threat changes, effective healing, consumed prevention and interrupts produce the documented authoritative results.",
         "Every selected tank and healer has its mandatory role kit without optional talent purchases.",
-        "A wipe clears encounter-owned state while preserving player cooldowns, debt, consumed items and committed rewards."
+        "A wipe clears encounter-owned state while preserving player cooldowns, debt, consumed items and committed rewards.",
+        "The same encounter exercises a tank-facing cone, an interruptible cast, recoverable group damage, a moving hazard and a short priority-target phase with the documented readable setup; completion and wipe evidence cover their combined interaction."
       ],
       "completion_evidence": "Future recorded multiplayer run, role-service matrix and reset/failure fixture results tied to content revisions.",
       "related_docs": [
@@ -1429,7 +1478,8 @@
       "hard_dependencies": [
         "BW-023",
         "BW-025",
-        "BW-028"
+        "BW-028",
+        "BW-095"
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
@@ -1459,7 +1509,7 @@
       "id": "BW-034",
       "title": "Profession enrollment and skill progression",
       "objective": "Keep profession learning independent of combat level and talent currencies.",
-      "scope": "Two manufacturing slots, two gathering slots, three universal life skills, skill 1–300 and deterministic progress accounting.",
+      "scope": "Two manufacturing slots, two gathering slots, three universal life skills, skill 1–300 and deterministic progress accounting. Training and declared acquisition sources grant durable recipe knowledge; deactivation retains learned recipes.",
       "hard_dependencies": [
         "BW-021"
       ],
@@ -1468,7 +1518,8 @@
         "Selection enforces two manufacturing and two gathering slots while Cooking, Fishing and First Aid remain universally available.",
         "Difficulty-relative successful actions award 100/50/20/0 progress units at the documented thresholds and carry remainders.",
         "Cancellation, retries, salvage and material transfers grant no duplicate progress.",
-        "Training and band access use authored fees/skill requirements without inventing a character-level gate."
+        "Training and band access use authored fees/skill requirements without inventing a character-level gate.",
+        "Recipe learning validates its declared acquisition source and eligibility, records unique character/recipe knowledge once across retry/restart, and retains it while the profession is dormant; an unauthorized grant cannot unlock a recipe."
       ],
       "completion_evidence": "Future enrollment, progression-threshold and durable retry tests using actual service records.",
       "related_docs": [
@@ -1479,6 +1530,10 @@
         {
           "label": "Skill progression",
           "href": "guide/professions.html#independent-skill-progression"
+        },
+        {
+          "label": "Durable recipe knowledge",
+          "href": "guide/data-inventory.html#known-recipe-record"
         }
       ],
       "status": "Not Started",
@@ -1526,14 +1581,17 @@
       "objective": "Turn reserved materials into one exact useful output through a recoverable short craft.",
       "scope": "A representative band-I manufacturing chain, station validation, result preview and short synchronous jobs; public orders and mastery are separate.",
       "hard_dependencies": [
-        "BW-034"
+        "BW-034",
+        "BW-095"
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "The quote shows exact inputs, deterministic output, recipient, grade, binding, skill progress and required station.",
         "An accepted craft reserves owned versioned inputs; cancellation or precommit failure yields no output or skill.",
         "Commit consumes once, produces once and grants eligible skill once; retries return the existing receipt.",
-        "A postcommit crash or full bag preserves the output in durable delivery; disconnected ordinary crafts do not silently become offline jobs."
+        "A postcommit crash or full bag preserves the output in durable delivery; disconnected ordinary crafts do not silently become offline jobs.",
+        "Unknown or unlearned recipes, insufficient skill, inactive professions and unauthorized stations reject before reservation; legitimate learning makes the same recipe available without bypassing other eligibility rules.",
+        "Before the first craft and after recipe/vendor changes, the enabled price/conversion graph passes the shared admission gate; a crafted-output sellback loop is rejected before it can mint value."
       ],
       "completion_evidence": "Future real-store concurrency, reservation recovery and pre/postcommit crash tests, plus one usable crafted item demonstration.",
       "related_docs": [
@@ -1630,7 +1688,7 @@
       "id": "BW-085",
       "title": "Economic incident visibility, freezes and reversal",
       "objective": "Detect and contain economic corruption while preserving legitimate ownership and a complete audit history.",
-      "scope": "Receipt/ledger investigation, configured anomaly signals, visible service suspension, scoped asset freezes and authorized fraud reversal. Market balancing and general moderation are separate.",
+      "scope": "Receipt/ledger investigation, configured anomaly signals, visible service suspension, scoped asset freezes and authorized fraud reversal. Market balancing and general moderation are separate. Recurring economic reconciliation covers every admitted asset-mutation service.",
       "hard_dependencies": [
         "BW-084"
       ],
@@ -1640,9 +1698,10 @@
         "Configured monitoring exposes conservation exceptions, settlement backlog and suspicious repeated mutations with an identified measurement window; no unmeasured profitability or fraud claim is reported.",
         "Configured suspension or asset freeze rejects affected currently enabled economic operations with a user-visible reason while committed outcomes remain reconcilable; later market/crafting services pass the same checks before admission.",
         "A permitted reversal accounts for both items and currency through the canonical transactional path, records its relation to the original operation and cannot selectively rewind one side.",
-        "Repeated reversal/freeze requests and concurrent normal operations cannot duplicate assets or conceal the immutable original audit history."
+        "Repeated reversal/freeze requests and concurrent normal operations cannot duplicate assets or conceal the immutable original audit history.",
+        "A daily reconciliation report over a declared consistent interval accounts for authorized currency sources/sinks and zero-net internal transfers, identifies unmatched item/receipt/ledger/outbox operations, and exposes missing or failed reconciliation. Every later economic service joins this reconciliation before admission."
       ],
-      "completion_evidence": "Required future proof: injected duplicate/settlement anomalies, investigation traces, freeze/unfreeze exercises and concurrent idempotent reversal tests against the real database. Later services must join the same incident checks before release.",
+      "completion_evidence": "Required future proof: injected duplicate/settlement anomalies, investigation traces, freeze/unfreeze exercises and concurrent idempotent reversal tests against the real database. Later services must join the same incident checks before release. Include executed daily reconciliation with seeded discrepancies, matching interval/checkpoint records and visible failure handling.",
       "related_docs": [
         {
           "label": "Economic monitoring",
@@ -1655,6 +1714,10 @@
         {
           "label": "Audited operations",
           "href": "guide/operations.html#security-operations-and-support"
+        },
+        {
+          "label": "Daily reconciliation contract",
+          "href": "guide/data-inventory.html#economy-reconciliation-report"
         }
       ],
       "status": "Not Started",
@@ -2015,6 +2078,48 @@
       "ordering_rationale": ""
     },
     {
+      "id": "BW-096",
+      "title": "Integrated advanced-mechanic multiplayer probe",
+      "objective": "Validate interacting state families and their representative network workload before broad kit certification multiplies them.",
+      "scope": "A bounded local multiplayer integration/workload package using representative summons, static objects, statuses/periodic transforms, forms, songs/signature state and delayed-damage debt. Full-roster balance, cross-process advanced recovery and production capacity remain separate gates.",
+      "hard_dependencies": [
+        "BW-040",
+        "BW-041",
+        "BW-042",
+        "BW-043",
+        "BW-044",
+        "BW-046",
+        "BW-083"
+      ],
+      "recommended_predecessors": [],
+      "acceptance_criteria": [
+        "Independent clients exercise the implemented state families together using a versioned representative package, legal owner/object limits and a declared workload; combined actions preserve effective-result attribution, resource/output caps and outstanding debt.",
+        "Late join, interest re-entry, authorization loss and latency/loss/reordering recover coherent authorized current state without duplicate entities/effects or hidden-source disclosure; client feedback agrees with authoritative results.",
+        "Repeatable density and join/departure runs retain hardware/configuration, tick percentiles, entity/subscription counts, traffic, queues and memory; legal summon limits and overlapping actionable hazards are represented in the workload.",
+        "A reviewed report accepts a bounded tested workload and records constraints and follow-up gates before broad kit certification. Unresolved correctness or blocking integration failures prevent completion; these measurements make no production-concurrency promise."
+      ],
+      "completion_evidence": "Executed combined-mechanic multi-client scenarios, impairment and density traces, packet/projection inspection and a reviewed workload/constraint report tied to exact game and content revisions.",
+      "related_docs": [
+        {
+          "label": "Representative network workloads",
+          "href": "guide/testing.html#network-and-performance-testing"
+        },
+        {
+          "label": "Interest and relevant hazards",
+          "href": "guide/networking.html#area-of-interest-and-hidden-information"
+        },
+        {
+          "label": "State-family boundaries",
+          "href": "guide/status-effects.html#required-tests"
+        }
+      ],
+      "status": "Not Started",
+      "blockers": [],
+      "ordering_rationale": "BW-083 measures the direct-action kernel; isolated family fixtures cannot establish their combined traffic and timing behavior. A small integrated probe retires that risk before cohort expansion while BW-089 and BW-090 retain final recovery and capacity responsibility.",
+      "verified_evidence": [],
+      "phase": "phase-extended-state"
+    },
+    {
       "id": "BW-081",
       "title": "Private instance membership and lifecycle",
       "objective": "Provide isolated group-owned encounter spaces with controlled admission, departure and reset.",
@@ -2181,7 +2286,9 @@
         "BW-022",
         "BW-043",
         "BW-044",
-        "BW-041"
+        "BW-041",
+        "BW-095",
+        "BW-096"
       ],
       "recommended_predecessors": [
         "BW-032"
@@ -2234,7 +2341,9 @@
         "BW-046",
         "BW-040",
         "BW-041",
-        "BW-080"
+        "BW-080",
+        "BW-095",
+        "BW-096"
       ],
       "recommended_predecessors": [
         "BW-032"
@@ -2291,7 +2400,9 @@
         "BW-043",
         "BW-046",
         "BW-041",
-        "BW-042"
+        "BW-042",
+        "BW-095",
+        "BW-096"
       ],
       "recommended_predecessors": [
         "BW-032"
@@ -2343,7 +2454,9 @@
       "hard_dependencies": [
         "BW-040",
         "BW-041",
-        "BW-042"
+        "BW-042",
+        "BW-095",
+        "BW-096"
       ],
       "recommended_predecessors": [
         "BW-032"
@@ -2439,7 +2552,8 @@
         "BW-041",
         "BW-042",
         "BW-044",
-        "BW-046"
+        "BW-046",
+        "BW-096"
       ],
       "recommended_predecessors": [
         "BW-047",
@@ -2726,7 +2840,8 @@
       "scope": "Crafted repair/preparation/station objects, placement, owner limits and preparation categories; no territorial construction.",
       "hard_dependencies": [
         "BW-014",
-        "BW-037"
+        "BW-037",
+        "BW-026"
       ],
       "recommended_predecessors": [
         "BW-041"
@@ -2752,7 +2867,7 @@
       "blockers": [],
       "verified_evidence": [],
       "phase": "phase-services",
-      "ordering_rationale": ""
+      "ordering_rationale": "Portable repair convenience is assessed against the already working public vendor/repair fallback; combat deployables remain a recommended reuse opportunity rather than a required implementation."
     },
     {
       "id": "BW-075",
@@ -2856,7 +2971,8 @@
         "Manufacturing bands provide useful entry, repeat-demand, upgrade and service/tool outputs with exact numerical/binding contracts.",
         "Consumables, bags, tools, shields, instruments, gems, enchants and utility items obey their actual slot/category budgets.",
         "Rare/earned cores are excluded from material-saving effects; gathering, prospecting, salvage and conversion graphs cannot amplify materials or skill indefinitely.",
-        "Non-crafters can obtain permitted combat benefits through trade or commissions; no profession grants private raid power."
+        "Non-crafters can obtain permitted combat benefits through trade or commissions; no profession grants private raid power.",
+        "All 240 mastery nodes have explicit bounded runtime behavior and executed inclusion/exclusion evidence for their product family; training and authored acquisition routes populate retained recipe knowledge rather than making every recipe implicitly known."
       ],
       "completion_evidence": "Future approved output manifest, all-band/branch validation, conversion-cycle tests and executed crafting/consumption fixtures.",
       "related_docs": [
@@ -2953,10 +3069,11 @@
       "objective": "Let guilds manage members and ranks without granting authority they do not possess.",
       "scope": "Guild records, invitations, rank policy, typed membership commands and guild communication; bank assets are BW-064.",
       "hard_dependencies": [
-        "BW-029",
+        "BW-029"
+      ],
+      "recommended_predecessors": [
         "BW-030"
       ],
-      "recommended_predecessors": [],
       "acceptance_criteria": [
         "Pending invitation expiry/accept/decline/revoke use authoritative time and one terminal result.",
         "Commands enforce exact payload/rank IDs and the caller cannot grant permissions it lacks.",
@@ -2974,7 +3091,7 @@
       "blockers": [],
       "verified_evidence": [],
       "phase": "phase-services",
-      "ordering_rationale": ""
+      "ordering_rationale": "Party invitations offer useful prior lifecycle evidence, but guild membership/rank authorization can be verified independently with authoritative encounter-lock context. Party/raid frames and formation are not guild prerequisites."
     },
     {
       "id": "BW-064",
@@ -3123,9 +3240,10 @@
         "Entry computes level-60 normalized primary/health and controlled secondary budgets while preserving proportional selected distribution.",
         "Illegal talents/effects reject or use the explicitly reviewed mode policy; the original ordinary build remains unchanged.",
         "Rated exclusions remove external combat consumables and uncertified set/proc effects; UI explains adjustments before play.",
-        "Profession ownership, race cooldowns and challenge-item effects cannot add permanent power beyond the normalized budget."
+        "Profession ownership, race cooldowns and challenge-item effects cannot add permanent power beyond the normalized budget.",
+        "Before completion, approve the actual-level entry and normalized build/ability-selection policy recorded in open-rated-entry. Every admitted level uses a legal level-60 59/59-point budget; entry, exit and reconnect preserve ordinary earned progression/builds and cannot grant unauthorized ordinary points or ability access."
       ],
-      "completion_evidence": "Future before/after budget tests over low/normal/challenge gear and representative complete builds, with visible rules disclosure.",
+      "completion_evidence": "Future before/after budget tests over low/normal/challenge gear and representative complete builds, with visible rules disclosure. Include the approved entry/build-selection policy and executed admitted-level, exit and reconnect matrix; unresolved policy prevents completion.",
       "related_docs": [
         {
           "label": "Normalization policy",
@@ -3670,12 +3788,13 @@
     {
       "id": "milestone-foundations",
       "title": "Executable ownership proof",
-      "objective": "Prove clean runtime artifacts and one durable conflict/crash-safe mutation.",
+      "objective": "Prove clean runtime artifacts, a versioned content-production route and one durable conflict/crash-safe mutation.",
       "required_epics": [
         "BW-003",
-        "BW-018"
+        "BW-018",
+        "BW-095"
       ],
-      "outcome": "A clean headless fixture run and real-store concurrency/retry/crash evidence exist, with explicit authority/content boundaries."
+      "outcome": "A clean headless fixture run and real-store concurrency/retry/crash evidence exist, with explicit authority/content boundaries. A reproducible reviewed content import/export and invalid-package rejection establish the production route without certifying future handlers."
     },
     {
       "id": "milestone-first-action",
@@ -3727,9 +3846,10 @@
         "BW-046",
         "BW-081",
         "BW-082",
-        "BW-091"
+        "BW-091",
+        "BW-096"
       ],
-      "outcome": "Pets, forms, support/debt/periodic families have executable fixtures; isolated local instances, a fenced simple-state two-process handoff and migration/rollback work. This does not claim all advanced state has transferred together."
+      "outcome": "Pets, forms, support/debt/periodic families have executable fixtures; isolated local instances, a fenced simple-state two-process handoff and migration/rollback work. This does not claim all advanced state has transferred together. Representative families also pass a combined multi-client impairment/workload probe before broad kit certification."
     },
     {
       "id": "milestone-roster",
@@ -3882,14 +4002,15 @@
     {
       "id": "decision-contracts",
       "title": "Stable boundary contracts, incremental binding",
-      "choice": "Preserve IDs, versions, authority, coordinate scope, explicit rejection and compatible wire values first. Bind only enabled records and expand concrete content with executed fixtures.",
+      "choice": "Preserve IDs, versions, authority, coordinate scope, explicit rejection and compatible wire values first. Bind only enabled records and expand concrete content with executed fixtures. A versioned author/import route produces these packages; migration/admission are distinct consumers of that route.",
       "alternatives": "Freezing every future final payload delays gameplay learning on unauthored content. Inventing disconnected local models now creates integration debt. Existing complete contracts constrain behavior without claiming their handlers exist.",
       "basis": "All 29 recorded contract questions are resolved; 329 ability and 882 inherited talent bindings remain runtime/content work. Documentation completeness is not implementation readiness.",
       "epics": [
         "BW-002",
         "BW-024",
         "BW-051",
-        "BW-091"
+        "BW-091",
+        "BW-095"
       ],
       "related_docs": [
         {
@@ -3909,7 +4030,7 @@
     {
       "id": "decision-combat",
       "title": "Commitment before effects; representative mechanics before volume",
-      "choice": "Prove legal targeting, cost/timing commitment and numerical resolution before mass ability expansion. Validate statuses, hazards, signature resources and representative advanced state as distinct capabilities.",
+      "choice": "Prove legal targeting, cost/timing commitment and numerical resolution before mass ability expansion. Validate statuses, hazards, signature resources and representative advanced state as distinct capabilities. Combine the representative families in one measured multi-client probe before broad cohort certification.",
       "alternatives": "Implementing all classes first repeats mistakes across hundreds of bindings. Requiring every effect family before one network action overextends the first experiment. Mandatory level-ten roles already need signature state, so deferring every advanced resource until after the starter is also unsound.",
       "basis": "Reservation/release/interrupt behavior, bounded triggers, role services and reconstruction are explicit requirements; grouping families into small risk probes is the scheduling judgment.",
       "epics": [
@@ -3921,7 +4042,8 @@
         "BW-040",
         "BW-044",
         "BW-045",
-        "BW-051"
+        "BW-051",
+        "BW-096"
       ],
       "related_docs": [
         {
@@ -4054,13 +4176,14 @@
   ],
   "coverage": [
     {
-      "family": "Authority, stable contracts, content ownership and development evidence",
+      "family": "Authority, stable contracts, content authoring/admission, ownership and development evidence",
       "epics": [
         "BW-001",
         "BW-002",
         "BW-003",
         "BW-018",
-        "BW-091"
+        "BW-091",
+        "BW-095"
       ],
       "related_docs": [
         {
@@ -4202,7 +4325,8 @@
         "BW-044",
         "BW-045",
         "BW-046",
-        "BW-089"
+        "BW-089",
+        "BW-096"
       ],
       "related_docs": [
         {
@@ -4239,7 +4363,7 @@
       ]
     },
     {
-      "family": "Gathering, fishing, profession progress/mastery, recipes, tools and six-band relevance",
+      "family": "Gathering, fishing, profession progress, recipe learning/mastery, tools and six-band relevance",
       "epics": [
         "BW-034",
         "BW-035",
@@ -4689,6 +4813,33 @@
           "href": "guide/data-inventory.html#item-effect-definition"
         }
       ]
+    },
+    {
+      "id": "open-rated-entry",
+      "title": "Rated entry eligibility and normalized build selection",
+      "kind": "Open decision",
+      "description": "Rated combat requires effective level 60 and a 118-point budget, but the reference does not specify minimum actual entry level or how a below-cap entrant selects legal normalized talents, role services and ability unlocks. Decide whether entry requires actual level 60 or supports lower-level entrants with an explicitly reviewed temporary build/ability policy. Preserve the required normalization and ordinary earned progression; this audit selects neither alternative.",
+      "resolution_gate": "Approve before BW-067 can be Complete and before BW-068 admits rated participants. Test admitted-level entry/exit/reconnect, temporary mode selections and unchanged ordinary build/progression; do not infer match initialization or respawn policy from ordinary build application.",
+      "epics": [
+        "BW-067",
+        "BW-068",
+        "BW-073",
+        "BW-094"
+      ],
+      "related_docs": [
+        {
+          "label": "Rated normalization",
+          "href": "guide/pvp-encounters.html#gear-normalization"
+        },
+        {
+          "label": "Earned progression and loadouts",
+          "href": "guide/progression.html#respecialization-and-loadouts"
+        },
+        {
+          "label": "Normalized runtime state",
+          "href": "guide/data-inventory.html#pvp-normalization-state"
+        }
+      ]
     }
   ],
   "deferred_scope": [
@@ -4707,7 +4858,8 @@
     "Removed global phase barriers and kept social, profession and economic branches independently actionable. Recommended predecessors express integration convenience; only observable prerequisites are hard edges.",
     "Required provider security and a real restore before persistent external testing, while early headless fixtures and restricted technical sessions stay small. Final capacity and incidents wait for representative full workloads.",
     "Retained separate full-game integration and release gates. Completion percentages describe epic counts only; undefined capacity, balance targets or launch-content bounds cannot be replaced by optimistic status updates.",
-    "A competent team could move some profession/social work earlier or defer a simple handoff until larger zones exist. This order favors earlier conservation/ownership learning; it makes no claim that those comparable branch orders have a unique optimum."
+    "A competent team could move some profession/social work earlier or defer a simple handoff until larger zones exist. This order favors earlier conservation/ownership learning; it makes no claim that those comparable branch orders have a unique optimum.",
+    "Independent audit: retain the initial network/replication order, add explicit content production and a combined-family probe, enforce only demonstrated hard prerequisites, and leave rated entry/build selection as an explicit unresolved policy. See the Roadmap Audit for baseline evidence and per-epic dispositions."
   ],
   "maintenance": [
     "Edit only sources/development-roadmap.json for planning content, statuses, blockers and evidence. Do not hand-edit the generated pages, dashboard, milestone states, search records or manifest counts. Status must be exactly Not Started, In Progress, Blocked or Complete.",

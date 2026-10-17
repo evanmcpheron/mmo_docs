@@ -22,7 +22,7 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-68 HTML pages: 36 system/catalog/planning chapters, 12 class pages, 16 profession pages,
+69 HTML pages: 37 system/catalog/planning chapters, 12 class pages, 16 profession pages,
 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -79,6 +79,13 @@ overview-page anchors remain links to the corresponding detail pages.
 It is planning/reference documentation; it adds no canonical gameplay contracts.
 All epic statuses begin Not Started because this repository contains design
 evidence, not verified game implementation.
+
+Open guide/roadmap-audit.html for the independent 17 October 2026 audit of all
+92 original epics, ten findings, applied corrections and the remaining rated-entry
+policy decision. The corrected roadmap has 94 epics. The dated report's editable
+source is sources/roadmap-audit.html.inc; the roadmap builder publishes it using
+the same template/navigation and the inventory builder indexes its findings.
+The report is a planning snapshot, separate from live implementation progress.
 
 sources/development-roadmap.json is the sole editable roadmap/progress source.
 Edit an existing epic's status and verified_evidence there. Use exactly Not

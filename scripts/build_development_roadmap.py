@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import re
 
-from build_data_inventory import navigation
+from build_data_inventory import Document, navigation
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = 'guide/development-roadmap.html'
@@ -23,6 +23,7 @@ SECTIONS = (
     ('sequencing-decisions', 'Architectural sequencing decisions'),
     ('coverage', 'Feature coverage and open decisions'),
     ('maintenance', 'Updating progress'),
+    ('audit', 'Roadmap Audit'),
 )
 
 
@@ -77,6 +78,7 @@ REFERENCE_PAGES = {
     'sequencing-decisions': ('guide/roadmap-decisions.html', 'Sequencing decisions'),
     'coverage': ('guide/roadmap-coverage.html', 'Coverage and open decisions'),
     'maintenance': ('guide/roadmap-maintenance.html', 'Updating progress'),
+    'audit': ('guide/roadmap-audit.html', 'Roadmap Audit'),
 }
 
 
@@ -246,6 +248,7 @@ def render(data, root=ROOT):
         'sequencing-decisions': 'Read the dependency method, major alternatives and the reasons behind this sequence.',
         'coverage': 'Trace documented feature families to epics and review unresolved choices, assumptions and deferred scope.',
         'maintenance': 'Update statuses and completion evidence in the registry, then regenerate and validate the published pages.',
+        'audit': 'Review the independent audit, applied corrections, per-epic assessment and outstanding decisions.',
     }
     for anchor, (destination, title) in REFERENCE_PAGES.items():
         parts.append(f'<a class="card" id="{anchor}" href="{escape(address(destination, page))}"><h3>{escape(title)}</h3>'
@@ -365,12 +368,23 @@ def render_maintenance(data, root=ROOT):
                  parts, [('maintenance', 'Statuses and evidence'), ('commands', 'Rebuild and validate')], root)
 
 
+def render_audit(data, root=ROOT):
+    page = REFERENCE_PAGES['audit'][0]
+    body = (root / 'sources/roadmap-audit.html.inc').read_text(encoding='utf-8')
+    toc = [(anchor, title) for tag, anchor, title in Document('<main>' + body + '</main>').headings
+           if tag == 'h2' and anchor]
+    return shell(data, page, 'Roadmap Audit',
+                 'Independent planning and architectural review, corrections, coverage and remaining decisions.',
+                 [body], toc, root)
+
+
 def generated_pages(data, root=ROOT):
     return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
             REFERENCE_PAGES['milestones'][0]: render_milestones(data, root),
             REFERENCE_PAGES['sequencing-decisions'][0]: render_decisions(data, root),
             REFERENCE_PAGES['coverage'][0]: render_coverage(data, root),
-            REFERENCE_PAGES['maintenance'][0]: render_maintenance(data, root)}
+            REFERENCE_PAGES['maintenance'][0]: render_maintenance(data, root),
+            REFERENCE_PAGES['audit'][0]: render_audit(data, root)}
 
 
 def main():
