@@ -5,9 +5,9 @@ Documentation contracts only; no gameplay/database/network implementation or bal
 A. DEFINITION COVERAGE
 Original inventory: 97 enums, 168 interfaces, 236 schemas; all 501 examined.
 Enum: 83 total; 33 fully defined; 50 partial / Needs Decision.
-Interface: 168 total; 142 fully defined; 26 partial / Needs Decision.
-Schema: 250 total; 156 fully defined; 94 partial / Needs Decision.
-Partial / Needs Decision structures: 170.
+Interface: 168 total; 146 fully defined; 22 partial / Needs Decision.
+Schema: 250 total; 157 fully defined; 93 partial / Needs Decision.
+Partial / Needs Decision structures: 165.
 Feature pages updated: 49 generated Data sections; feature pages reviewed: 49 (53 source HTML pages total).
 
 B. DRY AND COMPATIBILITY AUDIT
@@ -47,12 +47,12 @@ Static content is versioned by the package content version. Runtime state belong
 A Fully Defined shape is supported at documentation level, not runtime-ready or balanced. Needs Decision schemas validate only their supported portion and cannot certify an unresolved mechanic. Text invariants require future semantic/runtime validation beyond structural JSON Schema.
 
 E. OUTSTANDING AND RESOLVED DECISIONS
-resource-terminology [open]: Several class and specialization labels differ from their resource contracts: Grace/Devotion, Soul Threshold/Soul Essence, Maelstrom/Stormcharge, Pact Shards/Authority, and Focus Windows/Aim. Confirm the eventual public terminology without creating duplicate meters.
+resource-terminology [resolved]: Several class and specialization labels differ from their resource contracts: Grace/Devotion, Soul Threshold/Soul Essence, Maelstrom/Stormcharge, Pact Shards/Authority, and Focus Windows/Aim. Confirm the eventual public terminology without creating duplicate meters.
   Affected: DemonologistCombatState, HighPriestCombatState, MarksmanCombatState, ResourceType, SoulreaperCombatState, StormcallerCombatState
   Sources: classes/cleric.html#high_priest, classes/necromancer.html#soulreaper, classes/shaman.html#stormcaller, classes/warlock.html#demonologist, classes/ranger.html#marksman, guide/attributes.html#derived-values
   Alternatives: Keep resource-contract labels and map legacy display aliases. | Rename public labels after content review.
-  Recommendation: Use one pool per resource contract; defer public label cleanup.
-  Impact: Ambiguous UI names must not create duplicate meters.
+  Recommendation: Resolved: standardize public resource labels to Devotion, Soul Essence, Stormcharge, Authority and Aim, following the explicit resource contracts. Marksman Focus remains the separate sustained resource. Preserve stable IDs and one canonical pool per actual resource.
+  Impact: Legacy resource labels were renamed across class guidance, ability/talent catalogs, embedded character data and search. No gain, spend, cap or other resource behavior changed. Marksman accuracy behavior remains a separate open decision.
 minstrel-resource [open]: Minstrel resource contracts use Mana and Harmonies, while Balm Chorus and several talents still refer to Cadence spending or retention. Which references should eventually govern?
   Affected: MaintainedSongState, MinstrelCombatState
   Sources: classes/bard.html#minstrel, classes/bard.html#shared-class-abilities
@@ -791,7 +791,7 @@ DeliveryRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: CharacterRecord, Id, ItemInstance, Version
   Reviewed sources: guide/crafting-orders.html#inventory-full-and-disconnect-behavior, guide/economy.html#bazaar-model, guide/economy.html#matching-and-settlement, guide/items.html#inventory-correctness, guide/operations.html#guilds-banks-and-communication, guide/operations.html#party-raid-and-loot-ownership, professions/alchemy.html#representative-recipe-blueprints, professions/blacksmithing.html#representative-recipe-blueprints, professions/cooking.html#representative-recipe-blueprints, professions/enchanting.html#representative-recipe-blueprints, professions/engineering.html#representative-recipe-blueprints, professions/first_aid.html#representative-recipe-blueprints, professions/inscription.html#representative-recipe-blueprints, professions/jewelcrafting.html#representative-recipe-blueprints, professions/leatherworking.html#representative-recipe-blueprints, professions/tailoring.html#representative-recipe-blueprints, professions/woodworking.html#representative-recipe-blueprints
-DemonologistCombatState: Needs Decision / runtime state
+DemonologistCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant, ResourceType, SummonState
   Reviewed sources: classes/warlock.html#demonologist, guide/playstyles.html#three-separate-design-responsibilities
@@ -1099,7 +1099,7 @@ HellcallerCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, ResourceType
   Reviewed sources: classes/warlock.html#hellcaller, guide/playstyles.html#three-separate-design-responsibilities
-HighPriestCombatState: Needs Decision / runtime state
+HighPriestCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, ResourceType
   Reviewed sources: classes/cleric.html#high_priest, guide/playstyles.html#three-separate-design-responsibilities
@@ -1779,7 +1779,7 @@ ResourceSnapshot: Needs Decision / network event
   Authority: owning world process; filtered per recipient
   References: CharacterRecord, EventContext, Id, ResourcePoolState
   Reviewed sources: guide/execution.html#replication-events
-ResourceType: Needs Decision / content reference
+ResourceType: Fully Defined / content reference
   Authority: versioned content package
   References: Id, ResourceDefinition
   Reviewed sources: classes/bard.html#specializations-at-a-glance, classes/cleric.html#specializations-at-a-glance, classes/druid.html#specializations-at-a-glance, classes/mage.html#specializations-at-a-glance, classes/monk.html#specializations-at-a-glance, classes/necromancer.html#specializations-at-a-glance, classes/paladin.html#specializations-at-a-glance, classes/ranger.html#specializations-at-a-glance, classes/rogue.html#specializations-at-a-glance, classes/shaman.html#specializations-at-a-glance, classes/warlock.html#specializations-at-a-glance, classes/warrior.html#specializations-at-a-glance, guide/attributes.html#derived-values, guide/combat.html#cast-lifecycle, guide/combat.html#death-recovery-and-battle-revival, guide/combat.html#projectiles-and-ground-effects, guide/execution.html#cost-and-cooldown-semantics, guide/interface.html#combat-display, guide/playstyles.html#three-separate-design-responsibilities, guide/progression.html#ability-progression, guide/progression.html#respecialization-and-loadouts
@@ -1895,7 +1895,7 @@ SongSupportBudget: Fully Defined / runtime state
   Authority: owning world process
   References: Fraction, Id
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/bard.html#virtuoso, guide/interface.html#combat-display, guide/status-effects.html#pets-totems-and-formations
-SoulreaperCombatState: Needs Decision / runtime state
+SoulreaperCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, ResourceType
   Reviewed sources: classes/necromancer.html#soulreaper, guide/playstyles.html#three-separate-design-responsibilities
@@ -1967,7 +1967,7 @@ StatusStackingPolicy: Needs Decision / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/execution.html#definition-fields, guide/execution.html#replication-events, guide/status-effects.html#persistence-policy, guide/status-effects.html#status-definitions
-StormcallerCombatState: Needs Decision / runtime state
+StormcallerCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, DamageSchool, Id, ResourceType
   Reviewed sources: classes/shaman.html#stormcaller, guide/playstyles.html#three-separate-design-responsibilities
