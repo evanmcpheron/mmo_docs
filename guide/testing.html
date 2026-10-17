@@ -55,7 +55,7 @@
 </tr>
 <tr>
 <td>Stealthed player near enemy client</td>
-<td>Hidden state is not transmitted merely because a sprite is invisible</td>
+<td>Hidden state is not transmitted merely because a rendered character is invisible</td>
 </tr>
 <tr>
 <td>PvP repeated hard control</td>
@@ -63,6 +63,16 @@
 </tr>
 </tbody>
 </table>
+<h2 id="rendering-verification">Rendering verification</h2>
+<p>These are future implementation checks for the <a href="decisions.html#art-direction">3D pixel-art direction</a>, separate from this site’s browser validation. Compare reference captures and motion recordings from the pinned Godot build, renderer and declared settings; a still image alone cannot establish camera stability.</p>
+<ul>
+<li>Follow a moving character, cross pixel boundaries and exercise each supported window size, aspect ratio and zoom setting. Check camera continuity, outline thickness, pixel crawl, independently scaled text and character-preview parity.</li>
+<li>Verify silhouettes one pixel wide at the internal render resolution and separately selected convex highlights on sloped, thin and overlapping geometry at different distances and near/far clipping boundaries. Inspect motion and antialiasing variants for false surface edges, missing contours, filled surfaces and unstable width. Use <a href="sources.html#s15">Roystan’s tutorial</a> as a technique reference adapted to Godot.</li>
+<li>Verify entity selection and ground-cast markers against known server floor anchors during movement, resizing, letterboxing and camera correction. Wrong-floor and letterbox input must not produce an unintended cast.</li>
+<li>Exercise opaque objects, outlines, transparent foliage, water reflection/refraction, particles and atmosphere together. Check pass ordering, stale screen textures, hidden-state leakage and occluder fading; repeat on every supported renderer and fallback.</li>
+<li>Test 30-player combat with legal summon counts, overlapping hazards, dark scenes and every quality tier. Required telegraphs and selected-target feedback remain identifiable, including with reduced effects and accessibility settings.</li>
+<li>Record CPU/GPU frame-time percentiles, memory, draw calls and overdraw on declared target hardware and resolutions. Measure water, foliage, atmosphere and crowded combat separately against explicit budgets before extending art production; retain failed results and their mitigations.</li>
+</ul>
 <h2 id="build-diversity-playtests">Build-diversity playtests</h2><p>Support logs identify <code>ordered_marginal_v1</code>. Use the same modifier-family order as resolution and stable source entity, owner ability and status instance IDs within each family. Reuse the root critical outcome and hold non-support effects fixed. Sum the nonnegative per-source increments once; this sum equals incremental support damage and cannot exceed actual damage.</p>
 <p>Compare at least two builds in each tested specialization under equal level and gear budget. Record action selection, time stationary, resource peaks, casts canceled, target switching, healing distribution and cooldown timing. A build passes the playstyle test only if it changes at least two decision dimensions, while preserving its role's baseline viability.</p>
 <p>Use a stationary target, movement encounter, interrupted cast sequence, spread-target encounter and short versus sustained fights. An output-only talent comparison on a stationary dummy cannot establish spatial or support value. Record decision changes separately from numerical strength.</p>
@@ -108,4 +118,4 @@
 <li data-inventory-id="validation-report"><code><a href="data-inventory.html#validation-report">ValidationReport</a></code> — Existing · Fully Defined</li>
 </ul>
 </section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#checks-actually-run-for-this-package">Checks actually run for this package</a><a href="#combat-acceptance-scenarios">Combat acceptance scenarios</a><a href="#build-diversity-playtests">Build-diversity playtests</a><a href="#profession-relevance-test">Profession relevance test</a><a href="#transaction-and-recovery-tests">Transaction and recovery tests</a><a href="#network-and-performance-testing">Network and performance testing</a><a href="#test-evidence-retained">Test evidence retained</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#checks-actually-run-for-this-package">Checks actually run for this package</a><a href="#combat-acceptance-scenarios">Combat acceptance scenarios</a><a href="#rendering-verification">Rendering verification</a><a href="#build-diversity-playtests">Build-diversity playtests</a><a href="#profession-relevance-test">Profession relevance test</a><a href="#transaction-and-recovery-tests">Transaction and recovery tests</a><a href="#network-and-performance-testing">Network and performance testing</a><a href="#test-evidence-retained">Test evidence retained</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>

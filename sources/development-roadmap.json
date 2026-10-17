@@ -10,7 +10,8 @@
     "The displayed sequence is a reasoned engineering recommendation, not an immutable technical fact. Numerical IDs do not imply priority. Reorder an epic only after checking its dependencies and integration gates; keep its ID and anchor stable.",
     "An epic reaches Complete only when every acceptance criterion has passing, revision-specific runtime/content/operational evidence and its hard prerequisites are Complete. Criteria define observable behavior rather than internal methods. Failure scenarios are part of completion. Status does not advance automatically when a document or fixture specification is written.",
     "Milestone requirements include their transitive hard prerequisites. Explicit integration/certification epics test connected behavior on compatible builds. Phase completion means every member epic is Complete; it does not replace those integrated proofs.",
-    "Foundations certify the state families in their tested package. An epic introducing another family must extend the applicable recipient-view, reconstruction, security and operational checks before admitting it. This never certifies a future family in advance; full-roster and release certification still cover their entire declared scope."
+    "Foundations certify the state families in their tested package. An epic introducing another family must extend the applicable recipient-view, reconstruction, security and operational checks before admitting it. This never certifies a future family in advance; full-roster and release certification still cover their entire declared scope.",
+    "The selected presentation is low-resolution 3D pixel art inspired by David Holland. Rendering feasibility and production work have their own evidence gates; continuous planar/floor simulation remains authoritative. Historical references to eight sprite directions now mean compatible preview headings, not a required spritesheet pipeline."
   ],
   "distinctions": [
     {
@@ -99,15 +100,27 @@
     {
       "label": "Representative recipes",
       "href": "catalog/recipes.html"
+    },
+    {
+      "label": "Selected 3D pixel-art direction",
+      "href": "guide/decisions.html#art-direction"
+    },
+    {
+      "label": "Rendering, camera and input",
+      "href": "guide/interface.html#rendering-and-camera"
+    },
+    {
+      "label": "Rendering verification",
+      "href": "guide/testing.html#rendering-verification"
     }
   ],
   "phases": [
     {
       "id": "phase-foundations",
       "title": "1. Executable boundaries and risk probes",
-      "objective": "Establish reproducible runtime evidence, a versioned content-production route and durable ownership independently of combat.",
+      "objective": "Establish reproducible runtime evidence, a versioned content-production route and durable ownership independently of combat. Probe the selected renderer and pixel-stable camera on target hardware in parallel.",
       "milestone": "milestone-foundations",
-      "completion_condition": "The durable retry/crash probe is executed against a real candidate store. The author/import route also produces a reproducible reviewed package and rejects invalid content."
+      "completion_condition": "The durable retry/crash probe is executed against a real candidate store. The author/import route also produces a reproducible reviewed package and rejects invalid content. A reproducible 3D pixel-art scene also resolves renderer/camera/pass feasibility and records initial visual/performance settings."
     },
     {
       "id": "phase-first-action",
@@ -128,7 +141,7 @@
       "title": "4. First complete persistent player journey",
       "objective": "Deliver an initial supported beginner and role slice with security, support and restore gates for external persistent testing.",
       "milestone": "milestone-opening",
-      "completion_condition": "The representative beginner/role playtests use a common compatible build, and provider security plus actual restore evidence permit external persistent play."
+      "completion_condition": "The representative beginner/role playtests use a common compatible build, and provider security plus actual restore evidence permit external persistent play. The starter slice integrates the reviewed 3D art workflow and camera."
     },
     {
       "id": "phase-extended-state",
@@ -156,7 +169,7 @@
       "title": "8. Full progression, cooperative and competitive experiences",
       "objective": "Complete level-cap journeys, group/PvP content, advanced recovery, balance and presentation evidence.",
       "milestone": "milestone-full-experiences",
-      "completion_condition": "All-roster, progression, economic, group/PvP and usability certification pass; BW-092 separately verifies their release-candidate integration."
+      "completion_condition": "All-roster, progression, economic, group/PvP and usability certification pass; BW-092 separately verifies their release-candidate integration. Environment effects and complete 3D pixel-art/accessibility evidence are included."
     },
     {
       "id": "phase-release",
@@ -175,7 +188,7 @@
       "hard_dependencies": [],
       "recommended_predecessors": [],
       "acceptance_criteria": [
-        "A clean checkout produces a launchable client and a headless server using the recorded engine and export-template revisions.",
+        "A clean checkout produces a launchable client and a headless server using the recorded engine and export-template revisions; client rendering choices and any engine patches are pinned separately from headless simulation requirements.",
         "The server starts without graphics or a local player and reports its build, rules and content revisions.",
         "Missing required configuration fails with an actionable diagnostic; credentials are absent from distributed client artifacts.",
         "A clean automated run distinguishes build failure from an executed passing or failing runtime check."
@@ -189,6 +202,10 @@
         {
           "label": "Verification requirements",
           "href": "guide/testing.html"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
         }
       ],
       "status": "Not Started",
@@ -274,10 +291,61 @@
       "phase": "phase-foundations"
     },
     {
+      "id": "BW-097",
+      "title": "3D pixel-art renderer and camera feasibility proof",
+      "objective": "Prove the selected visual direction on a pinned Godot build before committing to asset volume.",
+      "scope": "A small standalone scene, low-resolution orthographic world view, pixel-stable camera, outline/toon material candidates and renderer/pass feasibility; production assets and final environment effects follow separately. Holland sets the visual target; Roystan’s Unity tutorial informs edge detection, with Godot-specific depth, normal-space, projection, sampling and composition behavior tested explicitly.",
+      "hard_dependencies": [
+        "BW-001",
+        "BW-003"
+      ],
+      "recommended_predecessors": [],
+      "acceptance_criteria": [
+        "A packaged reference scene records engine/export revision, renderer, graphics backend and test hardware; required depth/normal and screen-copy access is demonstrated, with any unsupported path or engine patch explicitly resolved rather than assumed from the article.",
+        "The orthographic view has a declared internal resolution, framing, pixel scale, nearest presentation and aspect/minimum-window policy; resizing and high-DPI displays retain readable separate UI and consistent world pixels.",
+        "Slow and diagonal camera tracking, stationary views and moving actors have reviewed frame sequences for crawl, shimmer and jitter; camera grid alignment with residual screen correction, or a measured equivalent, preserves smooth tracking without snapping simulation.",
+        "A representative model/terrain comparison establishes silhouette outlines one pixel wide at the internal resolution, distinct convex-edge highlights and approved toon lighting at gameplay scale; near/far surfaces, grazing slopes, thin geometry and overlapping actors do not produce filled surfaces or distracting false edges.",
+        "Opaque, transparent and screen-reading test objects expose missing/stale outlines, depth and ordering errors; a water/reflection/atmosphere feasibility sample identifies required passes and a tested fallback before those effects enter production.",
+        "Review records CPU/GPU frame costs and memory at declared settings, visual acceptance findings and chosen defaults; the scene is reproducible from source, and custom-engine maintenance or platform exclusions require a documented implementation decision."
+      ],
+      "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions.",
+      "related_docs": [
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Holland visual reference",
+          "href": "guide/sources.html#s9"
+        },
+        {
+          "label": "Roystan outline tutorial and adaptation boundary",
+          "href": "guide/sources.html#s15"
+        },
+        {
+          "label": "t3ssel8r visual research channel",
+          "href": "guide/sources.html#s16"
+        }
+      ],
+      "status": "Not Started",
+      "blockers": [],
+      "ordering_rationale": "Probe renderer and camera risks alongside headless simulation. The reference describes a custom historical build, so neither a fork nor current engine support is assumed.",
+      "verified_evidence": [],
+      "phase": "phase-foundations"
+    },
+    {
       "id": "BW-095",
       "title": "Versioned content authoring and import workflow",
       "objective": "Make documented content producible and reviewable through the same contracts used by runtime admission.",
-      "scope": "Versioned editors or importers for abilities, statuses, talents, items, recipes, NPC kits, loot tables and encounter triggers, with world/tutorial relationships. A bounded import/export route is sufficient; full content authoring and gameplay handlers remain with feature epics.",
+      "scope": "Versioned editors or importers for abilities, statuses, talents, items, recipes, NPC kits, loot tables and encounter triggers, with world/tutorial relationships. A bounded import/export route is sufficient; full content authoring and gameplay handlers remain with feature epics. Render-source asset conventions and production validation extend this route in BW-098.",
       "hard_dependencies": [
         "BW-001",
         "BW-002",
@@ -303,6 +371,10 @@
         {
           "label": "Canonical data contracts",
           "href": "guide/data-inventory.html#conventions"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
         }
       ],
       "status": "Not Started",
@@ -389,7 +461,7 @@
       "id": "BW-005",
       "title": "Authoritative movement and world geometry",
       "objective": "Resolve movement from client intent against authoritative geometry and time.",
-      "scope": "Continuous movement, floor identity, collision, path bounds and server clock; rendering and prediction are separate.",
+      "scope": "Continuous planar movement, floor identity, collision, path bounds and server clock; 3D scene placement maps to this geometry, while camera projection, visual elevation and prediction remain separate.",
       "hard_dependencies": [
         "BW-001",
         "BW-002"
@@ -397,7 +469,7 @@
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "Equal-duration legal input gives the documented base speed, normalized diagonal movement and equal gameplay bodies across races.",
-        "Independent aim does not constrain motion to the eight artwork orientations.",
+        "Independent aim and motion remain continuous regardless of model facing, eight preview headings, camera projection, visual height or pixel-grid alignment.",
         "Walls, closed boundaries, wrong-floor destinations and impossible movement are rejected or corrected using authoritative geometry.",
         "Movement acknowledgments identify accepted input and state revision; repeated input cannot move a character twice."
       ],
@@ -410,6 +482,10 @@
         {
           "label": "Authority and networking",
           "href": "guide/networking.html"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
         }
       ],
       "status": "Not Started",
@@ -501,7 +577,8 @@
         "At 0, 50, 100, 150 and 250 ms RTT, correction converges to the server position without applying acknowledged input twice.",
         "Jitter and 1–5% packet loss do not leave permanent remote motion divergence after state delivery resumes.",
         "Collision corrections and ownership changes discard obsolete prediction history and cannot move a character through a wall.",
-        "Record correction magnitude/frequency and input response for each scenario, with an explicit review of understandable failure at 250 ms."
+        "Record correction magnitude/frequency and input response for each scenario, with an explicit review of understandable failure at 250 ms.",
+        "Render-camera alignment and visual interpolation do not quantize predicted or authoritative positions; slow tracking during correction and teleport/reset cases remain understandable in the selected low-resolution view."
       ],
       "completion_evidence": "Network-impairment runs with motion traces, correction metrics and reviewed recordings.",
       "related_docs": [
@@ -512,6 +589,14 @@
         {
           "label": "Verification requirements",
           "href": "guide/testing.html"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
         }
       ],
       "status": "Not Started",
@@ -637,7 +722,7 @@
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
-        "Hidden and cross-floor entities are absent from unauthorized snapshots, targeting queries and public correlation identifiers.",
+        "Hidden and cross-floor entities are absent from unauthorized snapshots, targeting queries and public correlation identifiers; outlines, shadows, reflections, refractions and other render passes cannot reconstruct or reveal excluded entities.",
         "For each currently implemented cast/status/effect state kind, interest entry restores current state without historical event replay; authorization loss removes or redacts it. Each later state-producing epic must pass these same projection checks before admission.",
         "A hazard that can affect a recipient remains represented while unrelated cosmetic updates may be limited.",
         "A recorded crowded synthetic scene demonstrates finite relevant sets, queue bounds and measured traffic; reliable chat-like traffic does not stall replaceable movement.",
@@ -652,6 +737,14 @@
         {
           "label": "Interface and accessibility",
           "href": "guide/interface.html"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
         }
       ],
       "status": "Not Started",
@@ -664,17 +757,20 @@
       "id": "BW-028",
       "title": "Action controls and legible combat feedback",
       "objective": "Expose enough accessible interaction to test actual gameplay decisions early.",
-      "scope": "Rebindable movement/target/cast input, action bar, HUD, queue/cancel, telegraphs, status/resource/cast/rejection feedback and presentation hooks; final asset production is separate.",
+      "scope": "Rebindable movement/target/cast input, action bar, HUD, queue/cancel, telegraphs, status/resource/cast/rejection feedback and presentation hooks; final asset production is separate. Projected world picking, independent UI composition and occluder-aware cues integrate with the active render view; placeholder art can serve the first technical proof.",
       "hard_dependencies": [
         "BW-007",
         "BW-010"
       ],
-      "recommended_predecessors": [],
+      "recommended_predecessors": [
+        "BW-097"
+      ],
       "acceptance_criteria": [
         "A player can target, preview/confirm/cancel ground intent, queue one eligible action within the documented window and see rejection reasons.",
         "HUD/action bars show authoritative resources, GCD/cast/cooldown and target state; predicted feedback corrects after rejection.",
         "Friendly-frame targeting has precedence and actionable hazards remain distinguishable without relying only on color.",
-        "Keyboard bindings, text/UI scale and reduced visual effects can be exercised; eight-direction presentation never decides aim, collision or release."
+        "Keyboard bindings, text/UI scale and reduced visual effects can be exercised independently of world resolution; model pose and camera snapping never decide aim, collision or release.",
+        "Pointer ground previews and selection map through actual viewport scale, letterbox offsets, camera projection and snap correction to the intended server floor/position; UI capture and invalid/occluded geometry have deterministic rejection/cancel behavior."
       ],
       "completion_evidence": "Keyboard/controller-if-supported interaction recordings and accessibility checklist with executed correction/rejection cases.",
       "related_docs": [
@@ -689,6 +785,14 @@
         {
           "label": "Authority and networking",
           "href": "guide/networking.html"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
         }
       ],
       "status": "Not Started",
@@ -753,7 +857,7 @@
       ],
       "acceptance_criteria": [
         "A repeatable workload drives moving clients and implemented actions, includes burst joins/departures, and records client count, content/rules versions, hardware and measurement duration.",
-        "Reports retain tick median/tail percentiles, queue depth, memory, bytes per client, rejection/duplicate counts and recovery behavior rather than connection counts alone.",
+        "Reports retain tick median/tail percentiles, queue depth, memory, bytes per client, rejection/duplicate counts and recovery behavior rather than connection counts alone. Record the actual client render configuration and frame timings separately so rendering cost is not mistaken for a server or bandwidth limit.",
         "Latency runs include 0/50/100/150/250 ms RTT plus declared jitter, snapshot reordering and 1–5% loss; failures and rejected inputs remain visible.",
         "The report identifies measured constraints and bounded next changes, explicitly distinguishes prototype rates from achieved capacity and records unresolved budgets before further scale claims."
       ],
@@ -770,6 +874,14 @@
         {
           "label": "Latency policy",
           "href": "guide/networking.html#latency-policy"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
         }
       ],
       "status": "Not Started",
@@ -966,9 +1078,11 @@
         "BW-019",
         "BW-006"
       ],
-      "recommended_predecessors": [],
+      "recommended_predecessors": [
+        "BW-097"
+      ],
       "acceptance_criteria": [
-        "The preview/review/selection flow preserves compatible choices, exposes unavailable classes with reasons and retains the draft after failure.",
+        "The preview/review/selection flow preserves compatible choices, exposes unavailable classes with reasons and retains the draft after failure; appearance/equipment presentation agrees with in-world resources, with eight heading presets supported without requiring spritesheets.",
         "All eleven races and twelve faction-race selections obey class restrictions; Humans have identical racial attributes on both sides.",
         "Naming fixtures cover documented normalization, grammar, realm-wide cross-faction uniqueness and retained reservations under a pinned Unicode revision.",
         "Concurrent creates claim a name and starting records atomically; retry returns the same character and invalid appearance choices cannot enter."
@@ -986,6 +1100,14 @@
         {
           "label": "Authority and networking",
           "href": "guide/networking.html"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
         }
       ],
       "status": "Not Started",
@@ -1296,6 +1418,48 @@
       "ordering_rationale": "Core communication can proceed independently of combat. Full party/guild routing is integrated when those memberships exist.",
       "verified_evidence": [],
       "phase": "phase-persistent-character"
+    },
+    {
+      "id": "BW-098",
+      "title": "Reusable 3D asset and animation production workflow",
+      "objective": "Make consistent characters, equipment and starter scenery producible through a repeatable reviewed art workflow.",
+      "scope": "Source models/textures, rigs, attachments, animation/material conventions, render-resource packaging and a representative starter kit; gameplay records retain their canonical authority and full-roster production is certified in BW-074.",
+      "hard_dependencies": [
+        "BW-095",
+        "BW-097"
+      ],
+      "recommended_predecessors": [],
+      "acceptance_criteria": [
+        "Reviewed source assets reimport reproducibly with stable presentation references, scale, pivots, foot anchors, material settings and finite resource budgets; missing/incompatible assets produce actionable findings before package publication.",
+        "A representative character, equipped weapon/armor, alternate appearance and combat form preserve attachment alignment and readable silhouettes across approved camera views; preview and in-world rendering use compatible assets and materials.",
+        "Locomotion, casts, impacts, interruption, death and form changes follow authoritative event/time samples after prediction/reconciliation; model animation never changes hit geometry or attack release.",
+        "A compact terrain/prop/foliage kit and approved palette/value/material examples demonstrate the selected style in the starter view, with low-quality and occlusion variants; contact/shadow treatment does not mask legal targets or hazards.",
+        "An accepted and rejected art edit demonstrate resource validation, reviewed diffs, retained prior output and declared source/license provenance; the art package references existing gameplay content without adding a competing gameplay schema."
+      ],
+      "completion_evidence": "Versioned source/imported asset package, import and rejection logs, art conventions, representative actor/equipment/form motion captures and starter-kit comparison scenes at tested settings.",
+      "related_docs": [
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "t3ssel8r visual research channel",
+          "href": "guide/sources.html#s16"
+        }
+      ],
+      "status": "Not Started",
+      "blockers": [],
+      "ordering_rationale": "Establish reusable art production before the first complete starter journey; backend creation and isolated combat fixtures may use declared placeholder assets in parallel.",
+      "verified_evidence": [],
+      "phase": "phase-opening"
     },
     {
       "id": "BW-045",
@@ -1809,7 +1973,8 @@
         "BW-037",
         "BW-080",
         "BW-043",
-        "BW-030"
+        "BW-030",
+        "BW-098"
       ],
       "recommended_predecessors": [
         "BW-031",
@@ -1820,7 +1985,8 @@
         "Required quests and distinct guaranteed encounter XP reach level 10 before graduation without optional tasks or repeated grinding.",
         "Inventory/equipment, vendor, recovery, an optional party task and optional useful gather/craft practice are accessible within the compact journey; skipping group/profession activities never blocks the required solo path.",
         "Specialization preview spends nine banked points only after confirmation; tank/healer/damage graduation is solo-completable with friendly targets where needed.",
-        "Death, shared targets, full bags and logout do not block progress; departure names a valid next objective/destination."
+        "Death, shared targets, full bags and logout do not block progress; departure names a valid next objective/destination.",
+        "The representative journey uses the selected 3D pixel-art camera and reviewed starter assets; scene occluders, projected targeting and independent UI remain usable, with final environment breadth and full-roster art certified later."
       ],
       "completion_evidence": "Future fresh-character end-to-end recordings, required-path XP report, role graduation tests and persisted interruption matrix.",
       "related_docs": [
@@ -1831,6 +1997,10 @@
         {
           "label": "Graduation",
           "href": "guide/character-creation.html#level-10-graduation"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
         }
       ],
       "status": "Not Started",
@@ -2095,7 +2265,7 @@
       "acceptance_criteria": [
         "Independent clients exercise the implemented state families together using a versioned representative package, legal owner/object limits and a declared workload; combined actions preserve effective-result attribution, resource/output caps and outstanding debt.",
         "Late join, interest re-entry, authorization loss and latency/loss/reordering recover coherent authorized current state without duplicate entities/effects or hidden-source disclosure; client feedback agrees with authoritative results.",
-        "Repeatable density and join/departure runs retain hardware/configuration, tick percentiles, entity/subscription counts, traffic, queues and memory; legal summon limits and overlapping actionable hazards are represented in the workload.",
+        "Repeatable density and join/departure runs retain hardware/configuration, tick percentiles, entity/subscription counts, traffic, queues and memory; legal summon limits and overlapping actionable hazards are represented in the workload. Client captures and frame measurements include real summon/form assets and overlapping telegraphs in the selected render view.",
         "A reviewed report accepts a bounded tested workload and records constraints and follow-up gates before broad kit certification. Unresolved correctness or blocking integration failures prevent completion; these measurements make no production-concurrency promise."
       ],
       "completion_evidence": "Executed combined-mechanic multi-client scenarios, impairment and density traces, packet/projection inspection and a reviewed workload/constraint report tied to exact game and content revisions.",
@@ -2111,6 +2281,14 @@
         {
           "label": "State-family boundaries",
           "href": "guide/status-effects.html#required-tests"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
         }
       ],
       "status": "Not Started",
@@ -2803,12 +2981,13 @@
       "scope": "Inscription presentation glyphs, compatible visual replacements and account cosmetic unlock records.",
       "hard_dependencies": [
         "BW-022",
-        "BW-037"
+        "BW-037",
+        "BW-098"
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "Only compatible authored variants can be selected; absent assets create no fabricated selectable option.",
-        "Variant changes preserve collision, targeting, attack timing, item binding and combat budgets.",
+        "Variant changes preserve collision, targeting, attack timing, item binding and combat budgets; materials, silhouettes and effects remain compatible with approved pixel scale and never obscure or imitate critical telegraphs.",
         "Account-wide cosmetic access cannot transfer bound assets or bridge opposing faction economies.",
         "Crafted cosmetic output and unlock retries create only the permitted item/collection result."
       ],
@@ -2825,6 +3004,10 @@
         {
           "label": "Collection contract",
           "href": "guide/data-inventory.html#cosmetic-collection-record"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
         }
       ],
       "status": "Not Started",
@@ -3121,6 +3304,49 @@
       "verified_evidence": [],
       "phase": "phase-services",
       "ordering_rationale": ""
+    },
+    {
+      "id": "BW-099",
+      "title": "Stylized environment and effects integration",
+      "objective": "Carry the selected 3D pixel-art style through complete gameplay environments without losing combat readability.",
+      "scope": "Terrain and billboard foliage, stylized water, lighting presets, atmospheric depth, weather/ambient particles and quality tiers. These are presentation requirements, not new weather, swimming or day/night gameplay systems.",
+      "hard_dependencies": [
+        "BW-098",
+        "BW-028"
+      ],
+      "recommended_predecessors": [],
+      "acceptance_criteria": [
+        "Approved outdoor/interior and bright/dark scenes use the shared art conventions; foliage coverage, shadow changes and camera motion preserve readable silhouettes and target markers without unstable flicker.",
+        "Water scenes retain correct object/edge visibility above and below the surface, shoreline depth and transparent ordering; the chosen reflection/refraction method and lower-cost alternative pass the same relevant-hazard and privacy checks.",
+        "Atmospheric light and rain/dust/splash effects integrate with depth and pixel scale, avoid distracting intersections and have measured per-effect costs; simpler tiers retain the approved atmosphere and gameplay visibility.",
+        "Roofs, trees, water and layered floors support a tested occlusion treatment; outline, shadow, reflection, refraction and particle passes consume only authorized views and never reveal concealed or cross-floor entities.",
+        "Quality changes and cosmetic substitutions preserve critical telegraphs, selection, aim/ground previews and friendly-frame access in crowded scenes; reduced-flash/shake controls and readable dark presets are verified.",
+        "Each supported tier has reproducible scene/settings captures and CPU/GPU/memory measurements including dense foliage, water, atmosphere and overlapping combat effects; expensive effects have bounded budgets and tested alternatives."
+      ],
+      "completion_evidence": "Versioned environment scenes, reference comparison and pass-order recordings, visibility/accessibility fixtures, per-effect profiles and a tested quality/platform matrix.",
+      "related_docs": [
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "t3ssel8r visual research channel",
+          "href": "guide/sources.html#s16"
+        }
+      ],
+      "status": "Not Started",
+      "blockers": [],
+      "ordering_rationale": "Build on proven camera/material and asset foundations; final presentation and release capacity must include these real effects rather than an empty render scene.",
+      "verified_evidence": [],
+      "phase": "phase-full-experiences"
     },
     {
       "id": "BW-053",
@@ -3532,7 +3758,7 @@
       "id": "BW-074",
       "title": "Complete presentation and accessibility certification",
       "objective": "Make every enabled gameplay flow readable and operable with the documented input/accessibility options.",
-      "scope": "Authored animation/audio/icons, eight directions, creator/build/profession/social/PvP screens, scalable layout and clutter controls; foundational HUD is BW-028.",
+      "scope": "Complete 3D pixel-art character/equipment/form and environment inventory, authored animation/audio/icons, creator/build/profession/social/PvP screens, scalable UI and clutter controls; foundations are BW-097/BW-098/BW-099 and BW-028.",
       "hard_dependencies": [
         "BW-052",
         "BW-054",
@@ -3544,17 +3770,19 @@
         "BW-070",
         "BW-057",
         "BW-065",
-        "BW-066"
+        "BW-066",
+        "BW-099"
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "Every enabled flow supports remapping, independent UI scaling, readable labels and non-color state cues; supported platforms have declared controller navigation coverage.",
         "Creation and talent editing can be completed by keyboard, with draft undo/search and consequential tooltip previews.",
-        "Healers can target friendly frames without world-sprite clicks; quick-cast retains held preview/cancel and rejected actions show specific reasons.",
-        "Thirty-player clutter, small-window reflow, reduced flashes/shake and audio/subtitle alternatives are evaluated; critical hostile telegraphs stay visible at reduced effect quality.",
-        "Animation and sound follow server outcomes/time and never authorize effects or hide unavailable market/craft assets."
+        "Healers can target friendly frames without clicking world actors; quick-cast retains held preview/cancel, projected ground intent stays aligned across supported windows and rejected actions show specific reasons.",
+        "Thirty-player clutter, legal summon density, small-window reflow, bright/dark/wet scenes, foliage/roof occlusion, reduced flashes/shake and audio/subtitle alternatives are evaluated; critical hostile telegraphs stay visible at every supported quality tier.",
+        "Animation and sound follow server outcomes/time and never authorize effects or hide unavailable market/craft assets.",
+        "The enabled race/class/equipment/form, NPC, environment and cosmetic asset manifest is complete and matches approved reference scenes at gameplay scale; all supported renderer/platform/tier combinations have resolved visual regressions and accessible separate UI."
       ],
-      "completion_evidence": "Future accessibility/input matrix, thirty-player visual recordings, small-window captures and resolved human usability findings.",
+      "completion_evidence": "Future complete art manifest and reference comparisons, renderer/platform/quality and accessibility/input matrices, crowded-scene motion recordings, small-window captures and resolved human usability findings on exact builds.",
       "related_docs": [
         {
           "label": "Accessibility",
@@ -3567,6 +3795,14 @@
         {
           "label": "Combat display",
           "href": "guide/interface.html#combat-display"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
         }
       ],
       "status": "Not Started",
@@ -3631,9 +3867,9 @@
         "BW-088"
       ],
       "acceptance_criteria": [
-        "The approved test plan states target concurrency/density, hardware, tick/bandwidth/tail-latency/backlog/memory budgets, workload mix and failure/recovery objectives before declaring a pass.",
-        "Scripted users move, fight, command the maximum legal summons, create overlapping effects, craft and trade; tests include crowded markets/world encounters, burst arrivals and instance activity.",
-        "Runs retain tick percentiles, queues, entity/subscription counts, bytes per client, database latency, pending settlements, memory and recovery measurements for exact release versions.",
+        "The approved test plan states concurrency/density, client hardware/platform/renderer/tier/internal resolution, server tick/bandwidth/tail-latency/backlog/memory budgets, client CPU/GPU frame-time percentiles and video-memory budgets, workload mix and failure/recovery objectives before declaring a pass.",
+        "Scripted users move, fight, command the maximum legal summons, create overlapping effects, craft and trade; tests include crowded markets/world encounters, burst arrivals and instance activity. Client workloads include the production water/reflection, foliage, lighting/atmosphere and particle configurations rather than only placeholder scenes.",
+        "Runs retain tick percentiles, queues, entity/subscription counts, bytes per client, database latency, pending settlements, memory and recovery measurements for exact release versions. Client results retain CPU/GPU frame percentiles, memory/resource counts and expensive-pass timings per supported quality tier.",
         "Latency/loss/jitter/reordering scenarios and an unavailable/saturated destination preserve authorization, meaningful rejection/recovery and economic conservation.",
         "The supported configuration meets approved budgets or explicitly reduces its admission envelope; identified performance changes have before/after evidence and preserve gameplay-critical hazards."
       ],
@@ -3650,6 +3886,14 @@
         {
           "label": "Visual readiness",
           "href": "guide/interface.html#readiness-tests"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
         }
       ],
       "status": "Not Started",
@@ -3678,7 +3922,7 @@
         "All 330 documented abilities, all 1,764 talent nodes and the approved full profession/world inventory have current binding and execution evidence; legal/invalid/reconstruction and positive/exclusion fixtures cover required behavior, and no required roster entry remains silently disabled.",
         "Equal-budget build/role/faction and profession-relevance reports meet documented evaluation standards, record measured deviations and resolve or explicitly withhold release on approved blocking findings.",
         "Cross-system failure cases cover concurrent rewards/trades, full-bag delivery, death/logout/reconnect, transition during economic activity, guild permissions and encounter reset without duplicated assets or cleared debt.",
-        "Human usability/accessibility sessions cover keyboard talent editing, friendly-frame healing, expensive craft confirmation, small-window reflow and crowded combat, with blocking findings resolved."
+        "Human usability/accessibility sessions cover keyboard talent editing, friendly-frame healing, expensive craft confirmation, small-window reflow and crowded combat, with blocking findings resolved. The release render/asset manifest and supported quality configurations match the approved 3D pixel-art comparisons, with camera/picking, privacy, water/transparency and atmosphere regressions included."
       ],
       "completion_evidence": "Required future proof: release-candidate journey matrix, executed integration/fixture reports, balance/profession studies, accessibility sessions and a reviewed issue disposition tied to exact artifacts.",
       "related_docs": [
@@ -3697,6 +3941,14 @@
         {
           "label": "Usability readiness",
           "href": "guide/interface.html#readiness-tests"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
         }
       ],
       "status": "Not Started",
@@ -3788,13 +4040,14 @@
     {
       "id": "milestone-foundations",
       "title": "Executable ownership proof",
-      "objective": "Prove clean runtime artifacts, a versioned content-production route and one durable conflict/crash-safe mutation.",
+      "objective": "Prove clean runtime artifacts, a versioned content-production route and one durable conflict/crash-safe mutation. Retire the renderer/camera feasibility risk independently.",
       "required_epics": [
         "BW-003",
         "BW-018",
-        "BW-095"
+        "BW-095",
+        "BW-097"
       ],
-      "outcome": "A clean headless fixture run and real-store concurrency/retry/crash evidence exist, with explicit authority/content boundaries. A reproducible reviewed content import/export and invalid-package rejection establish the production route without certifying future handlers."
+      "outcome": "A clean headless fixture run and real-store concurrency/retry/crash evidence exist, with explicit authority/content boundaries. A reproducible reviewed content import/export and invalid-package rejection establish the production route without certifying future handlers. A packaged 3D pixel-art scene demonstrates the chosen visual path and measured target configuration without certifying production art."
     },
     {
       "id": "milestone-first-action",
@@ -3830,7 +4083,7 @@
         "BW-039",
         "BW-008"
       ],
-      "outcome": "Warrior/Bard/Mage characters on either faction complete required solo learning/graduation, optional introductions and safe departure; the separate five-player role/build proof, provider security, support controls and real restore pass."
+      "outcome": "Warrior/Bard/Mage characters on either faction complete required solo learning/graduation, optional introductions and safe departure; the separate five-player role/build proof, provider security, support controls and real restore pass. Representative starter art uses the approved 3D render view and reusable asset workflow."
     },
     {
       "id": "milestone-extended-state",
@@ -3884,7 +4137,7 @@
         "BW-074",
         "BW-089"
       ],
-      "outcome": "Level 1–60, voluntary PvE level sync, dungeons/raids, flagged/duel/objective PvP, professions/economy, full-state recovery and accessible presentation have certified content and recorded balance/relevance findings."
+      "outcome": "Level 1–60, voluntary PvE level sync, dungeons/raids, flagged/duel/objective PvP, professions/economy, full-state recovery and accessible presentation have certified content and recorded balance/relevance findings. Complete character/environment art and effects pass the supported render-quality matrix."
     },
     {
       "id": "milestone-production",
@@ -4170,6 +4423,36 @@
         {
           "label": "Validation and evidence",
           "href": "guide/testing.html"
+        }
+      ]
+    },
+    {
+      "id": "decision-rendering",
+      "title": "Renderer feasibility before asset volume",
+      "choice": "Run a bounded 3D pixel-art camera/material/pass proof alongside headless development, establish reusable art import conventions before starter production, and certify environmental effects and complete assets before final presentation and capacity.",
+      "alternatives": "Deferring rendering until final polish risks incompatible assets, input projection and platform assumptions. A custom engine fork may be justified by measured gaps, but the reference implementation does not make it mandatory; a stock-build solution or reviewed visual alternative must first be tested.",
+      "basis": "The user selected David Holland’s 3D pixel-art aesthetic on 2026-10-17. The article documents a custom Godot 4.3 implementation; project settings, current renderer support and acceptable equivalents require revision-specific evidence. This changes presentation, not authoritative movement, targeting or wire encodings.",
+      "epics": [
+        "BW-097",
+        "BW-098",
+        "BW-028",
+        "BW-039",
+        "BW-099",
+        "BW-074",
+        "BW-090"
+      ],
+      "related_docs": [
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
         }
       ]
     }
@@ -4513,7 +4796,7 @@
       ]
     },
     {
-      "family": "HUD, input, eight-direction animation, presentation, accessibility and cosmetics",
+      "family": "HUD, projected input, model animation, presentation, accessibility and cosmetics",
       "epics": [
         "BW-020",
         "BW-028",
@@ -4528,6 +4811,10 @@
         {
           "label": "Inscription cosmetics",
           "href": "professions/inscription.html"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
         }
       ]
     },
@@ -4578,6 +4865,29 @@
         {
           "label": "Readiness audit",
           "href": "guide/audit.html"
+        }
+      ]
+    },
+    {
+      "family": "3D pixel-art renderer, orthographic camera, art production and environmental effects",
+      "epics": [
+        "BW-097",
+        "BW-098",
+        "BW-099",
+        "BW-074"
+      ],
+      "related_docs": [
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
         }
       ]
     }
@@ -4840,6 +5150,36 @@
           "href": "guide/data-inventory.html#pvp-normalization-state"
         }
       ]
+    },
+    {
+      "id": "open-rendering",
+      "title": "Render configuration and supported quality envelope",
+      "kind": "Open decision",
+      "description": "The 3D pixel-art direction is selected. Pin the tested renderer/backend/platform envelope, orthographic pitch/framing, internal resolution, pixel scale and aspect/minimum-window policy, asset/material/animation conventions, shadow/outline/pass strategy, environmental quality tiers and client frame/memory budgets. Do not invent fixed resolutions, require an engine fork or promise unsupported renderer parity from the article.",
+      "resolution_gate": "BW-097 resolves feasibility, camera/display defaults and any engine patch decision; BW-098 fixes production conventions; BW-099 demonstrates environment methods and alternatives; BW-074/BW-090 approve the supported release visual and performance matrix.",
+      "epics": [
+        "BW-097",
+        "BW-098",
+        "BW-099",
+        "BW-028",
+        "BW-074",
+        "BW-090",
+        "BW-094"
+      ],
+      "related_docs": [
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        }
+      ]
     }
   ],
   "deferred_scope": [
@@ -4859,7 +5199,8 @@
     "Required provider security and a real restore before persistent external testing, while early headless fixtures and restricted technical sessions stay small. Final capacity and incidents wait for representative full workloads.",
     "Retained separate full-game integration and release gates. Completion percentages describe epic counts only; undefined capacity, balance targets or launch-content bounds cannot be replaced by optimistic status updates.",
     "A competent team could move some profession/social work earlier or defer a simple handoff until larger zones exist. This order favors earlier conservation/ownership learning; it makes no claim that those comparable branch orders have a unique optimum.",
-    "Independent audit: retain the initial network/replication order, add explicit content production and a combined-family probe, enforce only demonstrated hard prerequisites, and leave rated entry/build selection as an explicit unresolved policy. See the Roadmap Audit for baseline evidence and per-epic dispositions."
+    "Independent audit: retain the initial network/replication order, add explicit content production and a combined-family probe, enforce only demonstrated hard prerequisites, and leave rated entry/build selection as an explicit unresolved policy. See the Roadmap Audit for baseline evidence and per-epic dispositions.",
+    "Art-direction revision: replaced the former 2D sprite mandate with the user-selected 3D pixel-art reference. Added BW-097/BW-098/BW-099 for early renderer feasibility, reusable art production and environment integration, retaining independent headless work and requiring complete visual/performance evidence at existing release gates."
   ],
   "maintenance": [
     "Edit only sources/development-roadmap.json for planning content, statuses, blockers and evidence. Do not hand-edit the generated pages, dashboard, milestone states, search records or manifest counts. Status must be exactly Not Started, In Progress, Blocked or Complete.",

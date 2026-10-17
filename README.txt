@@ -33,6 +33,14 @@ MAIN CHANGES
 World of Warcraft-style character creation and a guided level 1–10 beginner area.
 The opening journey is also the first complete playable testing ground.
 See guide/character-creation.html for the player-facing feature flow.
+The visual target is low-resolution 3D pixel art with an angled orthographic
+camera, following the user-selected David Holland article. Roystan’s outline tutorial
+and the t3ssel8r channel supplement that reference. The art direction in
+guide/decisions.html and the rendering/camera and acceptance-test sections define
+project requirements. Continuous planar/floor gameplay contracts and existing
+SpriteDirection values remain compatible; the renderer does not mandate sprites.
+Godot version/renderer selection and any engine-fork decision require prototype
+evidence before full asset production.
 Two points on each level-up from 2 through 60: 59 class + 59 specialization.
 Specialization points are banked before level 10. Level 1 starts at zero.
 Humans can choose either faction with identical racial attributes; Ogres removed.
@@ -82,8 +90,10 @@ evidence, not verified game implementation.
 
 Open guide/roadmap-audit.html for the independent 17 October 2026 audit of all
 92 original epics, ten findings, applied corrections and the remaining rated-entry
-policy decision. The corrected roadmap has 94 epics. The dated report's editable
-source is sources/roadmap-audit.html.inc; the roadmap builder publishes it using
+policy decision. The corrected audit baseline had 94 epics; the current roadmap
+has 97, including three subsequent rendering and art-production epics (BW-097,
+BW-098 and BW-099). The dated report's editable source is
+sources/roadmap-audit.html.inc; the roadmap builder publishes it using
 the same template/navigation and the inventory builder indexes its findings.
 The report is a planning snapshot, separate from live implementation progress.
 

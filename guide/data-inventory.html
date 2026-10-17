@@ -1518,7 +1518,7 @@
   ]
 }</code></pre></details></details><a href="execution.html#ability-command">Canonical feature section</a><p><a href="execution.html#data">Ability execution contracts</a> · <a href="networking.html#data">Godot &amp; networking</a></p><details><summary>Source sections and existing formats</summary><ul><li><a href="execution.html#ability-command">guide/execution.html#ability-command</a></li><li><a href="networking.html#disconnect-and-recovery">guide/networking.html#disconnect-and-recovery</a></li><li><a href="networking.html#ownership">guide/networking.html#ownership</a></li><li><a href="networking.html#zone-or-instance-transfer">guide/networking.html#zone-or-instance-transfer</a></li></ul></details></td></tr>
 <tr id="sprite-direction"><td><code>SpriteDirection</code></td><td>Proposed · Fully Defined</td><td><details class="definition"><summary>Inspect canonical definition</summary>
-<p>Finite sprite direction alternatives supported by the cited feature.</p>
+<p>Eight client preview heading presets. The established SpriteDirection name and string values remain compatible with 3D model presentation; they do not require spritesheets or quantize gameplay aim.</p>
 <p><strong>Responsibility:</strong> shared classification<br><strong>Authority:</strong> versioned content package</p>
 <p>Representation: established. Symbolic members have no assigned stored or wire value.</p><ul>
 <li><code>north = &quot;north&quot;</code> — North</li>
@@ -1533,7 +1533,7 @@
 <ul><li>All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.</li><li>Case-sensitive serialized values are explicit. Existing encodings are preserved; previously symbolic alternatives use their documented snake_case member IDs. Numeric ordinals are unsupported.</li></ul>
 <details><summary>Full machine-readable schema (includes nested shapes and nullability)</summary><pre><code>{
   &quot;type&quot;: &quot;string&quot;,
-  &quot;description&quot;: &quot;Finite sprite direction alternatives supported by the cited feature.&quot;,
+  &quot;description&quot;: &quot;Eight client preview heading presets. The established SpriteDirection name and string values remain compatible with 3D model presentation; they do not require spritesheets or quantize gameplay aim.&quot;,
   &quot;enum&quot;: [
     &quot;north&quot;,
     &quot;north_east&quot;,
@@ -1544,7 +1544,7 @@
     &quot;west&quot;,
     &quot;north_west&quot;
   ]
-}</code></pre></details></details><a href="decisions.html#confirmed-direction">Canonical feature section</a><p><a href="character-creation.html#data">Character creation &amp; beginner area</a> · <a href="decisions.html#data">Design decisions</a> · <a href="interface.html#data">Interface &amp; accessibility</a></p><details><summary>Source sections and existing formats</summary><ul><li><a href="character-creation.html#character-creation-experience">guide/character-creation.html#character-creation-experience</a></li><li><a href="decisions.html#confirmed-direction">guide/decisions.html#confirmed-direction</a></li><li><a href="interface.html#combat-display">guide/interface.html#combat-display</a></li></ul></details></td></tr>
+}</code></pre></details></details><a href="decisions.html#art-direction">Canonical feature section</a><p><a href="character-creation.html#data">Character creation &amp; beginner area</a> · <a href="decisions.html#data">Design decisions</a> · <a href="interface.html#data">Interface &amp; accessibility</a></p><details><summary>Source sections and existing formats</summary><ul><li><a href="character-creation.html#character-creation-experience">guide/character-creation.html#character-creation-experience</a></li><li><a href="decisions.html#art-direction">guide/decisions.html#art-direction</a></li><li><a href="interface.html#combat-display">guide/interface.html#combat-display</a></li></ul></details></td></tr>
 <tr id="status-category"><td><code>StatusCategory</code></td><td>Existing · Fully Defined</td><td><details class="definition"><summary>Inspect canonical definition</summary>
 <p>Finite status category alternatives supported by the cited feature.</p>
 <p><strong>Responsibility:</strong> shared classification<br><strong>Authority:</strong> versioned content package</p>
@@ -2791,7 +2791,7 @@
 <p><strong>Responsibility:</strong> client view<br><strong>Authority:</strong> derived from authorized server state; client owns only local selection</p>
 <div class="table-scroll"><table><thead><tr><th>Property</th><th>Type</th><th>Presence</th><th>Meaning / constraints</th></tr></thead><tbody>
 <tr><td><code>draft</code></td><td><a href="data-inventory.html#character-creation-draft">CharacterCreationDraft</a></td><td>Required</td><td>Draft.</td></tr>
-<tr><td><code>direction</code></td><td><a href="data-inventory.html#sprite-direction">SpriteDirection</a></td><td>Required</td><td>Direction.</td></tr>
+<tr><td><code>direction</code></td><td><a href="data-inventory.html#sprite-direction">SpriteDirection</a></td><td>Required</td><td>Selected preview heading preset, applied to the 3D model view without restricting continuous gameplay aim.</td></tr>
 <tr><td><code>starting_stats</code></td><td><a href="data-inventory.html#attribute-set">AttributeSet</a></td><td>Required</td><td>Starting stats.</td></tr>
 <tr><td><code>eligibility</code></td><td><a href="data-inventory.html#character-eligibility">CharacterEligibility</a> | null</td><td>Required</td><td>Eligibility.</td></tr>
 <tr><td><code>level_60_preview</code></td><td><a href="data-inventory.html#derived-combat-stats">DerivedCombatStats</a> | null</td><td>Required</td><td>Level 60 preview.</td></tr>
@@ -2807,7 +2807,7 @@
     },
     &quot;direction&quot;: {
       &quot;$ref&quot;: &quot;#/$defs/SpriteDirection&quot;,
-      &quot;description&quot;: &quot;Direction.&quot;
+      &quot;description&quot;: &quot;Selected preview heading preset, applied to the 3D model view without restricting continuous gameplay aim.&quot;
     },
     &quot;starting_stats&quot;: {
       &quot;$ref&quot;: &quot;#/$defs/AttributeSet&quot;,
@@ -7446,7 +7446,7 @@
 <tr><td><code>aim_direction</code></td><td><a href="data-inventory.html#shared-Vector2">Vector2</a></td><td>Required</td><td>Aim direction.</td></tr>
 <tr><td><code>last_input_sequence</code></td><td><a href="data-inventory.html#shared-Count">Count</a></td><td>Required</td><td>Last input sequence.</td></tr>
 </tbody></table></div>
-<ul><li>Server simulates movement and collision; diagonal intent is normalized. Aim remains continuous and independent of eight-direction art.</li><li>Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.</li><li>All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.</li></ul>
+<ul><li>Server simulates continuous planar/floor movement and collision; diagonal intent is normalized. Aim remains continuous and independent of model facing, preview headings and camera pixel snapping.</li><li>Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.</li><li>All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.</li></ul>
 <p>Related contracts: <a href="data-inventory.html#shared-Count">Count</a> · <a href="data-inventory.html#shared-Vector2">Vector2</a> · <a href="data-inventory.html#shared-WorldPoint">WorldPoint</a></p>
 <details><summary>Full machine-readable schema (includes nested shapes and nullability)</summary><pre><code>{
   &quot;type&quot;: &quot;object&quot;,
@@ -7477,7 +7477,7 @@
   &quot;additionalProperties&quot;: false,
   &quot;description&quot;: &quot;Movement state.&quot;,
   &quot;x-invariants&quot;: [
-    &quot;Server simulates movement and collision; diagonal intent is normalized. Aim remains continuous and independent of eight-direction art.&quot;
+    &quot;Server simulates continuous planar/floor movement and collision; diagonal intent is normalized. Aim remains continuous and independent of model facing, preview headings and camera pixel snapping.&quot;
   ]
 }</code></pre></details></details><a href="combat.html#targeting-and-movement">Canonical feature section</a><p><a href="combat.html#data">Combat mechanics</a> · <a href="networking.html#data">Godot &amp; networking</a></p><details><summary>Source sections and existing formats</summary><ul><li><a href="combat.html#targeting-and-movement">guide/combat.html#targeting-and-movement</a></li><li><a href="networking.html#movement-and-traffic">guide/networking.html#movement-and-traffic</a></li></ul></details></td></tr>
 <tr id="nameplate-state"><td><code>NameplateState</code></td><td>Proposed · Fully Defined</td><td><details class="definition"><summary>Inspect canonical definition</summary>
@@ -32278,7 +32278,7 @@
 <tr><td><code>audio_effect_key</code></td><td><a href="data-inventory.html#shared-Id">Id</a></td><td>Required</td><td>Audio effect key.</td></tr>
 <tr><td><code>visual_facing_policy_id</code></td><td><a href="data-inventory.html#shared-Id">Id</a></td><td>Required</td><td>Visual facing policy id.</td></tr>
 </tbody></table></div>
-<ul><li>Presentation follows server events; sprite frames never authorize attacks.</li><li>Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.</li><li>All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.</li></ul>
+<ul><li>Presentation follows server events; model animation and rendered frames never authorize attacks.</li><li>Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.</li><li>All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.</li></ul>
 <p>Related contracts: <a href="data-inventory.html#shared-Id">Id</a> · <a href="data-inventory.html#telegraph-definition">TelegraphDefinition</a></p>
 <details><summary>Full machine-readable schema (includes nested shapes and nullability)</summary><pre><code>{
   &quot;type&quot;: &quot;object&quot;,
@@ -32325,7 +32325,7 @@
   &quot;additionalProperties&quot;: false,
   &quot;description&quot;: &quot;Visual presentation definition.&quot;,
   &quot;x-invariants&quot;: [
-    &quot;Presentation follows server events; sprite frames never authorize attacks.&quot;
+    &quot;Presentation follows server events; model animation and rendered frames never authorize attacks.&quot;
   ]
 }</code></pre></details></details><a href="interface.html#combat-display">Canonical feature section</a><p><a href="execution.html#data">Ability execution contracts</a> · <a href="interface.html#data">Interface &amp; accessibility</a> · <a href="../professions/inscription.html#data">Inscription</a></p><details><summary>Source sections and existing formats</summary><ul><li><a href="execution.html#definition-fields">guide/execution.html#definition-fields</a></li><li><a href="interface.html#combat-display">guide/interface.html#combat-display</a></li><li><a href="../professions/inscription.html#purpose-and-interdependence">professions/inscription.html#purpose-and-interdependence</a></li></ul></details></td></tr>
 <tr id="wallet-record"><td><code>WalletRecord</code></td><td>Proposed · Fully Defined</td><td><details class="definition"><summary>Inspect canonical definition</summary>

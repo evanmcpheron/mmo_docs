@@ -3812,7 +3812,7 @@
         },
         "direction": {
           "$ref": "#/$defs/SpriteDirection",
-          "description": "Direction."
+          "description": "Selected preview heading preset, applied to the 3D model view without restricting continuous gameplay aim."
         },
         "starting_stats": {
           "$ref": "#/$defs/AttributeSet",
@@ -18061,7 +18061,7 @@
       "additionalProperties": false,
       "description": "Movement state.",
       "x-invariants": [
-        "Server simulates movement and collision; diagonal intent is normalized. Aim remains continuous and independent of eight-direction art."
+        "Server simulates continuous planar/floor movement and collision; diagonal intent is normalized. Aim remains continuous and independent of model facing, preview headings and camera pixel snapping."
       ],
       "x-category": "Interface",
       "x-definition-status": "Fully Defined"
@@ -24406,7 +24406,7 @@
     },
     "SpriteDirection": {
       "type": "string",
-      "description": "Finite sprite direction alternatives supported by the cited feature.",
+      "description": "Eight client preview heading presets. The established SpriteDirection name and string values remain compatible with 3D model presentation; they do not require spritesheets or quantize gameplay aim.",
       "enum": [
         "north",
         "north_east",
@@ -29656,7 +29656,7 @@
       "additionalProperties": false,
       "description": "Visual presentation definition.",
       "x-invariants": [
-        "Presentation follows server events; sprite frames never authorize attacks."
+        "Presentation follows server events; model animation and rendered frames never authorize attacks."
       ],
       "x-category": "Schema",
       "x-definition-status": "Fully Defined"
