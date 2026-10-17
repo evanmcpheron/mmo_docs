@@ -7,6 +7,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const registry = JSON.parse(readFileSync(join(root, 'sources/data-inventory.json'), 'utf8'));
 const roadmap = JSON.parse(readFileSync(join(root, 'sources/development-roadmap.json'), 'utf8'));
+const phasePath = phase => `guide/roadmap-${phase.id.replace(/^phase-/, '')}.html`;
+const epicPhase = new Map(roadmap.epics.map(epic => [epic.id, roadmap.phases.find(phase => phase.id === epic.phase)]));
+const epicHref = id => `${phasePath(epicPhase.get(id)).split('/').pop()}#${id}`;
+const referencePages = ['milestones', 'decisions', 'coverage', 'maintenance'].map(name => `guide/roadmap-${name}.html`);
 const executable = process.env.BRIARWAKE_CHROME_BIN || [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser',
@@ -155,57 +159,116 @@ try {
   const screenshot = await command('Page.captureScreenshot', { format: 'png' });
   writeFileSync(join(tmpdir(), 'briarwake-inventory-mobile.png'), Buffer.from(screenshot.data, 'base64'));
   await navigate('guide/development-roadmap.html');
-  check('Roadmap renders all authoritative epic IDs and acceptance criteria offline', await evaluate(`(() => {
-    const expected = ${JSON.stringify(roadmap.epics.map(epic => ({ id: epic.id, title: epic.title, criteria: epic.acceptance_criteria })))};
-    return location.protocol === 'file:' && document.querySelector('h1').textContent === 'Briarwake Development Roadmap' && expected.every(epic => {
-      const node = document.getElementById(epic.id);
-      return node && node.textContent.includes(epic.title) && epic.criteria.every(criterion => node.textContent.includes(criterion));
-    });
+  check('Offline roadmap hub is compact and links every phase instead of embedding epic details', await evaluate(`(() => {
+    const expected = ${JSON.stringify(roadmap.phases.map(phasePath))};
+    return location.protocol === 'file:' && document.querySelector('h1').textContent === 'Briarwake Development Roadmap'
+      && !document.querySelector('.roadmap-epic') && !document.querySelector('.roadmap-epic-body')
+      && expected.every(path => [...document.querySelectorAll('.article-body a')].some(link => link.href.endsWith(path)));
   })()`));
-  check('Mobile roadmap has no body overflow', await evaluate('document.documentElement.scrollWidth <= innerWidth'));
+  check('Mobile roadmap hub has no body overflow', await evaluate('document.documentElement.scrollWidth <= innerWidth'));
   await captureRoadmap('mobile');
   await evaluate(`document.querySelector('.menu-button').click()`);
-  check('Roadmap navigation is prominent and marks the current page', await evaluate(`(() => {
+  check('Roadmap navigation is prominent and marks the hub current', await evaluate(`(() => {
     const link = document.querySelector('[data-roadmap-nav]');
     return link.previousElementSibling.classList.contains('nav-home') && link.getAttribute('aria-current') === 'page' && document.querySelector('#navigation').classList.contains('open');
   })()`));
   await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))`);
-  check('Offline global search finds a roadmap epic', await evaluate(`(async () => {
+  check('Offline global search points to the canonical phase epic', await evaluate(`(async () => {
     const input = document.querySelector('#site-search'); input.value = ${JSON.stringify(roadmap.epics[0].id)}; input.dispatchEvent(new Event('input'));
     await new Promise(resolve => setTimeout(resolve, 250));
-    return [...document.querySelectorAll('#search-results a')].some(link => link.href.endsWith('development-roadmap.html#' + ${JSON.stringify(roadmap.epics[0].id)}));
+    return [...document.querySelectorAll('#search-results a')].some(link => link.href.endsWith(${JSON.stringify(epicHref(roadmap.epics[0].id))}));
   })()`));
   await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))`);
+  check('Hub legacy epic anchor offers a direct canonical link', await evaluate(`(() => {
+    const node = document.getElementById(${JSON.stringify(roadmap.epics[0].id)});
+    return node?.matches('a') && node.href.endsWith(${JSON.stringify(epicHref(roadmap.epics[0].id))});
+  })()`));
+  await clickNavigation(`document.getElementById(${JSON.stringify(roadmap.epics[0].id)}).click()`);
+  check('Legacy hub epic navigation reaches its canonical phase target', await evaluate(`location.pathname.endsWith(${JSON.stringify(phasePath(roadmap.phases[0]))}) && location.hash === ${JSON.stringify('#' + roadmap.epics[0].id)} && document.querySelector(':target').classList.contains('roadmap-epic')`));
   await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false });
-  check('Desktop roadmap has no body overflow', await evaluate('document.documentElement.scrollWidth <= innerWidth'));
+  await navigate('guide/development-roadmap.html');
+  check('Desktop roadmap hub has no body overflow', await evaluate('document.documentElement.scrollWidth <= innerWidth'));
   await captureRoadmap('desktop');
   await scrollRoadmap('progress');
   await captureRoadmap('progress');
   await scrollRoadmap('sequence');
   await captureRoadmap('sequence');
+  let renderedEpicCount = 0;
+  for (const [index, phase] of roadmap.phases.entries()) {
+    const epics = roadmap.epics.filter(epic => epic.phase === phase.id);
+    await navigate(phasePath(phase));
+    const phaseState = await evaluate(`(() => {
+      const expected = ${JSON.stringify(epics.map(epic => ({ id: epic.id, title: epic.title, criteria: epic.acceptance_criteria })))};
+      return {
+        count: document.querySelectorAll('.roadmap-epic').length,
+        correct: expected.every(epic => {
+          const node = document.getElementById(epic.id);
+          return node && node.classList.contains('roadmap-epic') && node.textContent.includes(epic.title) && epic.criteria.every(criterion => node.textContent.includes(criterion));
+        }),
+        overflow: document.documentElement.scrollWidth > innerWidth,
+        current: [...document.querySelectorAll('.roadmap-nav a[aria-current="page"]')].some(link => link.href === location.href),
+        hub: [...document.querySelectorAll('.roadmap-nav a')].some(link => link.href.endsWith('guide/development-roadmap.html')),
+        previous: ${index === 0 ? 'true' : `[...document.querySelectorAll('.roadmap-phase-nav a')].some(link => link.href.endsWith(${JSON.stringify(phasePath(roadmap.phases[index - 1]))}))`},
+        next: ${index + 1 === roadmap.phases.length ? 'true' : `[...document.querySelectorAll('.roadmap-phase-nav a')].some(link => link.href.endsWith(${JSON.stringify(phasePath(roadmap.phases[index + 1]))}))`},
+      };
+    })()`);
+    renderedEpicCount += phaseState.count;
+    check(`Phase ${index + 1} contains only its authoritative epics and all acceptance criteria`, phaseState.correct && phaseState.count === epics.length, `${phaseState.count} epics`);
+    check(`Phase ${index + 1} has current local navigation, hub return and adjacent phases`, phaseState.current && phaseState.hub && phaseState.previous && phaseState.next);
+    check(`Phase ${index + 1} has no desktop overflow`, !phaseState.overflow);
+  }
+  check('All authoritative epics render once across the phase pages', renderedEpicCount === roadmap.epics.length, `${renderedEpicCount} / ${roadmap.epics.length}`);
+  const crossPhaseEpic = roadmap.epics.find(epic => epic.hard_dependencies.some(id => epicPhase.get(id).id !== epic.phase));
+  const crossPhasePrerequisite = crossPhaseEpic.hard_dependencies.find(id => epicPhase.get(id).id !== crossPhaseEpic.phase);
+  await navigate(phasePath(epicPhase.get(crossPhaseEpic.id)) + '#' + crossPhaseEpic.id);
+  check('Cross-phase hard dependency links point directly to canonical targets', await evaluate(`(() => {
+    const node = document.getElementById(${JSON.stringify(crossPhaseEpic.id)});
+    return [...node.querySelectorAll('a')].some(link => link.href.endsWith(${JSON.stringify(epicHref(crossPhasePrerequisite))}));
+  })()`));
+  await clickNavigation(`document.getElementById(${JSON.stringify(crossPhaseEpic.id)}).querySelector('a[href="${epicHref(crossPhasePrerequisite)}"]').click()`);
+  check('Cross-phase dependency navigation lands on the referenced epic', await evaluate(`location.hash === ${JSON.stringify('#' + crossPhasePrerequisite)} && document.querySelector(':target').classList.contains('roadmap-epic')`));
+  for (const path of referencePages) {
+    await navigate(path);
+    check(`${path.split('/').pop()} renders offline with current roadmap navigation`, await evaluate(`document.querySelector('.article-body').textContent.trim().length > 300 && [...document.querySelectorAll('.roadmap-nav a[aria-current="page"]')].some(link => link.href === location.href) && document.documentElement.scrollWidth <= innerWidth`));
+  }
+  await navigate(phasePath(roadmap.phases[0]));
+  await captureRoadmap('phase-desktop');
   await scrollRoadmap(roadmap.epics[0].id);
   await captureRoadmap('epic');
-  await scrollRoadmap('main');
+  await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  for (const path of [...roadmap.phases.map(phasePath), ...referencePages]) {
+    await navigate(path);
+    check(`Mobile ${path.split('/').pop()} has no body overflow`, await evaluate('document.documentElement.scrollWidth <= innerWidth'));
+  }
+  await navigate(phasePath(roadmap.phases[0]));
+  await captureRoadmap('phase-mobile');
+  await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false });
   await command('Emulation.setEmulatedMedia', { media: 'print' });
-  check('Roadmap preserves its content and hides navigation in print', await evaluate(`getComputedStyle(document.querySelector('.article-body')).display !== 'none' && getComputedStyle(document.querySelector('.sidebar')).display === 'none' && document.querySelector('h1').getBoundingClientRect().height > 0`));
-  check('Collapsed roadmap epics expose acceptance criteria in print', await evaluate(`(() => {
+  check('Phase print keeps its article content and hides website navigation', await evaluate(`getComputedStyle(document.querySelector('.article-body')).display !== 'none' && getComputedStyle(document.querySelector('.sidebar')).display === 'none' && document.querySelector('h1').getBoundingClientRect().height > 0`));
+  check('Collapsed phase epics expose acceptance criteria in print', await evaluate(`(() => {
     document.querySelectorAll('.roadmap-epic').forEach(node => { node.open = false; });
-    return [...document.querySelectorAll('.roadmap-epic-body')].every(node => node.getBoundingClientRect().height > 0 && getComputedStyle(node).display !== 'none');
+    const bodies = [...document.querySelectorAll('.roadmap-epic-body')];
+    return bodies.length > 0 && bodies.every(node => node.getBoundingClientRect().height > 0 && getComputedStyle(node).display !== 'none');
   })()`));
   await captureRoadmap('print');
   await command('Emulation.setEmulatedMedia', { media: '' });
   await command('Emulation.setScriptExecutionDisabled', { value: true });
-  await navigate('guide/development-roadmap.html');
-  check('Roadmap epics and native disclosures remain readable without JavaScript', await evaluate(`(() => {
-    const expected = ${JSON.stringify(roadmap.epics.map(epic => ({ id: epic.id, criterion: epic.acceptance_criteria[0] })))};
-    document.querySelectorAll('.article-body details').forEach(node => { node.open = true; });
-    return expected.every(epic => {
-      const node = document.getElementById(epic.id);
-      return node && node.textContent.includes(epic.criterion) && node.getBoundingClientRect().height > 0;
-    });
-  })()`));
+  await navigate('guide/development-roadmap.html#' + roadmap.epics[0].id);
+  check('Legacy hub epic anchors remain usable without JavaScript', await evaluate(`document.querySelector(':target')?.id === ${JSON.stringify(roadmap.epics[0].id)} && document.querySelector(':target').href.endsWith(${JSON.stringify(epicHref(roadmap.epics[0].id))})`));
   await captureRoadmap('nojs');
-  await scrollRoadmap(roadmap.epics[0].id);
+  for (const phase of roadmap.phases) {
+    const epics = roadmap.epics.filter(epic => epic.phase === phase.id);
+    await navigate(phasePath(phase) + '#' + epics[0].id);
+    check(`No-JavaScript ${phase.id} deep link and native disclosures expose epic criteria`, await evaluate(`(() => {
+      const expected = ${JSON.stringify(epics.map(epic => ({ id: epic.id, criterion: epic.acceptance_criteria[0] })))};
+      document.querySelectorAll('.article-body details').forEach(node => { node.open = true; });
+      return document.querySelector(':target')?.id === ${JSON.stringify(epics[0].id)} && expected.every(epic => {
+        const node = document.getElementById(epic.id);
+        return node && node.textContent.includes(epic.criterion) && node.getBoundingClientRect().height > 0;
+      });
+    })()`));
+  }
+  await navigate(phasePath(roadmap.phases[0]) + '#' + roadmap.epics[0].id);
   await captureRoadmap('nojs-epic');
   await navigate('guide/data-inventory.html');
   check('Inventory entries remain readable with JavaScript disabled', await evaluate(`document.querySelector('#quest-progress-record').textContent.includes(${JSON.stringify(registry.entries.find(entry => entry.id === 'quest-progress-record').definition_status)}) && document.querySelector('#inventory-enums').tBodies[0].rows.length > 0`));

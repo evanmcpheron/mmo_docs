@@ -1,13 +1,16 @@
 """Regression tests for roadmap graph, completion evidence and derived progress."""
 from copy import deepcopy
+from html import escape
 from pathlib import Path
 import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from build_development_roadmap import load, milestone_progress, prerequisite_closure, progress, ready_epics
-from check_development_roadmap import roadmap_errors
+from build_development_roadmap import (PAGE, address, anchor_page, epic_page, generated_page_paths,
+                                      generated_pages, load, milestone_progress, phase_page,
+                                      prerequisite_closure, progress, ready_epics)
+from check_development_roadmap import Anchors, roadmap_errors
 
 
 class RoadmapTests(unittest.TestCase):
@@ -29,6 +32,45 @@ class RoadmapTests(unittest.TestCase):
 
     def test_published_registry_and_static_page_are_current(self):
         self.assertEqual([], self.errors(generated=True))
+
+    def test_dashboard_is_an_index_and_each_phase_owns_its_epic_details(self):
+        outputs = generated_pages(self.data)
+        self.assertEqual(set(generated_page_paths(self.data)), set(outputs))
+        self.assertEqual([], Anchors(outputs[PAGE]).epic_ids)
+        for phase in self.data['phases']:
+            expected = [e['id'] for e in self.data['epics'] if e['phase'] == phase['id']]
+            source = outputs[phase_page(phase)]
+            self.assertEqual(expected, Anchors(source).epic_ids)
+            for identifier in expected:
+                for criterion in self.by_id[identifier]['acceptance_criteria']:
+                    self.assertIn(escape(criterion), source)
+
+    def test_legacy_bookmarks_offer_direct_canonical_shortcuts_without_javascript(self):
+        dashboard = Anchors(generated_pages(self.data)[PAGE])
+        for row in self.data['epics'] + self.data['milestones'] + self.data['sequencing_decisions'] + self.data['open_decisions']:
+            identifier = row['id']
+            self.assertEqual(address(anchor_page(self.data, identifier), PAGE, identifier), dashboard.link_targets[identifier])
+
+    def test_cross_phase_prerequisites_open_their_defining_phase(self):
+        outputs = generated_pages(self.data)
+        dependent = 'BW-019'
+        prerequisite = 'BW-004'
+        page = epic_page(self.data, dependent)
+        self.assertNotEqual(page, epic_page(self.data, prerequisite))
+        self.assertIn(address(epic_page(self.data, prerequisite), page, prerequisite), Anchors(outputs[page]).references)
+
+    def test_a_stale_phase_is_detected_even_when_the_dashboard_is_unchanged(self):
+        from unittest.mock import patch
+        original_read = Path.read_text
+        target = ROOT / phase_page(self.data['phases'][0])
+
+        def read(path, *args, **kwargs):
+            source = original_read(path, *args, **kwargs)
+            return source + '\n' if path == target else source
+
+        with patch.object(Path, 'read_text', read):
+            self.assertTrue(any('Stale generated roadmap: ' + target.relative_to(ROOT).as_posix() in error
+                                for error in self.errors(generated=True)))
 
     def test_unknown_dependency_is_rejected(self):
         self.data['epics'][0]['hard_dependencies'].append('BW-999999')

@@ -22,7 +22,7 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-55 HTML pages: 23 system/catalog/planning chapters, 12 class pages, 16 profession pages,
+68 HTML pages: 36 system/catalog/planning chapters, 12 class pages, 16 profession pages,
 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -70,8 +70,12 @@ search index before distributing an edited version. Preserve stable IDs and
 increment content versions when meanings change.
 
 DEVELOPMENT ROADMAP AND PROGRESS
-Open guide/development-roadmap.html for the dependency-ordered development plan,
-phase progress, actionable epics, milestones, completion evidence and open gates.
+Open guide/development-roadmap.html for the roadmap overview, progress dashboard,
+recommended sequence and actionable epics. Each phase has a separate
+guide/roadmap-*.html page containing its detailed epics. Dedicated reference pages
+cover milestones, architectural decisions, feature coverage and progress upkeep.
+Use the roadmap navigation on any of these pages to move between them. Existing
+overview-page anchors remain links to the corresponding detail pages.
 It is planning/reference documentation; it adds no canonical gameplay contracts.
 All epic statuses begin Not Started because this repository contains design
 evidence, not verified game implementation.
@@ -81,18 +85,20 @@ Edit an existing epic's status and verified_evidence there. Use exactly Not
 Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
 evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
 adding an epic, then update relevant dependencies, milestones and coverage.
-Do not edit the generated page or search records. Rebuild and validate with:
+Do not edit the generated pages or search records. Rebuild and validate with:
 python3 scripts/build_development_roadmap.py
-python3 scripts/build_data_inventory.py --review-page guide/development-roadmap.html
+python3 scripts/build_data_inventory.py --review-roadmap
 python3 scripts/build_development_roadmap.py --check
 python3 scripts/build_data_inventory.py --check
 python3 -m unittest discover -s validation -p 'test_*.py'
 python3 validation/run_checks.py
 
-The roadmap builder owns its static HTML. The inventory builder refreshes
-navigation, roadmap-tagged search, page review metadata and manifest counts.
+The roadmap builder owns the hub, phase pages and roadmap reference pages. The
+inventory builder's --review-roadmap option registers and refreshes all of these
+as planning references, without adding gameplay data associations. It refreshes
+navigation, direct detail-page search links, page review metadata and manifest counts.
 Generated dashboards, phase progress and milestone states derive from the same
-epic statuses. The page remains readable offline and with JavaScript disabled.
+epic statuses. Every page remains readable offline and with JavaScript disabled.
 
 DATA INVENTORY AND CANONICAL CONTRACTS
 Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.

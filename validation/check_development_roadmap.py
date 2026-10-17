@@ -11,19 +11,29 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from build_development_roadmap import PAGE, SECTIONS, STATUSES, load, prerequisite_closure, progress, render
+from build_development_roadmap import (PAGE, SECTIONS, STATUSES, address, anchor_page, generated_page_paths,
+                                      generated_pages, load, prerequisite_closure, progress)
 
 
 class Anchors(HTMLParser):
     def __init__(self, source):
         super().__init__()
         self.ids = []
+        self.references = []
+        self.epic_ids = []
+        self.link_targets = {}
         self.feed(source)
 
     def handle_starttag(self, tag, attrs):
         values = dict(attrs)
         if 'id' in values:
             self.ids.append(values['id'])
+        if tag == 'a' and 'href' in values:
+            self.references.append(values['href'])
+            if 'id' in values:
+                self.link_targets[values['id']] = values['href']
+        if tag == 'details' and 'roadmap-epic' in values.get('class', '').split():
+            self.epic_ids.append(values.get('id'))
 
 
 def roadmap_errors(data, root=ROOT, check_generated=True):
@@ -237,17 +247,38 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 errors.append(f'{phase["id"]}: phase milestone omits required member epics')
         if set(prerequisite_closure(data, data['milestones'][-1]['required_epics'])) != set(ids):
             errors.append('Final full-game milestone must account for every epic')
+    if not errors and len(generated_page_paths(data)) != len(set(generated_page_paths(data))):
+        errors.append('Generated roadmap page paths must be unique')
     if check_generated and not errors:
-        target = root / PAGE
-        expected = render(data, root)
-        if not target.exists() or target.read_text(encoding='utf-8') != expected:
-            errors.append('Stale generated roadmap: run python3 scripts/build_development_roadmap.py')
-        else:
-            actual_ids = Anchors(expected).ids
-            if len(actual_ids) != len(set(actual_ids)):
-                errors.append('Duplicate generated HTML anchors')
-            if any(identifier not in actual_ids for identifier in anchors):
-                errors.append('Missing generated roadmap anchors')
+        outputs = generated_pages(data, root)
+        parsed = {path: Anchors(source) for path, source in outputs.items()}
+        for path, expected in outputs.items():
+            target = root / path
+            if not target.exists() or target.read_text(encoding='utf-8') != expected:
+                errors.append('Stale generated roadmap: ' + path)
+            if len(parsed[path].ids) != len(set(parsed[path].ids)):
+                errors.append('Duplicate generated HTML anchors: ' + path)
+            for reference in parsed[path].references:
+                parsed_reference = urlsplit(reference)
+                if parsed_reference.scheme or parsed_reference.netloc:
+                    continue
+                destination = (root / path).parent / unquote(parsed_reference.path) if parsed_reference.path else root / path
+                destination = destination.resolve()
+                relative = destination.relative_to(root.resolve()).as_posix() if destination.is_relative_to(root.resolve()) else None
+                if relative in parsed and parsed_reference.fragment and unquote(parsed_reference.fragment) not in parsed[relative].ids:
+                    errors.append(f'{path}: missing roadmap anchor {reference}')
+        if any(identifier not in parsed[PAGE].ids for identifier in anchors):
+            errors.append('Missing legacy roadmap anchors on dashboard')
+        for identifier in ids + phase_ids + milestone_ids + [d['id'] for d in data['sequencing_decisions'] + data['open_decisions']]:
+            if identifier not in parsed[anchor_page(data, identifier)].ids:
+                errors.append('Missing canonical roadmap anchor: ' + identifier)
+            if identifier not in phase_ids and parsed[PAGE].link_targets.get(identifier) != address(anchor_page(data, identifier), PAGE, identifier):
+                errors.append('Legacy roadmap shortcut must open its canonical definition: ' + identifier)
+        rendered_epics = [identifier for document in parsed.values() for identifier in document.epic_ids]
+        if Counter(rendered_epics) != Counter(ids):
+            errors.append('Each epic must have one detailed definition on its canonical phase page')
+        if parsed[PAGE].epic_ids:
+            errors.append('Dashboard must link to epic details rather than embed them')
     return errors
 
 

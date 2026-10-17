@@ -5,6 +5,7 @@ import copy
 import json
 import re
 import sys
+import tempfile
 import unittest
 from html.parser import HTMLParser
 from pathlib import Path
@@ -12,7 +13,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_data_inventory import (CATEGORIES, DATA_START, INVENTORY_PAGE, content_fingerprint,
-                                  ROADMAP_PAGE, expected_outputs, load_registry, stale_outputs, validate_registry)
+                                  ROADMAP_PAGE, expected_outputs, load_registry, review_pages,
+                                  roadmap_search, stale_outputs, validate_registry)
+from build_development_roadmap import anchor_page, epic_page, generated_page_paths, phase_page
 
 
 class Element:
@@ -60,27 +63,63 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual([], stale_outputs(expected_outputs(self.registry)))
 
     def test_planning_reference_navigation_search_and_counts(self):
-        reviewed = next(page for page in self.registry['pages'] if page['page'] == ROADMAP_PAGE)
-        self.assertEqual('Reference', reviewed['kind'])
-        self.assertTrue(reviewed['exclusion_reason'])
-        self.assertFalse(any(ROADMAP_PAGE in entry['feature_pages'] for entry in self.registry['entries']))
-        self.assertNotIn(DATA_START, (ROOT / ROADMAP_PAGE).read_text())
+        roadmap = json.loads((ROOT / 'sources/development-roadmap.json').read_text())
+        roadmap_pages = generated_page_paths(roadmap)
+        for path in roadmap_pages:
+            with self.subTest(page=path):
+                reviewed = next(page for page in self.registry['pages'] if page['page'] == path)
+                self.assertEqual('Reference', reviewed['kind'])
+                self.assertTrue(reviewed['exclusion_reason'])
+                self.assertFalse(any(path in entry['feature_pages'] for entry in self.registry['entries']))
+                self.assertNotIn(DATA_START, (ROOT / path).read_text())
         for path in ROOT.rglob('*.html'):
             page = Tree(path.read_text())
             links = [node for node in page.elements if node.tag == 'a' and 'data-roadmap-nav' in node.attrs]
             self.assertEqual(1, len(links), str(path))
             self.assertEqual((ROOT / ROADMAP_PAGE).resolve(), (path.parent / links[0].attrs['href']).resolve())
+            relative = path.relative_to(ROOT).as_posix()
+            if relative in roadmap_pages:
+                self.assertEqual('page' if relative == ROADMAP_PAGE else 'location',
+                                 links[0].attrs.get('aria-current'))
         home = Tree((ROOT / 'index.html').read_text())
         self.assertTrue(any(node.tag == 'a' and node.attrs.get('href') == ROADMAP_PAGE and
                             node.parent.tag != 'nav' for node in home.elements))
-        roadmap = json.loads((ROOT / 'sources/development-roadmap.json').read_text())
         search = json.loads((ROOT / 'assets/search-index.js').read_text().removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
         destinations = {record['url'] for record in search if record.get('source') == 'development-roadmap'}
-        self.assertTrue({ROADMAP_PAGE, *(ROADMAP_PAGE + '#' + epic['id'] for epic in roadmap['epics'])} <= destinations)
+        self.assertTrue({ROADMAP_PAGE, *(epic_page(roadmap, epic['id']) + '#' + epic['id']
+                                        for epic in roadmap['epics'])} <= destinations)
+        for phase in roadmap['phases']:
+            self.assertIn(phase_page(phase) + '#' + phase['id'], destinations)
+        for family in ('milestones', 'sequencing_decisions', 'open_decisions'):
+            for item in roadmap[family]:
+                self.assertIn(anchor_page(roadmap, item['id']) + '#' + item['id'], destinations)
+        self.assertFalse(any(url.startswith(ROADMAP_PAGE + '#BW-') for url in destinations))
+        self.assertEqual(roadmap_search(), [record for record in search if record.get('source') == 'development-roadmap'])
         manifest = json.loads((ROOT / 'data/manifest.json').read_text())
         self.assertEqual(len(list(ROOT.rglob('*.html'))), manifest['html_pages'])
         self.assertEqual(len(list((ROOT / 'guide').glob('*.html'))), manifest['guide_pages'])
         self.assertEqual(len(search), manifest['search_entries'])
+
+    def test_generated_reference_review_is_repeatable_and_keeps_gameplay_associations(self):
+        registry = {'pages': [], 'entries': [{'feature_pages': ['guide/existing.html']}]}
+        source = ('<main><h1>Roadmap phase</h1><h2 id="phase-test">Phase</h2>'
+                  '<footer class="page-footer"></footer></main>')
+        path = 'guide/roadmap-test.html'
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'guide').mkdir()
+            (root / path).write_text(source)
+            review_pages(registry, [path, path], root, reference_pages=[path])
+            first = copy.deepcopy(registry)
+            review_pages(registry, [path], root, reference_pages=[path])
+        self.assertEqual(first, registry)
+        self.assertEqual([{'feature_pages': ['guide/existing.html']}], registry['entries'])
+        self.assertEqual(1, len(registry['pages']))
+        reviewed = registry['pages'][0]
+        self.assertEqual('Reference', reviewed['kind'])
+        self.assertTrue(reviewed['exclusion_reason'])
+        self.assertEqual(['phase-test'], reviewed['reviewed_sections'])
+        self.assertEqual(content_fingerprint(source), reviewed['reviewed_content_sha256'])
 
     def test_duplicate_identifiers_and_case_insensitive_names_are_rejected(self):
         registry = copy.deepcopy(self.registry)

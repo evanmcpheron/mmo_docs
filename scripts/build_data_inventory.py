@@ -16,6 +16,8 @@ from data_model import model_errors, schema_bundle, review_report, schema_childr
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PAGE = 'guide/data-inventory.html'
 ROADMAP_PAGE = 'guide/development-roadmap.html'
+ROADMAP_EXCLUSION = ('Development planning, dependencies, acceptance criteria and implementation '
+                     'progress; existing feature chapters retain canonical gameplay contracts.')
 CATEGORIES = {'Enum': 'Enums', 'Interface': 'Interfaces', 'Schema': 'Schemas'}
 DATA_START = '<!-- data-inventory:start -->'
 DATA_END = '<!-- data-inventory:end -->'
@@ -76,6 +78,27 @@ def reviewed_content(source):
 
 def content_fingerprint(source):
     return hashlib.sha256(reviewed_content(source).encode()).hexdigest()
+
+
+def review_pages(registry, paths, root=ROOT, reference_pages=()):
+    for path in dict.fromkeys(paths):
+        target = (root / path).resolve()
+        if not target.is_relative_to(root.resolve()) or not target.is_file() or target.suffix != '.html':
+            raise ValueError('Review paths must be HTML files inside this repository')
+        path = target.relative_to(root.resolve()).as_posix()
+        if path == INVENTORY_PAGE:
+            raise ValueError('The generated inventory page is not a feature source')
+        source = target.read_text(encoding='utf-8')
+        headings = Document(strip_data(source)).headings
+        reviewed = next((p for p in registry['pages'] if p['page'] == path), None)
+        if reviewed is None:
+            reviewed = {'page': path, 'kind': 'Feature'}
+            registry['pages'].append(reviewed)
+        if path in reference_pages:
+            reviewed.update(kind='Reference', exclusion_reason=ROADMAP_EXCLUSION)
+        reviewed.update(title=next(title for tag, _, title in headings if tag == 'h1'),
+                        review_status='Reviewed', reviewed_content_sha256=content_fingerprint(source),
+                        reviewed_sections=[anchor for tag, anchor, _ in headings if tag != 'h1' and anchor])
 
 
 def totals(registry):
@@ -266,7 +289,8 @@ def navigation(source, page):
         raise ValueError(f'{page}: expected one Catalogs navigation group')
     source = source.replace('<p>Catalogs</p>', '<p>Catalogs</p>' + link)
     source = re.sub(r'<a data-roadmap-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
-    current = ' aria-current="page"' if page == ROADMAP_PAGE else ''
+    current = ' aria-current="page"' if page == ROADMAP_PAGE else (
+        ' aria-current="location"' if page.startswith('guide/roadmap-') else '')
     address = posixpath.relpath(ROADMAP_PAGE, posixpath.dirname(page) or '.')
     link = f'<a data-roadmap-nav href="{address}"{current}>Development Roadmap</a>'
     source, count = re.subn(r'(<a class="nav-home\b[^>]*>.*?</a>)', r'\1' + link, source, flags=re.S)
@@ -276,22 +300,39 @@ def navigation(source, page):
 
 
 def roadmap_search(root=ROOT):
+    from build_development_roadmap import anchor_page, epic_page, phase_page
+
     roadmap = json.loads((root / 'sources/development-roadmap.json').read_text(encoding='utf-8'))
     records = [{'title': roadmap['title'], 'section': 'Development planning', 'url': ROADMAP_PAGE,
                 'text': 'Dependency ordered epics acceptance criteria completion evidence phases milestones actionable progress'}]
     for phase in roadmap['phases']:
         records.append({'title': phase['title'], 'section': 'Development Roadmap · Phase',
-                        'url': ROADMAP_PAGE + '#' + phase['id'], 'text': phase['objective']})
+                        'url': phase_page(phase) + '#' + phase['id'], 'text': phase['objective']})
     for epic in roadmap['epics']:
         records.append({'title': epic['id'] + ' · ' + epic['title'], 'section': 'Development Roadmap · Epic',
-                        'url': ROADMAP_PAGE + '#' + epic['id'],
+                        'url': epic_page(roadmap, epic['id']) + '#' + epic['id'],
                         'text': ' '.join([epic['objective'], epic['scope'], epic['status'],
                                           *epic['acceptance_criteria'], *epic['hard_dependencies'],
                                           *epic.get('recommended_predecessors', [])])})
     for milestone in roadmap['milestones']:
         records.append({'title': milestone['title'], 'section': 'Development Roadmap · Milestone',
-                        'url': ROADMAP_PAGE + '#' + milestone['id'],
+                        'url': anchor_page(roadmap, milestone['id']) + '#' + milestone['id'],
                         'text': ' '.join([milestone['objective'], milestone['outcome'], *milestone['required_epics']])})
+    for decision in roadmap['sequencing_decisions']:
+        records.append({'title': decision['title'], 'section': 'Development Roadmap · Sequencing decision',
+                        'url': anchor_page(roadmap, decision['id']) + '#' + decision['id'],
+                        'text': ' '.join([decision['choice'], decision['alternatives'], decision['basis'], *decision['epics']])})
+    for decision in roadmap['open_decisions']:
+        records.append({'title': decision['title'], 'section': 'Development Roadmap · Open decision',
+                        'url': anchor_page(roadmap, decision['id']) + '#' + decision['id'],
+                        'text': ' '.join([decision['description'], decision['resolution_gate'], *decision['epics']])})
+    for anchor, title, text in [
+        ('milestones', 'Major milestones', 'Playable outcomes required epics completion requirements'),
+        ('sequencing-decisions', 'Architectural sequencing decisions', 'Authority replication prediction persistence alternatives'),
+        ('coverage', 'Feature coverage and open decisions', 'Documented feature families deferred scope assumptions'),
+        ('maintenance', 'Maintaining roadmap progress', 'Status updates completion evidence blockers rebuild validation')]:
+        records.append({'title': title, 'section': 'Development Roadmap · Reference',
+                        'url': anchor_page(roadmap, anchor) + '#' + anchor, 'text': text})
     return [dict(record, source='development-roadmap') for record in records]
 
 
@@ -479,27 +520,23 @@ def main():
     parser.add_argument('--check', action='store_true', help='Check registry and generated output without writing')
     parser.add_argument('--review-page', action='append', default=[], metavar='PATH',
                         help='Record a completed manual feature review after updating its inventory associations')
+    parser.add_argument('--review-roadmap', action='store_true',
+                        help='Refresh all generated roadmap pages as planning references without gameplay associations')
     args = parser.parse_args()
-    if args.check and args.review_page:
+    if args.check and (args.review_page or args.review_roadmap):
         parser.error('--check cannot update page reviews')
     registry = load_registry()
-    for path in args.review_page:
-        target = (ROOT / path).resolve()
-        if not target.is_relative_to(ROOT) or not target.is_file() or target.suffix != '.html':
-            parser.error('Review paths must be HTML files inside this repository')
-        path = target.relative_to(ROOT).as_posix()
-        if path == INVENTORY_PAGE:
-            parser.error('The generated inventory page is not a feature source')
-        source = target.read_text(encoding='utf-8')
-        headings = Document(strip_data(source)).headings
-        reviewed = next((p for p in registry['pages'] if p['page'] == path), None)
-        if reviewed is None:
-            reviewed = {'page': path, 'kind': 'Feature'}
-            registry['pages'].append(reviewed)
-        reviewed.update(title=next(title for tag, _, title in headings if tag == 'h1'),
-                        review_status='Reviewed', reviewed_content_sha256=content_fingerprint(source),
-                        reviewed_sections=[anchor for tag, anchor, _ in headings if tag != 'h1' and anchor])
-    if args.review_page:
+    roadmap_pages = []
+    if args.review_roadmap:
+        from build_development_roadmap import generated_page_paths
+
+        roadmap = json.loads((ROOT / 'sources/development-roadmap.json').read_text(encoding='utf-8'))
+        roadmap_pages = list(generated_page_paths(roadmap))
+    try:
+        review_pages(registry, [*args.review_page, *roadmap_pages], reference_pages=roadmap_pages)
+    except ValueError as error:
+        parser.error(str(error))
+    if args.review_page or args.review_roadmap:
         registry['pages'].sort(key=lambda p: p['page'])
         (ROOT / 'sources/data-inventory.json').write_text(json.dumps(registry, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
     errors = validate_registry(registry)
