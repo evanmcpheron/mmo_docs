@@ -342,7 +342,7 @@ def inventory_body(registry):
             '<p>Reviewed content version: <code>' + escape(registry['content_version']) + '</code>. Registry format: 2.</p>',
             '<p>Fully Defined means the documentation contract is complete within its stated responsibility. Needs Decision identifies a partial contract with a recorded unresolved question. Neither status certifies runtime behavior or game balance. Existing/Proposed records provenance separately from completeness.</p>',
             '<p>' + relative_link(page, 'sources/data-inventory.json', 'Authoritative registry') + ' · ' + relative_link(page, 'sources/data-model.schema.json', 'Generated JSON Schema bundle') + ' · ' + relative_link(page, 'validation/data-model-review.txt', 'Complete review report') + ' · ' + relative_link(page, 'README.txt', 'Build and update instructions') + '</p>',
-            '<div class="summary-strip">' + ''.join(f'<span class="badge">{counts[plural.lower()]} {plural}</span>' for plural in CATEGORIES.values()) + f'<span class="badge">{counts["unique_structures"]} unique structures</span><span class="badge warning">{counts["needs_review"]} need review</span></div>']
+            '<div class="summary-strip">' + ''.join(f'<span class="badge">{counts[plural.lower()]} {plural}</span>' for plural in CATEGORIES.values()) + f'<span class="badge">{counts["unique_structures"]} unique structures</span><span class="badge">{counts["open_review_items"]} open design questions</span></div>']
     for category, plural in CATEGORIES.items():
         table_id = 'inventory-' + plural.lower()
         body.extend([f'<h2 id="{plural.lower()}">{plural}</h2>',
@@ -374,25 +374,27 @@ def inventory_body(registry):
     body.append('<h2 id="shared-definitions">Shared structural definitions</h2>')
     for name, schema in sorted(registry['shared_definitions'].items()):
         body.append('<details class="definition" id="shared-' + escape(name) + '"><summary>' + escape(name) + '</summary><p>' + escape(schema['description']) + '</p><pre><code>' + escape(json.dumps(schema, indent=2)) + '</code></pre></details>')
-    body.extend(['<h2 id="needs-review">Needs Review</h2>', f'<p>{counts["open_review_items"]} open review items; {counts["resolved_review_items"]} resolved. Open items list the content or implementation evidence still required. Resolved decisions retain their anchors and reasoning.</p>'])
+    body.extend(['<h2 id="needs-review">Decision history and future work</h2>', f'<p>{counts["open_review_items"]} open design questions; {counts["resolved_review_items"]} resolved. Resolved decisions retain their anchors and reasoning. Future Briarwake content, implementation and execution evidence are listed separately below; they do not claim completed game code.</p>'])
     for issue in registry['review_issues']:
-        body.extend([f'<h3 id="review-{issue["id"]}">{escape(issue["id"].replace("-", " ").capitalize())} ({escape(issue["state"])})</h3>', '<p>' + escape(issue['question']) + '</p>',
-                     '<p><strong>Alternatives:</strong> ' + escape(' / '.join(issue['alternatives'])) + '<br><strong>Recommendation:</strong> ' + escape(issue['recommendation'] or 'No preference established.') + '<br><strong>Impact:</strong> ' + escape(issue['impact']) + '</p>',
+        decision_label = 'Decision' if issue['state'] == 'resolved' else 'Recommendation'
+        body.extend([f'<h3 id="review-{issue["id"]}">{escape(issue["id"].replace("-", " ").capitalize())} ({escape(issue["state"])})</h3>', '<p><strong>Review context:</strong> ' + escape(issue['question']) + '</p>',
+                     '<p><strong>Alternatives:</strong> ' + escape(' / '.join(issue['alternatives'])) + '<br><strong>' + decision_label + ':</strong> ' + escape(issue['recommendation'] or 'No preference established.') + '<br><strong>Impact:</strong> ' + escape(issue['impact']) + '</p>',
                      '<p>' + ' · '.join(relative_link(page, page + '#' + next(e['id'] for e in registry['entries'] if e['name'] == name), name) for name in issue['entries']) + '</p>',
                      '<ul>' + ''.join('<li>' + relative_link(page, ref, ref) + '</li>' for ref in issue['references']) + '</ul>'])
         if issue.get('completion_criteria'):
-            body.append('<p><strong>Required to complete:</strong></p><ul>' + ''.join('<li>' + escape(item) + '</li>' for item in issue['completion_criteria']) + '</ul>')
+            work_label = 'Future implementation work' if issue['state'] == 'resolved' else 'Required to resolve'
+            body.append('<p><strong>' + work_label + ':</strong></p><ul>' + ''.join('<li>' + escape(item) + '</li>' for item in issue['completion_criteria']) + '</ul>')
     return '\n'.join(body)
 
 
 def inventory_page(registry, template):
     prefix = template.split('<main', 1)[0]
     prefix = re.sub(r'<title>.*?</title>', '<title>Data Inventory · MMORPG Reference v2</title>', prefix)
-    prefix = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Canonical data definitions, ownership, constraints and outstanding decisions.">', prefix)
+    prefix = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Canonical data definitions, reviewed decisions and future Briarwake implementation work.">', prefix)
     prefix = re.sub(r' aria-current=(?:"page"|page)', '', prefix)
     prefix = prefix.replace('<span class="section-label">Engineering</span>', '<span class="section-label">Catalogs</span>')
     footer = re.search(r'<footer class="page-footer">.*?</footer>', template, re.S).group()
-    toc = '<aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p>' + ''.join(f'<a href="#{anchor}">{title}</a>' for anchor, title in [('enums','Enums'), ('interfaces','Interfaces'), ('schemas','Schemas'), ('coverage','Coverage'), ('conventions','Conventions'), ('shared-definitions','Shared definitions'), ('needs-review','Needs Review')]) + '</aside>'
+    toc = '<aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p>' + ''.join(f'<a href="#{anchor}">{title}</a>' for anchor, title in [('enums','Enums'), ('interfaces','Interfaces'), ('schemas','Schemas'), ('coverage','Coverage'), ('conventions','Conventions'), ('shared-definitions','Shared definitions'), ('needs-review','Decisions and future work')]) + '</aside>'
     main = '<main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Catalogs</div><h1>Data Inventory</h1><p class="page-description">Enums, interfaces and schemas; canonical definitions and review evidence.</p><div class="article-body">' + inventory_body(registry) + '</div>' + footer + '</main>'
     return navigation(prefix + main + toc + '</div></div></body></html>\n', INVENTORY_PAGE)
 
@@ -417,7 +419,7 @@ def expected_outputs(registry, root=ROOT):
     search_path = root / 'assets/search-index.js'
     search = json.loads(search_path.read_text(encoding='utf-8').removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
     search = [r for r in search if r.get('source') != 'data-inventory']
-    records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Fully Defined Needs Decision Needs Review'}]
+    records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Fully Defined design decisions future Briarwake implementation work'}]
     for entry in sorted(registry['entries'], key=lambda e: e['name'].casefold()):
         records.append({'title': entry['name'], 'section': 'Data Inventory · ' + entry['category'], 'url': INVENTORY_PAGE + '#' + entry['id'],
                         'text': ' '.join([entry['status'], entry['definition_status'], entry.get('review_status', ''), definition_search_text(entry['definition']), *entry['references'], *entry['feature_pages'], *entry['evidence']])})

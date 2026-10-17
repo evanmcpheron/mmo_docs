@@ -1,4 +1,4 @@
-MMORPG GAMEPLAY REFERENCE — VERSION 2.1
+MMORPG GAMEPLAY REFERENCE — VERSION 2.2
 Mechanics design, not a playable Godot project
 
 OPEN THE REFERENCE
@@ -115,10 +115,23 @@ talent behavior, support accounting and the two-unit Bonewright category agree
 across the canonical contracts, shipped data, feature guidance and search.
 
 All original type names and anchors remain. ItemRarity is a compatibility alias
-of ItemGrade; StatusPersistencePolicy is now a composable object schema. Open
-review items list concrete completion criteria and continue to block incomplete
-content. Runtime bindings, encounter/starter assets, economic configuration,
-deployment security and executed gameplay fixtures are not supplied by this repo.
+of ItemGrade; StatusPersistencePolicy is a composable object schema.
+
+The 2.2.0-design documentation pass completes all 501 contracts and resolves all
+29 recorded design questions. It specifies clause routes, status/cleanse policy,
+finite NPC behavior, quest/loot credit, optional typed runtime bindings, naming
+and appearance rules, starter relationships, economy configuration, abstract
+security/operations contracts, fixture expectations and the first PvP rules.
+Required content parameters remain explicit; a concrete art/map/price record is
+future content production, not an unanswered question about its schema.
+
+Briarwake is the implementation target. This phase writes documentation and
+language-neutral contracts only. The inventory preserves resolved decision
+history and separately labels future Briarwake implementation work. No game
+handlers, maps/art, provider/database deployment or gameplay test executions
+are claimed. Shipped prototype content retains its current readiness markers.
+Fixture run evidence explicitly distinguishes unexecuted specifications from
+actual passed/failed execution; schema checks never promote those states.
 
 Build: python3 scripts/build_data_inventory.py
 Check without writing: python3 scripts/build_data_inventory.py --check

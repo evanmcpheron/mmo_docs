@@ -150,7 +150,7 @@ try {
   writeFileSync(join(tmpdir(), 'briarwake-inventory-mobile.png'), Buffer.from(screenshot.data, 'base64'));
   await command('Emulation.setScriptExecutionDisabled', { value: true });
   await navigate('guide/data-inventory.html');
-  check('Inventory entries remain readable with JavaScript disabled', await evaluate(`document.querySelector('#quest-progress-record').textContent.includes('Needs Decision') && document.querySelector('#inventory-enums').tBodies[0].rows.length > 0`));
+  check('Inventory entries remain readable with JavaScript disabled', await evaluate(`document.querySelector('#quest-progress-record').textContent.includes(${JSON.stringify(registry.entries.find(entry => entry.id === 'quest-progress-record').definition_status)}) && document.querySelector('#inventory-enums').tBodies[0].rows.length > 0`));
   check('Canonical properties and enum members disclose without JavaScript', await evaluate(`(() => {
     const quest = document.querySelector('#quest-progress-record .definition');
     const grade = document.querySelector('#item-grade .definition');

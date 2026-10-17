@@ -403,15 +403,17 @@ def review_report(registry):
     for group in registry['dependency_groups']:
         lines.extend([group['name'] + ': ' + group['authority'], '  ' + ', '.join(group['contracts'])])
     lines.extend(['', 'D. CONVENTIONS AND ARCHITECTURE DECISIONS', *registry['conventions'],
-                  '', 'E. OUTSTANDING AND RESOLVED DECISIONS'])
+                  '', 'E. DESIGN DECISIONS AND FUTURE BRIARWAKE WORK'])
     for issue in registry['review_issues']:
+        decision_label = 'Decision' if issue['state'] == 'resolved' else 'Recommendation'
         lines.extend([f'{issue["id"]} [{issue["state"]}]: {issue["question"]}',
                       '  Affected: ' + ', '.join(issue['entries']),
                       '  Sources: ' + ', '.join(issue['references']),
                       '  Alternatives: ' + ' | '.join(issue['alternatives']),
-                      '  Recommendation: ' + (issue['recommendation'] or 'No evidence-supported preference.'),
+                      '  ' + decision_label + ': ' + (issue['recommendation'] or 'No evidence-supported preference.'),
                       '  Impact: ' + issue['impact']])
-        lines.extend('  Required to complete: ' + item for item in issue.get('completion_criteria', []))
+        work_label = 'Future implementation work' if issue['state'] == 'resolved' else 'Required to resolve'
+        lines.extend('  ' + work_label + ': ' + item for item in issue.get('completion_criteria', []))
     lines.extend(['', 'F. REPEATABLE VALIDATION',
                   'python3 scripts/build_data_inventory.py --check',
                   'python3 validation/check_data_inventory.py',

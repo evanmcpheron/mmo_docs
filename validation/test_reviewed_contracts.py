@@ -139,14 +139,76 @@ class ReviewedContractTests(unittest.TestCase):
 
     def test_open_reviews_have_explicit_completion_criteria(self):
         registry = copy.deepcopy(self.registry)
-        issue = next(issue for issue in registry['review_issues'] if issue['state'] == 'open')
-        issue.pop('completion_criteria')
+        issue = registry['review_issues'][0]
+        issue['state'] = 'open'
+        issue.pop('completion_criteria', None)
         self.assertTrue(any('actionable completion criteria' in error for error in model_errors(registry, ROOT)))
 
     def test_contract_and_content_versions_cannot_disagree(self):
         registry = copy.deepcopy(self.registry)
         registry['content_version'] = '2.0.0-design'
         self.assertTrue(any('content versions disagree' in error for error in validate_registry(registry)))
+
+    def test_status_categories_require_their_explicit_policy_combination(self):
+        value = {'id': 'status.example', 'owner_ability_id': 'ability.example',
+                 'category': 'crowd_control', 'duration_seconds': 4,
+                 'periodic_interval_seconds': None, 'maximum_stacks': 1,
+                 'dispel_family': 'harmful_magic', 'pvp_duration_seconds': 3,
+                 'refresh_policy': 'control_duration', 'stacking_policy': 'per_caster_ability_target',
+                 'exclusivity_group_id': None, 'control_group_id': 'hard_control',
+                 'persistence_policy': {'cleanup_on_death': True, 'cleanup_on_logout': True,
+                                        'checkpoint_for_transfer': True}}
+        self.assertEqual([], self.errors('StatusDefinition', value))
+        self.assertTrue(self.errors('StatusDefinition', {**value, 'refresh_policy': 'refresh_duration'}))
+        self.assertTrue(self.errors('StatusDefinition', {**value, 'control_group_id': None}))
+        periodic = {**value, 'category': 'damage_over_time', 'control_group_id': None,
+                    'refresh_policy': 'carry_duration_preserve_next_tick', 'periodic_interval_seconds': 2}
+        self.assertEqual([], self.errors('StatusDefinition', periodic))
+        self.assertTrue(self.errors('StatusDefinition', {**periodic, 'periodic_interval_seconds': 0}))
+
+    def test_loot_parameters_cannot_mix_selection_algorithms(self):
+        value = {'id': 'loot.example', 'entries': [{'item_definition_id': 'item.example', 'quantity': 1}],
+                 'selection_policy_id': 'all_guaranteed_v1', 'selection_parameters': None}
+        self.assertEqual([], self.errors('LootTableDefinition', value))
+        self.assertTrue(self.errors('LootTableDefinition', {**value, 'selection_parameters': {'weights': [1]}}))
+        weighted = {**value, 'selection_policy_id': 'weighted_one_v1', 'selection_parameters': {'weights': [1]}}
+        self.assertEqual([], self.errors('LootTableDefinition', weighted))
+        self.assertTrue(self.errors('LootTableDefinition', {**weighted, 'selection_parameters': {'weights': [0]}}))
+        self.assertTrue(self.errors('LootTableDefinition', {**weighted, 'selection_parameters': {'probabilities': [.5]}}))
+        self.assertTrue(self.errors('LootRoll', {'roll_id': 'roll', 'reservation_id': 'reservation',
+                                               'character_id': 'player', 'choice_id': 'need',
+                                               'submitted_at': '2026-10-17T00:00:00Z'}))
+
+    def test_fixture_expectations_do_not_masquerade_as_execution_evidence(self):
+        value = {'status': 'unexecuted', 'runner_id': None, 'completed_at': None,
+                 'content_version': self.registry['content_version'], 'rules_version': 'rules.example',
+                 'findings': []}
+        self.assertEqual([], self.errors('FixtureRunEvidence', value))
+        self.assertTrue(self.errors('FixtureRunEvidence', {**value, 'status': 'passed'}))
+        actual = {**value, 'status': 'passed', 'runner_id': 'actual-runner',
+                  'completed_at': '2026-10-17T00:00:00Z'}
+        self.assertEqual([], self.errors('FixtureRunEvidence', actual))
+        self.assertTrue(self.errors('FixtureRunEvidence', {**actual, 'findings': [
+            {'code': 'failed', 'path': 'fixture', 'message': 'Recorded failure.'}]}))
+        self.assertTrue(self.errors('FixtureAssertion', {'kind': 'arbitrary_script', 'code': 'execute()'}))
+        self.assertTrue(self.errors('EncounterCondition', {'kind': 'arbitrary_script', 'code': 'execute()'}))
+
+    def test_administrative_roles_cannot_request_unrelated_permissions(self):
+        value = {'id': 'staff.example', 'grants': {'moderator': ['moderation']},
+                 'realm_scopes': {'moderator': ['realm.example']}}
+        self.assertEqual([], self.errors('AdministrativePermissionPolicy', value))
+        self.assertTrue(self.errors('AdministrativePermissionPolicy', {**value, 'grants': {'moderator': ['restore']}}))
+        self.assertTrue(self.errors('AdministrativePermissionPolicy', {**value, 'grants': {'support': ['inventory_edit']}}))
+        self.assertTrue(self.errors('AdministrativePermissionPolicy', {**value, 'realm_scopes': {'wildcard_admin': ['realm.example']}}))
+
+    def test_duel_active_view_must_match_its_lifecycle(self):
+        value = {'duel_id': 'duel', 'participant_character_ids': ['one', 'two'],
+                 'consenting_character_ids': [], 'active': False, 'phase': 'offered',
+                 'ruleset_id': 'duel.example', 'center': None, 'started_at': None,
+                 'deadline_at': '2026-10-17T00:00:30Z', 'winner_character_id': None, 'end_reason': None}
+        self.assertEqual([], self.errors('DuelState', value))
+        self.assertTrue(self.errors('DuelState', {**value, 'active': True}))
+        self.assertTrue(self.errors('DuelState', {**value, 'phase': 'active'}))
 
 
 if __name__ == '__main__':

@@ -76,7 +76,14 @@ class InventoryTests(unittest.TestCase):
 
     def test_definition_status_must_agree_with_open_decisions(self):
         registry = copy.deepcopy(self.registry)
-        next(e for e in registry['entries'] if e.get('review_issues'))['definition_status'] = 'Fully Defined'
+        issue = registry['review_issues'][0]
+        issue['state'] = 'open'
+        issue['completion_criteria'] = ['Resolve the test decision.']
+        entry = next(e for e in registry['entries'] if e['name'] in issue['entries'])
+        entry['review_issues'] = [issue['id']]
+        entry['review_status'] = 'Needs Review'
+        entry['definition_status'] = 'Fully Defined'
+        entry['definition_extent'] = 'Partial'
         self.rejected(registry, 'decision status and definition extent disagree')
 
     def test_missing_evidence_paths_and_anchors_are_rejected(self):
@@ -101,8 +108,8 @@ class InventoryTests(unittest.TestCase):
 
     def test_review_issues_and_backlinks_are_required(self):
         registry = copy.deepcopy(self.registry)
-        entry = next(e for e in registry['entries'] if e.get('review_issues'))
-        entry['review_issues'].append('missing-issue')
+        entry = registry['entries'][0]
+        entry['review_issues'] = ['missing-issue']
         self.rejected(registry, 'invalid review issue')
 
     def test_exact_section_membership_hierarchy_and_bottom_placement(self):

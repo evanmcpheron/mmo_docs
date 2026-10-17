@@ -1,15 +1,15 @@
 BRIARWAKE DATA MODEL DEFINITION AND REVIEW
 Generated from sources/data-inventory.json; edit that registry, then rebuild.
-Reviewed content version: 2.1.0-design; registry format: 2.
+Reviewed content version: 2.2.0-design; registry format: 2.
 Documentation contracts only; no gameplay/database/network implementation or balance certification.
 
 A. DEFINITION COVERAGE
 Original inventory: 97 enums, 168 interfaces, 236 schemas; all 501 examined.
-Enum: 81 total; 73 fully defined; 8 partial / Needs Decision.
-Interface: 168 total; 158 fully defined; 10 partial / Needs Decision.
-Schema: 252 total; 173 fully defined; 79 partial / Needs Decision.
-Partial / Needs Decision structures: 97.
-Review items: 11 open; 18 resolved.
+Enum: 81 total; 81 fully defined; 0 partial / Needs Decision.
+Interface: 168 total; 168 fully defined; 0 partial / Needs Decision.
+Schema: 252 total; 252 fully defined; 0 partial / Needs Decision.
+Partial / Needs Decision structures: 0.
+Review items: 0 open; 29 resolved.
 Feature pages updated: 49 generated Data sections; feature pages reviewed: 49 (53 source HTML pages total).
 
 B. DRY AND COMPATIBILITY AUDIT
@@ -23,6 +23,7 @@ The existing ArmorFamily title-case ClassDefinition labels are an explicit mappi
 Targeting policy names, input presence and coordinate scope are resolved. Existing target_revalidation and timing_policy keys remain separate; ability_command_v2 retains its established name.
 The authorized review updates class descriptions, exact protocol/ownership contracts, related feature guidance and search together. No gameplay, networking, database or Godot implementation is added; unresolved content and runtime evidence remain explicit gates.
 Normalized signature *_pool_id fields to *_resource_id: each selects the owner resource map by ResourceDefinition ID, not an invented pool-instance namespace. Entity references to summon/formation/debt/sequence owners now explicitly say owner_entity_id.
+The 2.2 documentation-only pass resolves all remaining policy questions with typed vocabularies and lifecycle rules, while preserving every original type name/anchor and all shipped prototype readiness markers. Future implementation criteria remain visible under resolved decision history.
 
 C. CROSS-SYSTEM DEPENDENCY AND OWNERSHIP AUDIT
 Identity, creation and progression: AccountRecord owns accounts; CharacterRecord owns character identity; CharacterProgressRecord owns earned progression; TalentBuildRecord owns applied selections. UI drafts and snapshots derive from them.
@@ -48,203 +49,204 @@ Enum encodings are explicit case-sensitive strings. Previously symbolic members 
 Static content is versioned by the package content version. Runtime state belongs to the owning world process; durable economic ownership belongs to the transactional service. Client requests carry intent and expected versions, never authoritative results.
 A Fully Defined shape is supported at documentation level, not runtime-ready or balanced. Needs Decision schemas validate only their supported portion and cannot certify an unresolved mechanic. Text invariants require future semantic/runtime validation beyond structural JSON Schema.
 Reviewed contracts and changed prototype descriptions ship as content package 2.1.0-design; registry format remains 2. ID namespaces are determined by the referenced contract, not a required text prefix, and IDs never authorize access. Session epochs and sequences must never wrap or be reused; acquire a fresh epoch before exhaustion.
+A missing concrete map, art asset, deployed provider or executed gameplay test is future implementation/content work. It does not reopen a completed parameterized schema. All required configuration remains explicit; absent bindings/configuration keep future content disabled.
 
-E. OUTSTANDING AND RESOLVED DECISIONS
+E. DESIGN DECISIONS AND FUTURE BRIARWAKE WORK
 resource-terminology [resolved]: Several class and specialization labels differ from their resource contracts: Grace/Devotion, Soul Threshold/Soul Essence, Maelstrom/Stormcharge, Pact Shards/Authority, and Focus Windows/Aim. Confirm the eventual public terminology without creating duplicate meters.
   Affected: DemonologistCombatState, HighPriestCombatState, MarksmanCombatState, ResourceType, SoulreaperCombatState, StormcallerCombatState
   Sources: classes/cleric.html#high_priest, classes/necromancer.html#soulreaper, classes/shaman.html#stormcaller, classes/warlock.html#demonologist, classes/ranger.html#marksman, guide/attributes.html#derived-values
   Alternatives: Keep resource-contract labels and map legacy display aliases. | Rename public labels after content review.
-  Recommendation: Resolved: standardize public resource labels to Devotion, Soul Essence, Stormcharge, Authority and Aim, following the explicit resource contracts. Marksman Focus remains the separate sustained resource. Preserve stable IDs and one canonical pool per actual resource.
+  Decision: Resolved: standardize public resource labels to Devotion, Soul Essence, Stormcharge, Authority and Aim, following the explicit resource contracts. Marksman Focus remains the separate sustained resource. Preserve stable IDs and one canonical pool per actual resource.
   Impact: Legacy resource labels were renamed across class guidance, ability/talent catalogs, embedded character data and search. No gain, spend, cap or other resource behavior changed. Marksman accuracy behavior remains a separate open decision.
 minstrel-resource [resolved]: Minstrel resource contracts use Mana and Harmonies, while Balm Chorus and several talents still refer to Cadence spending or retention. Which references should eventually govern?
   Affected: MaintainedSongState, MinstrelCombatState
   Sources: classes/bard.html#minstrel, classes/bard.html#shared-class-abilities
   Alternatives: Mana sustains healing, Harmony is secondary; Cadence belongs only to performance. | Author explicit additional Cadence spending for named Minstrel actions.
-  Recommendation: Adopt Mana for sustained Minstrel healing and Harmony as its only specialization meter. Balm Chorus spends two Harmony; Encore of Mercy spends three. Cadence remains the performance resource. Clear Harmony modifies song duration; No Lost Notes reduces song Mana cost using its existing 2% per-rank coefficient.
+  Decision: Adopt Mana for sustained Minstrel healing and Harmony as its only specialization meter. Balm Chorus spends two Harmony; Encore of Mercy spends three. Cadence remains the performance resource. Clear Harmony modifies song duration; No Lost Notes reduces song Mana cost using its existing 2% per-rank coefficient.
   Impact: Conflicting Minstrel ability and talent descriptions, embedded copies and class/catalog text agree with the existing three-unit Harmony contract. Runtime handlers still require the shared execution gates.
 retired-accuracy [resolved]: Ranger Prepared Retreat and Marksman Steady Distance still refer to accuracy, while the attribute rules and audit retire a random accuracy statistic. Clarify the intended non-random behavior before defining its state.
   Affected: MarksmanCombatState
   Sources: classes/ranger.html#talent.ranger.prepared_retreat, classes/ranger.html#talent.marksman.steady_distance, guide/attributes.html#critical-strikes-and-haste
   Alternatives: Replace remaining references with deterministic output/positioning modifiers. | Remove those talent effects.
-  Recommendation: Replace retired accuracy effects with explicit movement behavior: Prepared Retreat grants one mobile stationary ranged cast after Retreating Step; Steady Distance preserves the final Aim unit during movement.
+  Decision: Replace retired accuracy effects with explicit movement behavior: Prepared Retreat grants one mobile stationary ranged cast after Retreating Step; Steady Distance preserves the final Aim unit during movement.
   Impact: No random hit statistic is introduced. Existing talent IDs, ranks and dependencies are preserved; the selected behavior still needs runtime tests before activation.
 rarity-grade [resolved]: Item grade has an explicit budget role; rarity color is mentioned separately without an authoritative rarity vocabulary. Decide whether ItemRarity remains a separate classification.
   Affected: ItemRarity
   Sources: guide/items.html#explicit-item-budgets
   Alternatives: Keep rarity as separate optional presentation content with an authored vocabulary. | Use grade alone until rarity has a concrete purpose.
-  Recommendation: Use grade alone. Preserve ItemRarity as a documented compatibility alias of ItemGrade; do not add an independent rarity field or classification.
+  Decision: Use grade alone. Preserve ItemRarity as a documented compatibility alias of ItemGrade; do not add an independent rarity field or classification.
   Impact: Item budgeting and acquisition use the existing four grade values. Presentation colors may derive from grade without a second multiplier.
-pact-clauses [open]: Clause-based play is documented, but the authoritative clause set and distinction between clause choices and talent routes are unresolved.
+pact-clauses [resolved]: Clause-based play is documented, but the authoritative clause set and distinction between clause choices and talent routes are unresolved.
   Affected: PactClauseDefinition, PactClauseType
   Sources: classes/warlock.html#pactbinder
   Alternatives: Author a clause content catalog separate from talents. | Bind clause choices directly to existing talent transformations.
-  Recommendation: Adopted scope: Use extensible content IDs, not a closed enum; author actual clause contracts. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: Clause resolution operations cannot be enabled.
-  Required to complete: Author a separate PactClauseDefinition catalog with explicit eligible paid actions, parameterized settlement operations and references from the existing Ruin/Shelter/Silence talent routes.
-  Required to complete: Validate clause changes clear progress and settlement consumes the single canonical five-unit progress store; bind and execute positive/exclusion fixtures before enabling those actions.
+  Decision: Use extensible clause records with explicit ruin/shelter/silence output families and targeted finite settlement steps. Talent transformations modify eligible authored clauses and never substitute talent IDs for clause content.
+  Impact: Documentation contract complete for Briarwake. Actual clause records, coefficients and handlers remain content/implementation deliverables; the contract no longer leaves the roster model or target semantics undecided.
+  Future implementation work: Future Briarwake implementation: Author concrete clause content records under the documented ruin/shelter/silence routes, with eligible paid-action tags and exact operations for each of the five progress spends.
+  Future implementation work: Future Briarwake implementation: Implement clause switching and settlement against the single canonical progress store; execute positive/exclusion fixtures before enabling those actions.
 guide-dialogue [resolved]: The starter guide must introduce tasks and specialization, but authored story dialogue is deferred. Decide whether this needs a dedicated dialogue format or the existing interaction/tutorial contracts.
   Affected: GuideDialogueDefinition
   Sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/decisions.html#confirmed-direction
   Alternatives: Use instruction/interaction references for the starter guide. | Author a separate branching-dialogue format later.
-  Recommendation: Use the existing instruction_ids and interaction_ids for starter guidance. Branching dialogue, authored narrative and conversation state are outside this contract.
+  Decision: Use the existing instruction_ids and interaction_ids for starter guidance. Branching dialogue, authored narrative and conversation state are outside this contract.
   Impact: The guidance format is settled. Concrete instruction, interaction and starter content remain tracked by world-and-starter-content.
 command-policy-name [resolved]: The combat prose names revalidation_policy; shipped abilities use target_revalidation and timing_policy. Preserve these established references until their relationship is decided. ability_command_v2 remains the exact existing wire-schema name.
   Affected: AbilityDefinition, BuildApplicationRequest, ResolvedAbilityDefinition, ability_command_v2
   Sources: guide/combat.html#cast-lifecycle, guide/execution.html#definition-fields, guide/execution.html#ability-command, guide/execution.html#talent-allocation-contract, data/abilities.json
   Alternatives: Treat revalidation_policy as prose for existing target_revalidation checks; timing_policy remains independent. | Introduce a new wire property with a migration.
-  Recommendation: Preserve target_revalidation and timing_policy. Resolved targeting composes the former; timing composes the latter.
+  Decision: Preserve target_revalidation and timing_policy. Resolved targeting composes the former; timing composes the latter.
   Impact: No rename of established ability_command_v2 or shipped JSON keys is needed.
 support-accounting [resolved]: Combat describes normalized weighting across support providers; the testing chapter describes deterministic ordered marginal attribution. Decide which accounting policy should govern before defining contribution records.
   Affected: SupportContribution
   Sources: guide/combat.html#healer-and-support-interaction, guide/testing.html#build-diversity-playtests
   Alternatives: Normalized split among support providers. | Deterministic ordered marginal accounting.
-  Recommendation: Use deterministic ordered_marginal_v1 accounting in the existing modifier-family order; use stable source, ability and status IDs to order contributors within a family.
+  Decision: Use deterministic ordered_marginal_v1 accounting in the existing modifier-family order; use stable source, ability and status IDs to order contributors within a family.
   Impact: Combat and testing documentation agree. The accounting preserves one actual damage total and credits only the measured support increment.
 define-cycle-phase [resolved]: The cycle meter is -3..3, but no authoritative named phase set or phase transition thresholds are specified. Should phase be derived solely from meter sign?
   Affected: CyclePhase
   Sources: classes/druid.html#starcaller
   Alternatives: Author an explicit finite policy set. | Remove the classification if it is derivable from another contract.
-  Recommendation: Derive lunar, neutral and solar solely from the sign of the existing -3..3 cycle meter. Keep cycle_units as the only mutable authority.
+  Decision: Derive lunar, neutral and solar solely from the sign of the existing -3..3 cycle meter. Keep cycle_units as the only mutable authority.
   Impact: No phase thresholds or duplicate phase state are introduced.
 define-match-phase [resolved]: Match start/end are implied, but objective, scoring, overtime and phase transitions are not specified.
   Affected: MatchPhase
   Sources: guide/pvp-encounters.html#pvp-modes
   Alternatives: Author an explicit finite policy set. | Remove the classification if it is derivable from another contract.
-  Recommendation: Adopt preparing, active, completed and cancelled as the lifecycle. Objective, scoring, overtime and end-condition handlers remain part of an explicitly authored PvP ruleset.
+  Decision: Adopt preparing, active, completed and cancelled as the lifecycle. Objective, scoring, overtime and end-condition handlers remain part of an explicitly authored PvP ruleset.
   Impact: The lifecycle vocabulary is complete; duel-and-match-rules continues to block unconfigured PvP execution.
 define-projectile-collision-policy [resolved]: Wall collision is mandatory to declare, but the set of supported blocking/piercing policies and masks is not specified.
   Affected: ProjectileCollisionPolicy
   Sources: guide/combat.html#projectiles-and-ground-effects
   Alternatives: Author an explicit finite policy set. | Remove the classification if it is derivable from another contract.
-  Recommendation: Adopt stop_on_world with the solid_world semantic mask. Keep single_target versus piercing as a separate actor hit policy; wall-piercing and custom client masks are unsupported.
+  Decision: Adopt stop_on_world with the solid_world semantic mask. Keep single_target versus piercing as a separate actor hit policy; wall-piercing and custom client masks are unsupported.
   Impact: Collision behavior is explicit without prescribing engine-specific layer numbers.
 wire-presence-and-coordinates [resolved]: The ability command example does not specify absent-vs-null aim fields, required character_id, coordinate frame or exact conditional requiredness for every target mode.
   Affected: AbilityTargetingPolicy, TargetSelection, ability_command_v2
   Sources: guide/combat.html#targeting-and-movement, guide/execution.html#ability-command, guide/execution.html#definition-fields
   Alternatives: Require the example keys with explicit null for unused intents. | Allow omission and specify per-mode branches.
-  Recommendation: Adopt a fixed three-field input shape with null for unused inputs, optional checked character_id, current-session world coordinates and a complete TargetMode/input-kind matrix. Server content chooses the kind for pet and summon abilities. Reject passive activation and invalid inputs.
+  Decision: Adopt a fixed three-field input shape with null for unused inputs, optional checked character_id, current-session world coordinates and a complete TargetMode/input-kind matrix. Server content chooses the kind for pet and summon abilities. Reject passive activation and invalid inputs.
   Impact: TargetSelection and the command have structural input branches; command_targeting_errors checks a command against its resolved policy. Visibility, range, floor, session identity and resource checks remain authoritative runtime requirements.
 new-boundary-encodings [resolved]: New symbolic enums, command discriminators, timestamps and identifier namespaces have no established serialized encoding. Which stable representations and compatibility rules will the first actual protocol/database adopt?
   Affected: AccountRestrictionKind, ActionRejectionReason, AdministrativePermission, AppearanceOptionCategory, CastPhase, CharacterConnectionState, CharacterCreationOutcome, CharacterCreationStep, CharacterLifeState, CommandOutcome, CraftOrderState, DeviceState, EnhancementCategory, GatheringClaimOutcome, GuildCommand, InputDeviceKind, InteractionKind, InventoryContainerKind, ItemTransferOperation, LogoutState, LootReservationState, MarketOrderKind, MarketOrderState, ModerationActionKind, MovementIntent, MovementSnapshot, NpcBehaviorState, PartyCommand, ProfessionActivationState, ProjectileHitPolicy, PvpFlagState, QuestObjectiveType, QuestStatus, RecoveryOption, SeedGrowthStage, ServiceAvailabilityState, ServiceOperationType, SessionOwnershipState, SessionToken, SpriteDirection, TradeState, TransferPhase, TransferToken, TravelRejectionReason, TutorialStage, ChatChannel, CraftOrderVisibility, CrowdControlCategory, DamageSchool, DiminishingReturnGroup, DispelFamily, EquipmentSlot, GroundCastMode, GuildPermission, LootDistributionRule, NetworkTrafficChannel, PetCommandType, PvpMode, RecipeSource, ReplicationEventKind, StatusCategory, StatusRefreshPolicy, StatusStackingPolicy
   Sources: classes/druid.html#grovekeeper, classes/rogue.html#saboteur, guide/character-creation.html#beginner-starting-area, guide/character-creation.html#character-creation-experience, guide/combat.html#cast-lifecycle, guide/combat.html#death-recovery-and-battle-revival, guide/combat.html#projectiles-and-ground-effects, guide/combat.html#tanking-and-threat, guide/combat.html#targeting-and-movement, guide/crafting-orders.html#customer-commissions, guide/decisions.html#confirmed-direction, guide/economy.html#bazaar-model, guide/execution.html#ability-command, guide/interface.html#accessibility-and-input, guide/items.html#gems-enchants-and-set-effects, guide/items.html#inventory-correctness, guide/networking.html#disconnect-and-recovery, guide/networking.html#movement-and-traffic, guide/networking.html#security-and-observability, guide/networking.html#zone-or-instance-transfer, guide/operations.html#death-recovery-and-travel-safety, guide/operations.html#guilds-banks-and-communication, guide/operations.html#party-raid-and-loot-ownership, guide/operations.html#security-operations-and-support, guide/professions.html#gathering-and-shared-access, guide/professions.html#profession-mastery-trees, guide/pvp-encounters.html#pvp-modes
   Alternatives: Explicit versioned string encodings consistent with current snake_case JSON. | Implementation-specific numeric tags with a published compatibility table.
-  Recommendation: Adopt exact documented snake_case strings for previously symbolic members while preserving existing serialized values. Use explicit *_v1 discriminators for new boundary messages, RFC 3339 UTC Instant values and contract-typed opaque string IDs. ability_command_v2 retains its established discriminator.
+  Decision: Adopt exact documented snake_case strings for previously symbolic members while preserving existing serialized values. Use explicit *_v1 discriminators for new boundary messages, RFC 3339 UTC Instant values and contract-typed opaque string IDs. ability_command_v2 retains its established discriminator.
   Impact: Boundary values and compatibility rules are explicit. Adding/renaming a discriminator, changing a field meaning or changing an enum value requires a versioned contract/content revision; unknown values are rejected rather than coerced.
-status-policy-completeness [open]: The status table names eight baseline stacking categories but also uses control/stealth/immunity effects; cleanup on death/logout/transfer can overlap. What complete category/refresh/cleanup policy set and dispel families govern each enabled status?
+status-policy-completeness [resolved]: The status table names eight baseline stacking categories but also uses control/stealth/immunity effects; cleanup on death/logout/transfer can overlap. What complete category/refresh/cleanup policy set and dispel families govern each enabled status?
   Affected: CleanseModuleDefinition, CleanseModuleSelection, DispelFamily, StatusCategory, StatusDefinition, StatusPersistencePolicy, StatusRefreshPolicy, StatusStackingPolicy
   Sources: guide/progression.html#ability-progression, guide/status-effects.html#status-definitions
   Alternatives: Author per-status policy records with composable cleanup flags. | Keep named policy IDs backed by a validated finite handler catalog.
-  Recommendation: Adopted scope: Author the enabled status catalog and explicit policy combinations; do not invent Unknown/None categories. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: Existing status/cleanse fields are specified, but a complete enabled status catalog and policy vocabulary are not yet available.
-  Required to complete: Author the enabled per-status catalog, complete category/refresh/stacking vocabulary and exact dispel/cleanse bindings from the shipped effects.
-  Required to complete: Validate each composable death/logout/transfer policy and test periodic refresh, shield replacement, immunity and dispel selection against bound handlers.
-npc-ai-and-trigger-catalog [open]: Engagement/leash behavior and bounded trigger operations are documented, but full NPC AI states, trigger conditions and reset handler policies are not authored.
+  Decision: Adopt the complete baseline category/policy matrix, two explicit dispel families, positive periodic intervals and composable lifecycle flags. Control, stealth, immunity, personal modifiers and marks have explicit policies.
+  Impact: Documentation contract complete for Briarwake. Per-ability status records and runtime control/refresh tests are future content and implementation evidence.
+  Future implementation work: Future Briarwake implementation: Author each enabled status record using the completed category/refresh/stacking matrix, fixed dispel families and explicit lifecycle flags.
+  Future implementation work: Future Briarwake implementation: Implement and test periodic refresh, shield replacement, immunity, dispel selection and death/logout/transfer cleanup against bound handlers.
+npc-ai-and-trigger-catalog [resolved]: Engagement/leash behavior and bounded trigger operations are documented, but full NPC AI states, trigger conditions and reset handler policies are not authored.
   Affected: EncounterDefinition, EncounterTriggerDefinition, NavigationConfiguration, NpcAbilityKit, NpcBehaviorState, NpcDefinition, NpcState
   Sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#tanking-and-threat, guide/operations.html#content-tools
   Alternatives: Author finite behavior and condition handlers for the first encounter. | Limit enabled content to currently bound behaviors.
-  Recommendation: Adopted scope: Bind a small finite server handler catalog for the first role slice. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: Engaged/leashing are supported partial states; no patrol, evade or boss phase behavior is invented.
-  Required to complete: Author the first starter encounter NPC kit, navigation configuration, finite behavior/condition handlers and reset actions.
-  Required to complete: Bind and test engagement, leashing, return/reset and trigger caps before enabling the encounter; no default patrol or boss phases are inferred.
-quest-credit-and-loot-policy [open]: Starter objective tracking and shared targets are required, but objective taxonomy, shared-credit eligibility, drop selection, shared-roll choices and tie resolution are not defined.
+  Decision: Use simple_encounter_v1 with idle/engaged/leashing/dead states, deterministic bounded action priorities, a finite condition vocabulary and complete_reset_v1. Path size, replanning, aggro and leash bounds are required content configuration.
+  Impact: Documentation contract complete for Briarwake. NPC kits, authored map placements and execution of those handlers remain future Briarwake work.
+  Future implementation work: Future Briarwake implementation: Author starter NPC kits and numeric navigation/aggro/leash configuration under simple_encounter_v1, the finite trigger vocabulary and complete_reset_v1.
+  Future implementation work: Future Briarwake implementation: Implement and test engagement, deterministic action selection, leashing, reset and trigger caps before enabling the encounter.
+quest-credit-and-loot-policy [resolved]: Starter objective tracking and shared targets are required, but objective taxonomy, shared-credit eligibility, drop selection, shared-roll choices and tie resolution are not defined.
   Affected: LootDistributionRule, LootRoll, LootRollResult, LootTableDefinition, ParticipationCredit, QuestDefinition, QuestObjectiveDefinition, QuestObjectiveType, QuestProgressRecord, QuestStatus, RewardEligibilityRecord
   Sources: guide/character-creation.html#beginner-starting-area, guide/operations.html#content-tools, guide/operations.html#party-raid-and-loot-ownership
   Alternatives: Specify per-objective credit and per-table roll policies as content. | Ship personal rewards and a narrow starter objective subset first.
-  Recommendation: Adopted scope: Author personal starter reward/credit rules first; keep shared-roll policy disabled until explicit. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: No fabricated quest failure/abandon states, random loot rates, roll numbers or contribution thresholds are assigned.
-  Required to complete: Author personal starter objective credit and reward tables, including contribution eligibility for healing, tanking and support and one durable completion key.
-  Required to complete: Keep shared-roll rewards disabled until selection choices, tie-breaking, reservation expiry and delivery fixtures are authored; test full-bag and retry behavior.
-content-binding-completeness [open]: Runtime definition groups require exact handler bindings, targeting/cleanup policies, allowed talent paths and presentation keys; most named secondary effects are still unbound in the authoritative audit.
+  Decision: Use nine typed objective event families, snapshot-based effective participation, one-time durable rewards and explicit guaranteed/independent/weighted drop algorithms. Shared drops use equal-priority claim/pass choices and one persisted uniform claimant permutation.
+  Impact: Documentation contract complete for Briarwake. Actual quest targets, drop rates and reward items are later content records; transaction and retry behavior still require runtime tests.
+  Future implementation work: Future Briarwake implementation: Author starter objective and reward content records using the documented snapshot participation policy and one durable completion key.
+  Future implementation work: Future Briarwake implementation: Implement the declared drop algorithms, equal-priority claim/pass shuffle and reservation/delivery lifecycle; test expiry, full bags, concurrent claims and retries before enabling shared rewards.
+content-binding-completeness [resolved]: Runtime definition groups require exact handler bindings, targeting/cleanup policies, allowed talent paths and presentation keys; most named secondary effects are still unbound in the authoritative audit.
   Affected: AbilityDefinition, AbilityTimingPolicy, EffectOperationDefinition, EnhancementDefinition, FieldUtilityDefinition, FormDefinition, ItemEffectDefinition, ItemSetDefinition, NotePatternDefinition, PreparedDeviceDefinition, ResolvedAbilityDefinition, ResourceGainRule, SongDefinition, StanceDefinition, SummonDefinition, TalentModifierDefinition, TriggerDefinition
   Sources: guide/audit.html#blocking-before-a-playable-release, guide/execution.html#definition-fields, guide/execution.html#data-and-runtime-gates
   Alternatives: Bind and test each enabled named behavior. | Leave unresolved entries disabled.
-  Recommendation: Adopted scope: Require all readiness gates before execution; preserve prototype content verbatim. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: Shapes document supported composition; unbound handlers, discriminated parameters and exact bespoke behavior remain incomplete, never arbitrary dictionaries.
-  Required to complete: Bind each enabled named ability/talent/item behavior to finite operations, exact parameters, resolved targeting input kind, presentation IDs and cleanup policies.
-  Required to complete: Require bindings_resolved, data_tests_passed and runtime_tests_passed for the selected content/build version; profile presence and structural validation alone never enable a behavior.
-appearance-naming-content [open]: Appearance option compatibility and naming normalization/uniqueness rules are required but actual assets, name constraints and uniqueness scope are not specified.
+  Decision: Specify an optional complete AbilityRuntimeBinding using existing finite operations, precise targeting/timing, resource rules, allowed talents, presentation and cleanup. Preserve unbound legacy prototype records and their disabled readiness state; constrain modifier paths and operation indices.
+  Impact: Documentation contract complete for Briarwake. Creating the concrete bindings, game handlers and real readiness evidence belongs to future Briarwake implementation; it does not make the record formats incomplete.
+  Future implementation work: Future Briarwake implementation: Bind each enabled named ability/talent/item behavior to finite operations, exact parameters, resolved targeting input kind, presentation IDs and cleanup policies.
+  Future implementation work: Future Briarwake implementation: Require bindings_resolved, data_tests_passed and runtime_tests_passed for the selected content/build version; profile presence and structural validation alone never enable a behavior.
+appearance-naming-content [resolved]: Appearance option compatibility and naming normalization/uniqueness rules are required but actual assets, name constraints and uniqueness scope are not specified.
   Affected: CharacterAppearance, CharacterAppearanceCatalog, CharacterCreationRequest, CharacterCreationResponse, CharacterNamingPolicy
   Sources: guide/character-creation.html#character-creation-experience
   Alternatives: Author race-specific option catalogs and server naming policy. | Use a deliberately limited validated prototype catalog.
-  Recommendation: Adopted scope: Author explicit content and policy IDs before creation service implementation. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: No invented name lengths, race art variants or naming restrictions are embedded.
-  Required to complete: Author the validated race-specific appearance asset catalog and explicit server naming normalization, uniqueness scope and length policy.
-  Required to complete: Validate every creation selection and test concurrent name claims/retries against the chosen persistence service; no unavailable art variants are advertised.
-world-and-starter-content [open]: Starter-zone roles and required teaching sequence are established; actual map locations, NPC/task IDs, counts, XP split and final role challenge content remain deliberately unauthored.
+  Decision: Use real race-scoped option records with finite incompatibility rules and required categories. Adopt the explicit 2..24-character Unicode naming grammar, pinned normalization, realm-wide cross-faction uniqueness and atomic idempotent creation.
+  Impact: Documentation contract complete for Briarwake. Artwork, localized option labels and a database-backed name-claim transaction remain future production work; those assets do not define another schema question.
+  Future implementation work: Future Briarwake implementation: Author validated race-specific appearance assets and compatibility records; configure reserved-name keys and the pinned Unicode revision under the documented naming grammar and realm-wide uniqueness policy.
+  Future implementation work: Future Briarwake implementation: Implement creation selection validation and atomic name claims; test concurrent claims and retries against the selected persistence service.
+world-and-starter-content [resolved]: Starter-zone roles and required teaching sequence are established; actual map locations, NPC/task IDs, counts, XP split and final role challenge content remain deliberately unauthored.
   Affected: GuideDialogueDefinition, InteractionDefinition, QuestRewardDefinition, RecoveryPointDefinition, StarterAreaConfiguration, TutorialSequenceDefinition, WorldLocationDefinition, WorldObjectDefinition, ZoneDefinition, ZoneTransitionDefinition
   Sources: guide/character-creation.html#beginner-starting-area, guide/operations.html#death-recovery-and-travel-safety
   Alternatives: Author the compact starter content with equivalent faction versions. | Continue using structural contracts until content production begins.
-  Recommendation: Adopted scope: Author the required solo path first and verify it reaches ten without optional tasks. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: Definitions are usable shapes but do not claim a completed map, narrative, XP schedule or challenge kit.
-  Required to complete: Author equivalent faction starter maps, stable NPC/interaction/task IDs, guide instructions and the final role challenge kit.
-  Required to complete: Verify the required solo path reaches level ten for every class without optional tasks; author the actual XP schedule and recovery/travel placements.
-economic-policy-parameters [open]: Listing minimum fees/limits, buyer-request funding, repair prices, vendor values, eligibility handlers and service configuration choices remain unspecified.
+  Decision: Complete the kind-specific interaction references, reusable guidance, five existing teaching bands, per-role solo challenge mapping, zone relationships and required_solo_path_to_ten_v1 XP validation contract. Keep fictional geography, map coordinates and authored assets in the later content-production phase.
+  Impact: Documentation contract complete for Briarwake. A complete contract does not claim a finished map, XP allocation or art catalog. Those production tasks and playable-path tests remain future Briarwake evidence.
+  Future implementation work: Future Briarwake implementation: Author equivalent faction starter maps, stable NPC/interaction/task IDs, guide instructions and the final role challenge kit.
+  Future implementation work: Future Briarwake implementation: Verify the required solo path reaches level ten for every class without optional tasks; author the actual XP schedule and recovery/travel placements.
+economic-policy-parameters [resolved]: Listing minimum fees/limits, buyer-request funding, repair prices, vendor values, eligibility handlers and service configuration choices remain unspecified.
   Affected: BuyerRequestRecord, FishingCatchDefinition, GatheringNodeDefinition, MarketFeeConfiguration, NodeSpawnConfiguration, RecipeConfiguration, SalvageRule, VendorOfferDefinition, VendorPricingConfiguration
   Sources: guide/crafting-orders.html#direct-crafting-lifecycle, guide/economy.html#bazaar-model, guide/economy.html#fees-and-sinks, guide/items.html#durability-salvage-and-demand, guide/professions.html#gathering-and-shared-access
   Alternatives: Supply versioned economic configuration with graph/conservation tests. | Keep only explicitly priced prototype operations enabled.
-  Recommendation: Adopted scope: Author prices/limits and validate vendor-conversion graph before enabling new conversions. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: No arbitrary economic defaults, drop yields, activation limits or market guarantee are introduced.
-  Required to complete: Supply explicit listing fee minimums, listing limits, buyer-request funding rules, repair/vendor values and material/node/recipe service configuration.
-  Required to complete: Validate conservation, durable retries and the complete vendor-conversion graph before enabling any unpriced or conversion operation. Existing percentages and 48-hour listings remain prototype parameters.
-operational-security-policy [open]: Authentication/recovery proofs, token claims/lifetime, administrative role scopes, payload/rate ceilings, retention and restore/migration procedures require deployment-specific decisions.
+  Decision: Adopt explicit prototype fee/listing defaults, full wallet-reservation funding for buyer requests, exact integer fee rounding, proportional missing-durability repair quotes and bounded per-cycle gathering/spawn rules. Per-item vendor values, yields and recipe choices remain required typed versioned content.
+  Impact: Documentation contract complete for Briarwake. Economy tuning, real price tables and transaction/conversion-graph execution are future content and runtime evidence; structural completeness does not certify profitability or balance.
+  Future implementation work: Future Briarwake implementation: Instantiate the declared prototype fee/listing policy and supply per-item vendor/repair values, material yields and node/recipe service configuration; implement buyer-request wallet locks and the documented integer rounding.
+  Future implementation work: Future Briarwake implementation: Validate conservation, durable retries and the complete vendor-conversion graph before enabling unpriced or conversion operations. Existing percentages and 48-hour listings remain prototype parameters.
+operational-security-policy [resolved]: Authentication/recovery proofs, token claims/lifetime, administrative role scopes, payload/rate ceilings, retention and restore/migration procedures require deployment-specific decisions.
   Affected: AccountRecoveryRequest, AccountRestrictionRecord, AdministrativeActionRecord, AdministrativePermissionPolicy, AppealRecord, BackupManifest, ChatPolicy, ContentMigrationRecord, DeploymentRollbackRecord, GuildCommand, LoginRequest, LoginResponse, RestoreRecord, SecurityPolicy, SessionToken, TransferToken
   Sources: guide/networking.html#security-and-observability, guide/networking.html#zone-or-instance-transfer, guide/operations.html#guilds-banks-and-communication, guide/operations.html#security-operations-and-support
   Alternatives: Adopt explicit service security/operations policies with auditable scopes. | Keep these administrative endpoints unavailable until policy is approved.
-  Recommendation: Adopted scope: Specify bounded policies and test recovery/restore against the chosen service/database. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: These are partial architectural shapes, not deployable security procedures or credential designs.
-  Required to complete: Select the actual authentication/session and database services, then author token expiry/rotation, recovery proofs, admin scopes, rate/payload ceilings and retention configuration.
-  Required to complete: Execute service integration tests for account recovery, epoch fencing, privileged operations, backup restore, migration and rollback. Unconfigured endpoints remain unavailable.
+  Decision: Define a vendor-neutral opaque one-use authentication/recovery/transfer contract, explicit positive lifetime/limit/retention configuration, finite default-deny administrative roles and scoped audit/recovery records. Require consistent economic backup/checkpoint and versioned migration/rollback metadata.
+  Impact: Documentation contract complete for Briarwake. Selecting and deploying a provider/database, supplying deployment values and executing recovery/restore tests are later Briarwake work; no credentials, service provisioning or game code are required in this design phase.
+  Future implementation work: Future Briarwake implementation: Select authentication/session and database services; configure explicit token lifetimes, rotation, rate/payload ceilings, retention and realm scopes within the documented opaque-token and finite-role contracts.
+  Future implementation work: Future Briarwake implementation: Implement the adapters and execute integration tests for account recovery, epoch fencing, privileged operations, backup restore, migration and rollback. Unconfigured endpoints remain unavailable.
 formula-configuration-extent [resolved]: Should every coefficient/cap/recovery formula in the attribute chapter become configuration, or should only the current tunable scalar subset be exported?
   Affected: AttributeFormulaConfiguration
   Sources: guide/attributes.html#primary-attributes
   Alternatives: Export all documented tunable coefficients into grouped typed configuration. | Keep formula implementation versioned and expose selected parameters.
-  Recommendation: Keep a versioned formula implementation and expose only the current typed scalar subset. Require a recognized rules_version for all fixed caps, recovery formulas and rounding behavior.
+  Decision: Keep a versioned formula implementation and expose only the current typed scalar subset. Require a recognized rules_version for all fixed caps, recovery formulas and rounding behavior.
   Impact: The configuration has an explicit scope rather than implying every formula is a tunable scalar.
-fixture-expectation-coverage [open]: Structured fixtures describe legal/invalid/reconstruction/talent cases, but the full supported assertion vocabulary for interruption, timing, scope and recovery has not been specified.
+fixture-expectation-coverage [resolved]: Structured fixtures describe legal/invalid/reconstruction/talent cases, but the full supported assertion vocabulary for interruption, timing, scope and recovery has not been specified.
   Affected: AbilityExecutionFixture, ContentValidationFixture, InvalidTargetFixture, StateReconstructionFixture, TalentInteractionFixture
   Sources: guide/operations.html#content-tools
   Alternatives: Author finite typed assertions per scenario family. | Use scenario-specific expected snapshots/results alongside runtime tests.
-  Recommendation: Adopted scope: Add typed assertions only when their runtime behavior is bound and testable. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: Fixture shapes are partial test specifications and must not be mistaken for executed gameplay tests.
-  Required to complete: Author finite scenario-specific assertions or exact expected snapshots/results for each enabled interruption, timing, scope, talent exclusion and reconstruction behavior.
-  Required to complete: Execute those fixtures against the bound runtime and record results for the same rules/content version; documentation fixture shapes are not executed gameplay evidence.
-duel-and-match-rules [open]: Consensual duels and equal-size objective matches are documented, but end conditions, boundaries, objectives/scoring/phase and hostile participation durations are not specified.
+  Decision: Adopt finite typed scenario/assertion vocabularies for resources, cooldowns, statuses, casts, world scope, idempotency and combat outcomes. Keep fixture expectations and explicit unexecuted/passed/failed run evidence separate and versioned.
+  Impact: Documentation contract complete for Briarwake. This repository can validate fixture shapes now. Running gameplay/reconstruction scenarios and recording actual pass/fail evidence waits for Briarwake implementation.
+  Future implementation work: Future Briarwake implementation: Author finite scenario-specific assertions or exact expected snapshots/results for each enabled interruption, timing, scope, talent exclusion and reconstruction behavior.
+  Future implementation work: Future Briarwake implementation: Execute those fixtures against the bound runtime and record results for the same rules/content version; documentation fixture shapes are not executed gameplay evidence.
+duel-and-match-rules [resolved]: Consensual duels and equal-size objective matches are documented, but end conditions, boundaries, objectives/scoring/phase and hostile participation durations are not specified.
   Affected: DuelRequest, DuelState, MatchRecord, MatchRulesConfiguration, MatchState, PvpParticipationState, PvpRulesetDefinition
   Sources: guide/pvp-encounters.html#pvp-modes, guide/status-effects.html#crowd-control-rules
   Alternatives: Author a small first ruleset with explicit objective/end/phase rules. | Keep PvP disabled beyond validated consent/flag checks.
-  Recommendation: Adopted scope: Start with the documented small objective match scope and explicit protection/normalization policy. Keep incomplete content disabled until the completion criteria below are met.
-  Impact: No invented scoring, overtime, duel surrender or participation-timer values are added.
-  Required to complete: Author the first small equal-team objective ruleset with concrete objectives, scoring/end conditions, boundaries, cancellation and participation timers.
-  Required to complete: Test consent/flagging, protected areas, normalization, control caps and idempotent results/rewards. Match lifecycle names alone do not enable PvP.
+  Decision: Specify consent-only nonlethal duel lifecycle/end conditions and a first 5v5 single-control-point ruleset with explicit capture, scoring, timeout/draw, cancellation and recovery parameters. Require an explicit hostile-participation duration and preserve rated normalization/control policy.
+  Impact: Documentation contract complete for Briarwake. Concrete arena assets and timer/score tuning are later content. Real PvP/control/normalization and reward tests remain future Briarwake implementation evidence.
+  Future implementation work: Future Briarwake implementation: Author concrete duel and 5v5 single-control-point content records using the completed consent, capture, scoring, end-condition and cancellation policies; supply the required boundary and timing parameters.
+  Future implementation work: Future Briarwake implementation: Implement and test consent/flagging, protected areas, normalization, control caps and idempotent results/rewards before enabling PvP.
 invitation-and-social-command-policy [resolved]: Invitation expiry/accept/decline semantics, rank editing payload variants and withdrawal-limit consumption policy are not fully specified.
   Affected: GuildBankAccess, GuildInvitation, GuildRankPolicy, PartyCommand, PartyInvitation, GuildCommand
   Sources: guide/operations.html#guilds-banks-and-communication, guide/operations.html#party-raid-and-loot-ownership
   Alternatives: Define finite command variants and invitation lifecycle. | Enable a narrow member-management subset initially.
-  Recommendation: Use one-use versioned invitations with required configured expiry and explicit accept/decline/revoke operations. Use exact guild payload variants and rolling per-member withdrawal accounting over committed nonreversed item units and currency.
+  Decision: Use one-use versioned invitations with required configured expiry and explicit accept/decline/revoke operations. Use exact guild payload variants and rolling per-member withdrawal accounting over committed nonreversed item units and currency.
   Impact: Invitation responses and guild operations have finite structural branches. Membership, rank edits, allowances and transfers must commit atomically; deployment security remains a separate gate.
 specialized-summon-capacity [resolved]: Bonewright has an existing capacity_cost of two while the generic elite companion costs four. Is Bonewright an intentional intermediate summon category or an incorrect override?
   Affected: EffectOperationDefinition, SummonDefinition, GravecallerCombatState
   Sources: classes/necromancer.html#gravecaller, guide/status-effects.html#pets-totems-and-formations, data/abilities.json
   Alternatives: Preserve Bonewright as a separately authored two-unit summon. | Correct its content to the four-unit elite category after review.
-  Recommendation: Keep Bonewright as an explicit two-unit specialized_mobile summon. Preserve the existing four-unit aggregate owner ceiling and replace-one-lesser behavior.
+  Decision: Keep Bonewright as an explicit two-unit specialized_mobile summon. Preserve the existing four-unit aggregate owner ceiling and replace-one-lesser behavior.
   Impact: The source override carries its explicit category and SummonDefinition structurally checks each category/cost pairing. Handler and content readiness gates remain.
 client-disclosure-policy [resolved]: Which status fields, resource details and attacker identities may observers and affected players receive when a source is hidden?
   Affected: EntitySnapshot, ResourceSnapshot, ReconnectSnapshot, StatusEffectEvent, CombatResultEvent, NameplateState
   Sources: guide/networking.html#area-of-interest-and-hidden-information, guide/networking.html#security-and-observability
   Alternatives: Explicit per-field visibility policy with minimal public projections. | Expose owner-only private state and no optional observer status detail initially.
-  Recommendation: Adopt owner-only resource/reconnect views, minimal public entity/nameplate projections and an explicit public-status allowlist. Add a separate PublicCombatResult with nullable hidden-source identity and no server-only breakdown.
+  Decision: Adopt owner-only resource/reconnect views, minimal public entity/nameplate projections and an explicit public-status allowlist. Add a separate PublicCombatResult with nullable hidden-source identity and no server-only breakdown.
   Impact: The event contract cannot accidentally serialize an internal CombatResult. Hidden-source correlation IDs must be recipient-scoped; observers receive no optional status details until authored policy explicitly allows them.
 start-commit-policy [resolved]: The cast lifecycle permits a non-channel start-commit override, but shipped timing_policy tokens cover only release_commit and channel_start_commit. What exact token/semantics will represent that override?
   Affected: CastCommitPolicy, AbilityTimingPolicy
   Sources: guide/combat.html#cast-lifecycle, data/abilities.json
   Alternatives: Add an explicit versioned non-channel start-commit token. | Constrain initial content to the two existing policies.
-  Recommendation: Limit this revision to the existing release_commit and channel_start_commit tokens. Non-channel start-commit is outside the supported baseline.
+  Decision: Limit this revision to the existing release_commit and channel_start_commit tokens. Non-channel start-commit is outside the supported baseline.
   Impact: No unencoded policy is advertised as executable. Interrupted pre-release casts release reservations; committed channel costs are not refunded.
 equipment-container-lifecycle [resolved]: Does equipping move an instance into an equipment container or retain its bag placement while EquipmentSet owns equipped references? What exact equip/unequip request branch selects the slot?
   Affected: InventoryOperationRequest, InventoryContainerKind, EquipmentSet, EquipmentSetRecord, ItemOwnershipRecord, ItemInstance
   Sources: guide/items.html#equipment-model, guide/items.html#inventory-correctness
   Alternatives: Use explicit equipment-container placement and slot mapping. | Retain personal container placement and derive equipped use from EquipmentSet.
-  Recommendation: Use explicit personal equipment-container placement. Equip and unequip carry one versioned item, quantity one, the slot, expected equipment revision and expected destination-container revision. Atomically update canonical ownership and all slot references.
+  Decision: Use explicit personal equipment-container placement. Equip and unequip carry one versioned item, quantity one, the slot, expected equipment revision and expected destination-container revision. Atomically update canonical ownership and all slot references.
   Impact: Equipped items occupy no bag slots. Two-handed occupancy is atomic; insufficient capacity for unequipped or displaced items rejects the whole transaction.
 
 F. REPEATABLE VALIDATION
@@ -276,23 +278,23 @@ AbilityCostPolicy: Fully Defined / static content
   Authority: versioned content package
   References: CombatAmount, Percent
   Reviewed sources: catalog/abilities.html#searchable-ability-definitions, classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, data/abilities.json, data/execution_profiles.json, guide/execution.html#cost-and-cooldown-semantics, guide/execution.html#definition-fields
-AbilityDefinition: Needs Decision / static content
+AbilityDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: AbilityCostPolicy, CastCommitPolicy, CharacterClass, ClassDefinition, ContentReadinessStatus, ExecutionProfile, Faction, SpecializationDefinition, TargetMode
+  References: AbilityCostPolicy, AbilityRuntimeBinding, CastCommitPolicy, CharacterClass, ClassDefinition, ContentReadinessStatus, ExecutionProfile, Faction, SpecializationDefinition, TargetMode
   Reviewed sources: catalog/abilities.html#main, classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, data/abilities.json, guide/character-creation.html#beginner-starting-area, guide/execution.html#definition-fields, guide/interface.html#talent-and-specialization-screens, guide/operations.html#content-tools, guide/playstyles.html#three-separate-design-responsibilities, guide/progression.html#ability-progression, guide/progression.html#six-tiers-with-real-opportunity-cost
 AbilityExecutionContext: Fully Defined / runtime state
   Authority: owning world process
   References: Id, ResolvedAbilityDefinition, TargetSelection, TriggerContext
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/execution.html#definition-fields, guide/execution.html#modifier-order, guide/operations.html#content-tools, guide/status-effects.html#trigger-ordering
-AbilityExecutionFixture: Needs Decision / test specification
+AbilityExecutionFixture: Fully Defined / test specification
   Authority: content test author
-  References: CharacterState, CombatResult, CommandResponse, Id, ability_command_v2
+  References: CharacterState, CombatResult, CommandResponse, FixtureAssertion, FixtureRunEvidence, FixtureScenarioKind, FixtureStep, FixtureWorldContext, Id, ability_command_v2
   Reviewed sources: guide/execution.html#data-and-runtime-gates, guide/operations.html#content-tools, guide/testing.html#combat-acceptance-scenarios
 AbilityTargetingPolicy: Fully Defined / static content
   Authority: versioned content package
   References: CombatAmount, Id, TargetInputKind, TargetMode, TargetRelation
   Reviewed sources: catalog/abilities.html#searchable-ability-definitions, classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/combat.html#targeting-and-movement, guide/execution.html#definition-fields, guide/operations.html#content-tools
-AbilityTimingPolicy: Needs Decision / static content
+AbilityTimingPolicy: Fully Defined / static content
   Authority: versioned content package
   References: CastCommitPolicy, CooldownFamily, Count, Seconds
   Reviewed sources: catalog/abilities.html#searchable-ability-definitions, classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/combat.html#cast-lifecycle, guide/execution.html#cost-and-cooldown-semantics, guide/execution.html#definition-fields, guide/progression.html#respecialization-and-loadouts
@@ -308,15 +310,15 @@ AccountRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: Id
   Reviewed sources: guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
-AccountRecoveryRequest: Needs Decision / network request
+AccountRecoveryRequest: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
-  References: 
+  References: DurableRequestContext
   Reviewed sources: guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
 AccountRestrictionKind: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/economy.html#security-and-recovery, guide/operations.html#guilds-banks-and-communication, guide/operations.html#security-operations-and-support
-AccountRestrictionRecord: Needs Decision / persistent record
+AccountRestrictionRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: AccountRecord, AccountRestrictionKind, AdministrativeActionRecord, Id, Instant
   Reviewed sources: guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
@@ -332,7 +334,7 @@ ActionRejectionReason: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/combat.html#cast-lifecycle, guide/execution.html#ability-command, guide/execution.html#replication-events, guide/interface.html#combat-display, guide/networking.html#latency-policy
-AdministrativeActionRecord: Needs Decision / persistent record
+AdministrativeActionRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: AccountRecord, AdministrativePermission, CharacterRecord, Id, Instant, Version, VersionedItemRef
   Reviewed sources: guide/crafting-orders.html#fraud-and-exploit-controls, guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
@@ -340,17 +342,17 @@ AdministrativePermission: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/economy.html#security-and-recovery, guide/operations.html#guilds-banks-and-communication, guide/operations.html#security-operations-and-support
-AdministrativePermissionPolicy: Needs Decision / static content
+AdministrativePermissionPolicy: Fully Defined / static content
   Authority: versioned content package
-  References: AdministrativePermissionList, Id
+  References: AdministrativePermission, AdministrativePermissionList, Id
   Reviewed sources: guide/crafting-orders.html#fraud-and-exploit-controls, guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
 AllocationExample: Fully Defined / static content
   Authority: versioned content package
   References: Count, Id, Level, TalentNodeDefinition
   Reviewed sources: classes/bard.html#specializations-at-a-glance, classes/cleric.html#specializations-at-a-glance, classes/druid.html#specializations-at-a-glance, classes/mage.html#specializations-at-a-glance, classes/monk.html#specializations-at-a-glance, classes/necromancer.html#specializations-at-a-glance, classes/paladin.html#specializations-at-a-glance, classes/ranger.html#specializations-at-a-glance, classes/rogue.html#specializations-at-a-glance, classes/shaman.html#specializations-at-a-glance, classes/warlock.html#specializations-at-a-glance, classes/warrior.html#specializations-at-a-glance, data/allocation_examples.json, guide/progression.html#six-tiers-with-real-opportunity-cost, guide/testing.html#test-evidence-retained
-AppealRecord: Needs Decision / persistent record
+AppealRecord: Fully Defined / persistent record
   Authority: durable transactional service
-  References: AccountRecord, AdministrativeActionRecord, Id
+  References: AccountRecord, AdministrativeActionRecord, Id, Instant
   Reviewed sources: guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
 AppearanceOptionCategory: Fully Defined / shared classification
   Authority: versioned content package
@@ -388,7 +390,7 @@ AttributeType: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: classes/bard.html#specializations-at-a-glance, classes/cleric.html#specializations-at-a-glance, classes/druid.html#specializations-at-a-glance, classes/mage.html#specializations-at-a-glance, classes/monk.html#specializations-at-a-glance, classes/necromancer.html#specializations-at-a-glance, classes/paladin.html#specializations-at-a-glance, classes/ranger.html#specializations-at-a-glance, classes/rogue.html#specializations-at-a-glance, classes/shaman.html#specializations-at-a-glance, classes/warlock.html#specializations-at-a-glance, classes/warrior.html#specializations-at-a-glance, guide/attributes.html#derived-values, guide/attributes.html#primary-attributes, guide/interface.html#character-creation, guide/items.html#explicit-item-budgets, guide/playstyles.html#three-separate-design-responsibilities, guide/progression.html#ability-progression, guide/progression.html#respecialization-and-loadouts, guide/races-factions.html#revised-roster, professions/blacksmithing.html#representative-recipe-blueprints, professions/jewelcrafting.html#representative-recipe-blueprints, professions/leatherworking.html#representative-recipe-blueprints, professions/tailoring.html#representative-recipe-blueprints, professions/woodworking.html#representative-recipe-blueprints
-BackupManifest: Needs Decision / persistent record
+BackupManifest: Fully Defined / persistent record
   Authority: durable transactional service
   References: Id, Instant
   Reviewed sources: guide/operations.html#security-operations-and-support
@@ -436,9 +438,9 @@ BulwarkCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant, ResourceType
   Reviewed sources: classes/warrior.html#bulwark, guide/playstyles.html#three-separate-design-responsibilities
-BuyerRequestRecord: Needs Decision / persistent record
+BuyerRequestRecord: Fully Defined / persistent record
   Authority: durable transactional service
-  References: CharacterRecord, Count, CurrencyAmount, Faction, Id, Instant, ItemDefinition, MarketOrderState, Version
+  References: CharacterRecord, Count, CurrencyAmount, Faction, Id, Instant, ItemDefinition, MarketOrderState, Version, WalletReservationRecord
   Reviewed sources: guide/economy.html#bazaar-model, guide/economy.html#matching-and-settlement, guide/interface.html#profession-and-market-display
 CastCommitPolicy: Fully Defined / shared classification
   Authority: versioned content package
@@ -456,13 +458,13 @@ CastState: Fully Defined / runtime state
   Authority: owning world process
   References: AbilityDefinition, CastCommitPolicy, CastPhase, Id, Instant, TargetSelection, Version
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/combat.html#cast-lifecycle, guide/combat.html#shared-numerical-defaults, guide/execution.html#cost-and-cooldown-semantics, guide/interface.html#combat-display, guide/networking.html#movement-and-traffic
-CharacterAppearance: Needs Decision / client view
+CharacterAppearance: Fully Defined / client view
   Authority: derived from authorized server state; client owns only local selection
   References: AppearanceOptionCategory, Id
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/interface.html#character-creation
-CharacterAppearanceCatalog: Needs Decision / static content
+CharacterAppearanceCatalog: Fully Defined / static content
   Authority: versioned content package
-  References: CharacterRace, Id, IdList
+  References: AppearanceCompatibilityRule, AppearanceOptionCategory, AppearanceOptionDefinition, CharacterRace, Id, IdList
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/interface.html#character-creation
 CharacterCatalog: Fully Defined / static content
   Authority: versioned content package
@@ -484,11 +486,11 @@ CharacterCreationOutcome: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/interface.html#character-creation
-CharacterCreationRequest: Needs Decision / network request
+CharacterCreationRequest: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
-  References: CharacterCreationSubmission
+  References: CharacterCreationSubmission, DurableRequestContext
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/interface.html#character-creation
-CharacterCreationResponse: Needs Decision / network response
+CharacterCreationResponse: Fully Defined / network response
   Authority: account/character service; private account
   References: CharacterCreationOutcome, CharacterSelectionSnapshot, ValidationFinding
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/interface.html#character-creation
@@ -512,7 +514,7 @@ CharacterLoadoutRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: CharacterLoadout
   Reviewed sources: guide/interface.html#talent-and-specialization-screens, guide/progression.html#respecialization-and-loadouts
-CharacterNamingPolicy: Needs Decision / static content
+CharacterNamingPolicy: Fully Defined / static content
   Authority: versioned content package
   References: Id
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/interface.html#character-creation
@@ -560,7 +562,7 @@ ChatPayload: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
   References: ChatChannel, Id
   Reviewed sources: guide/networking.html#security-and-observability, guide/operations.html#guilds-banks-and-communication
-ChatPolicy: Needs Decision / static content
+ChatPolicy: Fully Defined / static content
   Authority: versioned content package
   References: Id, RateLimit
   Reviewed sources: guide/networking.html#security-and-observability, guide/operations.html#guilds-banks-and-communication
@@ -572,11 +574,11 @@ ClassDefinition: Fully Defined / static content
   Authority: versioned content package
   References: AbilityDefinition, AttributeType, CharacterClass, Faction, Id, TalentNodeDefinition
   Reviewed sources: classes/bard.html#specializations-at-a-glance, classes/cleric.html#specializations-at-a-glance, classes/druid.html#specializations-at-a-glance, classes/mage.html#specializations-at-a-glance, classes/monk.html#specializations-at-a-glance, classes/necromancer.html#specializations-at-a-glance, classes/paladin.html#specializations-at-a-glance, classes/ranger.html#specializations-at-a-glance, classes/rogue.html#specializations-at-a-glance, classes/shaman.html#specializations-at-a-glance, classes/warlock.html#specializations-at-a-glance, classes/warrior.html#specializations-at-a-glance, data/character_catalog.json, guide/character-creation.html#character-creation-experience, guide/interface.html#talent-and-specialization-screens, guide/playstyles.html#three-separate-design-responsibilities, guide/progression.html#ability-progression, guide/progression.html#six-tiers-with-real-opportunity-cost, guide/races-factions.html#class-exclusivity
-CleanseModuleDefinition: Needs Decision / static content
+CleanseModuleDefinition: Fully Defined / static content
   Authority: versioned content package
   References: AbilityDefinition, CombatRole, DispelFamily, Id
   Reviewed sources: guide/operations.html#content-tools, guide/progression.html#ability-progression, guide/races-factions.html#capability-parity-not-identical-classes
-CleanseModuleSelection: Needs Decision / runtime state
+CleanseModuleSelection: Fully Defined / runtime state
   Authority: owning world process
   References: DispelFamily, Id
   Reviewed sources: classes/bard.html#minstrel, classes/cleric.html#high_priest, classes/cleric.html#oracle, classes/druid.html#grovekeeper, classes/monk.html#lifewalker, classes/paladin.html#justicar, classes/shaman.html#spiritmender, guide/combat.html#healer-and-support-interaction, guide/progression.html#ability-progression, guide/races-factions.html#capability-parity-not-identical-classes
@@ -632,7 +634,7 @@ CommandResponse: Fully Defined / network response
   Authority: owning world process
   References: ActionRejectionReason, CommandContext, CommandOutcome, Id
   Reviewed sources: guide/execution.html#ability-command, guide/execution.html#replication-events, guide/networking.html#latency-policy
-ContentMigrationRecord: Needs Decision / persistent record
+ContentMigrationRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: Id
   Reviewed sources: guide/operations.html#security-operations-and-support
@@ -648,9 +650,9 @@ ContentReadinessStatus: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: catalog/abilities.html#main, classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, data/abilities.json, guide/execution.html#scope-of-the-executable-rule-model, guide/operations.html#content-tools
-ContentValidationFixture: Needs Decision / test specification
+ContentValidationFixture: Fully Defined / test specification
   Authority: content test author
-  References: Id, ValidationFinding
+  References: FixtureRunEvidence, FixtureScenarioKind, Id, ValidationFinding
   Reviewed sources: guide/execution.html#data-and-runtime-gates, guide/operations.html#content-tools, guide/testing.html#combat-acceptance-scenarios
 ContentValidationResult: Fully Defined / operational evidence
   Authority: validation runner
@@ -820,7 +822,7 @@ DemonologistCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant, ResourceType, SummonState
   Reviewed sources: classes/warlock.html#demonologist, guide/playstyles.html#three-separate-design-responsibilities
-DeploymentRollbackRecord: Needs Decision / persistent record
+DeploymentRollbackRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: AdministrativeActionRecord, Id
   Reviewed sources: guide/operations.html#security-operations-and-support
@@ -852,7 +854,7 @@ DisconnectedCharacterState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant, Version
   Reviewed sources: guide/networking.html#disconnect-and-recovery, guide/networking.html#zone-or-instance-transfer, guide/operations.html#death-recovery-and-travel-safety
-DispelFamily: Needs Decision / shared classification
+DispelFamily: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, guide/combat.html#cast-lifecycle, guide/combat.html#death-recovery-and-battle-revival, guide/combat.html#projectiles-and-ground-effects, guide/status-effects.html#persistence-policy, guide/status-effects.html#status-definitions
@@ -864,13 +866,13 @@ DuelistCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant, ResourceType
   Reviewed sources: classes/rogue.html#duelist, guide/playstyles.html#three-separate-design-responsibilities
-DuelRequest: Needs Decision / network request
+DuelRequest: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
   References: CharacterRecord, CommandContext, Id
   Reviewed sources: guide/pvp-encounters.html#pvp-modes
-DuelState: Needs Decision / runtime state
+DuelState: Fully Defined / runtime state
   Authority: owning world process
-  References: Id
+  References: CharacterRecord, Id, Instant, PvpRulesetDefinition, WorldPoint
   Reviewed sources: guide/pvp-encounters.html#pvp-modes
 EconomyMetricRecord: Fully Defined / persistent record
   Authority: durable transactional service
@@ -888,7 +890,7 @@ EffectOperationContext: Fully Defined / runtime state
   Authority: owning world process
   References: EffectOperationDefinition, Id, TriggerContext
   Reviewed sources: guide/execution.html#definition-fields, guide/execution.html#modifier-order, guide/operations.html#content-tools, guide/status-effects.html#trigger-ordering
-EffectOperationDefinition: Needs Decision / static content
+EffectOperationDefinition: Fully Defined / static content
   Authority: versioned content package
   References: DamageSchool, DispelFamily, EffectOperation, Seconds, SummonKind, TargetRelation
   Reviewed sources: catalog/abilities.html#searchable-ability-definitions, classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, data/abilities.json, data/execution_profiles.json, guide/execution.html#cost-and-cooldown-semantics, guide/execution.html#definition-fields, guide/execution.html#replication-events
@@ -900,7 +902,7 @@ EncounterCheckpoint: Fully Defined / persistent record
   Authority: durable transactional service
   References: EncounterRuntimeState, Instant, Version
   Reviewed sources: guide/combat.html#death-recovery-and-battle-revival, guide/networking.html#disconnect-and-recovery, guide/networking.html#zone-or-instance-transfer, guide/operations.html#death-recovery-and-travel-safety
-EncounterDefinition: Needs Decision / static content
+EncounterDefinition: Fully Defined / static content
   Authority: versioned content package
   References: CombatAmount, Count, EncounterPhase, Id, Seconds
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/operations.html#content-tools, guide/pvp-encounters.html#encounter-budgets
@@ -912,9 +914,9 @@ EncounterRuntimeState: Fully Defined / runtime state
   Authority: owning world process
   References: BattleRevivalPool, EncounterDefinition, EncounterPhase, Id, ParticipationCredit, RewardEligibilitySnapshot
   Reviewed sources: guide/operations.html#death-recovery-and-travel-safety, guide/operations.html#party-raid-and-loot-ownership, guide/pvp-encounters.html#encounter-budgets
-EncounterTriggerDefinition: Needs Decision / static content
+EncounterTriggerDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: EffectOperationDefinition, Id
+  References: Count, EffectOperationDefinition, EncounterCondition, Id, Seconds
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/operations.html#content-tools, guide/pvp-encounters.html#encounter-budgets
 EncounterTriggerType: Fully Defined / content reference
   Authority: versioned content package
@@ -924,9 +926,9 @@ EnhancementCategory: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/crafting-orders.html#recrafting-and-service-work, guide/interface.html#profession-and-market-display, guide/items.html#gems-enchants-and-set-effects, professions/enchanting.html#purpose-and-interdependence, professions/engineering.html#purpose-and-interdependence, professions/inscription.html#purpose-and-interdependence, professions/jewelcrafting.html#purpose-and-interdependence
-EnhancementDefinition: Needs Decision / static content
+EnhancementDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: EnhancementCategory, Fraction, Id, ItemEffectDefinition
+  References: EnhancementCategory, Fraction, Id, ItemDefinition, ItemEffectDefinition
   Reviewed sources: guide/items.html#gems-enchants-and-set-effects, guide/operations.html#content-tools, professions/enchanting.html#purpose-and-interdependence, professions/engineering.html#purpose-and-interdependence, professions/inscription.html#purpose-and-interdependence, professions/jewelcrafting.html#purpose-and-interdependence
 EnhancementInstance: Fully Defined / runtime state
   Authority: owning world process
@@ -980,7 +982,7 @@ FieldSiteState: Fully Defined / runtime state
   Authority: owning world process
   References: EntitySnapshot, Id
   Reviewed sources: guide/professions.html#economic-and-balance-risks, guide/professions.html#stations-and-field-utility, professions/engineering.html#field-services, professions/woodworking.html#purpose-and-interdependence
-FieldUtilityDefinition: Needs Decision / static content
+FieldUtilityDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Id, ItemEffectDefinition, Seconds
   Reviewed sources: guide/professions.html#stations-and-field-utility, professions/engineering.html#field-services, professions/woodworking.html#purpose-and-interdependence
@@ -992,7 +994,7 @@ FieldUtilityPlacementRequest: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
   References: CommandContext, Id, WorldPoint
   Reviewed sources: guide/professions.html#stations-and-field-utility, professions/engineering.html#field-services, professions/woodworking.html#purpose-and-interdependence
-FishingCatchDefinition: Needs Decision / static content
+FishingCatchDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Count, Id, LootTableDefinition, Seconds
   Reviewed sources: guide/professions.html#gathering-and-shared-access, professions/fishing.html#gathering-output-contract
@@ -1004,9 +1006,9 @@ FishingSessionRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: FishingSession, Id
   Reviewed sources: guide/professions.html#gathering-and-shared-access, professions/fishing.html#gathering-output-contract
-FormDefinition: Needs Decision / static content
+FormDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Id, RoleCapabilitySet, Specialization
+  References: AbilityDefinition, Id, RoleCapabilitySet, Specialization
   Reviewed sources: classes/druid.html#shared-class-abilities, classes/monk.html#ironbody, guide/execution.html#operation-vocabulary, guide/operations.html#content-tools
 FraudReversalRecord: Fully Defined / persistent record
   Authority: durable transactional service
@@ -1028,7 +1030,7 @@ GatheringClaimRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: Count, GatheringClaim, Id, ItemInstance
   Reviewed sources: guide/professions.html#deterministic-skill-gain, guide/professions.html#gathering-and-shared-access, professions/fishing.html#gathering-output-contract, professions/forestry.html#gathering-output-contract, professions/herbalism.html#gathering-output-contract, professions/mining.html#gathering-output-contract, professions/skinning.html#gathering-output-contract
-GatheringNodeDefinition: Needs Decision / static content
+GatheringNodeDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Count, Id, LootTableDefinition, ProfessionDefinition, Seconds
   Reviewed sources: guide/professions.html#deterministic-skill-gain, guide/professions.html#gathering-and-shared-access, professions/fishing.html#gathering-output-contract, professions/forestry.html#gathering-output-contract, professions/herbalism.html#gathering-output-contract, professions/mining.html#gathering-output-contract, professions/skinning.html#gathering-output-contract
@@ -1068,9 +1070,9 @@ GrovekeeperCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id
   Reviewed sources: classes/druid.html#grovekeeper, guide/playstyles.html#three-separate-design-responsibilities
-GuideDialogueDefinition: Needs Decision / static content
+GuideDialogueDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Id
+  References: GuideInstructionDefinition, Id, InteractionDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation
 GuildBankAccess: Fully Defined / runtime state
   Authority: owning world process
@@ -1084,7 +1086,7 @@ GuildBankRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: GuildRecord, Id, InventoryContainer, Version, WalletRecord
   Reviewed sources: guide/operations.html#guilds-banks-and-communication
-GuildCommand: Needs Decision / network request
+GuildCommand: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
   References: CharacterRecord, CurrencyAmount, DurableRequestContext, GuildRank, GuildRankPolicy, GuildRecord, Id, InventoryOperationRequest, Version
   Reviewed sources: guide/operations.html#guilds-banks-and-communication
@@ -1148,9 +1150,9 @@ InquisitorCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id
   Reviewed sources: classes/cleric.html#inquisitor, guide/playstyles.html#three-separate-design-responsibilities
-InteractionDefinition: Needs Decision / static content
+InteractionDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Id, InteractionKind, QuestDefinition
+  References: CraftingStationDefinition, EncounterDefinition, GatheringNodeDefinition, Id, InteractionKind, QuestDefinition, RecoveryPointDefinition, RoleTrainingDefinition, VendorServiceDefinition, ZoneTransitionDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation
 InteractionKind: Fully Defined / shared classification
   Authority: versioned content package
@@ -1168,7 +1170,7 @@ InterestSubscription: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
   References: CommandContext, Id
   Reviewed sources: guide/networking.html#area-of-interest-and-hidden-information
-InvalidTargetFixture: Needs Decision / test specification
+InvalidTargetFixture: Fully Defined / test specification
   Authority: content test author
   References: AbilityExecutionFixture, ActionRejectionReason
   Reviewed sources: guide/execution.html#data-and-runtime-gates, guide/operations.html#content-tools, guide/testing.html#combat-acceptance-scenarios
@@ -1216,7 +1218,7 @@ ItemDefinition: Fully Defined / static content
   Authority: versioned content package
   References: EquipmentDefinition, ItemBindingState, ItemEffectDefinition, ItemGrade, ItemKind, Level
   Reviewed sources: catalog/recipes.html#main, data/item_examples.json, guide/crafting-orders.html#customer-commissions, guide/crafting-orders.html#direct-crafting-lifecycle, guide/interface.html#profession-and-market-display, guide/items.html#equipment-model, guide/items.html#explicit-item-budgets, guide/operations.html#content-tools, guide/professions.html#fixed-products-specialist-configurations, professions/alchemy.html#representative-recipe-blueprints, professions/blacksmithing.html#representative-recipe-blueprints, professions/cooking.html#representative-recipe-blueprints, professions/enchanting.html#representative-recipe-blueprints, professions/engineering.html#representative-recipe-blueprints, professions/first_aid.html#representative-recipe-blueprints, professions/inscription.html#representative-recipe-blueprints, professions/jewelcrafting.html#representative-recipe-blueprints, professions/leatherworking.html#representative-recipe-blueprints, professions/tailoring.html#representative-recipe-blueprints, professions/woodworking.html#representative-recipe-blueprints
-ItemEffectDefinition: Needs Decision / static content
+ItemEffectDefinition: Fully Defined / static content
   Authority: versioned content package
   References: CooldownFamily, DispelFamily, ItemEffectOperation, Seconds
   Reviewed sources: catalog/recipes.html#main, data/item_examples.json, guide/crafting-orders.html#direct-crafting-lifecycle, guide/interface.html#profession-and-market-display, guide/items.html#equipment-model, guide/items.html#explicit-item-budgets, guide/professions.html#fixed-products-specialist-configurations, professions/alchemy.html#representative-recipe-blueprints, professions/blacksmithing.html#representative-recipe-blueprints, professions/cooking.html#representative-recipe-blueprints, professions/enchanting.html#representative-recipe-blueprints, professions/engineering.html#representative-recipe-blueprints, professions/first_aid.html#representative-recipe-blueprints, professions/inscription.html#representative-recipe-blueprints, professions/jewelcrafting.html#representative-recipe-blueprints, professions/leatherworking.html#representative-recipe-blueprints, professions/tailoring.html#representative-recipe-blueprints, professions/woodworking.html#representative-recipe-blueprints
@@ -1248,9 +1250,9 @@ ItemRarity: Fully Defined / compatibility alias
   Authority: versioned content package
   References: ItemGrade
   Reviewed sources: guide/items.html#explicit-item-budgets
-ItemSetDefinition: Needs Decision / static content
+ItemSetDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Count, Id, ItemEffectDefinition
+  References: Count, Id, ItemDefinition, ItemEffectDefinition
   Reviewed sources: guide/items.html#gems-enchants-and-set-effects, guide/operations.html#content-tools
 ItemTransferEligibility: Fully Defined / runtime state
   Authority: owning world process
@@ -1284,11 +1286,11 @@ LifewalkerCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, ResourceType
   Reviewed sources: classes/monk.html#lifewalker, guide/playstyles.html#three-separate-design-responsibilities
-LoginRequest: Needs Decision / network request
+LoginRequest: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
   References: 
   Reviewed sources: guide/networking.html#disconnect-and-recovery, guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
-LoginResponse: Needs Decision / network response
+LoginResponse: Fully Defined / network response
   Authority: authentication/session service; private recipient
   References: SessionToken, ValidationFinding
   Reviewed sources: guide/networking.html#disconnect-and-recovery, guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
@@ -1300,7 +1302,7 @@ LogoutState: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/networking.html#disconnect-and-recovery, guide/networking.html#ownership
-LootDistributionRule: Needs Decision / shared classification
+LootDistributionRule: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/operations.html#party-raid-and-loot-ownership
@@ -1316,17 +1318,17 @@ LootReservationState: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/operations.html#party-raid-and-loot-ownership, guide/professions.html#gathering-and-shared-access
-LootRoll: Needs Decision / runtime state
+LootRoll: Fully Defined / runtime state
   Authority: owning world process
-  References: CharacterRecord, Id
+  References: CharacterRecord, Id, Instant
   Reviewed sources: guide/operations.html#party-raid-and-loot-ownership
-LootRollResult: Needs Decision / network response
+LootRollResult: Fully Defined / network response
   Authority: loot service; eligible participants
-  References: Id, OperationReceipt
+  References: CharacterRecord, Id, OperationReceipt
   Reviewed sources: guide/operations.html#party-raid-and-loot-ownership, guide/professions.html#gathering-and-shared-access
-LootTableDefinition: Needs Decision / static content
+LootTableDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Id, LootEntry
+  References: CombatAmount, Fraction, Id, LootEntry
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/operations.html#content-tools, guide/operations.html#party-raid-and-loot-ownership
 MailDeliveryRecord: Fully Defined / persistent record
   Authority: durable transactional service
@@ -1340,7 +1342,7 @@ MarketBrowserState: Fully Defined / client view
   Authority: derived from authorized server state; client owns only local selection
   References: Id, MarketListingRecord, MarketPurchaseQuote, MarketSearchQuery
   Reviewed sources: guide/economy.html#bazaar-model, guide/interface.html#profession-and-market-display
-MarketFeeConfiguration: Needs Decision / static content
+MarketFeeConfiguration: Fully Defined / static content
   Authority: versioned content package
   References: Count, CurrencyAmount, Fraction, Id, Seconds
   Reviewed sources: guide/economy.html#fees-and-sinks, guide/interface.html#profession-and-market-display
@@ -1392,17 +1394,17 @@ MatchPhase: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/progression.html#respecialization-and-loadouts, guide/pvp-encounters.html#gear-normalization, guide/pvp-encounters.html#pvp-modes
-MatchRecord: Needs Decision / persistent record
+MatchRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: Id, PvpRulesetDefinition
   Reviewed sources: guide/pvp-encounters.html#gear-normalization, guide/pvp-encounters.html#pvp-modes
-MatchRulesConfiguration: Needs Decision / static content
+MatchRulesConfiguration: Fully Defined / static content
   Authority: versioned content package
-  References: Count, Id, PvpRulesetDefinition
+  References: Id, ObjectiveMatchRules, PvpRulesetDefinition
   Reviewed sources: guide/pvp-encounters.html#gear-normalization, guide/pvp-encounters.html#pvp-modes
-MatchState: Needs Decision / runtime state
+MatchState: Fully Defined / runtime state
   Authority: owning world process
-  References: Id, IdList, MatchPhase, PvpRulesetDefinition
+  References: Count, Id, IdList, Instant, MatchPhase, PvpRulesetDefinition, Seconds
   Reviewed sources: guide/pvp-encounters.html#pvp-modes
 MaterialDefinition: Fully Defined / static content
   Authority: versioned content package
@@ -1444,9 +1446,9 @@ NameplateState: Fully Defined / client view
   Authority: derived from authorized server state; client owns only local selection
   References: CharacterLifeState, EntitySnapshot, Faction, Fraction, Id
   Reviewed sources: guide/combat.html#targeting-and-movement, guide/interface.html#combat-display
-NavigationConfiguration: Needs Decision / static content
+NavigationConfiguration: Fully Defined / static content
   Authority: versioned content package
-  References: Id, ZoneDefinition
+  References: Count, Id, Seconds, ZoneDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#projectiles-and-ground-effects, guide/networking.html#area-of-interest-and-hidden-information, guide/networking.html#zone-or-instance-transfer
 NetworkLoadTestRecord: Fully Defined / operational evidence
   Authority: test or validation runner; retained evidence only
@@ -1460,15 +1462,15 @@ NetworkTrafficChannel: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/networking.html#movement-and-traffic
-NodeSpawnConfiguration: Needs Decision / static content
+NodeSpawnConfiguration: Fully Defined / static content
   Authority: versioned content package
-  References: Id, Seconds, WorldPoint
+  References: Count, Id, Seconds, WorldPoint
   Reviewed sources: guide/professions.html#deterministic-skill-gain, guide/professions.html#gathering-and-shared-access, professions/fishing.html#gathering-output-contract, professions/forestry.html#gathering-output-contract, professions/herbalism.html#gathering-output-contract, professions/mining.html#gathering-output-contract, professions/skinning.html#gathering-output-contract
 NoteFamily: Fully Defined / content reference
   Authority: versioned content package
   References: Id, NotePatternDefinition
   Reviewed sources: classes/bard.html#minstrel, classes/bard.html#skald, classes/bard.html#virtuoso, guide/execution.html#operation-vocabulary, guide/playstyles.html#example-5-bard-support-choices
-NotePatternDefinition: Needs Decision / static content
+NotePatternDefinition: Fully Defined / static content
   Authority: versioned content package
   References: EffectOperationDefinition, Id, NoteFamily
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/bard.html#virtuoso, guide/operations.html#content-tools
@@ -1476,21 +1478,21 @@ NoteSequenceState: Fully Defined / runtime state
   Authority: owning world process
   References: EntitySnapshot, Id, NoteFamily
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/bard.html#virtuoso, guide/interface.html#combat-display, guide/status-effects.html#pets-totems-and-formations
-NpcAbilityKit: Needs Decision / static content
+NpcAbilityKit: Fully Defined / static content
   Authority: versioned content package
-  References: AbilityDefinition, Id
+  References: AbilityDefinition, Id, NpcAbilityRule
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#tanking-and-threat, guide/operations.html#content-tools, guide/pvp-encounters.html#encounter-budgets
-NpcBehaviorState: Needs Decision / shared classification
+NpcBehaviorState: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#tanking-and-threat, guide/combat.html#what-a-group-encounter-must-test, guide/operations.html#party-raid-and-loot-ownership
-NpcDefinition: Needs Decision / static content
+NpcDefinition: Fully Defined / static content
   Authority: versioned content package
   References: CombatAmount, EncounterDefinition, Id, LootTableDefinition, NpcAbilityKit
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#tanking-and-threat, guide/operations.html#content-tools, guide/pvp-encounters.html#encounter-budgets
-NpcState: Needs Decision / runtime state
+NpcState: Fully Defined / runtime state
   Authority: owning world process
-  References: CharacterLifeState, CombatAmount, EntitySnapshot, Id, MovementState, NpcBehaviorState, NpcDefinition, ThreatTable
+  References: CharacterLifeState, CombatAmount, EntitySnapshot, Id, MovementState, NpcBehaviorState, NpcDefinition, ThreatTable, WorldPoint
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#tanking-and-threat, guide/networking.html#ownership, guide/operations.html#party-raid-and-loot-ownership
 OathkeeperCombatState: Fully Defined / runtime state
   Authority: owning world process
@@ -1508,15 +1510,15 @@ PactbinderCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant, PactClauseType, ResourceType
   Reviewed sources: classes/warlock.html#pactbinder, guide/playstyles.html#three-separate-design-responsibilities
-PactClauseDefinition: Needs Decision / static content
+PactClauseDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: EffectOperationDefinition, Id
+  References: ClauseSettlementStep, Id, PactClauseRoute
   Reviewed sources: classes/warlock.html#pactbinder, guide/operations.html#content-tools
-PactClauseType: Needs Decision / content reference
+PactClauseType: Fully Defined / content reference
   Authority: versioned content package
   References: Id, PactClauseDefinition
   Reviewed sources: classes/warlock.html#pactbinder
-ParticipationCredit: Needs Decision / runtime state
+ParticipationCredit: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, CombatAmount, Id
   Reviewed sources: guide/operations.html#party-raid-and-loot-ownership
@@ -1572,7 +1574,7 @@ PlaystyleContract: Fully Defined / static content
   Authority: versioned content package
   References: 
   Reviewed sources: classes/bard.html#specializations-at-a-glance, classes/cleric.html#specializations-at-a-glance, classes/druid.html#specializations-at-a-glance, classes/mage.html#specializations-at-a-glance, classes/monk.html#specializations-at-a-glance, classes/necromancer.html#specializations-at-a-glance, classes/paladin.html#specializations-at-a-glance, classes/ranger.html#specializations-at-a-glance, classes/rogue.html#specializations-at-a-glance, classes/shaman.html#specializations-at-a-glance, classes/warlock.html#specializations-at-a-glance, classes/warrior.html#specializations-at-a-glance, data/playstyles.json, guide/character-creation.html#level-10-graduation, guide/interface.html#talent-and-specialization-screens, guide/playstyles.html#every-specialization-s-two-route-contract, guide/playstyles.html#three-separate-design-responsibilities, guide/progression.html#ability-progression, guide/progression.html#six-tiers-with-real-opportunity-cost
-PreparedDeviceDefinition: Needs Decision / static content
+PreparedDeviceDefinition: Fully Defined / static content
   Authority: versioned content package
   References: AbilityDefinition, EffectOperationDefinition, Id, Seconds
   Reviewed sources: classes/ranger.html#shared-class-abilities, classes/rogue.html#saboteur, guide/networking.html#area-of-interest-and-hidden-information, guide/operations.html#content-tools
@@ -1664,13 +1666,13 @@ PvpParticipationRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: PvpParticipationState
   Reviewed sources: guide/pvp-encounters.html#consumables-and-control, guide/pvp-encounters.html#pvp-modes
-PvpParticipationState: Needs Decision / runtime state
+PvpParticipationState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant, PvpFlagState, PvpMode, PvpRulesetDefinition
   Reviewed sources: guide/pvp-encounters.html#pvp-modes
-PvpRulesetDefinition: Needs Decision / static content
+PvpRulesetDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Id, Level, PvpMode
+  References: DuelRules, Id, Level, ObjectiveMatchRules, PvpMode, Seconds
   Reviewed sources: guide/pvp-encounters.html#gear-normalization, guide/pvp-encounters.html#pvp-modes, guide/status-effects.html#crowd-control-rules, professions/engineering.html#purpose-and-interdependence
 PyromancerCombatState: Fully Defined / runtime state
   Authority: owning world process
@@ -1680,27 +1682,27 @@ QuestCompletionRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: CharacterRecord, Id, Instant, QuestDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/progression.html#exactly-two-points-per-level-up
-QuestDefinition: Needs Decision / static content
+QuestDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Id, QuestObjectiveDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/progression.html#exactly-two-points-per-level-up
-QuestObjectiveDefinition: Needs Decision / static content
+QuestObjectiveDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Count, Id, QuestObjectiveType, WorldLocationDefinition
+  References: AbilityDefinition, Count, GatheringNodeDefinition, Id, InteractionDefinition, ItemDefinition, NpcDefinition, QuestObjectiveType, RecipeDefinition, SpecializationDefinition, WorldLocationDefinition, ZoneTransitionDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/progression.html#exactly-two-points-per-level-up
-QuestObjectiveType: Needs Decision / shared classification
+QuestObjectiveType: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation
-QuestProgressRecord: Needs Decision / persistent record
+QuestProgressRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: CharacterRecord, Count, Id, QuestDefinition, QuestStatus, Version
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/progression.html#exactly-two-points-per-level-up
-QuestRewardDefinition: Needs Decision / static content
+QuestRewardDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Count, CurrencyRewardDefinition, Id, LootEntry
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/progression.html#exactly-two-points-per-level-up
-QuestStatus: Needs Decision / shared classification
+QuestStatus: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation
@@ -1716,7 +1718,7 @@ RecipeBrowserState: Fully Defined / client view
   Authority: derived from authorized server state; client owns only local selection
   References: Id, Level, ProfessionDefinition
   Reviewed sources: guide/crafting-orders.html#direct-crafting-lifecycle, guide/interface.html#profession-and-market-display
-RecipeConfiguration: Needs Decision / runtime state
+RecipeConfiguration: Fully Defined / runtime state
   Authority: owning world process
   References: AttributeType, EnhancementDefinition, Id, RecipeDefinition, SecondaryStatType
   Reviewed sources: guide/crafting-orders.html#customer-commissions, guide/crafting-orders.html#direct-crafting-lifecycle, guide/crafting-orders.html#recrafting-and-service-work, guide/interface.html#profession-and-market-display, guide/professions.html#fixed-products-specialist-configurations, professions/alchemy.html#representative-recipe-blueprints, professions/blacksmithing.html#representative-recipe-blueprints, professions/cooking.html#representative-recipe-blueprints, professions/enchanting.html#representative-recipe-blueprints, professions/engineering.html#representative-recipe-blueprints, professions/first_aid.html#representative-recipe-blueprints, professions/inscription.html#representative-recipe-blueprints, professions/jewelcrafting.html#representative-recipe-blueprints, professions/leatherworking.html#representative-recipe-blueprints, professions/tailoring.html#representative-recipe-blueprints, professions/woodworking.html#representative-recipe-blueprints
@@ -1752,7 +1754,7 @@ RecoveryOption: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/networking.html#zone-or-instance-transfer, guide/operations.html#death-recovery-and-travel-safety
-RecoveryPointDefinition: Needs Decision / static content
+RecoveryPointDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Id, WorldLocationDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#death-recovery-and-battle-revival, guide/operations.html#death-recovery-and-travel-safety
@@ -1780,15 +1782,15 @@ ReplicationEventKind: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/execution.html#replication-events, guide/networking.html#area-of-interest-and-hidden-information
-ResolvedAbilityDefinition: Needs Decision / runtime state
+ResolvedAbilityDefinition: Fully Defined / runtime state
   Authority: owning world process
-  References: AbilityDefinition, AbilityTargetingPolicy, AbilityTimingPolicy, EffectOperationDefinition, Id, ResolvedResourceCost, Version
+  References: AbilityDefinition, AbilityRuntimeBinding, AbilityTargetingPolicy, AbilityTimingPolicy, EffectOperationDefinition, Id, ResolvedResourceCost, Version
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/execution.html#definition-fields, guide/execution.html#modifier-order, guide/operations.html#content-tools, guide/status-effects.html#trigger-ordering
 ResourceDefinition: Fully Defined / static content
   Authority: versioned content package
   References: CombatAmount, Id, ResourceType
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/attributes.html#derived-values, guide/execution.html#cost-and-cooldown-semantics, guide/operations.html#content-tools, guide/status-effects.html#trigger-ordering
-ResourceGainRule: Needs Decision / static content
+ResourceGainRule: Fully Defined / static content
   Authority: versioned content package
   References: CombatAmount, Id, ResourceType, Seconds
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/attributes.html#derived-values, guide/execution.html#cost-and-cooldown-semantics, guide/operations.html#content-tools, guide/status-effects.html#trigger-ordering
@@ -1808,7 +1810,7 @@ ResourceType: Fully Defined / content reference
   Authority: versioned content package
   References: Id, ResourceDefinition
   Reviewed sources: classes/bard.html#specializations-at-a-glance, classes/cleric.html#specializations-at-a-glance, classes/druid.html#specializations-at-a-glance, classes/mage.html#specializations-at-a-glance, classes/monk.html#specializations-at-a-glance, classes/necromancer.html#specializations-at-a-glance, classes/paladin.html#specializations-at-a-glance, classes/ranger.html#specializations-at-a-glance, classes/rogue.html#specializations-at-a-glance, classes/shaman.html#specializations-at-a-glance, classes/warlock.html#specializations-at-a-glance, classes/warrior.html#specializations-at-a-glance, guide/attributes.html#derived-values, guide/combat.html#cast-lifecycle, guide/combat.html#death-recovery-and-battle-revival, guide/combat.html#projectiles-and-ground-effects, guide/execution.html#cost-and-cooldown-semantics, guide/interface.html#combat-display, guide/playstyles.html#three-separate-design-responsibilities, guide/progression.html#ability-progression, guide/progression.html#respecialization-and-loadouts
-RestoreRecord: Needs Decision / persistent record
+RestoreRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: AdministrativeActionRecord, Id, Instant, ValidationFinding
   Reviewed sources: guide/operations.html#security-operations-and-support
@@ -1816,7 +1818,7 @@ RewardCommittedEvent: Fully Defined / network event
   Authority: owning world process; filtered per recipient
   References: CharacterRecord, EventContext, Id, OperationReceipt
   Reviewed sources: guide/execution.html#replication-events
-RewardEligibilityRecord: Needs Decision / persistent record
+RewardEligibilityRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: ParticipationCredit, RewardEligibilitySnapshot
   Reviewed sources: guide/character-creation.html#level-10-graduation, guide/economy.html#fees-and-sinks, guide/networking.html#durable-operations, guide/operations.html#party-raid-and-loot-ownership
@@ -1840,7 +1842,7 @@ SaboteurCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, ResourceType
   Reviewed sources: classes/rogue.html#saboteur, guide/playstyles.html#three-separate-design-responsibilities
-SalvageRule: Needs Decision / static content
+SalvageRule: Fully Defined / static content
   Authority: versioned content package
   References: Id, ItemDefinition, RecipeIngredient
   Reviewed sources: guide/items.html#durability-salvage-and-demand, guide/professions.html#materials-and-old-tier-relevance, professions/enchanting.html#purpose-and-interdependence, professions/jewelcrafting.html#purpose-and-interdependence, professions/mining.html#prospecting
@@ -1848,9 +1850,9 @@ SecondaryStatType: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: data/item_examples.json, guide/items.html#explicit-item-budgets, guide/pvp-encounters.html#gear-normalization, professions/blacksmithing.html#representative-recipe-blueprints, professions/jewelcrafting.html#representative-recipe-blueprints, professions/leatherworking.html#representative-recipe-blueprints, professions/tailoring.html#representative-recipe-blueprints, professions/woodworking.html#representative-recipe-blueprints
-SecurityPolicy: Needs Decision / static content
+SecurityPolicy: Fully Defined / static content
   Authority: versioned content package
-  References: Count, Id, RateLimit
+  References: Count, Id, RateLimit, Seconds
   Reviewed sources: guide/networking.html#security-and-observability, guide/operations.html#guilds-banks-and-communication, guide/operations.html#security-operations-and-support
 SeedGrowthStage: Fully Defined / shared classification
   Authority: versioned content package
@@ -1896,7 +1898,7 @@ SessionOwnershipState: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/execution.html#ability-command, guide/networking.html#disconnect-and-recovery, guide/networking.html#ownership, guide/networking.html#zone-or-instance-transfer
-SessionToken: Needs Decision / network response
+SessionToken: Fully Defined / network response
   Authority: authentication service
   References: Instant
   Reviewed sources: guide/networking.html#disconnect-and-recovery, guide/networking.html#security-and-observability, guide/operations.html#security-operations-and-support
@@ -1908,7 +1910,7 @@ SkinningEligibility: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, Instant
   Reviewed sources: guide/professions.html#deterministic-skill-gain, guide/professions.html#gathering-and-shared-access, professions/skinning.html#gathering-output-contract, professions/skinning.html#purpose-and-interdependence
-SongDefinition: Needs Decision / static content
+SongDefinition: Fully Defined / static content
   Authority: versioned content package
   References: AbilityDefinition, CombatAmount, Fraction, Id, ResourceType
   Reviewed sources: classes/bard.html#minstrel, classes/bard.html#shared-class-abilities, classes/bard.html#skald, classes/bard.html#virtuoso, guide/operations.html#content-tools
@@ -1948,7 +1950,7 @@ SpriteDirection: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/decisions.html#confirmed-direction, guide/interface.html#combat-display
-StanceDefinition: Needs Decision / static content
+StanceDefinition: Fully Defined / static content
   Authority: versioned content package
   References: AbilityDefinition, CombatRole, Id
   Reviewed sources: classes/druid.html#shared-class-abilities, classes/monk.html#ironbody, guide/execution.html#operation-vocabulary, guide/operations.html#content-tools
@@ -1956,19 +1958,19 @@ StarcallerCombatState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id
   Reviewed sources: classes/druid.html#starcaller, guide/playstyles.html#three-separate-design-responsibilities
-StarterAreaConfiguration: Needs Decision / static content
+StarterAreaConfiguration: Fully Defined / static content
   Authority: versioned content package
-  References: Faction, Id, RecoveryPointDefinition, TutorialSequenceDefinition, WorldLocationDefinition, ZoneDefinition, ZoneTransitionDefinition
+  References: EncounterDefinition, Faction, Id, NpcDefinition, RecoveryPointDefinition, TutorialSequenceDefinition, WorldLocationDefinition, ZoneDefinition, ZoneTransitionDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation
-StateReconstructionFixture: Needs Decision / test specification
+StateReconstructionFixture: Fully Defined / test specification
   Authority: content test author
-  References: Id, ReconnectSnapshot, TransferCheckpoint, ValidationFinding
+  References: FixtureAssertion, FixtureRunEvidence, FixtureScenarioKind, FixtureWorldContext, Id, ReconnectSnapshot, TransferCheckpoint, ValidationFinding
   Reviewed sources: guide/execution.html#data-and-runtime-gates, guide/operations.html#content-tools, guide/testing.html#combat-acceptance-scenarios
-StatusCategory: Needs Decision / shared classification
+StatusCategory: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, guide/combat.html#cast-lifecycle, guide/combat.html#death-recovery-and-battle-revival, guide/combat.html#projectiles-and-ground-effects, guide/execution.html#definition-fields, guide/execution.html#replication-events, guide/status-effects.html#persistence-policy, guide/status-effects.html#status-definitions, professions/alchemy.html#purpose-and-interdependence, professions/cooking.html#purpose-and-interdependence, professions/engineering.html#purpose-and-interdependence, professions/first_aid.html#purpose-and-interdependence
-StatusDefinition: Needs Decision / static content
+StatusDefinition: Fully Defined / static content
   Authority: versioned content package
   References: AbilityDefinition, DispelFamily, Id, Seconds, StatusCategory, StatusPersistencePolicy, StatusRefreshPolicy, StatusStackingPolicy
   Reviewed sources: guide/execution.html#definition-fields, guide/execution.html#replication-events, guide/operations.html#content-tools, guide/status-effects.html#status-definitions
@@ -1980,15 +1982,15 @@ StatusInstance: Fully Defined / runtime state
   Authority: owning world process
   References: AbilityDefinition, AbsorbState, CombatAmount, Count, EntitySnapshot, Id, Instant, PeriodicEffectSchedule, StatusDefinition
   Reviewed sources: classes/bard.html#shared-class-abilities, classes/cleric.html#shared-class-abilities, classes/druid.html#shared-class-abilities, classes/mage.html#pyromancer, classes/mage.html#shared-class-abilities, classes/monk.html#shared-class-abilities, classes/necromancer.html#plaguebringer, classes/necromancer.html#shared-class-abilities, classes/paladin.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/rogue.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, classes/warrior.html#shared-class-abilities, guide/attributes.html#healing-and-absorption, guide/combat.html#cast-lifecycle, guide/combat.html#death-recovery-and-battle-revival, guide/combat.html#projectiles-and-ground-effects, guide/execution.html#definition-fields, guide/execution.html#example-pyromancer-consumption, guide/execution.html#replication-events, guide/networking.html#disconnect-and-recovery, guide/networking.html#zone-or-instance-transfer, guide/status-effects.html#persistence-policy, guide/status-effects.html#status-definitions, professions/alchemy.html#purpose-and-interdependence, professions/cooking.html#purpose-and-interdependence, professions/engineering.html#purpose-and-interdependence, professions/first_aid.html#purpose-and-interdependence
-StatusPersistencePolicy: Needs Decision / static lifecycle policy
+StatusPersistencePolicy: Fully Defined / static lifecycle policy
   Authority: versioned content package
   References: 
   Reviewed sources: guide/status-effects.html#persistence-policy, guide/status-effects.html#status-definitions
-StatusRefreshPolicy: Needs Decision / shared classification
+StatusRefreshPolicy: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/status-effects.html#persistence-policy, guide/status-effects.html#status-definitions
-StatusStackingPolicy: Needs Decision / shared classification
+StatusStackingPolicy: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/execution.html#definition-fields, guide/execution.html#replication-events, guide/status-effects.html#persistence-policy, guide/status-effects.html#status-definitions
@@ -2004,7 +2006,7 @@ SummonCheckpoint: Fully Defined / persistent record
   Authority: durable transactional service
   References: CharacterRecord, Id, SummonCapacityState, SummonState, Version
   Reviewed sources: classes/necromancer.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, guide/execution.html#operation-vocabulary, guide/networking.html#zone-or-instance-transfer, guide/status-effects.html#persistence-policy, guide/status-effects.html#pets-totems-and-formations
-SummonDefinition: Needs Decision / static content
+SummonDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Count, Fraction, Id, Seconds, SummonKind
   Reviewed sources: classes/necromancer.html#shared-class-abilities, classes/ranger.html#shared-class-abilities, classes/shaman.html#shared-class-abilities, classes/warlock.html#shared-class-abilities, guide/execution.html#operation-vocabulary, guide/networking.html#zone-or-instance-transfer, guide/status-effects.html#persistence-policy, guide/status-effects.html#pets-totems-and-formations
@@ -2036,17 +2038,17 @@ TalentEditorState: Fully Defined / client view
   Authority: derived from authorized server state; client owns only local selection
   References: BuildPreview, TalentAllocation
   Reviewed sources: guide/interface.html#talent-and-specialization-screens
-TalentInteractionFixture: Needs Decision / test specification
+TalentInteractionFixture: Fully Defined / test specification
   Authority: content test author
-  References: Id, TalentBuildRecord, TalentValidationResult
+  References: FixtureAssertion, FixtureRunEvidence, FixtureScenarioKind, Id, TalentBuildRecord, TalentValidationResult
   Reviewed sources: guide/execution.html#data-and-runtime-gates, guide/operations.html#content-tools, guide/testing.html#combat-acceptance-scenarios
 TalentModifier: Fully Defined / runtime state
   Authority: owning world process
   References: Count, Id, TalentModifierDefinition, TalentNodeDefinition
   Reviewed sources: catalog/talents.html#main, classes/bard.html#shared-class-talent-tree, classes/cleric.html#shared-class-talent-tree, classes/druid.html#shared-class-talent-tree, classes/mage.html#shared-class-talent-tree, classes/monk.html#shared-class-talent-tree, classes/necromancer.html#shared-class-talent-tree, classes/paladin.html#shared-class-talent-tree, classes/ranger.html#shared-class-talent-tree, classes/rogue.html#shared-class-talent-tree, classes/shaman.html#shared-class-talent-tree, classes/warlock.html#shared-class-talent-tree, classes/warrior.html#shared-class-talent-tree, guide/execution.html#definition-fields, guide/execution.html#modifier-order, guide/operations.html#content-tools, guide/playstyles.html#three-separate-design-responsibilities, guide/status-effects.html#trigger-ordering
-TalentModifierDefinition: Needs Decision / static content
+TalentModifierDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: AbilityDefinition, EffectOperationDefinition, Id, TalentNodeDefinition
+  References: AbilityDefinition, Count, EffectOperationDefinition, Id, TalentNodeDefinition
   Reviewed sources: catalog/talents.html#searchable-talent-definitions, classes/bard.html#shared-class-talent-tree, classes/cleric.html#shared-class-talent-tree, classes/druid.html#shared-class-talent-tree, classes/mage.html#shared-class-talent-tree, classes/monk.html#shared-class-talent-tree, classes/necromancer.html#shared-class-talent-tree, classes/paladin.html#shared-class-talent-tree, classes/ranger.html#shared-class-talent-tree, classes/rogue.html#shared-class-talent-tree, classes/shaman.html#shared-class-talent-tree, classes/warlock.html#shared-class-talent-tree, classes/warrior.html#shared-class-talent-tree, guide/execution.html#modifier-order, guide/operations.html#content-tools, guide/playstyles.html#three-separate-design-responsibilities, guide/status-effects.html#trigger-ordering
 TalentNodeDefinition: Fully Defined / static content
   Authority: versioned content package
@@ -2144,9 +2146,9 @@ TransferPhase: Fully Defined / shared classification
   Authority: versioned content package
   References: 
   Reviewed sources: guide/execution.html#ability-command, guide/networking.html#disconnect-and-recovery, guide/networking.html#ownership, guide/networking.html#zone-or-instance-transfer
-TransferToken: Needs Decision / persistent record
+TransferToken: Fully Defined / persistent record
   Authority: durable transactional service
-  References: CharacterRecord, Id, TransferCheckpoint, Version
+  References: CharacterRecord, Id, Instant, TransferCheckpoint, Version
   Reviewed sources: guide/networking.html#zone-or-instance-transfer
 TravelAnchorRecord: Fully Defined / persistent record
   Authority: durable transactional service
@@ -2172,7 +2174,7 @@ TriggerContext: Fully Defined / runtime state
   Authority: owning world process
   References: Count, EntitySnapshot, Id, Version
   Reviewed sources: classes/bard.html#shared-class-talent-tree, classes/cleric.html#shared-class-talent-tree, classes/druid.html#shared-class-talent-tree, classes/mage.html#shared-class-talent-tree, classes/monk.html#shared-class-talent-tree, classes/necromancer.html#shared-class-talent-tree, classes/paladin.html#shared-class-talent-tree, classes/ranger.html#shared-class-talent-tree, classes/rogue.html#shared-class-talent-tree, classes/shaman.html#shared-class-talent-tree, classes/warlock.html#shared-class-talent-tree, classes/warrior.html#shared-class-talent-tree, guide/execution.html#definition-fields, guide/execution.html#modifier-order, guide/operations.html#content-tools, guide/status-effects.html#trigger-ordering
-TriggerDefinition: Needs Decision / static content
+TriggerDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Count, EffectOperationDefinition, Id, Seconds
   Reviewed sources: catalog/talents.html#searchable-talent-definitions, classes/bard.html#shared-class-talent-tree, classes/cleric.html#shared-class-talent-tree, classes/druid.html#shared-class-talent-tree, classes/mage.html#shared-class-talent-tree, classes/monk.html#shared-class-talent-tree, classes/necromancer.html#shared-class-talent-tree, classes/paladin.html#shared-class-talent-tree, classes/ranger.html#shared-class-talent-tree, classes/rogue.html#shared-class-talent-tree, classes/shaman.html#shared-class-talent-tree, classes/warlock.html#shared-class-talent-tree, classes/warrior.html#shared-class-talent-tree, guide/execution.html#modifier-order, guide/operations.html#content-tools, guide/playstyles.html#three-separate-design-responsibilities, guide/status-effects.html#trigger-ordering
@@ -2188,7 +2190,7 @@ TutorialProgressRecord: Fully Defined / persistent record
   Authority: durable transactional service
   References: CharacterRecord, Id, QuestObjectiveDefinition, TutorialSequenceDefinition, TutorialStage
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation, guide/progression.html#exactly-two-points-per-level-up
-TutorialSequenceDefinition: Needs Decision / static content
+TutorialSequenceDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Id, TutorialStageDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/character-creation.html#level-10-graduation
@@ -2200,13 +2202,13 @@ ValidationReport: Fully Defined / operational evidence
   Authority: test or validation runner; retained evidence only
   References: Count, TestCheck
   Reviewed sources: guide/testing.html#test-evidence-retained, validation/report.json
-VendorOfferDefinition: Needs Decision / static content
+VendorOfferDefinition: Fully Defined / static content
   Authority: versioned content package
   References: CurrencyAmount, Id, ItemDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/economy.html#sustainable-demand-without-coercion, guide/items.html#durability-salvage-and-demand
-VendorPricingConfiguration: Needs Decision / static content
+VendorPricingConfiguration: Fully Defined / static content
   Authority: versioned content package
-  References: CurrencyAmount, Id
+  References: CurrencyAmount, Id, RepairPricingRule
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/economy.html#sustainable-demand-without-coercion, guide/items.html#durability-salvage-and-demand
 VendorState: Fully Defined / client view
   Authority: derived from authorized server state; client owns only local selection
@@ -2252,23 +2254,23 @@ WorldEntryRequest: Fully Defined / network request
   Authority: authenticated client intent; server validates and derives actor
   References: CharacterRecord, Id
   Reviewed sources: guide/character-creation.html#character-creation-experience, guide/interface.html#character-creation
-WorldLocationDefinition: Needs Decision / static content
+WorldLocationDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Id, Vector2, ZoneDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#projectiles-and-ground-effects, guide/networking.html#area-of-interest-and-hidden-information, guide/networking.html#zone-or-instance-transfer
-WorldObjectDefinition: Needs Decision / static content
+WorldObjectDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Id, VisualPresentationDefinition
+  References: Id, InteractionDefinition, VisualPresentationDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#projectiles-and-ground-effects, guide/professions.html#stations-and-field-utility
-ZoneDefinition: Needs Decision / static content
+ZoneDefinition: Fully Defined / static content
   Authority: versioned content package
-  References: Id
+  References: Id, WorldLocationDefinition, ZoneTransitionDefinition
   Reviewed sources: guide/character-creation.html#beginner-starting-area, guide/combat.html#projectiles-and-ground-effects, guide/networking.html#area-of-interest-and-hidden-information, guide/networking.html#zone-or-instance-transfer
 ZoneTransferState: Fully Defined / runtime state
   Authority: owning world process
   References: CharacterRecord, Id, TransferCheckpoint, TransferPhase, TransferToken
   Reviewed sources: guide/networking.html#disconnect-and-recovery, guide/networking.html#zone-or-instance-transfer, guide/operations.html#death-recovery-and-travel-safety
-ZoneTransitionDefinition: Needs Decision / static content
+ZoneTransitionDefinition: Fully Defined / static content
   Authority: versioned content package
   References: Id, WorldLocationDefinition
   Reviewed sources: guide/character-creation.html#level-10-graduation, guide/execution.html#operation-vocabulary, guide/networking.html#zone-or-instance-transfer, guide/operations.html#death-recovery-and-travel-safety
