@@ -1,10 +1,11 @@
 import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const registry = JSON.parse(readFileSync(join(root, 'sources/data-inventory.json'), 'utf8'));
 const executable = process.env.BRIARWAKE_CHROME_BIN || [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
   '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser',
@@ -101,15 +102,23 @@ try {
   await navigate('guide/data-inventory.html');
   check('Actual offline file URL navigation and inventory rendering', await evaluate(`location.protocol === 'file:' && document.querySelector('h1').textContent === 'Data Inventory'`));
   check('All category tables render in alphabetical order', await evaluate(`['enums','interfaces','schemas'].every(category => {
-    const names = [...document.querySelectorAll('#inventory-' + category + ' tbody tr')].map(row => row.cells[0].textContent);
+    const names = [...document.querySelector('#inventory-' + category).tBodies[0].rows].map(row => row.cells[0].textContent);
     return names.length > 0 && names.every((name,index) => index === 0 || names[index-1].toLowerCase() <= name.toLowerCase());
   })`));
+  check('Every rendered canonical schema matches the authoritative registry', await evaluate(`(() => {
+    const expected = ${JSON.stringify(registry.entries.map(entry => ({ id: entry.id, schema: entry.definition })))};
+    return expected.every(entry => {
+      const code = document.getElementById(entry.id)?.querySelector('.definition pre code');
+      return code && JSON.stringify(JSON.parse(code.textContent)) === JSON.stringify(entry.schema);
+    });
+  })()`));
   for (const [category, query] of [['enums', 'QuestStatus'], ['interfaces', 'CharacterCreationDraft'], ['schemas', 'ability_command_v2']]) {
     check(`Existing local filter: ${category}`, await evaluate(`(() => {
       const input = document.querySelector('[data-filter="inventory-${category}"]');
       input.value = ${JSON.stringify(query)}; input.dispatchEvent(new Event('input'));
-      const visible = [...document.querySelectorAll('#inventory-${category} tbody tr')].filter(row => !row.hidden);
-      const passed = visible.length === 1 && visible[0].cells[0].textContent === ${JSON.stringify(query)};
+      const rows = [...document.querySelector('#inventory-${category}').tBodies[0].rows];
+      const visible = rows.filter(row => !row.hidden);
+      const passed = visible.some(row => row.cells[0].textContent === ${JSON.stringify(query)}) && visible.length < rows.length && visible.every(row => row.textContent.toLowerCase().includes(${JSON.stringify(query.toLowerCase())}));
       input.value = ''; input.dispatchEvent(new Event('input')); return passed;
     })()`));
   }
@@ -141,7 +150,13 @@ try {
   writeFileSync(join(tmpdir(), 'briarwake-inventory-mobile.png'), Buffer.from(screenshot.data, 'base64'));
   await command('Emulation.setScriptExecutionDisabled', { value: true });
   await navigate('guide/data-inventory.html');
-  check('Inventory entries remain readable with JavaScript disabled', await evaluate(`document.querySelector('#quest-progress-record').textContent.includes('Pending Definition') && document.querySelectorAll('#inventory-enums tbody tr').length > 0`));
+  check('Inventory entries remain readable with JavaScript disabled', await evaluate(`document.querySelector('#quest-progress-record').textContent.includes('Needs Decision') && document.querySelector('#inventory-enums').tBodies[0].rows.length > 0`));
+  check('Canonical properties and enum members disclose without JavaScript', await evaluate(`(() => {
+    const quest = document.querySelector('#quest-progress-record .definition');
+    const grade = document.querySelector('#item-grade .definition');
+    quest.open = true; grade.open = true;
+    return quest.querySelector('table').textContent.includes('quest_id') && quest.textContent.includes('Required') && grade.textContent.includes('masterwork');
+  })()`));
   await navigate('classes/mage.html#data');
   check('Class Data remains readable with JavaScript disabled', await evaluate(`document.querySelector('.data-inventory').textContent.includes('ArcanistCombatState') && document.querySelectorAll('.data-inventory').length === 1`));
   check('No page JavaScript exceptions', runtimeErrors.length === 0, JSON.stringify(runtimeErrors));

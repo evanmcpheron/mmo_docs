@@ -67,67 +67,91 @@ HTML tables or search data. Change matching reference pages and regenerate the
 search index before distributing an edited version. Preserve stable IDs and
 increment content versions when meanings change.
 
-DATA INVENTORY
+DATA INVENTORY AND CANONICAL CONTRACTS
 Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.
-Browse Enums, Interfaces and Schemas alphabetically; existing table filters and
-global search also find inventory names. All links and content work offline.
-Every associated feature page ends with Data, linking to stable inventory anchors.
-New proposals contain names and metadata only, marked Pending Definition.
-Existing formats and partial contracts remain in their original documentation.
-Needs Review flags link to unresolved terminology and classification questions.
+All 501 original structures have been examined together. Enums, Interfaces and
+Schemas remain separate groups with stable original names and anchors. Fourteen
+content-driven classifications now use content-reference schemas instead of
+closed enums. Current totals and completion counts are generated in Coverage
+and validation/data-model-review.txt; partial contracts say Needs Decision.
 
-The authoritative registry is sources/data-inventory.json. It records structures,
-page associations, section evidence, review questions and page-review coverage.
-The 49 feature pages were reviewed alongside four reference/index pages. See the
-inventory's Coverage section for every reviewed page and exclusion rationale.
-No housing, territory, siege, authored geography or other deferred mechanics are
-invented by the inventory. Coverage reflects the current documentation only.
+Every associated feature page ends with Data. A type link opens its canonical
+members, properties, requiredness, nullability, relationships, constraints and
+source evidence. Long definitions use native HTML disclosures that work offline
+and without JavaScript. Existing table filters and global search index contracts,
+fields, dependencies and feature associations.
+
+sources/data-inventory.json is the sole editable definition registry (format 2).
+It contains JSON Schema 2020-12 fragments, shared definitions, conventions,
+authority/lifecycle decisions, dependency groups, source associations, coverage,
+review questions and source-record validation bindings. No gameplay code is here.
+The registry format version is independent of content/rules/database versions.
+
+sources/data-model.schema.json is a generated language-neutral $defs bundle.
+Select a named definition when validating; the bundle root is a catalog, not a
+single gameplay payload. Enums with established values preserve their encodings.
+x-members represents symbolic alternatives without inventing wire encodings.
+Partially established enums expose only their established serialized subset.
+Needs Decision means the schema covers only the supported portion. x-invariants
+record semantic checks that a future server/content validator must enforce.
+Neither a schema match nor Fully Defined certifies runtime bindings or balance.
 
 Build: python3 scripts/build_data_inventory.py
 Check without writing: python3 scripts/build_data_inventory.py --check
 Focused consistency check: python3 validation/check_data_inventory.py
-Inventory regression tests: python3 -m unittest discover -s validation -p 'test_*.py'
+Regression tests: python3 -m unittest discover -s validation -p 'test_*.py'
 Full existing checks, including inventory: python3 validation/run_checks.py
-All inventory commands require Python 3.10+ and the standard library only.
 Optional rendered checks: node validation/check_inventory_browser.mjs
-The optional browser check uses Node 22+ and an installed Chrome/Chromium, with
-no downloaded packages. Set BRIARWAKE_CHROME_BIN if its path is not detected.
-It writes validation/data-inventory-browser-checks.json; the original browser
-evidence remains unchanged. It checks actual offline file navigation, filtering,
-search, backlinks, mobile layout and reading with page JavaScript disabled.
+All Python commands require Python 3.10+ and the standard library only.
+The browser check uses Node 22+ and installed Chrome/Chromium without downloads.
+Set BRIARWAKE_CHROME_BIN if needed. Its evidence is stored separately from the
+historical rendering-only record in validation/data-inventory-browser-checks.json.
 
-The inventory builder owns guide/data-inventory.html, marked Data blocks,
-Data links in page contents, the Data Inventory sidebar link, inventory-tagged
-search records and documentation counts in data/manifest.json. Existing feature
-HTML remains authoritative; no original full-site generator is included here.
-The builder preserves the original feature text, catalogs, search records and
-game-data definitions. It neither regenerates their tables nor executes gameplay.
-Rebuilds replace owned output consistently and never add duplicate Data sections.
+The builder owns guide/data-inventory.html, marked Data blocks, Data contents
+links, the Data Inventory sidebar link, inventory-tagged search records,
+documentation counts in data/manifest.json, the schema bundle and the generated
+review report. It preserves original feature content and noninventory search.
+Existing feature HTML remains authoritative for mechanics; the original full-site
+generator is not included. Rebuilds are deterministic and never duplicate Data.
 
-For additions, first read the feature text and existing inventory for shared
-contracts. Edit the registry, keeping stable IDs, names and classifications.
-Add each relevant feature page and its specific section to the entry's evidence;
-feature_pages must match the HTML pages represented in that evidence. Choose a
-canonical_page section from that evidence. Use Existing/Documented for existing
-documented formats, or Proposed/Pending Definition for newly proposed contracts.
-Catalog labels for previously unnamed formats do not rename original sources.
-Do not add enum values, members, fields, types, constraints or implementation.
-Attach unresolved questions through review_issues and Needs Review metadata.
+For a model change, read every associated mechanic and related contract first.
+Edit its canonical definition in the registry, reuse local $refs and keep source
+IDs/keys/encodings. Update references to match the definition graph. Distinguish
+runtime, persistent, static, request, response and client-view authority. Record
+inferred structural choices in modeling_notes. Required properties must occur
+in required; nullability is explicit. No default exists unless documented.
 
-When adding or changing feature text, review all affected associations first,
-then record that completed review and rebuild with:
+Preserve feature_pages/evidence agreement and canonical_page section evidence.
+reviewed_against records the evidence examined for each definition. New questions
+need affected entries, source references, alternatives, recommendation, impact
+and state. Link every open issue back from its affected entries and set their
+definition_status to Needs Decision and definition_extent to Partial. Fully
+Defined/Complete is allowed only after all attached questions are resolved.
+Keep resolved question anchors with their reasoning; clear their open backlinks.
+
+When feature text changes, review associations/definitions first, update the
+per-contract evidence review, then record the completed page review and rebuild:
 python3 scripts/build_data_inventory.py --review-page guide/example.html
-Replace the example path with the actual page; the option is repeatable. A new
-page is classified as Feature and must have supported inventory associations.
-Reference/index exclusions instead need an explicit reason in registry.pages.
-Checks detect new unreviewed pages, changed source text, stale section reviews,
-duplicate names/IDs, missing files/anchors, missing associations, accidental
-definitions, review-link inconsistencies and stale generated output. They cannot
-replace a human feature review or establish that a proposed contract is balanced.
+The option is repeatable. New feature pages require supported associations;
+reference/index exclusions require an explicit rationale. No arbitrary mechanics
+or missing numerical balance values may be filled in merely to complete a type.
 
-Actual definitions can later live on their canonical documentation pages while
-the registry continues to catalog names and references. The inventory's basic
-organization does not need to change when those definitions are authored.
+Validation detects duplicate IDs/names, undefined references, invalid schema
+vocabulary, enum drift, value-containment cycles, orphan helpers, stale dependency
+metadata, mismatched decision coverage, missing evidence, missing/duplicate Data,
+local link/anchor problems, changed source text and generated output drift.
+Every sample binding validates all selected records, including individual ability
+overrides and embedded catalog copies, against the same canonical schema. Typed
+content references are checked against shipped catalogs where those exist.
+The focused standard-library validator supports exactly the keywords used here;
+it fails on unsupported keywords rather than claiming full JSON Schema support.
+It does not execute textual invariants, symbolic wire encodings or gameplay.
+
+validation/data-model-review.txt records definition coverage, DRY changes,
+ownership/dependency decisions, all outstanding questions and per-type evidence.
+validation/report.json and data-inventory-browser-checks.json record actual runs.
+Housing, territory, sieges, authored geography, long offline manufacturing and
+other deferred mechanics remain outside the current documented model.
 
 SOURCES
 Official research links are in guide/sources.html. The source archive checksum

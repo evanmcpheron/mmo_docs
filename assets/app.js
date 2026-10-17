@@ -47,7 +47,7 @@
   document.addEventListener('click', event => { if (!event.target.closest('.search-wrap')) closeSearch(); });
   document.querySelectorAll('[data-filter]').forEach(input => {
     const table = document.getElementById(input.dataset.filter);
-    const rows = [...table.querySelectorAll('tbody tr')].map(row => ({row, text: row.textContent.toLowerCase()}));
+    const rows = [...table.tBodies[0].rows].map(row => ({row, text: row.textContent.toLowerCase()}));
     const count = input.closest('.table-controls').querySelector('.row-count');
     function filter() {
       const terms = input.value.toLowerCase().trim().split(/\s+/).filter(Boolean);

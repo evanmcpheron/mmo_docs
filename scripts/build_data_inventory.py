@@ -1,4 +1,4 @@
-"""Build the metadata-only inventory and its owned parts of the static reference."""
+"""Build canonical data contracts and their owned static documentation."""
 from __future__ import annotations
 
 import argparse
@@ -11,6 +11,7 @@ from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
+from data_model import model_errors, schema_bundle, review_report, schema_children
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PAGE = 'guide/data-inventory.html'
@@ -19,9 +20,12 @@ DATA_START = '<!-- data-inventory:start -->'
 DATA_END = '<!-- data-inventory:end -->'
 DATA_BLOCK = re.compile(re.escape(DATA_START) + r'.*?' + re.escape(DATA_END), re.S)
 ENTRY_KEYS = {'id', 'name', 'category', 'status', 'definition_status', 'canonical_page',
-              'feature_pages', 'evidence', 'review_status', 'review_issues'}
+              'feature_pages', 'evidence', 'review_status', 'review_issues', 'definition',
+              'responsibility', 'authority', 'modeling_notes', 'references', 'definition_extent',
+              'reviewed_against', 'members', 'representation', 'previous_category'}
 REGISTRY_KEYS = {'version', 'title', 'pages', 'reviewed_sources', 'scope_notes',
-                 'review_issues', 'entries'}
+                 'review_issues', 'entries', 'schema_dialect', 'conventions', 'dependency_groups',
+                 'shared_definitions', 'sample_bindings', 'initial_inventory_counts', 'audit_notes'}
 
 
 class Document(HTMLParser):
@@ -85,14 +89,18 @@ def totals(registry):
         'existing': sum(e['status'] == 'Existing' for e in entries),
         'proposed': sum(e['status'] == 'Proposed' for e in entries),
         'needs_review': sum(e.get('review_status') == 'Needs Review' for e in entries),
+        'partially_defined': sum(e['definition_extent'] == 'Partial' for e in entries),
+        **{'fully_defined_' + plural.lower(): sum(e['category'] == category and
+             e['definition_status'] == 'Fully Defined' for e in entries)
+           for category, plural in CATEGORIES.items()},
     }
 
 
 def validate_registry(registry, root=ROOT):
     errors = []
     if set(registry) != REGISTRY_KEYS:
-        errors.append('Registry must contain catalog metadata only')
-    if registry.get('version') != 1 or registry.get('title') != 'Data Inventory':
+        errors.append('Registry keys disagree with the canonical model format')
+    if registry.get('version') != 2 or registry.get('title') != 'Data Inventory':
         errors.append('Unsupported registry version or title')
     entries = registry['entries']
     pages = registry['pages']
@@ -156,15 +164,15 @@ def validate_registry(registry, root=ROOT):
             reference(ref, issue['id'])
     for entry in entries:
         label = entry['name']
-        if set(entry) - ENTRY_KEYS or not (ENTRY_KEYS - {'review_status', 'review_issues'}) <= set(entry):
-            errors.append(f'{label}: only inventory metadata is permitted; definitions are forbidden')
+        required_keys = ENTRY_KEYS - {'review_status', 'review_issues', 'members', 'representation', 'previous_category'}
+        if set(entry) - ENTRY_KEYS or not required_keys <= set(entry):
+            errors.append(f'{label}: invalid canonical entry metadata or missing definition')
         if not re.fullmatch(r'[a-z][a-z0-9-]*', entry['id']):
             errors.append(f'{label}: invalid stable identifier')
         if not re.fullmatch(r'[A-Z][A-Za-z0-9]*', label) and not (
                 entry['status'] == 'Existing' and re.fullmatch(r'[a-z][a-z0-9_]*', label)):
             errors.append(f'{label}: proposed names must use PascalCase')
-        expected_status = {'Existing': 'Documented', 'Proposed': 'Pending Definition'}.get(entry['status'])
-        if expected_status is None or entry['definition_status'] != expected_status:
+        if entry['status'] not in ('Existing', 'Proposed') or entry['definition_status'] not in ('Fully Defined', 'Needs Decision'):
             errors.append(f'{label}: invalid existence/definition status')
         if not entry['evidence'] or not entry['feature_pages']:
             errors.append(f'{label}: missing documentation evidence or feature associations')
@@ -187,7 +195,7 @@ def validate_registry(registry, root=ROOT):
             if identifier not in issue_by_id or label not in issue_by_id[identifier]['entries']:
                 errors.append(f'{label}: invalid review issue {identifier}')
         for identifier, issue in issue_by_id.items():
-            if label in issue['entries'] and identifier not in issue_ids:
+            if issue['state'] == 'open' and label in issue['entries'] and identifier not in issue_ids:
                 errors.append(f'{label}: missing review issue backlink {identifier}')
     reviewed_sources = {s['path'] for s in registry['reviewed_sources']}
     evidence_files = {ref.split('#')[0] for e in entries for ref in e['evidence']}
@@ -204,6 +212,7 @@ def validate_registry(registry, root=ROOT):
         for name in {a['request_schema'] for a in json.loads(ability_data.read_text())}:
             if name not in names:
                 errors.append(f'Existing named request schema omitted: {name}')
+    errors.extend(model_errors(registry, root))
     return errors
 
 
@@ -226,7 +235,8 @@ def entry_status(entry):
 
 
 def data_section(page, entries):
-    lines = [DATA_START, '<section class="data-inventory" aria-labelledby="data">', '<h2 id="data">Data</h2>']
+    lines = [DATA_START, '<section class="data-inventory" aria-labelledby="data">', '<h2 id="data">Data</h2>',
+             '<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>']
     for category, plural in CATEGORIES.items():
         selected = sorted((e for e in entries if e['category'] == category), key=lambda e: e['name'].casefold())
         if selected:
@@ -248,13 +258,81 @@ def navigation(source, page):
     return source.replace('<p>Catalogs</p>', '<p>Catalogs</p>' + link)
 
 
+def type_link(registry, name):
+    entry = next((e for e in registry['entries'] if e['name'] == name), None)
+    anchor = entry['id'] if entry else 'shared-' + name
+    return relative_link(INVENTORY_PAGE, INVENTORY_PAGE + '#' + anchor, name)
+
+
+def field_type(registry, schema):
+    if '$ref' in schema:
+        return type_link(registry, schema['$ref'].split('/')[-1])
+    if 'anyOf' in schema:
+        return ' | '.join(field_type(registry, branch) for branch in schema['anyOf'])
+    if 'oneOf' in schema:
+        return f'{len(schema["oneOf"])} explicit variants (see full schema)'
+    if 'const' in schema:
+        return '<code>' + escape(json.dumps(schema['const'])) + '</code>'
+    kind = schema.get('type', 'composed')
+    if kind == 'array':
+        return ('set of ' if schema.get('uniqueItems') else 'array of ') + field_type(registry, schema['items'])
+    if kind == 'object' and isinstance(schema.get('additionalProperties'), dict):
+        return 'ID-keyed map of ' + field_type(registry, schema['additionalProperties'])
+    return escape(kind)
+
+
+def definition_html(registry, entry):
+    schema = entry['definition']
+    lines = ['<details class="definition"><summary>Inspect canonical definition</summary>',
+             '<p>' + escape(schema['description']) + '</p>',
+             '<p><strong>Responsibility:</strong> ' + escape(entry['responsibility']) +
+             '<br><strong>Authority:</strong> ' + escape(entry['authority']) + '</p>']
+    if entry.get('previous_category'):
+        lines.append('<p>Reclassified from ' + escape(entry['previous_category']) + '; original name and anchor preserved.</p>')
+    if entry['category'] == 'Enum':
+        lines.append('<p>Representation: ' + escape(entry['representation']) +
+                     '. Symbolic members have no assigned stored or wire value.</p><ul>')
+        for member in entry['members']:
+            value = ' = ' + escape(json.dumps(member['value'])) if 'value' in member else ''
+            lines.append('<li><code>' + escape(member['id']) + value + '</code> — ' + escape(member['description']) + '</li>')
+        lines.append('</ul>')
+    if 'properties' in schema:
+        lines.append('<div class="table-scroll"><table><thead><tr><th>Property</th><th>Type</th><th>Presence</th><th>Meaning / constraints</th></tr></thead><tbody>')
+        for name, field in schema['properties'].items():
+            bounds = {k: field[k] for k in ('minimum', 'maximum', 'multipleOf', 'minLength', 'maxLength', 'minItems', 'maxItems', 'enum', 'const') if k in field}
+            identity = field.get('x-reference') or field.get('items', {}).get('x-reference')
+            meaning = escape(field.get('description', ''))
+            if identity:
+                meaning += ' Reference: ' + type_link(registry, identity['target']) + ' (' + escape(identity['kind']) + ').'
+            if bounds:
+                meaning += ' <code>' + escape(json.dumps(bounds)) + '</code>'
+            presence = 'Required' if name in schema['required'] else 'Optional (may be absent)'
+            lines.append('<tr><td><code>' + escape(name) + '</code></td><td>' + field_type(registry, field) + '</td><td>' + presence + '</td><td>' + meaning + '</td></tr>')
+        lines.append('</tbody></table></div>')
+    elif '$ref' in schema:
+        lines.append('<p>Uses ' + field_type(registry, schema) + ' directly.</p>')
+    notes = [*schema.get('x-invariants', []), *entry['modeling_notes']]
+    lines.append('<ul>' + ''.join('<li>' + escape(note) + '</li>' for note in notes) + '</ul>')
+    if entry['references']:
+        lines.append('<p>Related contracts: ' + ' · '.join(type_link(registry, name) for name in entry['references']) + '</p>')
+    lines.append('<details><summary>Full machine-readable schema (includes nested shapes and nullability)</summary><pre><code>' + escape(json.dumps(schema, indent=2, ensure_ascii=False)) + '</code></pre></details></details>')
+    return '\n'.join(lines)
+
+
+def definition_search_text(schema):
+    terms = [schema.get('description', ''), *schema.get('properties', {})]
+    terms.extend(str(value) for value in schema.get('enum', schema.get('x-members', [])))
+    terms.extend(definition_search_text(child) for child in schema_children(schema))
+    return ' '.join(terms)
+
+
 def inventory_body(registry):
     page = INVENTORY_PAGE
     titles = {p['page']: p['title'] for p in registry['pages']}
     counts = totals(registry)
-    body = ['<p class="lead">A catalog of data structures supported by the current documentation. Proposed entries are Pending Definition; this inventory adds no definitions.</p>',
-            '<p>Existing means a choice set, contract, record format or partial example is already documented. It does not certify completeness or runtime readiness. PascalCase catalog labels for unnamed existing formats preserve the original sources and names.</p>',
-            '<p>' + relative_link(page, 'sources/data-inventory.json', 'Authoritative registry') + ' · ' + relative_link(page, 'README.txt', 'Build and update instructions') + '</p>',
+    body = ['<p class="lead">Canonical enums, interfaces and schemas, with explicit ownership, reusable definitions and source evidence.</p>',
+            '<p>Fully Defined means the documentation contract is complete within its stated responsibility. Needs Decision identifies a partial contract with a recorded unresolved question. Neither status certifies runtime behavior or game balance. Existing/Proposed records provenance separately from completeness.</p>',
+            '<p>' + relative_link(page, 'sources/data-inventory.json', 'Authoritative registry') + ' · ' + relative_link(page, 'sources/data-model.schema.json', 'Generated JSON Schema bundle') + ' · ' + relative_link(page, 'validation/data-model-review.txt', 'Complete review report') + ' · ' + relative_link(page, 'README.txt', 'Build and update instructions') + '</p>',
             '<div class="summary-strip">' + ''.join(f'<span class="badge">{counts[plural.lower()]} {plural}</span>' for plural in CATEGORIES.values()) + f'<span class="badge">{counts["unique_structures"]} unique structures</span><span class="badge warning">{counts["needs_review"]} need review</span></div>']
     for category, plural in CATEGORIES.items():
         table_id = 'inventory-' + plural.lower()
@@ -267,18 +345,30 @@ def inventory_body(registry):
             evidence = '<details><summary>Source sections and existing formats</summary><ul>' + ''.join('<li>' + relative_link(page, ref, ref) + '</li>' for ref in entry['evidence']) + '</ul></details>'
             canonical = relative_link(page, entry['canonical_page'], 'Canonical feature section')
             issues = ''.join(' · ' + relative_link(page, page + '#review-' + issue, 'Review question') for issue in entry.get('review_issues', []))
-            body.append(f'<tr id="{entry["id"]}"><td><code>{escape(entry["name"])}</code></td><td>{entry_status(entry)}{issues}</td><td>{canonical}{links}{evidence}</td></tr>')
+            body.append(f'<tr id="{entry["id"]}"><td><code>{escape(entry["name"])}</code></td><td>{entry_status(entry)}{issues}</td><td>{definition_html(registry, entry)}{canonical}{links}{evidence}</td></tr>')
         body.append('</tbody></table></div>')
-    body.extend(['<h2 id="coverage">Coverage</h2>', f'<p>{counts["feature_pages_reviewed"]} feature pages and {counts["pages_reviewed"]} source pages reviewed; {counts["pages_with_data"]} feature pages have Data sections. {counts["existing"]} existing structures reused; {counts["proposed"]} proposed structures remain Pending Definition.</p>', '<ul>'])
+    body.extend(['<h2 id="coverage">Coverage</h2>', f'<p>{counts["feature_pages_reviewed"]} feature pages and {counts["pages_reviewed"]} source pages reviewed; {counts["pages_with_data"]} feature pages have Data sections. All {counts["unique_structures"]} original structures examined; {counts["partially_defined"]} remain partial / Needs Decision.</p>', '<ul>'])
+    for plural in CATEGORIES.values():
+        body.append(f'<li>{plural}: {counts[plural.lower()]} total, {counts["fully_defined_" + plural.lower()]} fully defined.</li>')
     body.extend('<li>' + escape(note) + '</li>' for note in registry['scope_notes'])
     body.extend(['</ul>', '<div class="table-scroll"><table><thead><tr><th scope="col">Reviewed page</th><th scope="col">Coverage</th></tr></thead><tbody>'])
     for reviewed in registry['pages']:
         count = sum(reviewed['page'] in e['feature_pages'] for e in registry['entries'])
         note = f'{count} associated structures' if count else reviewed['exclusion_reason']
         body.append('<tr><td>' + relative_link(page, reviewed['page'], reviewed['title']) + '</td><td>' + escape(note) + '</td></tr>')
-    body.extend(['</tbody></table></div>', '<h2 id="needs-review">Needs Review</h2>', '<p>These questions preserve ambiguity in the source documentation. Proposed entries retain Pending Definition while review is open.</p>'])
+    body.extend(['</tbody></table></div>', '<h2 id="conventions">Conventions and ownership</h2>', '<ul>'])
+    body.extend('<li>' + escape(note) + '</li>' for note in registry['conventions'])
+    body.append('</ul>')
+    for group in registry['dependency_groups']:
+        body.extend(['<h3>' + escape(group['name']) + '</h3>', '<p>' + escape(group['authority']) + '</p>',
+                     '<p>' + ' · '.join(type_link(registry, name) for name in group['contracts']) + '</p>'])
+    body.append('<h2 id="shared-definitions">Shared structural definitions</h2>')
+    for name, schema in sorted(registry['shared_definitions'].items()):
+        body.append('<details class="definition" id="shared-' + escape(name) + '"><summary>' + escape(name) + '</summary><p>' + escape(schema['description']) + '</p><pre><code>' + escape(json.dumps(schema, indent=2)) + '</code></pre></details>')
+    body.extend(['<h2 id="needs-review">Needs Review</h2>', '<p>Open questions block only the affected contracts. Resolved questions remain here to preserve review anchors and reasoning.</p>'])
     for issue in registry['review_issues']:
-        body.extend([f'<h3 id="review-{issue["id"]}">{escape(issue["id"].replace("-", " ").capitalize())}</h3>', '<p>' + escape(issue['question']) + '</p>',
+        body.extend([f'<h3 id="review-{issue["id"]}">{escape(issue["id"].replace("-", " ").capitalize())} ({escape(issue["state"])})</h3>', '<p>' + escape(issue['question']) + '</p>',
+                     '<p><strong>Alternatives:</strong> ' + escape(' / '.join(issue['alternatives'])) + '<br><strong>Recommendation:</strong> ' + escape(issue['recommendation'] or 'No preference established.') + '<br><strong>Impact:</strong> ' + escape(issue['impact']) + '</p>',
                      '<p>' + ' · '.join(relative_link(page, page + '#' + next(e['id'] for e in registry['entries'] if e['name'] == name), name) for name in issue['entries']) + '</p>',
                      '<ul>' + ''.join('<li>' + relative_link(page, ref, ref) + '</li>' for ref in issue['references']) + '</ul>'])
     return '\n'.join(body)
@@ -287,12 +377,12 @@ def inventory_body(registry):
 def inventory_page(registry, template):
     prefix = template.split('<main', 1)[0]
     prefix = re.sub(r'<title>.*?</title>', '<title>Data Inventory · MMORPG Reference v2</title>', prefix)
-    prefix = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Names, status and source references for documented enums, interfaces and schemas.">', prefix)
+    prefix = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Canonical data definitions, ownership, constraints and outstanding decisions.">', prefix)
     prefix = re.sub(r' aria-current=(?:"page"|page)', '', prefix)
     prefix = prefix.replace('<span class="section-label">Engineering</span>', '<span class="section-label">Catalogs</span>')
     footer = re.search(r'<footer class="page-footer">.*?</footer>', template, re.S).group()
-    toc = '<aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p>' + ''.join(f'<a href="#{anchor}">{title}</a>' for anchor, title in [('enums','Enums'), ('interfaces','Interfaces'), ('schemas','Schemas'), ('coverage','Coverage'), ('needs-review','Needs Review')]) + '</aside>'
-    main = '<main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Catalogs</div><h1>Data Inventory</h1><p class="page-description">Enums, interfaces and schemas; names, status and documentation evidence only.</p><div class="article-body">' + inventory_body(registry) + '</div>' + footer + '</main>'
+    toc = '<aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p>' + ''.join(f'<a href="#{anchor}">{title}</a>' for anchor, title in [('enums','Enums'), ('interfaces','Interfaces'), ('schemas','Schemas'), ('coverage','Coverage'), ('conventions','Conventions'), ('shared-definitions','Shared definitions'), ('needs-review','Needs Review')]) + '</aside>'
+    main = '<main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Catalogs</div><h1>Data Inventory</h1><p class="page-description">Enums, interfaces and schemas; canonical definitions and review evidence.</p><div class="article-body">' + inventory_body(registry) + '</div>' + footer + '</main>'
     return navigation(prefix + main + toc + '</div></div></body></html>\n', INVENTORY_PAGE)
 
 
@@ -316,10 +406,10 @@ def expected_outputs(registry, root=ROOT):
     search_path = root / 'assets/search-index.js'
     search = json.loads(search_path.read_text(encoding='utf-8').removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
     search = [r for r in search if r.get('source') != 'data-inventory']
-    records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Pending Definition Needs Review'}]
+    records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Fully Defined Needs Decision Needs Review'}]
     for entry in sorted(registry['entries'], key=lambda e: e['name'].casefold()):
         records.append({'title': entry['name'], 'section': 'Data Inventory · ' + entry['category'], 'url': INVENTORY_PAGE + '#' + entry['id'],
-                        'text': ' '.join([entry['status'], entry['definition_status'], entry.get('review_status', ''), *entry['feature_pages'], *entry['evidence']])})
+                        'text': ' '.join([entry['status'], entry['definition_status'], entry.get('review_status', ''), definition_search_text(entry['definition']), *entry['references'], *entry['feature_pages'], *entry['evidence']])})
     for reviewed in registry['pages']:
         associated = [e['name'] for e in registry['entries'] if reviewed['page'] in e['feature_pages']]
         if associated:
@@ -331,6 +421,8 @@ def expected_outputs(registry, root=ROOT):
                     guide_pages=sum(p['page'].startswith('guide/') for p in registry['pages']) + 1,
                     search_entries=len(search))
     outputs['data/manifest.json'] = json.dumps(manifest, indent=2) + '\n'
+    outputs['sources/data-model.schema.json'] = json.dumps(schema_bundle(registry), indent=2, ensure_ascii=False) + '\n'
+    outputs['validation/data-model-review.txt'] = review_report(registry)
     return outputs
 
 

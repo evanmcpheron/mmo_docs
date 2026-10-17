@@ -66,18 +66,18 @@ class InventoryTests(unittest.TestCase):
         self.rejected(registry, 'Duplicate inventory identifiers')
         self.rejected(registry, 'Duplicate inventory names')
 
-    def test_definition_members_and_invalid_categories_are_rejected(self):
-        for key in ('fields', 'members', 'properties', 'values', 'methods', 'inherits', 'default', 'example'):
+    def test_unmanaged_entry_fields_and_invalid_categories_are_rejected(self):
+        for key in ('fields', 'properties', 'values', 'methods', 'inherits', 'default', 'example'):
             registry = copy.deepcopy(self.registry)
             registry['entries'][0][key] = []
-            self.rejected(registry, 'definitions are forbidden')
+            self.rejected(registry, 'invalid canonical entry metadata')
         registry['entries'][0]['category'] = 'Class'
         self.rejected(registry, 'exactly Enum, Interface and Schema')
 
-    def test_proposed_entries_require_pending_definition(self):
+    def test_definition_status_must_agree_with_open_decisions(self):
         registry = copy.deepcopy(self.registry)
-        next(e for e in registry['entries'] if e['status'] == 'Proposed')['definition_status'] = 'Documented'
-        self.rejected(registry, 'invalid existence/definition status')
+        next(e for e in registry['entries'] if e.get('review_issues'))['definition_status'] = 'Fully Defined'
+        self.rejected(registry, 'decision status and definition extent disagree')
 
     def test_missing_evidence_paths_and_anchors_are_rejected(self):
         for reference in ('guide/missing-page.html#main', 'guide/combat.html#missing-section'):
