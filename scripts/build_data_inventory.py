@@ -15,6 +15,7 @@ from data_model import model_errors, schema_bundle, review_report, schema_childr
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PAGE = 'guide/data-inventory.html'
+ROADMAP_PAGE = 'guide/development-roadmap.html'
 CATEGORIES = {'Enum': 'Enums', 'Interface': 'Interfaces', 'Schema': 'Schemas'}
 DATA_START = '<!-- data-inventory:start -->'
 DATA_END = '<!-- data-inventory:end -->'
@@ -263,7 +264,35 @@ def navigation(source, page):
     link = f'<a data-inventory-nav href="{address}"{current}>Data Inventory</a>'
     if source.count('<p>Catalogs</p>') != 1:
         raise ValueError(f'{page}: expected one Catalogs navigation group')
-    return source.replace('<p>Catalogs</p>', '<p>Catalogs</p>' + link)
+    source = source.replace('<p>Catalogs</p>', '<p>Catalogs</p>' + link)
+    source = re.sub(r'<a data-roadmap-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
+    current = ' aria-current="page"' if page == ROADMAP_PAGE else ''
+    address = posixpath.relpath(ROADMAP_PAGE, posixpath.dirname(page) or '.')
+    link = f'<a data-roadmap-nav href="{address}"{current}>Development Roadmap</a>'
+    source, count = re.subn(r'(<a class="nav-home\b[^>]*>.*?</a>)', r'\1' + link, source, flags=re.S)
+    if count != 1:
+        raise ValueError(f'{page}: expected one Overview navigation link')
+    return source
+
+
+def roadmap_search(root=ROOT):
+    roadmap = json.loads((root / 'sources/development-roadmap.json').read_text(encoding='utf-8'))
+    records = [{'title': roadmap['title'], 'section': 'Development planning', 'url': ROADMAP_PAGE,
+                'text': 'Dependency ordered epics acceptance criteria completion evidence phases milestones actionable progress'}]
+    for phase in roadmap['phases']:
+        records.append({'title': phase['title'], 'section': 'Development Roadmap · Phase',
+                        'url': ROADMAP_PAGE + '#' + phase['id'], 'text': phase['objective']})
+    for epic in roadmap['epics']:
+        records.append({'title': epic['id'] + ' · ' + epic['title'], 'section': 'Development Roadmap · Epic',
+                        'url': ROADMAP_PAGE + '#' + epic['id'],
+                        'text': ' '.join([epic['objective'], epic['scope'], epic['status'],
+                                          *epic['acceptance_criteria'], *epic['hard_dependencies'],
+                                          *epic.get('recommended_predecessors', [])])})
+    for milestone in roadmap['milestones']:
+        records.append({'title': milestone['title'], 'section': 'Development Roadmap · Milestone',
+                        'url': ROADMAP_PAGE + '#' + milestone['id'],
+                        'text': ' '.join([milestone['objective'], milestone['outcome'], *milestone['required_epics']])})
+    return [dict(record, source='development-roadmap') for record in records]
 
 
 def type_link(registry, name):
@@ -418,7 +447,7 @@ def expected_outputs(registry, root=ROOT):
     outputs[INVENTORY_PAGE] = inventory_page(registry, (root / 'guide/networking.html').read_text(encoding='utf-8'))
     search_path = root / 'assets/search-index.js'
     search = json.loads(search_path.read_text(encoding='utf-8').removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
-    search = [r for r in search if r.get('source') != 'data-inventory']
+    search = [r for r in search if r.get('source') not in ('data-inventory', 'development-roadmap')]
     records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Fully Defined design decisions future Briarwake implementation work'}]
     for entry in sorted(registry['entries'], key=lambda e: e['name'].casefold()):
         records.append({'title': entry['name'], 'section': 'Data Inventory · ' + entry['category'], 'url': INVENTORY_PAGE + '#' + entry['id'],
@@ -428,6 +457,7 @@ def expected_outputs(registry, root=ROOT):
         if associated:
             records.append({'title': reviewed['title'] + ' — Data', 'section': 'Data Inventory', 'url': reviewed['page'] + '#data', 'text': ' '.join(associated)})
     search.extend(dict(record, source='data-inventory') for record in records)
+    search.extend(roadmap_search(root))
     outputs['assets/search-index.js'] = 'window.SEARCH_INDEX=' + json.dumps(search, ensure_ascii=True, separators=(',', ':')) + ';\n'
     manifest = json.loads((root / 'data/manifest.json').read_text(encoding='utf-8'))
     manifest.update(version=registry['content_version'], html_pages=len(registry['pages']) + 1,

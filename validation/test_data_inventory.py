@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_data_inventory import (CATEGORIES, DATA_START, INVENTORY_PAGE, content_fingerprint,
-                                  expected_outputs, load_registry, stale_outputs, validate_registry)
+                                  ROADMAP_PAGE, expected_outputs, load_registry, stale_outputs, validate_registry)
 
 
 class Element:
@@ -58,6 +58,29 @@ class InventoryTests(unittest.TestCase):
     def test_registry_and_generated_output_are_current(self):
         self.assertEqual([], validate_registry(self.registry))
         self.assertEqual([], stale_outputs(expected_outputs(self.registry)))
+
+    def test_planning_reference_navigation_search_and_counts(self):
+        reviewed = next(page for page in self.registry['pages'] if page['page'] == ROADMAP_PAGE)
+        self.assertEqual('Reference', reviewed['kind'])
+        self.assertTrue(reviewed['exclusion_reason'])
+        self.assertFalse(any(ROADMAP_PAGE in entry['feature_pages'] for entry in self.registry['entries']))
+        self.assertNotIn(DATA_START, (ROOT / ROADMAP_PAGE).read_text())
+        for path in ROOT.rglob('*.html'):
+            page = Tree(path.read_text())
+            links = [node for node in page.elements if node.tag == 'a' and 'data-roadmap-nav' in node.attrs]
+            self.assertEqual(1, len(links), str(path))
+            self.assertEqual((ROOT / ROADMAP_PAGE).resolve(), (path.parent / links[0].attrs['href']).resolve())
+        home = Tree((ROOT / 'index.html').read_text())
+        self.assertTrue(any(node.tag == 'a' and node.attrs.get('href') == ROADMAP_PAGE and
+                            node.parent.tag != 'nav' for node in home.elements))
+        roadmap = json.loads((ROOT / 'sources/development-roadmap.json').read_text())
+        search = json.loads((ROOT / 'assets/search-index.js').read_text().removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
+        destinations = {record['url'] for record in search if record.get('source') == 'development-roadmap'}
+        self.assertTrue({ROADMAP_PAGE, *(ROADMAP_PAGE + '#' + epic['id'] for epic in roadmap['epics'])} <= destinations)
+        manifest = json.loads((ROOT / 'data/manifest.json').read_text())
+        self.assertEqual(len(list(ROOT.rglob('*.html'))), manifest['html_pages'])
+        self.assertEqual(len(list((ROOT / 'guide').glob('*.html'))), manifest['guide_pages'])
+        self.assertEqual(len(search), manifest['search_entries'])
 
     def test_duplicate_identifiers_and_case_insensitive_names_are_rejected(self):
         registry = copy.deepcopy(self.registry)

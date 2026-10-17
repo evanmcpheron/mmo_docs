@@ -12,6 +12,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from check_data_inventory import inventory_errors
+from check_development_roadmap import load as load_roadmap, roadmap_errors
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'data'
@@ -198,6 +199,10 @@ else:
 inventory_registry, data_inventory_errors = inventory_errors()
 check('Data inventory coverage, evidence and generated output', not data_inventory_errors,
       f"{len(inventory_registry['entries'])} structures; errors: {data_inventory_errors[:20]}")
+development_roadmap = load_roadmap()
+development_roadmap_errors = roadmap_errors(development_roadmap)
+check('Development roadmap dependencies, evidence, coverage and generated progress', not development_roadmap_errors,
+      f"{len(development_roadmap['epics'])} epics; errors: {development_roadmap_errors[:20]}")
 counts = Counter(ability['content_status'] for ability in abilities)
 talent_counts = Counter(node['binding_status'] for node in talents)
 report = {'generated_at_utc': datetime.now(timezone.utc).isoformat(), 'package_version': catalog['version'], 'checks_passed': sum(check['passed'] for check in checks), 'checks_failed': sum(not check['passed'] for check in checks), 'checks': checks, 'level_allocation_cases': 2940, 'sample_capstone_allocations': len(sample_builds), 'faction_role_coverage': coverage, 'readiness': {'ability_status_counts': dict(counts), 'talent_status_counts': dict(talent_counts), 'representative_item_configuration_required': sum(item.get('effect', {}).get('configuration_required', False) for item in items), 'gameplay_balance_tested': False, 'database_integration_tested': False, 'network_capacity_tested': False}, 'html_page_count': len(html_files)}

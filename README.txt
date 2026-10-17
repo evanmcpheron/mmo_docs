@@ -13,7 +13,8 @@ External source links require internet access. Keep assets/ beside the HTML.
 Do not open index.html inside a ZIP preview without extracting the other files.
 
 NAVIGATION
-The sidebar groups system rules, classes, professions and catalogs.
+The sidebar opens Development Roadmap prominently, then groups system rules,
+classes, professions and catalogs.
 Search the full reference from the top bar (Ctrl+K or Cmd+K).
 Catalog pages also have local table filters. Page headings have stable anchors.
 Use the browser Print command or the Print button for the current page.
@@ -21,7 +22,7 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-54 HTML pages: 22 system/catalog chapters, 12 class pages, 16 profession pages,
+55 HTML pages: 23 system/catalog/planning chapters, 12 class pages, 16 profession pages,
 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -56,16 +57,42 @@ The HTML evidence page records checks from package generation; report.json is
 the source of truth after a later rerun.
 
 validation/browser-checks.json preserves the original rendering-only evidence
-and its navigation limitations. Current inventory browser evidence is recorded
+and its navigation limitations. Current inventory and roadmap browser evidence is recorded
 in validation/data-inventory-browser-checks.json: actual offline file navigation,
-canonical definitions, filters/search, feature links, mobile layout and reading
-with JavaScript disabled, using an isolated installed Chrome profile.
+canonical definitions, filters/search, feature links, roadmap epics, mobile layout,
+print visibility and reading with JavaScript disabled, using an isolated installed
+Chrome profile.
 
 DATA EDITING
 HTML is a static published snapshot. Editing JSON does not automatically update
 HTML tables or search data. Change matching reference pages and regenerate the
 search index before distributing an edited version. Preserve stable IDs and
 increment content versions when meanings change.
+
+DEVELOPMENT ROADMAP AND PROGRESS
+Open guide/development-roadmap.html for the dependency-ordered development plan,
+phase progress, actionable epics, milestones, completion evidence and open gates.
+It is planning/reference documentation; it adds no canonical gameplay contracts.
+All epic statuses begin Not Started because this repository contains design
+evidence, not verified game implementation.
+
+sources/development-roadmap.json is the sole editable roadmap/progress source.
+Edit an existing epic's status and verified_evidence there. Use exactly Not
+Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
+evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
+adding an epic, then update relevant dependencies, milestones and coverage.
+Do not edit the generated page or search records. Rebuild and validate with:
+python3 scripts/build_development_roadmap.py
+python3 scripts/build_data_inventory.py --review-page guide/development-roadmap.html
+python3 scripts/build_development_roadmap.py --check
+python3 scripts/build_data_inventory.py --check
+python3 -m unittest discover -s validation -p 'test_*.py'
+python3 validation/run_checks.py
+
+The roadmap builder owns its static HTML. The inventory builder refreshes
+navigation, roadmap-tagged search, page review metadata and manifest counts.
+Generated dashboards, phase progress and milestone states derive from the same
+epic statuses. The page remains readable offline and with JavaScript disabled.
 
 DATA INVENTORY AND CANONICAL CONTRACTS
 Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.
@@ -145,7 +172,8 @@ Set BRIARWAKE_CHROME_BIN if needed. Its evidence is stored separately from the
 historical rendering-only record in validation/data-inventory-browser-checks.json.
 
 The builder owns guide/data-inventory.html, marked Data blocks, Data contents
-links, the Data Inventory sidebar link, inventory-tagged search records,
+links, the Data Inventory and Development Roadmap sidebar links, inventory- and
+roadmap-tagged search records,
 documentation counts in data/manifest.json, the schema bundle and the generated
 review report. It preserves original feature content and noninventory search.
 Existing feature HTML remains authoritative for mechanics; the original full-site
