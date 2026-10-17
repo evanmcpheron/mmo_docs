@@ -18,7 +18,7 @@ REPORT_PATH = 'validation/data-model-review.txt'
 DIALECT = 'https://json-schema.org/draft/2020-12/schema'
 KEYWORDS = {'$ref', 'type', 'description', 'properties', 'required', 'additionalProperties',
             'propertyNames', 'items', 'enum', 'const', 'anyOf', 'oneOf', 'allOf',
-            'minimum', 'maximum', 'multipleOf', 'minLength', 'maxLength',
+            'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf', 'minLength', 'maxLength',
             'minItems', 'maxItems', 'uniqueItems', 'format'}
 TYPES = {'object', 'array', 'string', 'integer', 'number', 'boolean', 'null'}
 
@@ -32,6 +32,7 @@ def schema_bundle(registry):
     return {
         '$schema': registry['schema_dialect'],
         '$id': 'urn:briarwake:data-model',
+        'x-content-version': registry['content_version'],
         'description': 'Generated from data-inventory.json. Select a named $defs contract. '
                        'Needs Decision contracts validate only the documented portion; '
                        'x-members are symbolic identifiers with no assigned wire encoding.',
@@ -102,7 +103,7 @@ def schema_errors(schema, defs, path):
     for keyword in ('oneOf', 'anyOf', 'allOf'):
         if keyword in schema and (not isinstance(schema[keyword], list) or not schema[keyword]):
             errors.append(f'{path}: invalid {keyword}')
-    for keyword in ('minimum', 'maximum', 'multipleOf'):
+    for keyword in ('minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf'):
         if keyword in schema and (type(schema[keyword]) not in (int, float) or
                                   not math.isfinite(schema[keyword])):
             errors.append(f'{path}: invalid {keyword}')
@@ -192,7 +193,10 @@ def instance_errors(value, schema, defs, path='$', catalogs=None):
     if type(value) in (int, float):
         if not math.isfinite(value):
             return errors + [f'{path}: number must be finite']
-        for key, failed in [('minimum', value < schema.get('minimum', -math.inf)), ('maximum', value > schema.get('maximum', math.inf))]:
+        for key, failed in [('minimum', value < schema.get('minimum', -math.inf)),
+                            ('maximum', value > schema.get('maximum', math.inf)),
+                            ('exclusiveMinimum', value <= schema.get('exclusiveMinimum', -math.inf)),
+                            ('exclusiveMaximum', value >= schema.get('exclusiveMaximum', math.inf))]:
             if failed:
                 errors.append(f'{path}: violates {key}')
         if 'multipleOf' in schema and Decimal(str(value)) % Decimal(str(schema['multipleOf'])):
@@ -215,6 +219,21 @@ def instance_errors(value, schema, defs, path='$', catalogs=None):
             available = [catalogs[name] for name in alternatives if name in catalogs]
             if available and value not in set().union(*available):
                 errors.append(f'{path}: unresolved content identity {value!r} in {alternatives}')
+    return errors
+
+
+def command_targeting_errors(command, policy, defs):
+    errors = instance_errors(command, defs['ability_command_v2'], defs, 'command')
+    errors.extend(instance_errors(policy, defs['AbilityTargetingPolicy'], defs, 'policy'))
+    if errors:
+        return errors
+    fields = {'entity': 'target_entity_id', 'point': 'aim_point', 'direction': 'aim_direction'}
+    expected = fields.get(policy['input_kind'])
+    for field in fields.values():
+        if (command[field] is not None) != (field == expected):
+            errors.append(f'command.{field}: incompatible with resolved targeting policy')
+    if policy['mode'] == 'passive':
+        errors.append('command: passive abilities cannot be activated')
     return errors
 
 
@@ -320,6 +339,9 @@ def model_errors(registry, root):
     for issue in registry['review_issues']:
         if issue.get('state') not in ('open', 'resolved') or not issue.get('alternatives') or not issue.get('impact'):
             errors.append(f'{issue["id"]}: incomplete decision record')
+        criteria = issue.get('completion_criteria', [])
+        if issue.get('state') == 'open' and (not criteria or not all(isinstance(item, str) and item.strip() for item in criteria)):
+            errors.append(f'{issue["id"]}: open review needs actionable completion criteria')
     graph = {name: type_references(schema, False) for name, schema in defs.items()}
     visited, active = set(), set()
 
@@ -362,6 +384,7 @@ def review_report(registry):
     feature_pages = sum(p['kind'] == 'Feature' for p in registry['pages'])
     lines = ['BRIARWAKE DATA MODEL DEFINITION AND REVIEW',
              'Generated from sources/data-inventory.json; edit that registry, then rebuild.',
+             'Reviewed content version: ' + registry['content_version'] + '; registry format: 2.',
              'Documentation contracts only; no gameplay/database/network implementation or balance certification.',
              '', 'A. DEFINITION COVERAGE',
              f'Original inventory: {initial["enums"]} enums, {initial["interfaces"]} interfaces, '
@@ -371,6 +394,8 @@ def review_report(registry):
         full = sum(e['definition_status'] == 'Fully Defined' for e in selected)
         lines.append(f'{category}: {len(selected)} total; {full} fully defined; {len(selected)-full} partial / Needs Decision.')
     lines.extend([f'Partial / Needs Decision structures: {sum(e["definition_extent"] == "Partial" for e in entries)}.',
+                  f'Review items: {sum(q["state"] == "open" for q in registry["review_issues"])} open; '
+                  f'{sum(q["state"] == "resolved" for q in registry["review_issues"])} resolved.',
                   f'Feature pages updated: {feature_pages} generated Data sections; feature pages reviewed: '
                   f'{feature_pages} ({len(registry["pages"])} source HTML pages total).',
                   '', 'B. DRY AND COMPATIBILITY AUDIT', *registry['audit_notes'],
@@ -386,6 +411,7 @@ def review_report(registry):
                       '  Alternatives: ' + ' | '.join(issue['alternatives']),
                       '  Recommendation: ' + (issue['recommendation'] or 'No evidence-supported preference.'),
                       '  Impact: ' + issue['impact']])
+        lines.extend('  Required to complete: ' + item for item in issue.get('completion_criteria', []))
     lines.extend(['', 'F. REPEATABLE VALIDATION',
                   'python3 scripts/build_data_inventory.py --check',
                   'python3 validation/check_data_inventory.py',

@@ -23,7 +23,7 @@ ENTRY_KEYS = {'id', 'name', 'category', 'status', 'definition_status', 'canonica
               'feature_pages', 'evidence', 'review_status', 'review_issues', 'definition',
               'responsibility', 'authority', 'modeling_notes', 'references', 'definition_extent',
               'reviewed_against', 'members', 'representation', 'previous_category'}
-REGISTRY_KEYS = {'version', 'title', 'pages', 'reviewed_sources', 'scope_notes',
+REGISTRY_KEYS = {'version', 'content_version', 'title', 'pages', 'reviewed_sources', 'scope_notes',
                  'review_issues', 'entries', 'schema_dialect', 'conventions', 'dependency_groups',
                  'shared_definitions', 'sample_bindings', 'initial_inventory_counts', 'audit_notes'}
 
@@ -90,6 +90,8 @@ def totals(registry):
         'proposed': sum(e['status'] == 'Proposed' for e in entries),
         'needs_review': sum(e.get('review_status') == 'Needs Review' for e in entries),
         'partially_defined': sum(e['definition_extent'] == 'Partial' for e in entries),
+        'open_review_items': sum(q['state'] == 'open' for q in registry['review_issues']),
+        'resolved_review_items': sum(q['state'] == 'resolved' for q in registry['review_issues']),
         **{'fully_defined_' + plural.lower(): sum(e['category'] == category and
              e['definition_status'] == 'Fully Defined' for e in entries)
            for category, plural in CATEGORIES.items()},
@@ -102,6 +104,11 @@ def validate_registry(registry, root=ROOT):
         errors.append('Registry keys disagree with the canonical model format')
     if registry.get('version') != 2 or registry.get('title') != 'Data Inventory':
         errors.append('Unsupported registry version or title')
+    if not isinstance(registry.get('content_version'), str) or not re.fullmatch(r'\d+\.\d+\.\d+-design', registry['content_version']):
+        errors.append('Missing or invalid reviewed content version')
+    catalog = json.loads((root / 'data/character_catalog.json').read_text(encoding='utf-8'))
+    if catalog.get('version') != registry.get('content_version'):
+        errors.append('Character catalog and canonical contract content versions disagree')
     entries = registry['entries']
     pages = registry['pages']
     documents = {p.relative_to(root).as_posix(): Document(strip_data(p.read_text(encoding='utf-8')))
@@ -192,7 +199,8 @@ def validate_registry(registry, root=ROOT):
         if bool(issue_ids) != (entry.get('review_status') == 'Needs Review'):
             errors.append(f'{label}: review status and issue references disagree')
         for identifier in issue_ids:
-            if identifier not in issue_by_id or label not in issue_by_id[identifier]['entries']:
+            if (identifier not in issue_by_id or label not in issue_by_id[identifier]['entries'] or
+                    issue_by_id[identifier]['state'] != 'open'):
                 errors.append(f'{label}: invalid review issue {identifier}')
         for identifier, issue in issue_by_id.items():
             if issue['state'] == 'open' and label in issue['entries'] and identifier not in issue_ids:
@@ -299,7 +307,7 @@ def definition_html(registry, entry):
     if 'properties' in schema:
         lines.append('<div class="table-scroll"><table><thead><tr><th>Property</th><th>Type</th><th>Presence</th><th>Meaning / constraints</th></tr></thead><tbody>')
         for name, field in schema['properties'].items():
-            bounds = {k: field[k] for k in ('minimum', 'maximum', 'multipleOf', 'minLength', 'maxLength', 'minItems', 'maxItems', 'enum', 'const') if k in field}
+            bounds = {k: field[k] for k in ('minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf', 'minLength', 'maxLength', 'minItems', 'maxItems', 'enum', 'const') if k in field}
             identity = field.get('x-reference') or field.get('items', {}).get('x-reference')
             meaning = escape(field.get('description', ''))
             if identity:
@@ -320,7 +328,7 @@ def definition_html(registry, entry):
 
 
 def definition_search_text(schema):
-    terms = [schema.get('description', ''), *schema.get('properties', {})]
+    terms = [schema.get('description', ''), *schema.get('properties', {}), *schema.get('x-invariants', [])]
     terms.extend(str(value) for value in schema.get('enum', schema.get('x-members', [])))
     terms.extend(definition_search_text(child) for child in schema_children(schema))
     return ' '.join(terms)
@@ -331,6 +339,7 @@ def inventory_body(registry):
     titles = {p['page']: p['title'] for p in registry['pages']}
     counts = totals(registry)
     body = ['<p class="lead">Canonical enums, interfaces and schemas, with explicit ownership, reusable definitions and source evidence.</p>',
+            '<p>Reviewed content version: <code>' + escape(registry['content_version']) + '</code>. Registry format: 2.</p>',
             '<p>Fully Defined means the documentation contract is complete within its stated responsibility. Needs Decision identifies a partial contract with a recorded unresolved question. Neither status certifies runtime behavior or game balance. Existing/Proposed records provenance separately from completeness.</p>',
             '<p>' + relative_link(page, 'sources/data-inventory.json', 'Authoritative registry') + ' · ' + relative_link(page, 'sources/data-model.schema.json', 'Generated JSON Schema bundle') + ' · ' + relative_link(page, 'validation/data-model-review.txt', 'Complete review report') + ' · ' + relative_link(page, 'README.txt', 'Build and update instructions') + '</p>',
             '<div class="summary-strip">' + ''.join(f'<span class="badge">{counts[plural.lower()]} {plural}</span>' for plural in CATEGORIES.values()) + f'<span class="badge">{counts["unique_structures"]} unique structures</span><span class="badge warning">{counts["needs_review"]} need review</span></div>']
@@ -365,12 +374,14 @@ def inventory_body(registry):
     body.append('<h2 id="shared-definitions">Shared structural definitions</h2>')
     for name, schema in sorted(registry['shared_definitions'].items()):
         body.append('<details class="definition" id="shared-' + escape(name) + '"><summary>' + escape(name) + '</summary><p>' + escape(schema['description']) + '</p><pre><code>' + escape(json.dumps(schema, indent=2)) + '</code></pre></details>')
-    body.extend(['<h2 id="needs-review">Needs Review</h2>', '<p>Open questions block only the affected contracts. Resolved questions remain here to preserve review anchors and reasoning.</p>'])
+    body.extend(['<h2 id="needs-review">Needs Review</h2>', f'<p>{counts["open_review_items"]} open review items; {counts["resolved_review_items"]} resolved. Open items list the content or implementation evidence still required. Resolved decisions retain their anchors and reasoning.</p>'])
     for issue in registry['review_issues']:
         body.extend([f'<h3 id="review-{issue["id"]}">{escape(issue["id"].replace("-", " ").capitalize())} ({escape(issue["state"])})</h3>', '<p>' + escape(issue['question']) + '</p>',
                      '<p><strong>Alternatives:</strong> ' + escape(' / '.join(issue['alternatives'])) + '<br><strong>Recommendation:</strong> ' + escape(issue['recommendation'] or 'No preference established.') + '<br><strong>Impact:</strong> ' + escape(issue['impact']) + '</p>',
                      '<p>' + ' · '.join(relative_link(page, page + '#' + next(e['id'] for e in registry['entries'] if e['name'] == name), name) for name in issue['entries']) + '</p>',
                      '<ul>' + ''.join('<li>' + relative_link(page, ref, ref) + '</li>' for ref in issue['references']) + '</ul>'])
+        if issue.get('completion_criteria'):
+            body.append('<p><strong>Required to complete:</strong></p><ul>' + ''.join('<li>' + escape(item) + '</li>' for item in issue['completion_criteria']) + '</ul>')
     return '\n'.join(body)
 
 
@@ -417,7 +428,7 @@ def expected_outputs(registry, root=ROOT):
     search.extend(dict(record, source='data-inventory') for record in records)
     outputs['assets/search-index.js'] = 'window.SEARCH_INDEX=' + json.dumps(search, ensure_ascii=True, separators=(',', ':')) + ';\n'
     manifest = json.loads((root / 'data/manifest.json').read_text(encoding='utf-8'))
-    manifest.update(html_pages=len(registry['pages']) + 1,
+    manifest.update(version=registry['content_version'], html_pages=len(registry['pages']) + 1,
                     guide_pages=sum(p['page'].startswith('guide/') for p in registry['pages']) + 1,
                     search_entries=len(search))
     outputs['data/manifest.json'] = json.dumps(manifest, indent=2) + '\n'

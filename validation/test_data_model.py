@@ -58,10 +58,13 @@ class ModelTests(unittest.TestCase):
         self.assertTrue(schema_errors(schema, self.defs, 'fixture'))
         self.assertTrue(instance_errors('legendary', self.defs['ItemGrade'], self.defs))
 
-    def test_symbolic_members_do_not_invent_serialized_values(self):
+    def test_approved_string_encodings_cannot_drift(self):
         registry = copy.deepcopy(self.registry)
         next(e for e in registry['entries'] if e['name'] == 'QuestStatus')['members'][0]['value'] = 0
-        self.rejected_model(registry, 'symbolic members cannot assign serialized values')
+        self.rejected_model(registry, 'invalid enum reference/value projection')
+        self.assertEqual([], instance_errors('accepted', self.defs['QuestStatus'], self.defs))
+        self.assertTrue(instance_errors(0, self.defs['QuestStatus'], self.defs))
+        self.assertTrue(instance_errors('Accepted', self.defs['QuestStatus'], self.defs))
         self.assertEqual('content reference', self.entries['CharacterClass']['responsibility'])
         self.assertNotIn('enum', self.defs['CharacterClass'])
 

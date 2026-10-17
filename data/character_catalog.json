@@ -1,6 +1,6 @@
 {
-  "version": "2.0.0-design",
-  "date": "2026-10-16",
+  "version": "2.1.0-design",
+  "date": "2026-10-17",
   "status": "mechanics_design_with_prototype_profiles_not_balance_certified",
   "level_cap": 60,
   "talent_points": {
@@ -12380,7 +12380,8 @@
             "capacity_cost": 2,
             "aggregate_full_pool_DPS_power_coefficient": 0.3,
             "lifetime_seconds": 0,
-            "replace_one_lesser": true
+            "replace_one_lesser": true,
+            "summon_kind": "specialized_mobile"
           }
         ]
       },
@@ -13260,7 +13261,7 @@
       "level": 10,
       "name": "Balm Chorus",
       "target_mode": "self_aoe",
-      "effect": "Spend Cadence for a capped group healing pulse.",
+      "effect": "Spend two Harmony and the authored Mana cost for a capped group healing pulse.",
       "previous_level": 24,
       "profile_id": "AH",
       "execution": {
@@ -13414,7 +13415,7 @@
       "level": 50,
       "name": "Encore of Mercy",
       "target_mode": "self_aoe",
-      "effect": "Consume active Harmonies for an emergency restorative finale.",
+      "effect": "Spend three Harmony and the authored Mana cost for an emergency restorative finale; maintained songs are not consumed.",
       "previous_level": 54,
       "profile_id": "AH",
       "execution": {
@@ -27297,7 +27298,7 @@
       "max_ranks": 1,
       "exclusive_group": "ranger.transformation",
       "requires_transformation": false,
-      "effect": "Retreating Step temporarily improves the next ranged attack's accuracy.",
+      "effect": "After Retreating Step, the next stationary ranged cast may be performed while moving. Consume this permission at cast acceptance; clear it on combat end, death, respecialization or disconnect. Target validation and output are unchanged.",
       "prerequisite_any_talent_id": [
         "talent.ranger.reliable_string",
         "talent.ranger.light_step",
@@ -48250,7 +48251,7 @@
       "prerequisite_min_rank": 0,
       "source_id": "talent.minstrel.clear_harmony",
       "source_version": "v1",
-      "effect": "Each rank extends a maintained Harmony phrase by 0.2 seconds.",
+      "effect": "Each rank extends maintained healing-song duration by 0.2 seconds; the Harmony resource has no phrase duration.",
       "binding_status": "bespoke_rule_binding_required",
       "required_ability_ids": [],
       "points_per_rank": 1
@@ -48782,7 +48783,7 @@
       "prerequisite_min_rank": 1,
       "source_id": "talent.minstrel.no_lost_notes",
       "source_version": "v1",
-      "effect": "Each rank preserves 2% more Cadence after an interrupted song.",
+      "effect": "Each rank reduces the Mana cost of maintained healing songs by 2%. Does not change Harmony generation, spending or channel refunds.",
       "binding_status": "bespoke_rule_binding_required",
       "required_ability_ids": [],
       "points_per_rank": 1
@@ -54623,7 +54624,7 @@
       "max_ranks": 1,
       "exclusive_group": "marksman.transformation",
       "requires_transformation": false,
-      "effect": "Sighted Arrow maintains more accuracy after limited movement.",
+      "effect": "While moving, retain the final Aim unit instead of losing it to movement decay. Higher Aim units decay normally. This changes neither hit chance nor the separate Focus resource.",
       "prerequisite_any_talent_id": [
         "talent.marksman.sighted_arrow_refinement",
         "talent.marksman.breath_control_discipline",

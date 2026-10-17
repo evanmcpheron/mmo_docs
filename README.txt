@@ -1,4 +1,4 @@
-MMORPG GAMEPLAY REFERENCE — VERSION 2.0
+MMORPG GAMEPLAY REFERENCE — VERSION 2.1
 Mechanics design, not a playable Godot project
 
 OPEN THE REFERENCE
@@ -55,11 +55,11 @@ and allocation_examples.json. It does not regenerate HTML or run a game.
 The HTML evidence page records checks from package generation; report.json is
 the source of truth after a later rerun.
 
-Browser evidence records rendered HTML/CSS/JS checks. This build environment
-blocks file-URL and localhost navigation, so actual browser navigation could
-not be certified here. Local link paths and anchors were checked structurally;
-the shipped markup uses ordinary relative assets/scripts and no fetch dependency.
-See validation/browser-checks.json for the exact method and limitations.
+validation/browser-checks.json preserves the original rendering-only evidence
+and its navigation limitations. Current inventory browser evidence is recorded
+in validation/data-inventory-browser-checks.json: actual offline file navigation,
+canonical definitions, filters/search, feature links, mobile layout and reading
+with JavaScript disabled, using an isolated installed Chrome profile.
 
 DATA EDITING
 HTML is a static published snapshot. Editing JSON does not automatically update
@@ -86,15 +86,39 @@ It contains JSON Schema 2020-12 fragments, shared definitions, conventions,
 authority/lifecycle decisions, dependency groups, source associations, coverage,
 review questions and source-record validation bindings. No gameplay code is here.
 The registry format version is independent of content/rules/database versions.
+Its content_version owns the reviewed package revision; the generated schema
+bundle exposes the same revision as x-content-version, and validation rejects
+a character catalog with a different package version.
 
 sources/data-model.schema.json is a generated language-neutral $defs bundle.
 Select a named definition when validating; the bundle root is a catalog, not a
 single gameplay payload. Enums with established values preserve their encodings.
 x-members represents symbolic alternatives without inventing wire encodings.
-Partially established enums expose only their established serialized subset.
+Reviewed enums now use exact string encodings while preserving existing values.
 Needs Decision means the schema covers only the supported portion. x-invariants
 record semantic checks that a future server/content validator must enforce.
 Neither a schema match nor Fully Defined certifies runtime bindings or balance.
+
+The 2.1.0-design review resolves targeting inputs for all 21 existing modes,
+nullable unused command fields, checked optional character identity and current-
+session coordinate scope. New messages have versioned discriminators; existing
+ability_command_v2 keeps its name. command_targeting_errors in scripts/data_model.py
+checks a command against its resolved policy; session identity, visibility, range
+and world geometry still require authoritative runtime checks.
+
+Equipment uses explicit personal equipment-container placement and atomic slot,
+item and container revisions. Invitations have versioned one-use lifecycles;
+guild commands use exact variants and rolling committed withdrawal accounting.
+Public combat results redact hidden sources and exclude internal breakdowns.
+Status cleanup flags compose explicitly. Minstrel costs, deterministic Ranger
+talent behavior, support accounting and the two-unit Bonewright category agree
+across the canonical contracts, shipped data, feature guidance and search.
+
+All original type names and anchors remain. ItemRarity is a compatibility alias
+of ItemGrade; StatusPersistencePolicy is now a composable object schema. Open
+review items list concrete completion criteria and continue to block incomplete
+content. Runtime bindings, encounter/starter assets, economic configuration,
+deployment security and executed gameplay fixtures are not supplied by this repo.
 
 Build: python3 scripts/build_data_inventory.py
 Check without writing: python3 scripts/build_data_inventory.py --check

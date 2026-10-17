@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:briarwake:data-model",
+  "x-content-version": "2.1.0-design",
   "description": "Generated from data-inventory.json. Select a named $defs contract. Needs Decision contracts validate only the documented portion; x-members are symbolic identifiers with no assigned wire encoding.",
   "$defs": {
     "AbilityCostPolicy": {
@@ -269,7 +270,7 @@
       "properties": {
         "mode": {
           "$ref": "#/$defs/TargetMode",
-          "description": "Mode."
+          "description": "Existing authored TargetMode token; projectile travel remains an independent execution property."
         },
         "relation": {
           "$ref": "#/$defs/TargetRelation",
@@ -277,11 +278,11 @@
         },
         "range_units": {
           "$ref": "#/$defs/CombatAmount",
-          "description": "Range units."
+          "description": "Maximum placement or target range measured in authored world tile widths."
         },
         "radius_units": {
           "$ref": "#/$defs/CombatAmount",
-          "description": "Radius units."
+          "description": "Area radius in the same world units; zero for an ability without an area."
         },
         "target_cap": {
           "description": "Target cap.",
@@ -301,7 +302,12 @@
           "items": {
             "$ref": "#/$defs/Id"
           },
-          "description": "Revalidate."
+          "description": "Unique authored target_revalidation checks to repeat at release; each must resolve to an allowlisted server check.",
+          "uniqueItems": true
+        },
+        "input_kind": {
+          "$ref": "#/$defs/TargetInputKind",
+          "description": "The resolved content binding chooses the required input. The client does not select a targeting mode."
         }
       },
       "required": [
@@ -312,15 +318,464 @@
         "target_cap",
         "floor_policy_id",
         "line_of_sight_policy_id",
-        "revalidate"
+        "revalidate",
+        "input_kind"
       ],
       "additionalProperties": false,
       "description": "Ability targeting policy.",
       "x-invariants": [
-        "target_cap positive; policies must resolve to an allowlisted server handler. Prose revalidation_policy maps to authored checks; existing target_revalidation is preserved."
+        "target_cap positive; policies must resolve to an allowlisted server handler. Prose revalidation_policy maps to authored checks; existing target_revalidation is preserved.",
+        "Every TargetMode has an explicit allowed input-kind branch. Pet/summon bindings choose exactly one supported kind per resolved ability; readiness fails if it is absent. Passive definitions cannot be activated by a client command.",
+        "Ground points are absolute x/y world coordinates within the authenticated caster current zone, instance and floor. The server attaches that scope; cross-floor and cross-instance point casting are unsupported in this revision."
+      ],
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "channel_friendly",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "cone",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "direction"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "dash_point",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "point"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "dash_target",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_channel",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_line",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "direction"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_melee",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_projectile",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_target",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly_chain",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly_cone",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "direction"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly_dash",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "ground",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "point"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "passive",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "none"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "pet_command",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity",
+                "none"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "self",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "none"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "self_aoe",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "none"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "summon",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "entity",
+                "point",
+                "none"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "summon_static",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "point"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "toggle",
+              "description": "Established mode."
+            },
+            "input_kind": {
+              "type": "string",
+              "enum": [
+                "none"
+              ],
+              "description": "Allowed input kinds for this mode."
+            }
+          },
+          "required": [
+            "mode",
+            "input_kind"
+          ],
+          "additionalProperties": true
+        }
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "AbilityTimingPolicy": {
       "type": "object",
@@ -517,15 +972,15 @@
     },
     "AccountRestrictionKind": {
       "type": "string",
-      "x-members": [
+      "description": "Finite account restriction kind alternatives supported by the cited feature.",
+      "enum": [
         "account_suspension",
         "asset_freeze",
         "private_message_restriction",
         "trade_restriction"
       ],
-      "description": "Finite account restriction kind alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "AccountRestrictionRecord": {
       "type": "object",
@@ -635,7 +1090,8 @@
     },
     "ActionRejectionReason": {
       "type": "string",
-      "x-members": [
+      "description": "Finite action rejection reason alternatives supported by the cited feature.",
+      "enum": [
         "unlearned_ability",
         "stale_build",
         "ineligible_class_or_faction",
@@ -653,9 +1109,8 @@
         "invalid_payload",
         "rate_limited"
       ],
-      "description": "Finite action rejection reason alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "AdministrativeActionRecord": {
       "type": "object",
@@ -760,7 +1215,8 @@
     },
     "AdministrativePermission": {
       "type": "string",
-      "x-members": [
+      "description": "Finite administrative permission alternatives supported by the cited feature.",
+      "enum": [
         "inventory_edit",
         "progression_grant",
         "account_restriction",
@@ -769,9 +1225,8 @@
         "moderation",
         "restore"
       ],
-      "description": "Finite administrative permission alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "AdministrativePermissionList": {
       "type": "array",
@@ -940,16 +1395,16 @@
     },
     "AppearanceOptionCategory": {
       "type": "string",
-      "x-members": [
+      "description": "Finite appearance option category alternatives supported by the cited feature.",
+      "enum": [
         "body",
         "skin",
         "face",
         "hair",
         "color"
       ],
-      "description": "Finite appearance option category alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ArcanistCombatState": {
       "type": "object",
@@ -1138,7 +1593,7 @@
         },
         "rules_version": {
           "type": "string",
-          "description": "Rules version."
+          "description": "Required implementation formula revision covering caps, recovery, criticals, haste, mitigation and rounding; not merely the content package version."
         },
         "base_attributes": {
           "$ref": "#/$defs/AttributeSet",
@@ -1238,10 +1693,11 @@
       "additionalProperties": false,
       "description": "Attribute formula configuration.",
       "x-invariants": [
-        "Coefficients configure only documented formulas. Guide/attributes.html remains authoritative for caps, resource recovery, crit, haste, mitigation and rounding; complete configuration export is Needs Decision."
+        "This contract intentionally exports only the listed scalar coefficients. The rules_version selects the documented formulas, caps, recovery and rounding implementation; it must be recognized before loading this configuration.",
+        "A change to a fixed formula or cap requires a new rules_version and validation against guide/attributes.html. Additional configurable parameters require an explicit schema revision rather than an arbitrary dictionary."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "AttributeSet": {
       "type": "object",
@@ -2103,12 +2559,9 @@
         "release_commit",
         "channel_start_commit"
       ],
-      "description": "Controlled cast commit policy values.",
-      "x-members": [
-        "start_commit"
-      ],
+      "description": "Supported commit policies are release_commit and channel_start_commit. Non-channel start-commit is deferred until a versioned ability contract requires it.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CastEvent": {
       "type": "object",
@@ -2187,16 +2640,16 @@
     },
     "CastPhase": {
       "type": "string",
-      "x-members": [
+      "description": "Finite cast phase alternatives supported by the cited feature.",
+      "enum": [
         "accepted",
         "casting",
         "released",
         "interrupted",
         "cancelled"
       ],
-      "description": "Finite cast phase alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CastState": {
       "type": "object",
@@ -2454,14 +2907,14 @@
     },
     "CharacterConnectionState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite character connection state alternatives supported by the cited feature.",
+      "enum": [
         "connected",
         "disconnected_grace",
         "offline"
       ],
-      "description": "Finite character connection state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CharacterCreationDraft": {
       "type": "object",
@@ -2537,16 +2990,16 @@
     },
     "CharacterCreationOutcome": {
       "type": "string",
-      "x-members": [
+      "description": "Finite character creation outcome alternatives supported by the cited feature.",
+      "enum": [
         "created",
         "invalid_name",
         "name_unavailable",
         "ineligible_selection",
         "failed"
       ],
-      "description": "Finite character creation outcome alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CharacterCreationRequest": {
       "type": "object",
@@ -2608,7 +3061,8 @@
     },
     "CharacterCreationStep": {
       "type": "string",
-      "x-members": [
+      "description": "Finite character creation step alternatives supported by the cited feature.",
+      "enum": [
         "faction_race",
         "class",
         "appearance",
@@ -2616,9 +3070,8 @@
         "create",
         "enter_world"
       ],
-      "description": "Finite character creation step alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CharacterCreationSubmission": {
       "type": "object",
@@ -2698,13 +3151,13 @@
     },
     "CharacterLifeState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite character life state alternatives supported by the cited feature.",
+      "enum": [
         "alive",
         "dead"
       ],
-      "description": "Finite character life state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CharacterLoadout": {
       "type": "object",
@@ -3230,14 +3683,14 @@
     },
     "ChatChannel": {
       "type": "string",
-      "x-members": [
+      "description": "Finite chat channel alternatives supported by the cited feature.",
+      "enum": [
         "party",
         "raid",
         "guild",
         "local",
         "private"
       ],
-      "description": "Finite chat channel alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -3689,8 +4142,16 @@
           "description": "Cast."
         },
         "target": {
-          "$ref": "#/$defs/TargetSelection",
-          "description": "Target."
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TargetSelection",
+              "description": "Target."
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Active targeting selection, or null when cleared."
         },
         "action_bar": {
           "$ref": "#/$defs/ActionBarState",
@@ -3857,8 +4318,8 @@
           "description": "Event."
         },
         "result": {
-          "$ref": "#/$defs/CombatResult",
-          "description": "Result."
+          "$ref": "#/$defs/PublicCombatResult",
+          "description": "Minimal recipient-filtered result; raw CombatResult remains server-only."
         }
       },
       "required": [
@@ -3868,10 +4329,11 @@
       "additionalProperties": false,
       "description": "Combat result event.",
       "x-invariants": [
-        "Only authorized recipients receive results; no private rolls, hidden target data or arbitrary Godot objects."
+        "Only authorized recipients receive results; no private rolls, hidden target data or arbitrary Godot objects.",
+        "The internal CombatResult is never serialized directly to observers. Hidden sources are null and resource/proc/defense internals are omitted."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CombatRole": {
       "type": "string",
@@ -4056,13 +4518,13 @@
     },
     "CommandOutcome": {
       "type": "string",
-      "x-members": [
+      "description": "Finite command outcome alternatives supported by the cited feature.",
+      "enum": [
         "accepted",
         "rejected"
       ],
-      "description": "Finite command outcome alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CommandResponse": {
       "type": "object",
@@ -5206,7 +5668,8 @@
     },
     "CraftOrderState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite craft order state alternatives supported by the cited feature.",
+      "enum": [
         "open",
         "leased",
         "in_progress",
@@ -5215,17 +5678,16 @@
         "cancelled",
         "expired"
       ],
-      "description": "Finite craft order state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "CraftOrderVisibility": {
       "type": "string",
-      "x-members": [
+      "description": "Finite craft order visibility alternatives supported by the cited feature.",
+      "enum": [
         "public",
         "private"
       ],
-      "description": "Finite craft order visibility alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -5625,7 +6087,8 @@
     },
     "CrowdControlCategory": {
       "type": "string",
-      "x-members": [
+      "description": "Finite crowd control category alternatives supported by the cited feature.",
+      "enum": [
         "stun",
         "fear",
         "disorient",
@@ -5634,7 +6097,6 @@
         "interrupt_school_lock",
         "displacement"
       ],
-      "description": "Finite crowd control category alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -5850,10 +6312,14 @@
     },
     "CyclePhase": {
       "type": "string",
-      "x-members": [],
-      "description": "The cycle meter is -3..3, but no authoritative named phase set or phase transition thresholds are specified. Should phase be derived solely from meter sign?",
+      "enum": [
+        "lunar",
+        "neutral",
+        "solar"
+      ],
+      "description": "Read-only classification derived from the signed Starcaller cycle meter; never a second mutable phase store.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "DamageDebtDisplayState": {
       "type": "object",
@@ -5990,7 +6456,8 @@
     },
     "DamageSchool": {
       "type": "string",
-      "x-members": [
+      "description": "Finite damage school alternatives supported by the cited feature.",
+      "enum": [
         "physical",
         "fire",
         "frost",
@@ -5999,7 +6466,6 @@
         "decay",
         "sonic"
       ],
-      "description": "Finite damage school alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -6425,25 +6891,25 @@
     },
     "DeviceState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite device state alternatives supported by the cited feature.",
+      "enum": [
         "placed",
         "triggered",
         "expired"
       ],
-      "description": "Finite device state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "DiminishingReturnGroup": {
       "type": "string",
-      "x-members": [
+      "description": "Finite diminishing return group alternatives supported by the cited feature.",
+      "enum": [
         "hard_control",
         "root",
         "silence",
         "interrupt_lockout",
         "displacement"
       ],
-      "description": "Finite diminishing return group alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -6578,11 +7044,11 @@
     },
     "DispelFamily": {
       "type": "string",
-      "x-members": [
+      "description": "Finite dispel family alternatives supported by the cited feature.",
+      "enum": [
         "harmful_magic",
         "beneficial_magic"
       ],
-      "description": "Finite dispel family alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
@@ -7931,6 +8397,10 @@
             "spawn_count": {
               "type": "integer",
               "description": "spawn count."
+            },
+            "summon_kind": {
+              "$ref": "#/$defs/SummonKind",
+              "description": "Explicit authored summon category; Bonewright uses specialized_mobile."
             }
           },
           "required": [
@@ -8346,15 +8816,15 @@
     },
     "EnhancementCategory": {
       "type": "string",
-      "x-members": [
+      "description": "Finite enhancement category alternatives supported by the cited feature.",
+      "enum": [
         "gem",
         "enchant",
         "set_effect",
         "proc_effect"
       ],
-      "description": "Finite enhancement category alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "EnhancementDefinition": {
       "type": "object",
@@ -8539,10 +9009,10 @@
       "additionalProperties": false,
       "description": "Entity snapshot.",
       "x-invariants": [
-        "Public projection excludes account/session tokens, inventory, damage ledgers, drop tables, internal resource history and hidden enemies. Status visibility policy remains a decision."
+        "Public projection excludes account/session tokens, inventory, damage ledgers, drop tables, internal resource history and hidden enemies. visible_statuses is empty unless the server has an explicit public-display allowlist for those statuses; status IDs that reveal hidden sources are never exposed."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "EquipmentDefinition": {
       "type": "object",
@@ -8662,29 +9132,47 @@
             "$ref": "#/$defs/EquipmentSlotAssignment"
           },
           "description": "Slots."
+        },
+        "owner_character_id": {
+          "$ref": "#/$defs/Id",
+          "description": "Owner of the personal equipment container and slot assignments.",
+          "x-reference": {
+            "target": "CharacterRecord",
+            "kind": "instance"
+          }
+        },
+        "version": {
+          "$ref": "#/$defs/Version",
+          "description": "Equipment revision checked by equip and unequip transactions."
         }
       },
       "required": [
         "equipment_set_id",
-        "slots"
+        "slots",
+        "owner_character_id",
+        "version"
       ],
       "additionalProperties": false,
       "description": "Equipment set.",
       "x-invariants": [
-        "At most one assignment per slot. Two-handed equipment occupies both main_hand/off_hand using the same instance ID; no duplicate budget. Bag/tool utility slots are separate."
+        "At most one assignment per slot. Two-handed equipment occupies both main_hand/off_hand using the same instance ID; no duplicate budget. Bag/tool utility slots are separate.",
+        "Equipping moves an instance from its bag into the personal equipment container. ItemOwnershipRecord owns placement; slots describe use of those same instances. All ownership, container membership and slot changes commit atomically.",
+        "Two-handed weapons reserve main_hand and off_hand together. Replacing equipment requires valid bag destinations for displaced items; full bags reject the entire operation. Equipped stacks have quantity one.",
+        "Displaced equipment returns to the incoming item source bag in stable EquipmentSlot order, using its freed capacity. Reserve space for every displaced instance before committing; no implicit mail, bank or delivery fallback."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "EquipmentSetRecord": {
       "$ref": "#/$defs/EquipmentSet",
       "description": "EquipmentSetRecord uses the canonical EquipmentSet shape.",
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "EquipmentSlot": {
       "type": "string",
-      "x-members": [
+      "description": "Finite equipment slot alternatives supported by the cited feature.",
+      "enum": [
         "head",
         "shoulders",
         "chest",
@@ -8702,7 +9190,6 @@
         "main_hand",
         "off_hand"
       ],
-      "description": "Finite equipment slot alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -9425,15 +9912,15 @@
     },
     "GatheringClaimOutcome": {
       "type": "string",
-      "x-members": [
+      "description": "Finite gathering claim outcome alternatives supported by the cited feature.",
+      "enum": [
         "claimed",
         "empty_node",
         "claim_limit",
         "ineligible"
       ],
-      "description": "Finite gathering claim outcome alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "GatheringClaimRecord": {
       "type": "object",
@@ -9696,18 +10183,19 @@
       "additionalProperties": false,
       "description": "Authoritative gravecaller signature history; shared resources, statuses, summons and debt are referenced rather than stored twice.",
       "x-invariants": [
-        "Four capacity units; elite costs four, lesser costs one; all sources share the same aggregate pet budget. Commands cost 20 Soul Essence; basic owner attacks generate 10, once per action."
+        "Four capacity units; elite costs four, lesser costs one; all sources share the same aggregate pet budget. Commands cost 20 Soul Essence; basic owner attacks generate 10, once per action.",
+        "Bonewright is an intentional specialized_mobile summon costing two, replacing one existing lesser servant atomically. It is not the four-cost elite and does not grant another owner capacity pool."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "GroundCastMode": {
       "type": "string",
-      "x-members": [
+      "description": "Finite ground cast mode alternatives supported by the cited feature.",
+      "enum": [
         "preview_confirm",
         "quick_cast"
       ],
-      "description": "Finite ground cast mode alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -9956,10 +10444,11 @@
       "additionalProperties": false,
       "description": "Guild bank access.",
       "x-invariants": [
-        "Evaluate per-rank policy on every transaction; client permission display does not authorize withdrawal."
+        "Evaluate per-rank policy on every transaction; client permission display does not authorize withdrawal.",
+        "Remaining allowances derive from rank policy and committed withdrawal history in the rolling window. Authorize, reserve allowance, transfer and audit in one transaction; client-displayed remaining values never authorize a withdrawal."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "GuildBankAuditRecord": {
       "type": "object",
@@ -10077,99 +10566,449 @@
       "x-definition-status": "Fully Defined"
     },
     "GuildCommand": {
-      "type": "object",
-      "properties": {
-        "operation": {
-          "$ref": "#/$defs/DurableRequestContext",
-          "description": "Operation."
-        },
-        "guild_id": {
-          "$ref": "#/$defs/Id",
-          "description": "Guild id.",
-          "x-reference": {
-            "target": "GuildRecord",
-            "kind": "instance"
-          }
-        },
-        "expected_version": {
-          "$ref": "#/$defs/Version",
-          "description": "Expected version."
-        },
-        "permission": {
-          "$ref": "#/$defs/GuildPermission",
-          "description": "Permission."
-        },
-        "recipient_character_id": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Id"
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
             },
-            {
-              "type": "null"
-            }
-          ],
-          "description": "Recipient character id.",
-          "x-reference": {
-            "target": "CharacterRecord",
-            "kind": "instance"
-          }
-        },
-        "rank_id": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Id"
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
             },
-            {
-              "type": "null"
-            }
-          ],
-          "description": "Rank id.",
-          "x-reference": {
-            "target": "GuildRank",
-            "kind": "instance"
-          }
-        },
-        "bank_transfer": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/InventoryOperationRequest"
+            "expected_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Expected version."
             },
-            {
-              "type": "null"
+            "permission": {
+              "const": "invite",
+              "description": "Requested operation; server-granted permissions are checked separately."
+            },
+            "recipient_character_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Target character.",
+              "x-reference": {
+                "target": "CharacterRecord",
+                "kind": "instance"
+              }
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
             }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "expected_version",
+            "permission",
+            "recipient_character_id",
+            "schema"
           ],
-          "description": "Bank transfer."
+          "additionalProperties": false,
+          "description": "Guild invite operation."
         },
-        "rank_policy": {
-          "$ref": "#/$defs/GuildRankPolicy",
-          "description": "Proposed rank permissions/limits for rank_edit; absent for other commands."
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "expected_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Expected version."
+            },
+            "permission": {
+              "const": "remove",
+              "description": "Requested operation; server-granted permissions are checked separately."
+            },
+            "recipient_character_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Target character.",
+              "x-reference": {
+                "target": "CharacterRecord",
+                "kind": "instance"
+              }
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "expected_version",
+            "permission",
+            "recipient_character_id",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild remove operation."
         },
-        "currency_amount": {
-          "$ref": "#/$defs/CurrencyAmount",
-          "description": "Requested currency transfer for currency withdrawal; server validates scope and rank allowance."
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "expected_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Expected version."
+            },
+            "permission": {
+              "const": "rank_edit",
+              "description": "Requested operation; server-granted permissions are checked separately."
+            },
+            "rank_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Rank to edit.",
+              "x-reference": {
+                "target": "GuildRank",
+                "kind": "instance"
+              }
+            },
+            "rank_policy": {
+              "$ref": "#/$defs/GuildRankPolicy",
+              "description": "Replacement policy; rank_id must match and the actor cannot grant permissions beyond its authority."
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "expected_version",
+            "permission",
+            "rank_id",
+            "rank_policy",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild rank_edit operation."
         },
-        "destination_wallet_id": {
-          "$ref": "#/$defs/Id",
-          "description": "Authorized destination wallet for a currency withdrawal."
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "expected_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Expected version."
+            },
+            "permission": {
+              "const": "bank_deposit",
+              "description": "Requested operation; server-granted permissions are checked separately."
+            },
+            "bank_transfer": {
+              "$ref": "#/$defs/InventoryOperationRequest",
+              "description": "Versioned authorized bank transfer using the canonical transactional item path.",
+              "type": "object",
+              "properties": {
+                "transfer": {
+                  "const": "bank",
+                  "description": "Only a bank transfer belongs in this guild operation."
+                }
+              },
+              "required": [
+                "transfer"
+              ],
+              "additionalProperties": true
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "expected_version",
+            "permission",
+            "bank_transfer",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild bank_deposit operation."
         },
-        "expected_wallet_version": {
-          "$ref": "#/$defs/Version",
-          "description": "Optimistic currency wallet revision for withdrawal."
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "expected_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Expected version."
+            },
+            "permission": {
+              "const": "item_withdrawal",
+              "description": "Requested operation; server-granted permissions are checked separately."
+            },
+            "bank_transfer": {
+              "$ref": "#/$defs/InventoryOperationRequest",
+              "description": "Versioned authorized bank transfer using the canonical transactional item path.",
+              "type": "object",
+              "properties": {
+                "transfer": {
+                  "const": "bank",
+                  "description": "Only a bank transfer belongs in this guild operation."
+                }
+              },
+              "required": [
+                "transfer"
+              ],
+              "additionalProperties": true
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "expected_version",
+            "permission",
+            "bank_transfer",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild item_withdrawal operation."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "expected_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Expected version."
+            },
+            "permission": {
+              "const": "currency_withdrawal",
+              "description": "Requested operation; server-granted permissions are checked separately."
+            },
+            "currency_amount": {
+              "$ref": "#/$defs/CurrencyAmount",
+              "description": "Requested currency transfer for currency withdrawal; server validates scope and rank allowance.",
+              "minimum": 1
+            },
+            "destination_wallet_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Authorized destination wallet for a currency withdrawal."
+            },
+            "expected_wallet_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Optimistic currency wallet revision for withdrawal."
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "expected_version",
+            "permission",
+            "currency_amount",
+            "destination_wallet_id",
+            "expected_wallet_version",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild currency_withdrawal operation."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "invitation_action": {
+              "const": "accept",
+              "description": "Invitation lifecycle operation; accept/decline authorize the recipient, revoke authorizes the inviter."
+            },
+            "invitation_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Invitation identity."
+            },
+            "expected_invitation_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required invitation revision."
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "invitation_action",
+            "invitation_id",
+            "expected_invitation_version",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild invitation accept."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "invitation_action": {
+              "const": "decline",
+              "description": "Invitation lifecycle operation; accept/decline authorize the recipient, revoke authorizes the inviter."
+            },
+            "invitation_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Invitation identity."
+            },
+            "expected_invitation_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required invitation revision."
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "invitation_action",
+            "invitation_id",
+            "expected_invitation_version",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild invitation decline."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "guild_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Guild id.",
+              "x-reference": {
+                "target": "GuildRecord",
+                "kind": "instance"
+              }
+            },
+            "invitation_action": {
+              "const": "revoke",
+              "description": "Invitation lifecycle operation; accept/decline authorize the recipient, revoke authorizes the inviter."
+            },
+            "invitation_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Invitation identity."
+            },
+            "expected_invitation_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required invitation revision."
+            },
+            "schema": {
+              "const": "guild_command_v1",
+              "description": "Versioned guild message discriminator."
+            }
+          },
+          "required": [
+            "operation",
+            "guild_id",
+            "invitation_action",
+            "invitation_id",
+            "expected_invitation_version",
+            "schema"
+          ],
+          "additionalProperties": false,
+          "description": "Guild invitation revoke."
         }
-      },
-      "required": [
-        "operation",
-        "guild_id",
-        "expected_version",
-        "permission",
-        "recipient_character_id",
-        "rank_id",
-        "bank_transfer"
       ],
-      "additionalProperties": false,
-      "description": "Guild command.",
+      "description": "Discriminated guild operations with exact payloads; client action intent never grants permission.",
       "x-invariants": [
-        "Permission enum is action intent, never evidence of granted permission. Enforce rank limits and audit every withdrawal. Payload variants need authorization review."
+        "Recheck authorization and optimistic versions transactionally; actor identity comes from the authenticated durable request. Permission fields are not accepted on invitation responses.",
+        "Currency and item withdrawal limits use the same canonical guild rank policy and committed transfer log; retries return prior receipts. Security deployment requirements remain tracked separately."
       ],
       "x-category": "Schema",
       "x-definition-status": "Needs Decision"
@@ -10204,18 +11043,43 @@
             "target": "CharacterRecord",
             "kind": "instance"
           }
+        },
+        "created_at": {
+          "$ref": "#/$defs/Instant",
+          "description": "Authoritative creation time."
+        },
+        "expires_at": {
+          "$ref": "#/$defs/Instant",
+          "description": "Required configured expiry; no implicit duration."
+        },
+        "state": {
+          "$ref": "#/$defs/InvitationState",
+          "description": "Current invitation lifecycle state."
+        },
+        "version": {
+          "$ref": "#/$defs/Version",
+          "description": "Optimistic version checked when responding."
         }
       },
       "required": [
         "invitation_id",
         "guild_id",
         "inviter_character_id",
-        "recipient_character_id"
+        "recipient_character_id",
+        "created_at",
+        "expires_at",
+        "state",
+        "version"
       ],
       "additionalProperties": false,
       "description": "Guild invitation.",
+      "x-invariants": [
+        "Only pending invitations can be accepted, declined or revoked. Expiry is checked using authoritative time even if an expiry job has not run; expires_at must be later than created_at.",
+        "Only the recipient may accept or decline; only an authorized inviter/leader may revoke. Recheck membership, capacity, permissions and encounter locks at acceptance. Revoked, expired or stale invitations never change membership.",
+        "Accept commits membership and terminal invitation state atomically. Idempotent retries return the original result without adding membership or consuming limits twice. Expiry duration is required service configuration."
+      ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "GuildMembership": {
       "type": "object",
@@ -10257,7 +11121,8 @@
     },
     "GuildPermission": {
       "type": "string",
-      "x-members": [
+      "description": "Finite guild permission alternatives supported by the cited feature.",
+      "enum": [
         "invite",
         "remove",
         "rank_edit",
@@ -10265,7 +11130,6 @@
         "item_withdrawal",
         "currency_withdrawal"
       ],
-      "description": "Finite guild permission alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -10328,7 +11192,8 @@
         },
         "window_seconds": {
           "$ref": "#/$defs/Seconds",
-          "description": "Window seconds."
+          "description": "Window seconds.",
+          "exclusiveMinimum": 0
         }
       },
       "required": [
@@ -10341,10 +11206,12 @@
       "additionalProperties": false,
       "description": "Guild rank policy.",
       "x-invariants": [
-        "Limits configured per rank; no undocumented amount/window defaults."
+        "Limits configured per rank; no undocumented amount/window defaults.",
+        "Withdrawal limits count committed nonreversed outgoing item units and currency over the rolling window_seconds before the transaction. Deposits and failed or retried requests do not consume or refill allowance. Rank changes do not reset recorded usage.",
+        "window_seconds must be positive. Item and currency limits are independent, per member within the guild; a zero limit permits no withdrawal of that kind."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "GuildRecord": {
       "type": "object",
@@ -10652,13 +11519,13 @@
     },
     "InputDeviceKind": {
       "type": "string",
-      "x-members": [
+      "description": "Finite input device kind alternatives supported by the cited feature.",
+      "enum": [
         "keyboard_mouse",
         "controller"
       ],
-      "description": "Finite input device kind alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "InputQueueState": {
       "type": "object",
@@ -10732,7 +11599,7 @@
     },
     "Instant": {
       "type": "string",
-      "description": "Absolute authoritative UTC instant; proposed RFC 3339 representation.",
+      "description": "Absolute authoritative UTC instant encoded as RFC 3339 with Z or +00:00; fractional seconds are allowed. Durations use Seconds, never timestamps.",
       "format": "date-time"
     },
     "InteractionDefinition": {
@@ -10801,7 +11668,8 @@
     },
     "InteractionKind": {
       "type": "string",
-      "x-members": [
+      "description": "Finite interaction kind alternatives supported by the cited feature.",
+      "enum": [
         "accept_task",
         "turn_in_task",
         "practice",
@@ -10812,9 +11680,8 @@
         "specialization",
         "travel"
       ],
-      "description": "Finite interaction kind alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "InteractionState": {
       "type": "object",
@@ -11097,17 +11964,18 @@
     },
     "InventoryContainerKind": {
       "type": "string",
-      "x-members": [
+      "description": "Finite inventory container kind alternatives supported by the cited feature.",
+      "enum": [
         "bag",
         "bank",
         "escrow",
         "delivery",
         "mail",
-        "guild_bank"
+        "guild_bank",
+        "equipment"
       ],
-      "description": "Finite inventory container kind alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "InventoryOperationRequest": {
       "type": "object",
@@ -11125,7 +11993,8 @@
           "items": {
             "$ref": "#/$defs/ItemQuantity"
           },
-          "description": "Items."
+          "description": "Items.",
+          "minItems": 1
         },
         "destination_container_id": {
           "$ref": "#/$defs/Id",
@@ -11134,21 +12003,228 @@
             "target": "InventoryContainer",
             "kind": "instance"
           }
+        },
+        "expected_destination_version": {
+          "$ref": "#/$defs/Version",
+          "description": "Required destination container revision for every transfer."
+        },
+        "slot": {
+          "$ref": "#/$defs/EquipmentSlot",
+          "description": "Requested equip slot; a two-handed main-hand assignment occupies both hands. Required only for equip or unequip."
+        },
+        "expected_equipment_version": {
+          "$ref": "#/$defs/Version",
+          "description": "Required equipment revision for equip or unequip."
         }
       },
       "required": [
         "operation",
         "transfer",
         "items",
-        "destination_container_id"
+        "destination_container_id",
+        "expected_destination_version"
       ],
       "additionalProperties": false,
       "description": "Inventory operation request.",
       "x-invariants": [
-        "Actor and source owners derive from session; validate eligibility/versions and reserve atomically. No client-submitted result quantities or binding override."
+        "Actor and source owners derive from session; validate eligibility/versions and reserve atomically. No client-submitted result quantities or binding override.",
+        "equip requires the owner equipment destination, an eligible slot, quantity one and expected equipment/container/item versions. unequip requires the matching occupied slot and a personal bag with free capacity. Client intent cannot bypass binding, combat or reservation restrictions."
+      ],
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "transfer": {
+              "const": "equip",
+              "description": "Equipment operation."
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "item": {
+                    "$ref": "#/$defs/VersionedItemRef",
+                    "description": "Item."
+                  },
+                  "quantity": {
+                    "const": 1,
+                    "description": "Equip and unequip move exactly one instance."
+                  }
+                },
+                "required": [
+                  "item",
+                  "quantity"
+                ],
+                "additionalProperties": false,
+                "description": "Selected quantity of an existing item instance."
+              },
+              "description": "Items.",
+              "minItems": 1,
+              "maxItems": 1
+            },
+            "destination_container_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Destination container id.",
+              "x-reference": {
+                "target": "InventoryContainer",
+                "kind": "instance"
+              }
+            },
+            "expected_destination_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required destination container revision for every transfer."
+            },
+            "slot": {
+              "$ref": "#/$defs/EquipmentSlot",
+              "description": "Requested equip slot; a two-handed main-hand assignment occupies both hands. Required only for equip or unequip."
+            },
+            "expected_equipment_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required equipment revision for equip or unequip."
+            }
+          },
+          "required": [
+            "operation",
+            "transfer",
+            "items",
+            "destination_container_id",
+            "expected_destination_version",
+            "slot",
+            "expected_equipment_version"
+          ],
+          "additionalProperties": false,
+          "description": "equip operation."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "transfer": {
+              "const": "unequip",
+              "description": "Equipment operation."
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "item": {
+                    "$ref": "#/$defs/VersionedItemRef",
+                    "description": "Item."
+                  },
+                  "quantity": {
+                    "const": 1,
+                    "description": "Equip and unequip move exactly one instance."
+                  }
+                },
+                "required": [
+                  "item",
+                  "quantity"
+                ],
+                "additionalProperties": false,
+                "description": "Selected quantity of an existing item instance."
+              },
+              "description": "Items.",
+              "minItems": 1,
+              "maxItems": 1
+            },
+            "destination_container_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Destination container id.",
+              "x-reference": {
+                "target": "InventoryContainer",
+                "kind": "instance"
+              }
+            },
+            "expected_destination_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required destination container revision for every transfer."
+            },
+            "slot": {
+              "$ref": "#/$defs/EquipmentSlot",
+              "description": "Requested equip slot; a two-handed main-hand assignment occupies both hands. Required only for equip or unequip."
+            },
+            "expected_equipment_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required equipment revision for equip or unequip."
+            }
+          },
+          "required": [
+            "operation",
+            "transfer",
+            "items",
+            "destination_container_id",
+            "expected_destination_version",
+            "slot",
+            "expected_equipment_version"
+          ],
+          "additionalProperties": false,
+          "description": "unequip operation."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/DurableRequestContext",
+              "description": "Operation."
+            },
+            "transfer": {
+              "type": "string",
+              "enum": [
+                "trade",
+                "mail",
+                "market",
+                "craft_escrow",
+                "bank",
+                "delivery_claim",
+                "salvage",
+                "vendor_purchase",
+                "vendor_sale"
+              ],
+              "description": "Non-equipment transfer."
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ItemQuantity"
+              },
+              "description": "Items.",
+              "minItems": 1
+            },
+            "destination_container_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Destination container id.",
+              "x-reference": {
+                "target": "InventoryContainer",
+                "kind": "instance"
+              }
+            },
+            "expected_destination_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required destination container revision for every transfer."
+            }
+          },
+          "required": [
+            "operation",
+            "transfer",
+            "items",
+            "destination_container_id",
+            "expected_destination_version"
+          ],
+          "additionalProperties": false,
+          "description": "Non-equipment inventory operation."
+        }
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "InventoryOperationResult": {
       "type": "object",
@@ -11201,6 +12277,17 @@
       ],
       "x-category": "Schema",
       "x-definition-status": "Fully Defined"
+    },
+    "InvitationState": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined",
+        "revoked",
+        "expired"
+      ],
+      "description": "One-use invitation lifecycle. Only pending invitations can transition; retries return the stored terminal result."
     },
     "IronbodyCombatState": {
       "type": "object",
@@ -12504,11 +13591,12 @@
       "description": "Item instance.",
       "x-invariants": [
         "Globally unique item_id; quantity > 0 for an extant instance. Durability is null for non-durable items.",
-        "Definition, binding, grade and all stack-relevant attributes must match before merging. Ownership is one canonical record; consumer views reference this instance."
+        "Definition, binding, grade and all stack-relevant attributes must match before merging. Ownership is one canonical record; consumer views reference this instance.",
+        "Equipped instances have quantity one and canonical equipment-container ownership; equipment views do not embed another mutable instance."
       ],
       "x-identity": "See its named identity field; content and runtime identity namespaces never overlap.",
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ItemKind": {
       "type": "string",
@@ -12749,11 +13837,12 @@
       "x-invariants": [
         "Exactly one owner scope; guild-owned items may lack personal owner. Customer-bound escrow remains customer-owned. Reservation blocks competing operations.",
         "No independently mutable copy in InventoryRecord, EquipmentSet, market listing or delivery. Item revision coordinates atomic ownership and instance changes.",
-        "Personal ownership requires account + character; guild ownership uses guild ID with null personal owner fields. Account-bound eligibility is checked through the personal account."
+        "Personal ownership requires account + character; guild ownership uses guild ID with null personal owner fields. Account-bound eligibility is checked through the personal account.",
+        "An equipped item belongs to the personal equipment container, never simultaneously to a bag. Container and slot-index updates share the ownership transaction and item revision."
       ],
       "x-identity": "See its named identity field; content and runtime identity namespaces never overlap.",
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ItemQuantity": {
       "type": "object",
@@ -12776,11 +13865,10 @@
       "description": "Selected quantity of an existing item instance."
     },
     "ItemRarity": {
-      "type": "string",
-      "x-members": [],
-      "description": "Rarity has no authoritative member vocabulary. Keep independent presentation metadata or use grade alone?",
-      "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "$ref": "#/$defs/ItemGrade",
+      "description": "Retired rarity classification; compatibility alias to ItemGrade. New item payloads use grade only. No independent rarity field or multiplier exists.",
+      "x-category": "Schema",
+      "x-definition-status": "Fully Defined"
     },
     "ItemSetDefinition": {
       "type": "object",
@@ -12859,7 +13947,8 @@
     },
     "ItemTransferOperation": {
       "type": "string",
-      "x-members": [
+      "description": "Finite item transfer operation alternatives supported by the cited feature.",
+      "enum": [
         "equip",
         "trade",
         "mail",
@@ -12872,9 +13961,8 @@
         "vendor_purchase",
         "vendor_sale"
       ],
-      "description": "Finite item transfer operation alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "JusticarCombatState": {
       "type": "object",
@@ -13175,22 +14263,22 @@
     },
     "LogoutState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite logout state alternatives supported by the cited feature.",
+      "enum": [
         "countdown",
         "completed",
         "cancelled"
       ],
-      "description": "Finite logout state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "LootDistributionRule": {
       "type": "string",
-      "x-members": [
+      "description": "Finite loot distribution rule alternatives supported by the cited feature.",
+      "enum": [
         "personal",
         "shared_roll"
       ],
-      "description": "Finite loot distribution rule alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
@@ -13287,14 +14375,14 @@
     },
     "LootReservationState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite loot reservation state alternatives supported by the cited feature.",
+      "enum": [
         "reserved",
         "claimed",
         "expired"
       ],
-      "description": "Finite loot reservation state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "LootRoll": {
       "type": "object",
@@ -13514,10 +14602,11 @@
       "additionalProperties": false,
       "description": "Maintained song state.",
       "x-invariants": [
-        "One maintained song refers to its existing resource pool and SongDefinition upkeep, never a duplicate meter."
+        "One maintained song refers to its existing resource pool and SongDefinition upkeep, never a duplicate meter.",
+        "For Minstrel healing songs, resource_id selects Mana upkeep; Harmony spending belongs to the activating ability. Songs and the Harmony meter have separate lifetimes."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "MarketBrowserState": {
       "type": "object",
@@ -13784,25 +14873,25 @@
     },
     "MarketOrderKind": {
       "type": "string",
-      "x-members": [
+      "description": "Finite market order kind alternatives supported by the cited feature.",
+      "enum": [
         "fixed_price_sell",
         "buyer_request"
       ],
-      "description": "Finite market order kind alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "MarketOrderState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite market order state alternatives supported by the cited feature.",
+      "enum": [
         "active",
         "filled",
         "cancelled",
         "expired"
       ],
-      "description": "Finite market order state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "MarketPurchaseQuote": {
       "type": "object",
@@ -14194,7 +15283,7 @@
         "Three Aim; gain one per uninterrupted second preparing an attack, maximum three; moving removes one per second unless a talent permits limited retention; no random accuracy bonus."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "MasteryBonusSnapshot": {
       "type": "object",
@@ -14232,10 +15321,15 @@
     },
     "MatchPhase": {
       "type": "string",
-      "x-members": [],
-      "description": "Match start/end are implied, but objective, scoring, overtime and phase transitions are not specified.",
+      "enum": [
+        "preparing",
+        "active",
+        "completed",
+        "cancelled"
+      ],
+      "description": "Minimal match lifecycle; objective/scoring handlers are separate required content.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "MatchRecord": {
       "type": "object",
@@ -14368,7 +15462,8 @@
       "additionalProperties": false,
       "description": "Match state.",
       "x-invariants": [
-        "Instanced objective teams are equal size. Phase/objective/scoring rules require authored policy."
+        "Instanced objective teams are equal size. Phase/objective/scoring rules require authored policy.",
+        "preparing transitions to active only after the selected ruleset and teams validate. active transitions to completed through an authored end condition; preparing or active may transition to cancelled. Terminal phases never restart or grant rewards twice."
       ],
       "x-category": "Interface",
       "x-definition-status": "Needs Decision"
@@ -14529,20 +15624,20 @@
         "Three Harmonies; +1 on an effective primary heal, at most once per second; group recovery consumes two and finale three. Mana is primary; Cadence is the performance meter."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ModerationActionKind": {
       "type": "string",
-      "x-members": [
+      "description": "Finite moderation action kind alternatives supported by the cited feature.",
+      "enum": [
         "mute",
         "report_review",
         "account_suspension",
         "asset_freeze",
         "fraud_reversal"
       ],
-      "description": "Finite moderation action kind alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ModerationRecord": {
       "type": "object",
@@ -14622,12 +15717,17 @@
         "aim_direction": {
           "$ref": "#/$defs/Vector2",
           "description": "Aim direction."
+        },
+        "schema": {
+          "const": "movement_intent_v1",
+          "description": "Versioned message discriminator."
         }
       },
       "required": [
         "command",
         "move_direction",
-        "aim_direction"
+        "aim_direction",
+        "schema"
       ],
       "additionalProperties": false,
       "description": "Movement intent.",
@@ -14635,7 +15735,7 @@
         "Movement/aim intent only; server normalizes diagonal input and validates collision. No authoritative position."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "MovementSnapshot": {
       "type": "object",
@@ -14667,6 +15767,10 @@
         "acknowledged_input_sequence": {
           "$ref": "#/$defs/Count",
           "description": "Acknowledged input sequence."
+        },
+        "schema": {
+          "const": "movement_snapshot_v1",
+          "description": "Versioned message discriminator."
         }
       },
       "required": [
@@ -14675,7 +15779,8 @@
         "location",
         "velocity",
         "aim_direction",
-        "acknowledged_input_sequence"
+        "acknowledged_input_sequence",
+        "schema"
       ],
       "additionalProperties": false,
       "description": "Movement snapshot.",
@@ -14683,7 +15788,7 @@
         "Clients reconcile owner inputs and interpolate authorized remote entities."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "MovementState": {
       "type": "object",
@@ -14762,10 +15867,11 @@
       "additionalProperties": false,
       "description": "Nameplate state.",
       "x-invariants": [
-        "Only visible entities; authoritative allegiance drives icon and color, including Humans."
+        "Only visible entities; authoritative allegiance drives icon and color, including Humans.",
+        "Emit only for currently visible authorized entities. Remove the nameplate when visibility is lost; selected state does not extend visibility or disclose a hidden name/faction."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "NavigationConfiguration": {
       "type": "object",
@@ -14930,12 +16036,12 @@
     },
     "NetworkTrafficChannel": {
       "type": "string",
-      "x-members": [
+      "description": "Finite network traffic channel alternatives supported by the cited feature.",
+      "enum": [
         "movement_snapshots",
         "combat_control_events",
         "reliable_state_operations"
       ],
-      "description": "Finite network traffic channel alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -14977,6 +16083,75 @@
       ],
       "x-category": "Schema",
       "x-definition-status": "Needs Decision"
+    },
+    "NonzeroDirection": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Vector2",
+          "description": "Finite continuous direction."
+        },
+        {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "A nonzero direction component."
+                }
+              },
+              "required": [
+                "x"
+              ],
+              "additionalProperties": true
+            },
+            {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "exclusiveMaximum": 0,
+                  "description": "A nonzero direction component."
+                }
+              },
+              "required": [
+                "x"
+              ],
+              "additionalProperties": true
+            },
+            {
+              "type": "object",
+              "properties": {
+                "y": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "A nonzero direction component."
+                }
+              },
+              "required": [
+                "y"
+              ],
+              "additionalProperties": true
+            },
+            {
+              "type": "object",
+              "properties": {
+                "y": {
+                  "type": "number",
+                  "exclusiveMaximum": 0,
+                  "description": "A nonzero direction component."
+                }
+              },
+              "required": [
+                "y"
+              ],
+              "additionalProperties": true
+            }
+          ]
+        }
+      ],
+      "description": "Finite nonzero direction. The server normalizes it; aim is continuous rather than restricted to sprite orientations."
     },
     "NoteFamily": {
       "$ref": "#/$defs/Id",
@@ -15115,11 +16290,11 @@
     },
     "NpcBehaviorState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite npc behavior state alternatives supported by the cited feature.",
+      "enum": [
         "engaged",
         "leashing"
       ],
-      "description": "Finite npc behavior state alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
@@ -15582,11 +16757,16 @@
         "operation": {
           "$ref": "#/$defs/PartyOperation",
           "description": "Operation."
+        },
+        "schema": {
+          "const": "party_command_v1",
+          "description": "Versioned message discriminator."
         }
       },
       "required": [
         "command",
-        "operation"
+        "operation",
+        "schema"
       ],
       "additionalProperties": false,
       "description": "Party command.",
@@ -15594,7 +16774,7 @@
         "Leadership/kick/loot-setting authority is checked server-side; encounter membership locks protect reward rights."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "PartyInvitation": {
       "type": "object",
@@ -15626,21 +16806,43 @@
             "target": "CharacterRecord",
             "kind": "instance"
           }
+        },
+        "created_at": {
+          "$ref": "#/$defs/Instant",
+          "description": "Authoritative creation time."
+        },
+        "expires_at": {
+          "$ref": "#/$defs/Instant",
+          "description": "Required configured expiry; no implicit duration."
+        },
+        "state": {
+          "$ref": "#/$defs/InvitationState",
+          "description": "Current invitation lifecycle state."
+        },
+        "version": {
+          "$ref": "#/$defs/Version",
+          "description": "Optimistic version checked when responding."
         }
       },
       "required": [
         "invitation_id",
         "party_id",
         "inviter_character_id",
-        "recipient_character_id"
+        "recipient_character_id",
+        "created_at",
+        "expires_at",
+        "state",
+        "version"
       ],
       "additionalProperties": false,
       "description": "Party invitation.",
       "x-invariants": [
-        "Server validates authority and membership; expiry/acceptance details are a policy decision."
+        "Only pending invitations can be accepted, declined or revoked. Expiry is checked using authoritative time even if an expiry job has not run; expires_at must be later than created_at.",
+        "Only the recipient may accept or decline; only an authorized inviter/leader may revoke. Recheck membership, capacity, permissions and encounter locks at acceptance. Revoked, expired or stale invitations never change membership.",
+        "Accept commits membership and terminal invitation state atomically. Idempotent retries return the original result without adding membership or consuming limits twice. Expiry duration is required service configuration."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "PartyOperation": {
       "oneOf": [
@@ -15677,11 +16879,16 @@
             "invitation_id": {
               "$ref": "#/$defs/Id",
               "description": "Invitation id."
+            },
+            "expected_invitation_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required invitation revision."
             }
           },
           "required": [
             "kind",
-            "invitation_id"
+            "invitation_id",
+            "expected_invitation_version"
           ],
           "additionalProperties": false,
           "description": "Structured contract."
@@ -15750,9 +16957,57 @@
           ],
           "additionalProperties": false,
           "description": "Structured contract."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "decline_invitation",
+              "description": "Invitation response."
+            },
+            "invitation_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Invitation identity."
+            },
+            "expected_invitation_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required invitation revision."
+            }
+          },
+          "required": [
+            "kind",
+            "invitation_id",
+            "expected_invitation_version"
+          ],
+          "additionalProperties": false,
+          "description": "Versioned decline_invitation intent."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "revoke_invitation",
+              "description": "Invitation response."
+            },
+            "invitation_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Invitation identity."
+            },
+            "expected_invitation_version": {
+              "$ref": "#/$defs/Version",
+              "description": "Required invitation revision."
+            }
+          },
+          "required": [
+            "kind",
+            "invitation_id",
+            "expected_invitation_version"
+          ],
+          "additionalProperties": false,
+          "description": "Versioned revoke_invitation intent."
         }
       ],
-      "description": "Proposed operation discriminators; boundary encoding requires review."
+      "description": "Explicit versioned party operation variants; the authenticated session supplies the actor."
     },
     "PartySnapshot": {
       "type": "object",
@@ -16041,13 +17296,13 @@
     },
     "PetCommandType": {
       "type": "string",
-      "x-members": [
+      "description": "Finite pet command type alternatives supported by the cited feature.",
+      "enum": [
         "follow",
         "hold",
         "attack",
         "return"
       ],
-      "description": "Finite pet command type alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -16349,13 +17604,13 @@
     },
     "ProfessionActivationState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite profession activation state alternatives supported by the cited feature.",
+      "enum": [
         "active",
         "dormant"
       ],
-      "description": "Finite profession activation state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ProfessionBand": {
       "type": "integer",
@@ -16900,20 +18155,22 @@
     },
     "ProjectileCollisionPolicy": {
       "type": "string",
-      "x-members": [],
-      "description": "Wall collision is mandatory to declare, but the set of supported blocking/piercing policies and masks is not specified.",
+      "enum": [
+        "stop_on_world"
+      ],
+      "description": "Baseline projectiles stop on solid world geometry. Actor piercing is controlled separately by ProjectileHitPolicy.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ProjectileHitPolicy": {
       "type": "string",
-      "x-members": [
+      "description": "Finite projectile hit policy alternatives supported by the cited feature.",
+      "enum": [
         "single_target",
         "piercing"
       ],
-      "description": "Finite projectile hit policy alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ProjectileState": {
       "type": "object",
@@ -16967,8 +18224,9 @@
           "description": "Collision policy."
         },
         "collision_mask": {
-          "$ref": "#/$defs/Id",
-          "description": "Collision mask."
+          "type": "string",
+          "const": "solid_world",
+          "description": "Semantic world-obstruction mask, resolved by the server to its engine collision layers; clients cannot supply a mask."
         },
         "target_entity_id": {
           "anyOf": [
@@ -17023,7 +18281,8 @@
       "additionalProperties": false,
       "description": "Projectile state.",
       "x-invariants": [
-        "Swept server collision; retain hit entity set for piercing, finite target count; validate relation and existence at homing impact."
+        "Swept server collision; retain hit entity set for piercing, finite target count; validate relation and existence at homing impact.",
+        "stop_on_world uses solid_world geometry, closed doors and floor boundaries. Piercing can continue through eligible actors up to target_cap, never through walls. A failed impact is not refunded."
       ],
       "x-category": "Interface",
       "x-definition-status": "Fully Defined"
@@ -17052,24 +18311,95 @@
       "additionalProperties": false,
       "description": "Presentation diff; cannot be used as an executable patch."
     },
+    "PublicCombatResult": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "$ref": "#/$defs/Id",
+          "description": "Action id."
+        },
+        "source_entity_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id",
+              "description": "Visible source entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Visible authorized source identity, or null for a hidden source; never a concealed source ID."
+        },
+        "target_entity_id": {
+          "$ref": "#/$defs/Id",
+          "description": "Target entity id.",
+          "x-reference": {
+            "target": "EntitySnapshot",
+            "kind": "instance"
+          }
+        },
+        "school": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DamageSchool"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Damage school when a damage component exists; null for healing-only or prevention-only result."
+        },
+        "critical": {
+          "type": "boolean",
+          "description": "Critical."
+        },
+        "effective_damage": {
+          "$ref": "#/$defs/CombatAmount",
+          "description": "Effective damage."
+        },
+        "effective_healing": {
+          "$ref": "#/$defs/CombatAmount",
+          "description": "Effective healing."
+        }
+      },
+      "required": [
+        "action_id",
+        "source_entity_id",
+        "target_entity_id",
+        "school",
+        "critical",
+        "effective_damage",
+        "effective_healing"
+      ],
+      "additionalProperties": false,
+      "description": "Recipient-filtered combat result; internal raw amounts, mitigation breakdown, overkill and resource history are omitted.",
+      "x-invariants": [
+        "Send only when the recipient is entitled to the target/result. The affected owner can receive damage from a hidden source with source_entity_id null. Observers require authorized visible targets.",
+        "Action/event identifiers are opaque recipient-scoped correlation references when a source is hidden; they cannot be joined to private ledgers or hidden-world records. Never redact by inventing a fake entity ID."
+      ]
+    },
     "PvpFlagState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite pvp flag state alternatives supported by the cited feature.",
+      "enum": [
         "unflagged",
         "flagged"
       ],
-      "description": "Finite pvp flag state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "PvpMode": {
       "type": "string",
-      "x-members": [
+      "description": "Finite pvp mode alternatives supported by the cited feature.",
+      "enum": [
         "duel",
         "instanced_objective",
         "flagged_open_world"
       ],
-      "description": "Finite pvp mode alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -17476,7 +18806,8 @@
     },
     "QuestObjectiveType": {
       "type": "string",
-      "x-members": [
+      "description": "Finite quest objective type alternatives supported by the cited feature.",
+      "enum": [
         "combat",
         "interaction",
         "loot",
@@ -17487,7 +18818,6 @@
         "specialization",
         "travel"
       ],
-      "description": "Finite quest objective type alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
@@ -17587,12 +18917,12 @@
     },
     "QuestStatus": {
       "type": "string",
-      "x-members": [
+      "description": "Finite quest status alternatives supported by the cited feature.",
+      "enum": [
         "accepted",
         "objectives_complete",
         "reward_committed"
       ],
-      "description": "Finite quest status alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
@@ -18012,7 +19342,8 @@
     },
     "RecipeSource": {
       "type": "string",
-      "x-members": [
+      "description": "Finite recipe source alternatives supported by the cited feature.",
+      "enum": [
         "trainer",
         "vendor",
         "group_activity",
@@ -18020,7 +19351,6 @@
         "player_trade",
         "advanced_skill_blueprint"
       ],
-      "description": "Finite recipe source alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -18179,20 +19509,21 @@
       "additionalProperties": false,
       "description": "Reconnect snapshot.",
       "x-invariants": [
-        "Private owner view deliberately differs from public EntitySnapshot and server-only TransferCheckpoint; economic records obtained by transactional receipts."
+        "Private owner view deliberately differs from public EntitySnapshot and server-only TransferCheckpoint; economic records obtained by transactional receipts.",
+        "Deliver only to the authenticated owner after epoch checks. Owner-private statuses may be restored; visible_entities is filtered independently using current visibility and never contains hidden source entities."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "RecoveryOption": {
       "type": "string",
-      "x-members": [
+      "description": "Finite recovery option alternatives supported by the cited feature.",
+      "enum": [
         "revival",
         "recovery_point"
       ],
-      "description": "Finite recovery option alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "RecoveryPointDefinition": {
       "type": "object",
@@ -18434,7 +19765,8 @@
     },
     "ReplicationEventKind": {
       "type": "string",
-      "x-members": [
+      "description": "Finite replication event kind alternatives supported by the cited feature.",
+      "enum": [
         "command_accepted",
         "command_rejected",
         "cast_started",
@@ -18452,7 +19784,6 @@
         "build_accepted",
         "reward_committed"
       ],
-      "description": "Finite replication event kind alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -18760,10 +20091,11 @@
       "additionalProperties": false,
       "description": "Resource snapshot.",
       "x-invariants": [
-        "Private owner resource view by default; disclosure to other players requires explicit visibility policy."
+        "Private owner resource view by default; disclosure to other players requires explicit visibility policy.",
+        "This revision is owner-only. Party and observer clients do not receive resource pools or resource histories."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ResourceType": {
       "$ref": "#/$defs/Id",
@@ -19232,14 +20564,14 @@
     },
     "SeedGrowthStage": {
       "type": "string",
-      "x-members": [
+      "description": "Finite seed growth stage alternatives supported by the cited feature.",
+      "enum": [
         "planted",
         "growing",
         "mature"
       ],
-      "description": "Finite seed growth stage alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ServerConfiguration": {
       "type": "object",
@@ -19430,26 +20762,26 @@
     },
     "ServiceAvailabilityState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite service availability state alternatives supported by the cited feature.",
+      "enum": [
         "available",
         "suspended"
       ],
-      "description": "Finite service availability state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ServiceOperationType": {
       "type": "string",
-      "x-members": [
+      "description": "Finite service operation type alternatives supported by the cited feature.",
+      "enum": [
         "enchant",
         "socket_replacement",
         "repair",
         "instrument_configuration",
         "recraft"
       ],
-      "description": "Finite service operation type alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "ServiceWorkRequest": {
       "type": "object",
@@ -19557,13 +20889,13 @@
     },
     "SessionOwnershipState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite session ownership state alternatives supported by the cited feature.",
+      "enum": [
         "owned",
         "revoked"
       ],
-      "description": "Finite session ownership state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "SessionToken": {
       "type": "object",
@@ -19575,11 +20907,16 @@
         "expires_at": {
           "$ref": "#/$defs/Instant",
           "description": "Expires at."
+        },
+        "schema": {
+          "const": "session_token_v1",
+          "description": "Versioned message discriminator."
         }
       },
       "required": [
         "token",
-        "expires_at"
+        "expires_at",
+        "schema"
       ],
       "additionalProperties": false,
       "description": "Session token.",
@@ -20124,7 +21461,8 @@
     },
     "SpriteDirection": {
       "type": "string",
-      "x-members": [
+      "description": "Finite sprite direction alternatives supported by the cited feature.",
+      "enum": [
         "north",
         "north_east",
         "east",
@@ -20134,9 +21472,8 @@
         "west",
         "north_west"
       ],
-      "description": "Finite sprite direction alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "StanceDefinition": {
       "type": "object",
@@ -20207,7 +21544,8 @@
       "additionalProperties": false,
       "description": "Authoritative starcaller signature history; shared resources, statuses, summons and debt are referenced rather than stored twice.",
       "x-invariants": [
-        "Cycle meter −3 to +3; solar adds one, lunar subtracts one; eligible finisher consumes three units toward zero; no benefit from toggling a phase without a successful action."
+        "Cycle meter −3 to +3; solar adds one, lunar subtracts one; eligible finisher consumes three units toward zero; no benefit from toggling a phase without a successful action.",
+        "CyclePhase derives from sign: negative lunar, zero neutral, positive solar. Phase changes never generate resources or events independently of the successful action."
       ],
       "x-category": "Interface",
       "x-definition-status": "Fully Defined"
@@ -20348,7 +21686,8 @@
     },
     "StatusCategory": {
       "type": "string",
-      "x-members": [
+      "description": "Finite status category alternatives supported by the cited feature.",
+      "enum": [
         "damage_over_time",
         "healing_over_time",
         "shield",
@@ -20358,7 +21697,6 @@
         "resource_generator",
         "summon_aura"
       ],
-      "description": "Finite status category alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
@@ -20465,7 +21803,7 @@
       "description": "Status definition.",
       "x-invariants": [
         "Every field present; null explicitly means nonperiodic, nondispellable, no override or no exclusive group. Source entity belongs to StatusInstance, not static content.",
-        "Maximum stacks positive; periodic interval positive when present. Precise cleanup combinations and complete status vocabulary need review."
+        "Maximum stacks positive; periodic interval positive when present. Lifecycle policy flags compose explicitly. The enabled per-status vocabulary, combinations and handler catalog still require the status-policy-completeness evidence."
       ],
       "x-category": "Schema",
       "x-definition-status": "Needs Decision"
@@ -20479,7 +21817,12 @@
         },
         "kind": {
           "$ref": "#/$defs/ReplicationEventKind",
-          "description": "Kind."
+          "description": "Kind.",
+          "enum": [
+            "effect_applied",
+            "effect_updated",
+            "effect_removed"
+          ]
         },
         "target_entity_id": {
           "$ref": "#/$defs/Id",
@@ -20543,10 +21886,11 @@
       "additionalProperties": false,
       "description": "Status effect event.",
       "x-invariants": [
-        "Only effect_applied/effect_updated/effect_removed. Initial visible state arrives via snapshots even when old events were missed."
+        "Only effect_applied/effect_updated/effect_removed. Initial visible state arrives via snapshots even when old events were missed.",
+        "Affected owners receive their own status display data. Other observers receive only explicitly public status display fields on visible targets; unsupported optional fields are null. Hidden-source identity is never included. A status is removed or redacted when authorization changes."
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "StatusInstance": {
       "type": "object",
@@ -20634,35 +21978,53 @@
       "x-definition-status": "Fully Defined"
     },
     "StatusPersistencePolicy": {
-      "type": "string",
-      "x-members": [
+      "type": "object",
+      "properties": {
+        "cleanup_on_death": {
+          "type": "boolean",
+          "description": "Remove this status when its target dies."
+        },
+        "cleanup_on_logout": {
+          "type": "boolean",
+          "description": "Remove at authoritative logout after the disconnect grace policy completes."
+        },
+        "checkpoint_for_transfer": {
+          "type": "boolean",
+          "description": "Transfer the surviving authoritative instance rather than restarting its lifetime."
+        }
+      },
+      "required": [
         "cleanup_on_death",
         "cleanup_on_logout",
         "checkpoint_for_transfer"
       ],
-      "description": "Finite status persistence policy alternatives supported by the cited feature.",
-      "x-category": "Enum",
+      "additionalProperties": false,
+      "description": "Composable status cleanup flags; all choices are explicit and may apply together.",
+      "x-invariants": [
+        "Death/logout cleanup takes precedence over transfer checkpointing. Checkpointing preserves expiry, next tick and remaining budget; it never restarts the status. A status not checkpointed is removed at transfer."
+      ],
+      "x-category": "Schema",
       "x-definition-status": "Needs Decision"
     },
     "StatusRefreshPolicy": {
       "type": "string",
-      "x-members": [
+      "description": "Finite status refresh policy alternatives supported by the cited feature.",
+      "enum": [
         "carry_duration_preserve_next_tick",
         "replace_greater_shield",
         "strongest_category"
       ],
-      "description": "Finite status refresh policy alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
     "StatusStackingPolicy": {
       "type": "string",
-      "x-members": [
+      "description": "Finite status stacking policy alternatives supported by the cited feature.",
+      "enum": [
         "per_caster_ability_target",
         "replace_greater_remaining",
         "strongest_category"
       ],
-      "description": "Finite status stacking policy alternatives supported by the cited feature.",
       "x-category": "Enum",
       "x-definition-status": "Needs Decision"
     },
@@ -20759,7 +22121,8 @@
       "additionalProperties": false,
       "description": "Summon capacity state.",
       "x-invariants": [
-        "One four-unit owner capacity includes class and specialization summons. Lesser/static cost one; elite costs four; cosmetic zero. Sum active costs <= four."
+        "One four-unit owner capacity includes class and specialization summons. Lesser/static cost one; elite costs four; cosmetic zero. Sum active costs <= four.",
+        "specialized_mobile Bonewright costs two. Its replacement must free the replaced lesser before checking the final total; reject the operation if the resulting shared cost exceeds four."
       ],
       "x-category": "Interface",
       "x-definition-status": "Fully Defined"
@@ -20851,18 +22214,111 @@
       "x-invariants": [
         "All summons share owner capacity and aggregate output budget. Policies must be bound; zero lifetime is persistent-until-cleanup, not immortal."
       ],
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "lesser_mobile",
+              "description": "Declared summon category."
+            },
+            "capacity_cost": {
+              "const": 1,
+              "description": "Required capacity cost for this category."
+            }
+          },
+          "required": [
+            "kind",
+            "capacity_cost"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "elite_companion",
+              "description": "Declared summon category."
+            },
+            "capacity_cost": {
+              "const": 4,
+              "description": "Required capacity cost for this category."
+            }
+          },
+          "required": [
+            "kind",
+            "capacity_cost"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "static_combat_totem",
+              "description": "Declared summon category."
+            },
+            "capacity_cost": {
+              "const": 1,
+              "description": "Required capacity cost for this category."
+            }
+          },
+          "required": [
+            "kind",
+            "capacity_cost"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "cosmetic",
+              "description": "Declared summon category."
+            },
+            "capacity_cost": {
+              "const": 0,
+              "description": "Required capacity cost for this category."
+            }
+          },
+          "required": [
+            "kind",
+            "capacity_cost"
+          ],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "specialized_mobile",
+              "description": "Declared summon category."
+            },
+            "capacity_cost": {
+              "const": 2,
+              "description": "Required capacity cost for this category."
+            }
+          },
+          "required": [
+            "kind",
+            "capacity_cost"
+          ],
+          "additionalProperties": true
+        }
+      ],
       "x-category": "Schema",
       "x-definition-status": "Needs Decision"
     },
     "SummonKind": {
       "type": "string",
-      "x-members": [
+      "enum": [
         "lesser_mobile",
         "elite_companion",
         "static_combat_totem",
-        "cosmetic"
+        "cosmetic",
+        "specialized_mobile"
       ],
-      "description": "Finite summon kind alternatives supported by the cited feature.",
+      "description": "Explicit summon kinds with one shared owner capacity and aggregate output budget.",
       "x-category": "Enum",
       "x-definition-status": "Fully Defined"
     },
@@ -20969,6 +22425,10 @@
             "$ref": "#/$defs/AmountBySource"
           },
           "description": "Attributed."
+        },
+        "accounting_policy": {
+          "const": "ordered_marginal_v1",
+          "description": "Deterministic offensive-support attribution policy."
         }
       },
       "required": [
@@ -20976,15 +22436,18 @@
         "target_entity_id",
         "actual_damage",
         "incremental_support_damage",
-        "attributed"
+        "attributed",
+        "accounting_policy"
       ],
       "additionalProperties": false,
       "description": "Support contribution.",
       "x-invariants": [
-        "Sum attributed support <= measured incremental damage; actual target damage is recorded once. Attribution policy conflict remains open."
+        "Use ordered_marginal_v1. Keep the same root hit, critical outcome, non-support modifiers, mitigation, caps and rounding while adding eligible positive support modifiers in the existing modifier-family order, then stable (source_entity_id, owner_ability_id, status_instance_id) order within each family.",
+        "Credit each source only the nonnegative incremental effective damage produced at its step, aggregate once per source, and record unique sources in stable ID order. The baseline includes all non-support effects and negative modifiers.",
+        "Sum attributed amounts equals incremental_support_damage and cannot exceed actual_damage. Actual target damage is recorded once. This is deterministic accounting, not extra damage or a counterfactual team simulation."
       ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "TalentAllocation": {
       "type": "object",
@@ -21747,6 +23210,16 @@
       "x-category": "Interface",
       "x-definition-status": "Fully Defined"
     },
+    "TargetInputKind": {
+      "type": "string",
+      "enum": [
+        "entity",
+        "point",
+        "direction",
+        "none"
+      ],
+      "description": "Exactly one targeting input kind selected by the resolved ability definition."
+    },
     "TargetMarkState": {
       "type": "object",
       "properties": {
@@ -21864,7 +23337,7 @@
               "type": "null"
             }
           ],
-          "description": "Selected visible eligible entity, null when cleared.",
+          "description": "Non-null for an entity-input cast; null for other input kinds. A cleared HUD selection is represented by null at its containing field.",
           "x-reference": {
             "target": "EntitySnapshot",
             "kind": "instance"
@@ -21884,25 +23357,771 @@
         "aim_direction": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Vector2"
+              "$ref": "#/$defs/NonzeroDirection",
+              "description": "Continuous directional intent."
             },
             {
               "type": "null"
             }
           ],
-          "description": "Continuous directional intent when relevant."
+          "description": "Nonzero finite direction when the resolved ability requires it; null otherwise."
         }
       },
       "required": [
-        "mode"
+        "mode",
+        "entity_id",
+        "aim_point",
+        "aim_direction"
       ],
       "additionalProperties": false,
-      "description": "Target selection.",
+      "description": "Accepted targeting intent with authoritative world scope attached by the server; target changes do not mutate an in-progress cast.",
       "x-invariants": [
         "Only the targeting inputs appropriate to the ability mode are valid. A mode-specific payload cannot silently retarget an existing cast."
       ],
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "channel_friendly",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "channel_friendly / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "cone",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "$ref": "#/$defs/NonzeroDirection",
+              "description": "Continuous nonzero aim direction."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "cone / direction accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "dash_point",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "$ref": "#/$defs/WorldPoint",
+              "description": "Absolute ground point in the authenticated current world scope."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "dash_point / point accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "dash_target",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "dash_target / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_channel",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "enemy_channel / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_line",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "$ref": "#/$defs/NonzeroDirection",
+              "description": "Continuous nonzero aim direction."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "enemy_line / direction accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_melee",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "enemy_melee / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_projectile",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "enemy_projectile / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "enemy_target",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "enemy_target / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "friendly / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly_chain",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "friendly_chain / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly_cone",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "$ref": "#/$defs/NonzeroDirection",
+              "description": "Continuous nonzero aim direction."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "friendly_cone / direction accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "friendly_dash",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "friendly_dash / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "ground",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "$ref": "#/$defs/WorldPoint",
+              "description": "Absolute ground point in the authenticated current world scope."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "ground / point accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "passive",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "passive / none accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "pet_command",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "pet_command / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "pet_command",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "pet_command / none accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "self",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "self / none accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "self_aoe",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "self_aoe / none accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "summon",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "summon / entity accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "summon",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "$ref": "#/$defs/WorldPoint",
+              "description": "Absolute ground point in the authenticated current world scope."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "summon / point accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "summon",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "summon / none accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "summon_static",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "$ref": "#/$defs/WorldPoint",
+              "description": "Absolute ground point in the authenticated current world scope."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "summon_static / point accepted target selection."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "toggle",
+              "description": "Resolved authored mode."
+            },
+            "entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "mode",
+            "entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": false,
+          "description": "toggle / none accepted target selection."
+        }
+      ],
       "x-category": "Interface",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "TelegraphDefinition": {
       "type": "object",
@@ -22349,15 +24568,15 @@
     },
     "TradeState": {
       "type": "string",
-      "x-members": [
+      "description": "Finite trade state alternatives supported by the cited feature.",
+      "enum": [
         "offered",
         "confirmed",
         "committed",
         "cancelled"
       ],
-      "description": "Finite trade state alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "TransactionRecoveryTestRecord": {
       "type": "object",
@@ -22551,7 +24770,8 @@
     },
     "TransferPhase": {
       "type": "string",
-      "x-members": [
+      "description": "Finite transfer phase alternatives supported by the cited feature.",
+      "enum": [
         "suspended",
         "checkpointed",
         "token_issued",
@@ -22560,9 +24780,8 @@
         "snapshot_delivered",
         "returned"
       ],
-      "description": "Finite transfer phase alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "TransferToken": {
       "type": "object",
@@ -22602,6 +24821,10 @@
         "consumed": {
           "type": "boolean",
           "description": "Consumed."
+        },
+        "schema": {
+          "const": "transfer_token_v1",
+          "description": "Versioned message discriminator."
         }
       },
       "required": [
@@ -22611,7 +24834,8 @@
         "destination_epoch",
         "destination_process_id",
         "checkpoint_id",
-        "consumed"
+        "consumed",
+        "schema"
       ],
       "additionalProperties": false,
       "description": "Transfer token.",
@@ -22697,7 +24921,8 @@
     },
     "TravelRejectionReason": {
       "type": "string",
-      "x-members": [
+      "description": "Finite travel rejection reason alternatives supported by the cited feature.",
+      "enum": [
         "in_combat",
         "locked_crafting",
         "prohibited_objective",
@@ -22705,9 +24930,8 @@
         "invalid_destination",
         "invalid_ownership"
       ],
-      "description": "Finite travel rejection reason alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "TravelRequest": {
       "type": "object",
@@ -23048,16 +25272,16 @@
     },
     "TutorialStage": {
       "type": "string",
-      "x-members": [
+      "description": "Finite tutorial stage alternatives supported by the cited feature.",
+      "enum": [
         "arrival",
         "first_growth",
         "more_choices",
         "putting_it_together",
         "graduation"
       ],
-      "description": "Finite tutorial stage alternatives supported by the cited feature.",
       "x-category": "Enum",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     },
     "TutorialStageDefinition": {
       "type": "object",
@@ -24135,7 +26359,7 @@
         },
         "character_id": {
           "$ref": "#/$defs/Id",
-          "description": "Character id.",
+          "description": "Optional consistency check against the authenticated session character; it never selects or authorizes another actor.",
           "x-reference": {
             "target": "CharacterRecord",
             "kind": "instance"
@@ -24181,29 +26405,30 @@
               "type": "null"
             }
           ],
-          "description": "Aim point."
+          "description": "Absolute x/y point in the authenticated caster current zone, instance and floor; null unless required."
         },
         "aim_direction": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Vector2"
+              "$ref": "#/$defs/NonzeroDirection",
+              "description": "Continuous directional intent."
             },
             {
               "type": "null"
             }
           ],
-          "description": "Aim direction."
+          "description": "Nonzero finite direction when the resolved ability requires it; null otherwise."
         },
         "requested_charge_spend": {
           "$ref": "#/$defs/Count",
-          "description": "Requested charge spend."
+          "description": "Requested charge spend.",
+          "minimum": 1
         }
       },
       "required": [
         "schema",
         "session_epoch",
         "command_sequence",
-        "character_id",
         "ability_id",
         "build_version",
         "content_version",
@@ -24214,12 +26439,116 @@
       "additionalProperties": false,
       "description": "Exact existing ability command name and example fields; owner and spatial scope derive from the authenticated world session.",
       "x-invariants": [
-        "schema is ability_command_v2. The example does not settle required-vs-optional intent fields; current canonical presence rules remain Needs Decision.",
+        "The three intent keys are always present; unused inputs are null. Exactly the resolved AbilityTargetingPolicy.input_kind must be supplied. Missing, incompatible or ambiguous inputs are rejected; no implicit current-target or facing fallback.",
         "Repeated (session_epoch, command_sequence) returns the prior acceptance/rejection/result reference. No damage, health, resource balance, random seed, position or cooldown completion from client.",
-        "requested_charge_spend applies only to declared charge spenders; Charge Lance spends 1..4 and requires sufficient available charges."
+        "requested_charge_spend applies only to declared charge spenders; Charge Lance spends 1..4 and requires sufficient available charges.",
+        "The server derives the actor and world scope from its authenticated session; a supplied character_id must match. Session epochs fence zone transfers. Coordinates are intent, never authoritative position.",
+        "requested_charge_spend is present only for a declared charge spender and is a positive integer; omitted means the ability declared default. Charge Lance requires 1..4 and sufficient unreserved charges."
+      ],
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "target_entity_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Selected visible eligible entity.",
+              "x-reference": {
+                "target": "EntitySnapshot",
+                "kind": "instance"
+              }
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "target_entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": true,
+          "description": "Mutually exclusive entity targeting inputs."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "target_entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "$ref": "#/$defs/Vector2",
+              "description": "Absolute ground point in the authenticated current world scope."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "target_entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": true,
+          "description": "Mutually exclusive point targeting inputs."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "target_entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "$ref": "#/$defs/NonzeroDirection",
+              "description": "Continuous nonzero aim direction."
+            }
+          },
+          "required": [
+            "target_entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": true,
+          "description": "Mutually exclusive direction targeting inputs."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "target_entity_id": {
+              "type": "null",
+              "description": "Unused entity input."
+            },
+            "aim_point": {
+              "type": "null",
+              "description": "Unused ground-point input."
+            },
+            "aim_direction": {
+              "type": "null",
+              "description": "Unused directional input."
+            }
+          },
+          "required": [
+            "target_entity_id",
+            "aim_point",
+            "aim_direction"
+          ],
+          "additionalProperties": true,
+          "description": "Mutually exclusive none targeting inputs."
+        }
       ],
       "x-category": "Schema",
-      "x-definition-status": "Needs Decision"
+      "x-definition-status": "Fully Defined"
     }
   }
 }

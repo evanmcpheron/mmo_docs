@@ -51,7 +51,7 @@
 <p>Prototype simulation at 30 Hz, nearby movement snapshots at 10–20 Hz, lower-priority distant state at 2–5 Hz, and event-driven static objects. These are measurement starting points. Client rendering is independent.</p>
 <p>Send sequenced movement intent. The server simulates movement and acknowledges input sequence in snapshots. The local client predicts and reconciles; remote characters interpolate. Combat requests contain aim/target intent, not a position used to bypass server collision.</p>
 <p>Use separate traffic channels for movement snapshots, combat/control events and reliable state operations. Frequent replaceable snapshots need not queue behind chat or an inventory acknowledgment. Reliable transport delivery is not durable transaction completion.</p>
-<h2 id="area-of-interest-and-hidden-information">Area of interest and hidden information</h2>
+<h2 id="area-of-interest-and-hidden-information">Area of interest and hidden information</h2><p><strong>Reviewed disclosure policy:</strong> Resource pools and reconnect state are owner-only. Public EntitySnapshot and NameplateState expose only currently authorized visible entities. Optional public status details require an explicit server allowlist; otherwise visible_statuses is empty. Authorization loss removes or redacts the projection.</p><p>CombatResult remains an internal record. PublicCombatResult carries only recipient-authorized outcome fields and a nullable source entity ID: damage from a hidden source can be shown to the affected owner with a null source. Raw damage/mitigation breakdowns, overkill and resource history are omitted. Hidden-source action/event correlation references are recipient-scoped and cannot be joined to private ledgers. A reconnect snapshot filters public visible entities independently of owner-private restored state.</p>
 <p>Track nearby entities using a spatial grid and floor/instance identity. Add explicit interest for relevant projectiles and hazards whose effects can reach the player. Limit update frequency by relevance, not by silently removing a real boss hazard. Bound maximum nameplates, cosmetic effects and redundant pet updates separately from gameplay outcomes.</p>
 <p>Do not replicate hidden enemy information merely because the client promises not to render it. Stealth, fog/visibility rules, target markers and pet tracking require server filtering. Camera zoom cannot increase authoritative combat visibility beyond the agreed information envelope.</p>
 <p>Clients receive spawn/despawn plus relevant effect snapshots when entering interest. Missing an old buff event cannot leave a newly visible player permanently unbuffed in the UI. Use revisions and periodic authoritative reconciliation for health and status state.</p>
@@ -67,7 +67,7 @@
 <h2 id="disconnect-and-recovery">Disconnect and recovery</h2>
 <p>Keep an in-combat disconnected character present for a short configured grace period, initially 20 seconds, under simple server defensive behavior rather than invulnerability. Stop issuing new attacks or pet orders. A reconnect claims the existing character through a new session token and receives a snapshot. A second connection cannot operate the same character concurrently.</p>
 <p>Clean logout requires out-of-combat state or a logout countdown. Disconnecting cannot clear control, reset a boss, erase stagger debt or cancel an already committed trade. An unclean world-process crash uses a documented recovery point and encounter reset policy; do not claim perfect combat durability without a replay architecture.</p>
-<h2 id="security-and-observability">Security and observability</h2>
+<h2 id="security-and-observability">Security and observability</h2><p><strong>Boundary representation:</strong> Previously symbolic enum members use their exact case-sensitive snake_case IDs; existing serialized values remain unchanged. New movement, party, guild and token boundary objects have explicit versioned discriminators. Unknown tokens and fields are rejected. Instant uses RFC 3339 UTC with Z or +00:00; durations remain seconds. IDs are opaque strings in contract-specific namespaces and never prove authorization. Breaking changes require a new discriminator and migration; compatible additions require a new package version and negotiated capability. Epochs and sequences must never wrap or be reused.</p>
 <p>Authenticate before spawning an economic character. Validate payload size, IDs, permission, action rate and sequence. Encrypt account/service traffic with standard transport security. Do not put account secrets or authoritative drop tables into client-facing logs. Add audit trails for admin inventory edits and progression grants.</p>
 <p>Monitor tick duration, relevant entity counts, bytes per client, event queue depth, database latency, rejected commands, duplicate requests and settlement retries. Load-test crowded bazaars, world bosses and four-summon classes. Graphics being 2D does not prove a zone can simulate thousands of players.</p>
 <!-- data-inventory:start -->
@@ -76,18 +76,18 @@
 <p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
 <h3 id="data-enums">Enums</h3>
 <ul>
-<li data-inventory-id="action-rejection-reason"><code><a href="data-inventory.html#action-rejection-reason">ActionRejectionReason</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="cast-phase"><code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="character-connection-state"><code><a href="data-inventory.html#character-connection-state">CharacterConnectionState</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="character-life-state"><code><a href="data-inventory.html#character-life-state">CharacterLifeState</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="command-outcome"><code><a href="data-inventory.html#command-outcome">CommandOutcome</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="logout-state"><code><a href="data-inventory.html#logout-state">LogoutState</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="action-rejection-reason"><code><a href="data-inventory.html#action-rejection-reason">ActionRejectionReason</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cast-phase"><code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="character-connection-state"><code><a href="data-inventory.html#character-connection-state">CharacterConnectionState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="character-life-state"><code><a href="data-inventory.html#character-life-state">CharacterLifeState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="command-outcome"><code><a href="data-inventory.html#command-outcome">CommandOutcome</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="logout-state"><code><a href="data-inventory.html#logout-state">LogoutState</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="network-traffic-channel"><code><a href="data-inventory.html#network-traffic-channel">NetworkTrafficChannel</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recovery-option"><code><a href="data-inventory.html#recovery-option">RecoveryOption</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="recovery-option"><code><a href="data-inventory.html#recovery-option">RecoveryOption</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="replication-event-kind"><code><a href="data-inventory.html#replication-event-kind">ReplicationEventKind</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="session-ownership-state"><code><a href="data-inventory.html#session-ownership-state">SessionOwnershipState</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="transfer-phase"><code><a href="data-inventory.html#transfer-phase">TransferPhase</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="travel-rejection-reason"><code><a href="data-inventory.html#travel-rejection-reason">TravelRejectionReason</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="session-ownership-state"><code><a href="data-inventory.html#session-ownership-state">SessionOwnershipState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="transfer-phase"><code><a href="data-inventory.html#transfer-phase">TransferPhase</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="travel-rejection-reason"><code><a href="data-inventory.html#travel-rejection-reason">TravelRejectionReason</a></code> — Proposed · Fully Defined</li>
 </ul>
 <h3 id="data-interfaces">Interfaces</h3>
 <ul>
@@ -141,19 +141,19 @@
 <li data-inventory-id="damage-ledger-record"><code><a href="data-inventory.html#damage-ledger-record">DamageLedgerRecord</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="destination-snapshot"><code><a href="data-inventory.html#destination-snapshot">DestinationSnapshot</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="encounter-checkpoint"><code><a href="data-inventory.html#encounter-checkpoint">EncounterCheckpoint</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="entity-snapshot"><code><a href="data-inventory.html#entity-snapshot">EntitySnapshot</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="entity-snapshot"><code><a href="data-inventory.html#entity-snapshot">EntitySnapshot</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="interest-subscription"><code><a href="data-inventory.html#interest-subscription">InterestSubscription</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-operation-request"><code><a href="data-inventory.html#inventory-operation-request">InventoryOperationRequest</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="inventory-operation-request"><code><a href="data-inventory.html#inventory-operation-request">InventoryOperationRequest</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="inventory-operation-result"><code><a href="data-inventory.html#inventory-operation-result">InventoryOperationResult</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="inventory-record"><code><a href="data-inventory.html#inventory-record">InventoryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-ownership-record"><code><a href="data-inventory.html#item-ownership-record">ItemOwnershipRecord</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="item-ownership-record"><code><a href="data-inventory.html#item-ownership-record">ItemOwnershipRecord</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="known-recipe-record"><code><a href="data-inventory.html#known-recipe-record">KnownRecipeRecord</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="login-request"><code><a href="data-inventory.html#login-request">LoginRequest</a></code> — Proposed · Needs Decision · Needs Review</li>
 <li data-inventory-id="login-response"><code><a href="data-inventory.html#login-response">LoginResponse</a></code> — Proposed · Needs Decision · Needs Review</li>
 <li data-inventory-id="logout-request"><code><a href="data-inventory.html#logout-request">LogoutRequest</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="moderation-record"><code><a href="data-inventory.html#moderation-record">ModerationRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="movement-intent"><code><a href="data-inventory.html#movement-intent">MovementIntent</a></code> — Proposed · Needs Decision · Needs Review</li>
-<li data-inventory-id="movement-snapshot"><code><a href="data-inventory.html#movement-snapshot">MovementSnapshot</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="movement-intent"><code><a href="data-inventory.html#movement-intent">MovementIntent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="movement-snapshot"><code><a href="data-inventory.html#movement-snapshot">MovementSnapshot</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="navigation-configuration"><code><a href="data-inventory.html#navigation-configuration">NavigationConfiguration</a></code> — Proposed · Needs Decision · Needs Review</li>
 <li data-inventory-id="network-simulation-configuration"><code><a href="data-inventory.html#network-simulation-configuration">NetworkSimulationConfiguration</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="operation-receipt"><code><a href="data-inventory.html#operation-receipt">OperationReceipt</a></code> — Proposed · Fully Defined</li>
@@ -161,7 +161,7 @@
 <li data-inventory-id="player-report"><code><a href="data-inventory.html#player-report">PlayerReport</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="prepared-device-definition"><code><a href="data-inventory.html#prepared-device-definition">PreparedDeviceDefinition</a></code> — Proposed · Needs Decision · Needs Review</li>
 <li data-inventory-id="reconnect-request"><code><a href="data-inventory.html#reconnect-request">ReconnectRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="reconnect-snapshot"><code><a href="data-inventory.html#reconnect-snapshot">ReconnectSnapshot</a></code> — Proposed · Needs Decision · Needs Review</li>
+<li data-inventory-id="reconnect-snapshot"><code><a href="data-inventory.html#reconnect-snapshot">ReconnectSnapshot</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="registered-companion-record"><code><a href="data-inventory.html#registered-companion-record">RegisteredCompanionRecord</a></code> — Proposed · Fully Defined</li>
 <li data-inventory-id="reward-eligibility-record"><code><a href="data-inventory.html#reward-eligibility-record">RewardEligibilityRecord</a></code> — Proposed · Needs Decision · Needs Review</li>
 <li data-inventory-id="reward-grant-record"><code><a href="data-inventory.html#reward-grant-record">RewardGrantRecord</a></code> — Proposed · Fully Defined</li>
@@ -185,4 +185,4 @@
 <li data-inventory-id="zone-transition-definition"><code><a href="data-inventory.html#zone-transition-definition">ZoneTransitionDefinition</a></code> — Proposed · Needs Decision · Needs Review</li>
 </ul>
 </section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.0 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#practical-initial-architecture">Practical initial architecture</a><a href="#ownership">Ownership</a><a href="#movement-and-traffic">Movement and traffic</a><a href="#area-of-interest-and-hidden-information">Area of interest and hidden information</a><a href="#latency-policy">Latency policy</a><a href="#durable-operations">Durable operations</a><a href="#zone-or-instance-transfer">Zone or instance transfer</a><a href="#disconnect-and-recovery">Disconnect and recovery</a><a href="#security-and-observability">Security and observability</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.1 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#practical-initial-architecture">Practical initial architecture</a><a href="#ownership">Ownership</a><a href="#movement-and-traffic">Movement and traffic</a><a href="#area-of-interest-and-hidden-information">Area of interest and hidden information</a><a href="#latency-policy">Latency policy</a><a href="#durable-operations">Durable operations</a><a href="#zone-or-instance-transfer">Zone or instance transfer</a><a href="#disconnect-and-recovery">Disconnect and recovery</a><a href="#security-and-observability">Security and observability</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
