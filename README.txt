@@ -4,7 +4,8 @@ Mechanics design, not a playable Godot project
 OPEN THE REFERENCE
 1. Extract the entire ZIP, keeping the folder structure intact.
 2. Open index.html in a desktop web browser.
-3. Start with Design decisions, Levels & talent points, and Specializations & playstyles.
+3. Start with Character creation & beginner area, then Design decisions,
+   Levels & talent points, and Specializations & playstyles.
 
 All reading content, styles and search data are included locally. No account,
 package installation, API key, build step or external CDN is required.
@@ -20,7 +21,7 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-52 HTML pages: 20 system chapters, 12 class pages, 16 profession pages,
+53 HTML pages: 21 system chapters, 12 class pages, 16 profession pages,
 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -28,6 +29,9 @@ Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 55 material definitions, 63 numerical execution profiles and 98 sample allocations.
 
 MAIN CHANGES
+World of Warcraft-style character creation and a guided level 1–10 beginner area.
+The opening journey is also the first complete playable testing ground.
+See guide/character-creation.html for the player-facing feature flow.
 Two points on each level-up from 2 through 60: 59 class + 59 specialization.
 Specialization points are banked before level 10. Level 1 starts at zero.
 Humans can choose either faction with identical racial attributes; Ogres removed.
