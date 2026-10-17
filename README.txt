@@ -21,7 +21,7 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-53 HTML pages: 21 system chapters, 12 class pages, 16 profession pages,
+54 HTML pages: 22 system/catalog chapters, 12 class pages, 16 profession pages,
 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -66,6 +66,68 @@ HTML is a static published snapshot. Editing JSON does not automatically update
 HTML tables or search data. Change matching reference pages and regenerate the
 search index before distributing an edited version. Preserve stable IDs and
 increment content versions when meanings change.
+
+DATA INVENTORY
+Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.
+Browse Enums, Interfaces and Schemas alphabetically; existing table filters and
+global search also find inventory names. All links and content work offline.
+Every associated feature page ends with Data, linking to stable inventory anchors.
+New proposals contain names and metadata only, marked Pending Definition.
+Existing formats and partial contracts remain in their original documentation.
+Needs Review flags link to unresolved terminology and classification questions.
+
+The authoritative registry is sources/data-inventory.json. It records structures,
+page associations, section evidence, review questions and page-review coverage.
+The 49 feature pages were reviewed alongside four reference/index pages. See the
+inventory's Coverage section for every reviewed page and exclusion rationale.
+No housing, territory, siege, authored geography or other deferred mechanics are
+invented by the inventory. Coverage reflects the current documentation only.
+
+Build: python3 scripts/build_data_inventory.py
+Check without writing: python3 scripts/build_data_inventory.py --check
+Focused consistency check: python3 validation/check_data_inventory.py
+Inventory regression tests: python3 -m unittest discover -s validation -p 'test_*.py'
+Full existing checks, including inventory: python3 validation/run_checks.py
+All inventory commands require Python 3.10+ and the standard library only.
+Optional rendered checks: node validation/check_inventory_browser.mjs
+The optional browser check uses Node 22+ and an installed Chrome/Chromium, with
+no downloaded packages. Set BRIARWAKE_CHROME_BIN if its path is not detected.
+It writes validation/data-inventory-browser-checks.json; the original browser
+evidence remains unchanged. It checks actual offline file navigation, filtering,
+search, backlinks, mobile layout and reading with page JavaScript disabled.
+
+The inventory builder owns guide/data-inventory.html, marked Data blocks,
+Data links in page contents, the Data Inventory sidebar link, inventory-tagged
+search records and documentation counts in data/manifest.json. Existing feature
+HTML remains authoritative; no original full-site generator is included here.
+The builder preserves the original feature text, catalogs, search records and
+game-data definitions. It neither regenerates their tables nor executes gameplay.
+Rebuilds replace owned output consistently and never add duplicate Data sections.
+
+For additions, first read the feature text and existing inventory for shared
+contracts. Edit the registry, keeping stable IDs, names and classifications.
+Add each relevant feature page and its specific section to the entry's evidence;
+feature_pages must match the HTML pages represented in that evidence. Choose a
+canonical_page section from that evidence. Use Existing/Documented for existing
+documented formats, or Proposed/Pending Definition for newly proposed contracts.
+Catalog labels for previously unnamed formats do not rename original sources.
+Do not add enum values, members, fields, types, constraints or implementation.
+Attach unresolved questions through review_issues and Needs Review metadata.
+
+When adding or changing feature text, review all affected associations first,
+then record that completed review and rebuild with:
+python3 scripts/build_data_inventory.py --review-page guide/example.html
+Replace the example path with the actual page; the option is repeatable. A new
+page is classified as Feature and must have supported inventory associations.
+Reference/index exclusions instead need an explicit reason in registry.pages.
+Checks detect new unreviewed pages, changed source text, stale section reviews,
+duplicate names/IDs, missing files/anchors, missing associations, accidental
+definitions, review-link inconsistencies and stale generated output. They cannot
+replace a human feature review or establish that a proposed contract is balanced.
+
+Actual definitions can later live on their canonical documentation pages while
+the registry continues to catalog names and references. The inventory's basic
+organization does not need to change when those definitions are authored.
 
 SOURCES
 Official research links are in guide/sources.html. The source archive checksum

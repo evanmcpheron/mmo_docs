@@ -1,0 +1,384 @@
+"""Build the metadata-only inventory and its owned parts of the static reference."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import html
+import json
+import posixpath
+import re
+from collections import Counter
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
+ROOT = Path(__file__).resolve().parents[1]
+INVENTORY_PAGE = 'guide/data-inventory.html'
+CATEGORIES = {'Enum': 'Enums', 'Interface': 'Interfaces', 'Schema': 'Schemas'}
+DATA_START = '<!-- data-inventory:start -->'
+DATA_END = '<!-- data-inventory:end -->'
+DATA_BLOCK = re.compile(re.escape(DATA_START) + r'.*?' + re.escape(DATA_END), re.S)
+ENTRY_KEYS = {'id', 'name', 'category', 'status', 'definition_status', 'canonical_page',
+              'feature_pages', 'evidence', 'review_status', 'review_issues'}
+REGISTRY_KEYS = {'version', 'title', 'pages', 'reviewed_sources', 'scope_notes',
+                 'review_issues', 'entries'}
+
+
+class Document(HTMLParser):
+    def __init__(self, source: str):
+        super().__init__()
+        self.ids = []
+        self.headings = []
+        self.main = False
+        self.heading = None
+        self.feed(source)
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        if 'id' in values:
+            self.ids.append(values['id'])
+        if tag == 'main':
+            self.main = True
+        if self.main and tag in ('h1', 'h2', 'h3'):
+            self.heading = [tag, values.get('id'), '']
+
+    def handle_data(self, text):
+        if self.heading is not None:
+            self.heading[2] += text
+
+    def handle_endtag(self, tag):
+        if self.heading and tag == self.heading[0]:
+            self.headings.append(tuple(self.heading))
+            self.heading = None
+        if tag == 'main':
+            self.main = False
+
+
+def load_registry(root=ROOT):
+    return json.loads((root / 'sources/data-inventory.json').read_text(encoding='utf-8'))
+
+
+def strip_data(source):
+    return DATA_BLOCK.sub('', source)
+
+
+def reviewed_content(source):
+    main = re.search(r'<main\b.*?</main>', strip_data(source), re.S)
+    if not main or '<footer' not in main.group():
+        raise ValueError('Expected main content followed by a page footer')
+    return main.group().split('<footer', 1)[0]
+
+
+def content_fingerprint(source):
+    return hashlib.sha256(reviewed_content(source).encode()).hexdigest()
+
+
+def totals(registry):
+    entries = registry['entries']
+    return {
+        **{plural.lower(): sum(e['category'] == category for e in entries)
+           for category, plural in CATEGORIES.items()},
+        'unique_structures': len(entries),
+        'feature_pages_reviewed': sum(p['kind'] == 'Feature' for p in registry['pages']),
+        'pages_reviewed': len(registry['pages']),
+        'pages_with_data': len({p for e in entries for p in e['feature_pages']}),
+        'existing': sum(e['status'] == 'Existing' for e in entries),
+        'proposed': sum(e['status'] == 'Proposed' for e in entries),
+        'needs_review': sum(e.get('review_status') == 'Needs Review' for e in entries),
+    }
+
+
+def validate_registry(registry, root=ROOT):
+    errors = []
+    if set(registry) != REGISTRY_KEYS:
+        errors.append('Registry must contain catalog metadata only')
+    if registry.get('version') != 1 or registry.get('title') != 'Data Inventory':
+        errors.append('Unsupported registry version or title')
+    entries = registry['entries']
+    pages = registry['pages']
+    documents = {p.relative_to(root).as_posix(): Document(strip_data(p.read_text(encoding='utf-8')))
+                 for p in sorted(root.rglob('*.html')) if p.relative_to(root).as_posix() != INVENTORY_PAGE}
+
+    def unique(values, label):
+        duplicates = [value for value, count in Counter(values).items() if count > 1]
+        if duplicates:
+            errors.append(f'Duplicate {label}: {duplicates}')
+
+    def reference(ref, context):
+        parsed = urlsplit(ref)
+        target = root / unquote(parsed.path)
+        if (parsed.scheme or parsed.netloc or not parsed.path or
+                not target.resolve().is_relative_to(root.resolve()) or not target.is_file()):
+            errors.append(f'{context}: missing or nonlocal reference {ref}')
+        elif parsed.fragment:
+            if parsed.path not in documents or unquote(parsed.fragment) not in documents[parsed.path].ids:
+                errors.append(f'{context}: missing evidence anchor {ref}')
+
+    unique((e['id'] for e in entries), 'inventory identifiers')
+    unique((e['name'].casefold() for e in entries), 'inventory names')
+    unique((p['page'] for p in pages), 'reviewed pages')
+    unique((s['path'] for s in registry['reviewed_sources']), 'reviewed sources')
+    page_by_path = {p['page']: p for p in pages}
+    if set(page_by_path) != set(documents):
+        errors.append(f'Coverage must review every source HTML page: {sorted(set(page_by_path) ^ set(documents))}')
+    if set(CATEGORIES) != {e['category'] for e in entries}:
+        errors.append('Inventory must contain exactly Enum, Interface and Schema categories')
+    for page in pages:
+        path = page['page']
+        if page['kind'] not in ('Feature', 'Reference') or page['review_status'] != 'Reviewed':
+            errors.append(f'{path}: missing page review classification')
+        if path not in documents:
+            continue
+        source = (root / path).read_text(encoding='utf-8')
+        if content_fingerprint(source) != page['reviewed_content_sha256']:
+            errors.append(f'{path}: feature content changed; review coverage and update its fingerprint')
+        headings = [anchor for tag, anchor, _ in documents[path].headings if tag != 'h1' and anchor]
+        if headings != page['reviewed_sections']:
+            errors.append(f'{path}: reviewed section list is stale')
+        if any(title.strip() == 'Data' for _, _, title in documents[path].headings):
+            errors.append(f'{path}: unmanaged Data section would be duplicated')
+        if source.count(DATA_START) != source.count(DATA_END) or source.count(DATA_START) > 1:
+            errors.append(f'{path}: malformed or duplicate generated Data blocks')
+        referenced = any(path in e['feature_pages'] for e in entries)
+        if referenced != (page['kind'] == 'Feature'):
+            errors.append(f'{path}: feature coverage and Data associations disagree')
+        if page['kind'] == 'Reference' and not page.get('exclusion_reason'):
+            errors.append(f'{path}: excluded page needs a reason')
+    names = {e['name'] for e in entries}
+    issue_by_id = {issue['id']: issue for issue in registry['review_issues']}
+    unique((issue['id'] for issue in registry['review_issues']), 'review issue identifiers')
+    for issue in registry['review_issues']:
+        if not re.fullmatch(r'[a-z][a-z0-9-]*', issue['id']):
+            errors.append('Invalid review issue identifier')
+        if not set(issue['entries']) <= names:
+            errors.append(f"{issue['id']}: unknown reviewed entry")
+        for ref in issue['references']:
+            reference(ref, issue['id'])
+    for entry in entries:
+        label = entry['name']
+        if set(entry) - ENTRY_KEYS or not (ENTRY_KEYS - {'review_status', 'review_issues'}) <= set(entry):
+            errors.append(f'{label}: only inventory metadata is permitted; definitions are forbidden')
+        if not re.fullmatch(r'[a-z][a-z0-9-]*', entry['id']):
+            errors.append(f'{label}: invalid stable identifier')
+        if not re.fullmatch(r'[A-Z][A-Za-z0-9]*', label) and not (
+                entry['status'] == 'Existing' and re.fullmatch(r'[a-z][a-z0-9_]*', label)):
+            errors.append(f'{label}: proposed names must use PascalCase')
+        expected_status = {'Existing': 'Documented', 'Proposed': 'Pending Definition'}.get(entry['status'])
+        if expected_status is None or entry['definition_status'] != expected_status:
+            errors.append(f'{label}: invalid existence/definition status')
+        if not entry['evidence'] or not entry['feature_pages']:
+            errors.append(f'{label}: missing documentation evidence or feature associations')
+        unique(entry['evidence'], f'evidence for {label}')
+        unique(entry['feature_pages'], f'feature associations for {label}')
+        for ref in entry['evidence']:
+            reference(ref, label)
+        if entry['canonical_page'] not in entry['evidence'] or '.html#' not in entry['canonical_page']:
+            errors.append(f'{label}: canonical feature section must be an evidence reference')
+        evidence_pages = {ref.split('#')[0] for ref in entry['evidence'] if '.html' in ref}
+        if evidence_pages != set(entry['feature_pages']):
+            errors.append(f'{label}: every feature association must have section evidence')
+        for path in entry['feature_pages']:
+            if path not in page_by_path or page_by_path[path]['kind'] != 'Feature':
+                errors.append(f'{label}: missing or excluded feature page {path}')
+        issue_ids = entry.get('review_issues', [])
+        if bool(issue_ids) != (entry.get('review_status') == 'Needs Review'):
+            errors.append(f'{label}: review status and issue references disagree')
+        for identifier in issue_ids:
+            if identifier not in issue_by_id or label not in issue_by_id[identifier]['entries']:
+                errors.append(f'{label}: invalid review issue {identifier}')
+        for identifier, issue in issue_by_id.items():
+            if label in issue['entries'] and identifier not in issue_ids:
+                errors.append(f'{label}: missing review issue backlink {identifier}')
+    reviewed_sources = {s['path'] for s in registry['reviewed_sources']}
+    evidence_files = {ref.split('#')[0] for e in entries for ref in e['evidence']}
+    for source in registry['reviewed_sources']:
+        reference(source['path'], 'Source review')
+        if source['review_status'] != 'Reviewed':
+            errors.append(f"Unreviewed source: {source['path']}")
+    for path in sorted((root / 'data').glob('*.json')):
+        rel = path.relative_to(root).as_posix()
+        if rel not in reviewed_sources or rel not in evidence_files:
+            errors.append(f'{rel}: existing structured data has no inventory/source review')
+    ability_data = root / 'data/abilities.json'
+    if ability_data.exists():
+        for name in {a['request_schema'] for a in json.loads(ability_data.read_text())}:
+            if name not in names:
+                errors.append(f'Existing named request schema omitted: {name}')
+    return errors
+
+
+def escape(text):
+    return html.escape(str(text), quote=True)
+
+
+def relative_link(page, target, label):
+    address, separator, anchor = target.partition('#')
+    relative = posixpath.relpath(address, posixpath.dirname(page) or '.')
+    href = relative + (separator + anchor if separator else '')
+    return f'<a href="{escape(href)}">{escape(label)}</a>'
+
+
+def entry_status(entry):
+    text = entry['status'] + ' · ' + entry['definition_status']
+    if entry.get('review_status'):
+        text += ' · ' + entry['review_status']
+    return escape(text)
+
+
+def data_section(page, entries):
+    lines = [DATA_START, '<section class="data-inventory" aria-labelledby="data">', '<h2 id="data">Data</h2>']
+    for category, plural in CATEGORIES.items():
+        selected = sorted((e for e in entries if e['category'] == category), key=lambda e: e['name'].casefold())
+        if selected:
+            lines.extend([f'<h3 id="data-{plural.lower()}">{plural}</h3>', '<ul>'])
+            for entry in selected:
+                link = relative_link(page, INVENTORY_PAGE + '#' + entry['id'], entry['name'])
+                lines.append(f'<li data-inventory-id="{entry["id"]}"><code>{link}</code> — {entry_status(entry)}</li>')
+            lines.append('</ul>')
+    return '\n'.join(lines + ['</section>', DATA_END])
+
+
+def navigation(source, page):
+    source = re.sub(r'<a data-inventory-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
+    current = ' aria-current="page"' if page == INVENTORY_PAGE else ''
+    address = posixpath.relpath(INVENTORY_PAGE, posixpath.dirname(page) or '.')
+    link = f'<a data-inventory-nav href="{address}"{current}>Data Inventory</a>'
+    if source.count('<p>Catalogs</p>') != 1:
+        raise ValueError(f'{page}: expected one Catalogs navigation group')
+    return source.replace('<p>Catalogs</p>', '<p>Catalogs</p>' + link)
+
+
+def inventory_body(registry):
+    page = INVENTORY_PAGE
+    titles = {p['page']: p['title'] for p in registry['pages']}
+    counts = totals(registry)
+    body = ['<p class="lead">A catalog of data structures supported by the current documentation. Proposed entries are Pending Definition; this inventory adds no definitions.</p>',
+            '<p>Existing means a choice set, contract, record format or partial example is already documented. It does not certify completeness or runtime readiness. PascalCase catalog labels for unnamed existing formats preserve the original sources and names.</p>',
+            '<p>' + relative_link(page, 'sources/data-inventory.json', 'Authoritative registry') + ' · ' + relative_link(page, 'README.txt', 'Build and update instructions') + '</p>',
+            '<div class="summary-strip">' + ''.join(f'<span class="badge">{counts[plural.lower()]} {plural}</span>' for plural in CATEGORIES.values()) + f'<span class="badge">{counts["unique_structures"]} unique structures</span><span class="badge warning">{counts["needs_review"]} need review</span></div>']
+    for category, plural in CATEGORIES.items():
+        table_id = 'inventory-' + plural.lower()
+        body.extend([f'<h2 id="{plural.lower()}">{plural}</h2>',
+                     f'<div class="table-controls"><label>Filter {plural.lower()}<input type="search" data-filter="{table_id}" placeholder="Name, status or feature page"></label><span class="row-count" aria-live="polite"></span></div>',
+                     f'<div class="table-scroll"><table id="{table_id}">',
+                     '<thead><tr><th scope="col">Name</th><th scope="col">Status</th><th scope="col">Documentation references</th></tr></thead><tbody>'])
+        for entry in sorted((e for e in registry['entries'] if e['category'] == category), key=lambda e: e['name'].casefold()):
+            links = '<p>' + ' · '.join(relative_link(page, path + '#data', titles[path]) for path in entry['feature_pages']) + '</p>'
+            evidence = '<details><summary>Source sections and existing formats</summary><ul>' + ''.join('<li>' + relative_link(page, ref, ref) + '</li>' for ref in entry['evidence']) + '</ul></details>'
+            canonical = relative_link(page, entry['canonical_page'], 'Canonical feature section')
+            issues = ''.join(' · ' + relative_link(page, page + '#review-' + issue, 'Review question') for issue in entry.get('review_issues', []))
+            body.append(f'<tr id="{entry["id"]}"><td><code>{escape(entry["name"])}</code></td><td>{entry_status(entry)}{issues}</td><td>{canonical}{links}{evidence}</td></tr>')
+        body.append('</tbody></table></div>')
+    body.extend(['<h2 id="coverage">Coverage</h2>', f'<p>{counts["feature_pages_reviewed"]} feature pages and {counts["pages_reviewed"]} source pages reviewed; {counts["pages_with_data"]} feature pages have Data sections. {counts["existing"]} existing structures reused; {counts["proposed"]} proposed structures remain Pending Definition.</p>', '<ul>'])
+    body.extend('<li>' + escape(note) + '</li>' for note in registry['scope_notes'])
+    body.extend(['</ul>', '<div class="table-scroll"><table><thead><tr><th scope="col">Reviewed page</th><th scope="col">Coverage</th></tr></thead><tbody>'])
+    for reviewed in registry['pages']:
+        count = sum(reviewed['page'] in e['feature_pages'] for e in registry['entries'])
+        note = f'{count} associated structures' if count else reviewed['exclusion_reason']
+        body.append('<tr><td>' + relative_link(page, reviewed['page'], reviewed['title']) + '</td><td>' + escape(note) + '</td></tr>')
+    body.extend(['</tbody></table></div>', '<h2 id="needs-review">Needs Review</h2>', '<p>These questions preserve ambiguity in the source documentation. Proposed entries retain Pending Definition while review is open.</p>'])
+    for issue in registry['review_issues']:
+        body.extend([f'<h3 id="review-{issue["id"]}">{escape(issue["id"].replace("-", " ").capitalize())}</h3>', '<p>' + escape(issue['question']) + '</p>',
+                     '<p>' + ' · '.join(relative_link(page, page + '#' + next(e['id'] for e in registry['entries'] if e['name'] == name), name) for name in issue['entries']) + '</p>',
+                     '<ul>' + ''.join('<li>' + relative_link(page, ref, ref) + '</li>' for ref in issue['references']) + '</ul>'])
+    return '\n'.join(body)
+
+
+def inventory_page(registry, template):
+    prefix = template.split('<main', 1)[0]
+    prefix = re.sub(r'<title>.*?</title>', '<title>Data Inventory · MMORPG Reference v2</title>', prefix)
+    prefix = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Names, status and source references for documented enums, interfaces and schemas.">', prefix)
+    prefix = re.sub(r' aria-current=(?:"page"|page)', '', prefix)
+    prefix = prefix.replace('<span class="section-label">Engineering</span>', '<span class="section-label">Catalogs</span>')
+    footer = re.search(r'<footer class="page-footer">.*?</footer>', template, re.S).group()
+    toc = '<aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p>' + ''.join(f'<a href="#{anchor}">{title}</a>' for anchor, title in [('enums','Enums'), ('interfaces','Interfaces'), ('schemas','Schemas'), ('coverage','Coverage'), ('needs-review','Needs Review')]) + '</aside>'
+    main = '<main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Catalogs</div><h1>Data Inventory</h1><p class="page-description">Enums, interfaces and schemas; names, status and documentation evidence only.</p><div class="article-body">' + inventory_body(registry) + '</div>' + footer + '</main>'
+    return navigation(prefix + main + toc + '</div></div></body></html>\n', INVENTORY_PAGE)
+
+
+def expected_outputs(registry, root=ROOT):
+    outputs = {}
+    for reviewed in registry['pages']:
+        page = reviewed['page']
+        source = strip_data((root / page).read_text(encoding='utf-8'))
+        entries = [e for e in registry['entries'] if page in e['feature_pages']]
+        if entries:
+            if source.count('</div><footer class="page-footer">') != 1:
+                raise ValueError(f'{page}: expected one article/footer boundary')
+            source = source.replace('</div><footer class="page-footer">', data_section(page, entries) + '</div><footer class="page-footer">')
+        source = re.sub(r'<a data-inventory-toc\b[^>]*>.*?</a>', '', source, flags=re.S)
+        if entries:
+            source, count = re.subn(r'(<aside class="page-toc".*?)(</aside>)', r'\1<a data-inventory-toc href="#data">Data</a>\2', source, flags=re.S)
+            if count != 1:
+                raise ValueError(f'{page}: expected one page contents navigation')
+        outputs[page] = navigation(source, page)
+    outputs[INVENTORY_PAGE] = inventory_page(registry, (root / 'guide/networking.html').read_text(encoding='utf-8'))
+    search_path = root / 'assets/search-index.js'
+    search = json.loads(search_path.read_text(encoding='utf-8').removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
+    search = [r for r in search if r.get('source') != 'data-inventory']
+    records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Pending Definition Needs Review'}]
+    for entry in sorted(registry['entries'], key=lambda e: e['name'].casefold()):
+        records.append({'title': entry['name'], 'section': 'Data Inventory · ' + entry['category'], 'url': INVENTORY_PAGE + '#' + entry['id'],
+                        'text': ' '.join([entry['status'], entry['definition_status'], entry.get('review_status', ''), *entry['feature_pages'], *entry['evidence']])})
+    for reviewed in registry['pages']:
+        associated = [e['name'] for e in registry['entries'] if reviewed['page'] in e['feature_pages']]
+        if associated:
+            records.append({'title': reviewed['title'] + ' — Data', 'section': 'Data Inventory', 'url': reviewed['page'] + '#data', 'text': ' '.join(associated)})
+    search.extend(dict(record, source='data-inventory') for record in records)
+    outputs['assets/search-index.js'] = 'window.SEARCH_INDEX=' + json.dumps(search, ensure_ascii=True, separators=(',', ':')) + ';\n'
+    manifest = json.loads((root / 'data/manifest.json').read_text(encoding='utf-8'))
+    manifest.update(html_pages=len(registry['pages']) + 1,
+                    guide_pages=sum(p['page'].startswith('guide/') for p in registry['pages']) + 1,
+                    search_entries=len(search))
+    outputs['data/manifest.json'] = json.dumps(manifest, indent=2) + '\n'
+    return outputs
+
+
+def stale_outputs(outputs, root=ROOT):
+    return [path for path, source in outputs.items()
+            if not (root / path).exists() or (root / path).read_text(encoding='utf-8') != source]
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--check', action='store_true', help='Check registry and generated output without writing')
+    parser.add_argument('--review-page', action='append', default=[], metavar='PATH',
+                        help='Record a completed manual feature review after updating its inventory associations')
+    args = parser.parse_args()
+    if args.check and args.review_page:
+        parser.error('--check cannot update page reviews')
+    registry = load_registry()
+    for path in args.review_page:
+        target = (ROOT / path).resolve()
+        if not target.is_relative_to(ROOT) or not target.is_file() or target.suffix != '.html':
+            parser.error('Review paths must be HTML files inside this repository')
+        path = target.relative_to(ROOT).as_posix()
+        if path == INVENTORY_PAGE:
+            parser.error('The generated inventory page is not a feature source')
+        source = target.read_text(encoding='utf-8')
+        headings = Document(strip_data(source)).headings
+        reviewed = next((p for p in registry['pages'] if p['page'] == path), None)
+        if reviewed is None:
+            reviewed = {'page': path, 'kind': 'Feature'}
+            registry['pages'].append(reviewed)
+        reviewed.update(title=next(title for tag, _, title in headings if tag == 'h1'),
+                        review_status='Reviewed', reviewed_content_sha256=content_fingerprint(source),
+                        reviewed_sections=[anchor for tag, anchor, _ in headings if tag != 'h1' and anchor])
+    if args.review_page:
+        registry['pages'].sort(key=lambda p: p['page'])
+        (ROOT / 'sources/data-inventory.json').write_text(json.dumps(registry, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+    errors = validate_registry(registry)
+    if errors:
+        raise SystemExit('\n'.join(errors))
+    outputs = expected_outputs(registry)
+    stale = stale_outputs(outputs)
+    if args.check and stale:
+        raise SystemExit('Stale generated inventory output: ' + ', '.join(stale))
+    if not args.check:
+        for path in stale:
+            (ROOT / path).write_text(outputs[path], encoding='utf-8')
+    print(json.dumps({'mode': 'check' if args.check else 'build', 'changed_files': 0 if args.check else len(stale), **totals(registry)}, indent=2))
+
+
+if __name__ == '__main__':
+    main()
