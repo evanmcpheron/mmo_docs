@@ -231,6 +231,15 @@
           "revision": "bdb6b63c66783a0f6f941682321e9d34b886986e + uncommitted BW-001-T05 changes (SHA-256 source manifest 71b1a909edd06604b7ac0778b8dbdcc9d110fa98f279fd7a39bb4d2c4172163c in evidence)",
           "result": "Passed",
           "summary": "BW-001-T05 executed two isolated native macOS ARM64 client/server exports from identical current-source snapshots, actual visible packaged-client close paths and packaged headless smoke with embedded build identity plus separate rules/content labels. Exact lock, template derivation, source/artifact hashes, manifests, logs and captures are retained. Remaining epic configuration/credential and automated-outcome requirements are not promoted; BW-001 remains In Progress."
+        },
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-001-T06/verification.json",
+          "revision": "fc10cb437900e38d858f64da43b16a5553ccabe8 + uncommitted BW-001-T06 changes (SHA-256 source manifest 125c34bab9aa45bca61ff120069bdd139eea50fb8759fd69e41e67d436e63b1f including synthetic inputs; per-source hashes in build-manifest.json)",
+          "result": "Passed",
+          "summary": "T06 verified credential exclusion using full bundle/mounted PCK inspection, synthetic private inputs and deliberately leaking PCK/ZIP/loose controls. Exact inspected client launched and quit; the current packaged server also rejected missing external configuration with actionable --config diagnostics before readiness. Actual logs, artifact/source hashes and cleanup evidence retained. BW-001 remains In Progress pending its remaining criteria and tickets."
         }
       ],
       "phase": "phase-foundations"
@@ -5657,7 +5666,7 @@
       "id": "BW-001-T06",
       "parent_epic": "BW-001",
       "title": "Keep server credentials out of distributed client artifacts",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-001-AC-3"
       ],
@@ -5681,23 +5690,28 @@
         "Self-test cleanup removes synthetic private inputs and contaminated artifacts from its disposable workspace; no real secret value is collected or printed."
       ],
       "manual_test": {
-        "launch": "python3 tools/check_client_artifact.py --self-test --output artifacts/credential-check",
+        "launch": "Working directory: briarwake repository root.\npython3 tools/check_client_artifact.py --self-test --output artifacts/credential-check\npython3 -m unittest discover -s tools -p 'test_*.py' -v\npython3 tools/run_baseline.py --artifact-dir artifacts/credential-check/build --role client\nFor an existing unchanged owned result, add --clean to --self-test. To inspect a separate export:\npython3 tools/check_client_artifact.py --bundle artifacts/baseline/BriarwakeClient.app --report artifacts/client-inspection.json",
         "setup": [
-          "Complete T05. Use a disposable checkout and the pinned toolchain on macOS.",
-          "Use only the synthetic private inputs created by the self-test. Do not provide account, service or signing credentials."
+          "Complete T05. Use native ARM64 Python 3.10+ on macOS with the checksum-pinned Godot 4.7.2 editor and templates in tools/toolchain.lock.json. Optional --engine and --templates select verified installations. See tools/README.md.",
+          "Use only self-test-generated harmless private inputs. No account, provider, signing credential, network listener or database is needed. A desktop session is required for the visible launch check.",
+          "Choose a new output directory under artifacts/ or use --clean only on unchanged owned self-test output. The self-test writes synthetic inputs solely into the builder's owned temporary snapshot and exports the normal client preset only."
         ],
         "actions": [
-          "Run the self-test and inspect both the normal-client and deliberately leaking-fixture results.",
-          "Launch the clean artifact using the artifact path reported by the tool; close it with Quit.",
-          "Inspect the self-test workspace and repository status after cleanup."
+          "Run the self-test. Retain result.json, clean-inspection.json, negative-inspection.json, logs/negative-inspection.log, build/manifest.json and build/logs. Compare the inspected bundle SHA-256 with the build manifest client fingerprint.",
+          "Review clean-inspection policy.excluded_sources from export_presets.cfg and all bundle/packed-resource inventories. The clean report must have zero findings. The negative report must show safe path/category findings for loose files, PCK path-only/content-only controls, a hidden ZIP member and decoded compressed content. Confirm negative_exit_status is 1.",
+          "Execute result.json launch_command with absolute paths from /private/tmp. Observe Briarwake client baseline and Quit, click Quit and retain launcher exit 0. The self-test itself truthfully leaves GUI execution as not run; retain a separate actual launch log/result.",
+          "Run a fresh --bundle inspection into a new report after launch and compare its fingerprint to the original clean/build fingerprints. Check result.json cleanup and verify all synthetic_input_paths are absent from the checkout; the negative workspace path must no longer exist.",
+          "Run the Python behavioral tests. To retain full baseline regression, run python3 tools/build_baseline.py --output artifacts/credential-baseline-regression then the T05 packaged-server --headless --config fixtures/config/server.valid.json --smoke command."
         ],
         "expected_results": [
-          "The normal client passes inspection, while the contaminated fixture fails with an attributable safe diagnostic.",
-          "The inspected client remains launchable, and evidence points to that exact artifact hash.",
-          "No private sentinel inputs or contaminated outputs remain in distributed output; logs report findings without marker values."
+          "Self-test exit 0 means the normal export passed inspection, all expected negative-control detections were executed with nonzero inspector exit, and temporary cleanup succeeded. Twenty Python tests pass, including failed-export cleanup, redaction and preservation of modified/unowned/symlinked output.",
+          "The inspector enumerates hidden packed files and reads all PCK/ZIP member contents using the pinned engine, including decompressed ZIP content. Raw ZIP bytes contain no synthetic prefix in the compressed control. Unreadable/encrypted/nested packs fail inspection. Findings contain location/path/category and inventories contain hashes/lengths, never synthetic values.",
+          "The exact clean client visibly launches and exits 0 through Quit from an external working directory. Its bundle fingerprint matches before/after inspection and the build manifest. Server runtime configuration stays external and mandatory.",
+          "Synthetic build inputs and contaminated outputs are removed from their disposable workspaces even on failure. No real credential value or credential source is supplied, collected or printed. Successful output retains only the clean client and safe reports/logs/manifests."
         ],
         "reset": [
-          "Close the client. Use the documented cleanup command for the owned self-test output after retaining redacted results; leave source fixtures and normal export policy intact."
+          "Close the owned test client and retain safe reports/logs/manifests outside self-test output. Run python3 tools/check_client_artifact.py --cleanup --output artifacts/credential-check. This removes only unchanged output with the credential-check ownership marker and exact file/directory inventory.",
+          "If ownership/inventory checks reject cleanup, preserve that output and choose a new directory. Keep committed fixtures, export policy, installed tools, existing import cache and user edits. Cleaned contaminated artifacts must not be distributed."
         ]
       },
       "completion_evidence": "Client packaging policy, packed-resource inspection results, successful negative-control detection, inspected-artifact hash and client launch result.",
@@ -5712,7 +5726,20 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-001-T06/verification.json",
+          "revision": "fc10cb437900e38d858f64da43b16a5553ccabe8 + uncommitted BW-001-T06 changes (SHA-256 source manifest 125c34bab9aa45bca61ff120069bdd139eea50fb8759fd69e41e67d436e63b1f including synthetic inputs; per-source hashes in build-manifest.json)",
+          "result": "Passed",
+          "summary": "Normal macOS ARM64 client export with 18 synthetic private inputs passed full bundle and mounted PCK inspection. Deliberately leaking loose/PCK/deflated-ZIP controls produced safe findings and exit 1, including decoded-only compressed content and a hidden member. Exact inspected client visibly launched from /private/tmp and quit with exit 0; post-launch hash was unchanged. Temporary inputs/contaminated artifacts were removed, 20 Python checks passed, and fresh default client/server builds plus packaged server smoke passed. No real credentials supplied."
+        }
+      ]
     },
     {
       "id": "BW-001-T07",

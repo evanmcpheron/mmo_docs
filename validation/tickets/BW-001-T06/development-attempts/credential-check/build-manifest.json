@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "producer": "briarwake-baseline-v1",
+  "built_at": "2026-10-18T02:59:16.930682+00:00",
+  "build_revision": "fc10cb437900e38d858f64da43b16a5553ccabe8-dirty",
+  "dirty": true,
+  "environment": {
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "python": "3.14.0"
+  },
+  "target": "macos-arm64",
+  "toolchain_lock": {
+    "schema_version": 1,
+    "engine": {
+      "release": "4.7.2-stable",
+      "version": "4.7.2.stable.official.ed1daf0bf",
+      "distribution": "standard",
+      "source_repository": "https://github.com/godotengine/godot",
+      "source_revision": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "source_revision_url": "https://github.com/godotengine/godot/commit/ed1daf0bf001b61586d9930840f2f1394092c079",
+      "patches": [],
+      "source_build": {
+        "required": false,
+        "reason": "Use the stock official prebuilt editor and matching templates. A local source build is not this binary lock."
+      },
+      "macos": {
+        "archive_url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_macos.universal.zip",
+        "archive_sha256": "c58a24e31d720be9d62f60cb5627c4e695fb72f21b0cfe1bc9ccaa9a3b3ba63e",
+        "archive_executable": "Godot.app/Contents/MacOS/Godot",
+        "default_executable": "/Applications/Godot.app/Contents/MacOS/Godot",
+        "executable_sha256": "c7cccbf8fb143e34e02fd6521e09be2c2b974f0d5db080b19071c9c570718ccf",
+        "binary_architectures": [
+          "arm64",
+          "x86_64"
+        ]
+      }
+    },
+    "export_templates": {
+      "version": "4.7.2.stable",
+      "archive_url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
+      "archive_sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011",
+      "default_directory": "~/Library/Application Support/Godot/export_templates/4.7.2.stable",
+      "macos_archive": "macos.zip",
+      "macos_archive_sha256": "88df5e2e6fee99088699be66e6d42e4da4fb0c5619d054297d755a49558a4792",
+      "debug_executable": "macos_template.app/Contents/MacOS/godot_macos_debug.universal",
+      "release_executable": "macos_template.app/Contents/MacOS/godot_macos_release.universal"
+    },
+    "python": {
+      "minimum_version": "3.10",
+      "verified_version": "3.14.0",
+      "dependencies": "standard library only"
+    },
+    "verification_environment": {
+      "operating_system": "macOS",
+      "version": "27.0",
+      "build": "26A428",
+      "cpu_architecture": "arm64"
+    },
+    "targets": {
+      "macos_client": {
+        "cpu_architecture": "arm64",
+        "toolchain_status": "Verified",
+        "application_build_status": "Not implemented in BW-001-T01",
+        "rendering_status": "Provisional; feasibility belongs to BW-097",
+        "rendering_method": "forward_plus",
+        "macos_rendering_driver": "Godot default; no project override",
+        "physics_engine": "Jolt Physics"
+      },
+      "macos_dedicated_server": {
+        "cpu_architecture": "arm64",
+        "toolchain_status": "Verified",
+        "application_build_status": "Not implemented in BW-001-T01",
+        "display_server": "headless",
+        "audio_driver": "Dummy",
+        "requires_client_renderer": false,
+        "physics_engine": "Jolt Physics"
+      },
+      "linux": {
+        "status": "Future; unverified"
+      },
+      "windows": {
+        "status": "Future; unverified",
+        "rendering_device_driver_preference": "d3d12",
+        "preference_status": "Preserved from project.godot; unverified"
+      },
+      "macos_x86_64": {
+        "status": "Future; unverified despite universal binary availability"
+      }
+    },
+    "provenance": {
+      "official_release": "https://godotengine.org/download/archive/4.7.2-stable/",
+      "official_asset_checksums": "https://github.com/godotengine/godot-builds/releases/expanded_assets/4.7.2-stable",
+      "local_checksums": "Editor executable matches the checksum-verified official editor ZIP. macos.zip was hashed from the installed matching templates; both embedded executables report the pinned engine version."
+    }
+  },
+  "toolchain_lock_sha256": "bf167c415787d64c729bcc3a5147be4f453f5774a5555473aee1af125f785e14",
+  "packaging": {
+    "signing": "Godot built-in ad-hoc; no release identity or notarization",
+    "nondeterminism": [
+      "build time and temporary paths in manifest/logs",
+      "Godot-generated resource identifiers and bundle/signature metadata"
+    ],
+    "byte_identical_bundles_required": false
+  },
+  "stages": [],
+  "artifacts": {},
+  "build_status": "Failed",
+  "template_staging": {
+    "reason": "Pinned exporter requires an architecture-named binary; official archive contains universal only.",
+    "command": [
+      "/usr/bin/lipo",
+      "/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-build-3v1loswd/release.universal",
+      "-thin",
+      "arm64",
+      "-output",
+      "/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-build-3v1loswd/release.arm64"
+    ],
+    "source_archive_sha256": "88df5e2e6fee99088699be66e6d42e4da4fb0c5619d054297d755a49558a4792",
+    "source_executable_sha256": "6135ad137facbb26cd73a5f7f7d541d334a84fc81650e870ef075cdd14a129cd",
+    "native_executable_sha256": "e914bf38d2369aa0066dc3dbb825744fce98b10fed3a7fc66305875ded0e6b06",
+    "staged_archive_sha256": "f7c7d41c28043e34d37f05dbd0620bb1dac5e1785ae2598bc5116dbc1f2d9f6f",
+    "engine_patches": []
+  },
+  "snapshot_workspace_removed": true,
+  "output_files": {},
+  "output_directories": [
+    "logs"
+  ]
+}
