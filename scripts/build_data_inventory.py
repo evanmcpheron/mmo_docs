@@ -300,7 +300,7 @@ def navigation(source, page):
 
 
 def roadmap_search(root=ROOT):
-    from build_development_roadmap import REFERENCE_PAGES, anchor_page, epic_page, phase_page
+    from build_development_roadmap import REFERENCE_PAGES, anchor_page, epic_page, phase_page, ticket_page
 
     roadmap = json.loads((root / 'sources/development-roadmap.json').read_text(encoding='utf-8'))
     records = [{'title': roadmap['title'], 'section': 'Development planning', 'url': ROADMAP_PAGE,
@@ -320,6 +320,11 @@ def roadmap_search(root=ROOT):
                             'section': 'Development Roadmap · Acceptance criterion',
                             'url': epic_page(roadmap, epic['id']) + '#' + anchor,
                             'text': ' '.join([anchor, epic['title'], criterion])})
+    for ticket in roadmap['tickets']:
+        records.append({'title': ticket['id'] + ' · ' + ticket['title'], 'section': 'Development Roadmap · Ticket',
+                        'url': ticket_page(ticket['id']) + '#' + ticket['id'],
+                        'text': ' '.join([ticket['parent_epic'], ticket['status'], *ticket['epic_criteria'],
+                                          *ticket['scope'], *ticket['acceptance_criteria'], *ticket['dependencies']])})
     for milestone in roadmap['milestones']:
         records.append({'title': milestone['title'], 'section': 'Development Roadmap · Milestone',
                         'url': anchor_page(roadmap, milestone['id']) + '#' + milestone['id'],

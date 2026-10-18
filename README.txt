@@ -22,7 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-166 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+173 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+7 individual ticket pages,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -83,6 +84,8 @@ recommended sequence and actionable epics. Each phase has a separate
 guide/roadmap-*.html index. Each epic has its own guide/roadmap-bw-NNN.html page
 with prerequisites, downstream work, acceptance criteria, verification and ticket
 planning. Criterion links such as #BW-097-AC-1 support future ticket references.
+BW-001 has seven tickets in execution order, each with its own generated page,
+exact parent-criterion links, dependencies, scope and runnable manual test plan.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages
 cover milestones, architectural decisions, feature coverage and progress upkeep.
@@ -106,6 +109,16 @@ Edit an existing epic's status and verified_evidence there. Use exactly Not
 Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
 evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
 adding an epic, then update relevant dependencies, milestones and coverage.
+Store tickets in the same registry's tickets list. Preserve BW-NNN-TNN IDs,
+parent_epic, exact epic_criteria anchors and dependency order; new tickets begin
+Not Started with no verified evidence. Include scope, out_of_scope, observable
+acceptance_criteria, completion_evidence and related_docs. manual_test requires
+launch, setup, actions, expected_results and reset, or a not_applicable rationale.
+Include every required test scene, control and fixture in implementation scope.
+Tickets for a split epic must collectively cover all of its criteria. Ticket
+statuses do not automatically promote epic or milestone progress; completion
+requires actual evidence and completed dependencies. Ticket blockers and
+verified_evidence follow the same rules and record shape as epics.
 Do not edit the generated pages or search records. Rebuild and validate with:
 python3 scripts/build_development_roadmap.py
 python3 scripts/build_data_inventory.py --review-roadmap
@@ -114,7 +127,7 @@ python3 scripts/build_data_inventory.py --check
 python3 -m unittest discover -s validation -p 'test_*.py'
 python3 validation/run_checks.py
 
-The roadmap builder owns the hub, phase indexes, individual epic pages and
+The roadmap builder owns the hub, phase indexes, individual epic/ticket pages and
 roadmap reference pages. The
 inventory builder's --review-roadmap option registers and refreshes all of these
 as planning references, without adding gameplay data associations. It refreshes

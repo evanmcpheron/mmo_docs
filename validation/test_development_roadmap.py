@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_development_roadmap import (PAGE, address, anchor_page, epic_page, generated_page_paths,
                                       generated_pages, load, milestone_progress, phase_page,
-                                      prerequisite_closure, progress, ready_epics)
+                                      prerequisite_closure, progress, ready_epics, ticket_page)
 from check_development_roadmap import Anchors, roadmap_errors
 
 
@@ -68,6 +68,67 @@ class RoadmapTests(unittest.TestCase):
                 other = epic_page(self.data, dependency)
                 self.assertIn(address(other, page, dependency), Anchors(outputs[page]).references)
                 self.assertIn(address(page, other, epic['id']), Anchors(outputs[other]).references)
+
+    def test_tickets_link_to_parent_criteria_and_dependencies_and_are_searchable(self):
+        from build_data_inventory import roadmap_search
+        outputs = generated_pages(self.data)
+        search = {r['url'] for r in roadmap_search()}
+        for ticket in self.data['tickets']:
+            page = ticket_page(ticket['id'])
+            parent = epic_page(self.data, ticket['parent_epic'])
+            parsed = Anchors(outputs[page])
+            self.assertIn(ticket['id'], parsed.ids)
+            self.assertIn(address(parent, page, ticket['parent_epic']), parsed.references)
+            self.assertIn(address(page, parent, ticket['id']), Anchors(outputs[parent]).references)
+            self.assertIn(page + '#' + ticket['id'], search)
+            for anchor in ticket['epic_criteria']:
+                self.assertIn(address(parent, page, anchor), parsed.references)
+            for dependency in ticket['dependencies']:
+                self.assertIn(address(anchor_page(self.data, dependency), page, dependency), parsed.references)
+
+    def test_ticket_coverage_rejects_missing_and_foreign_epic_criteria(self):
+        for ticket in self.data['tickets']:
+            ticket['epic_criteria'] = [c for c in ticket['epic_criteria'] if c != 'BW-001-AC-4'] or ['BW-001-AC-1']
+        self.assertTrue(any('tickets must cover every epic' in e for e in self.errors()))
+        self.data['tickets'][0]['epic_criteria'] = ['BW-002-AC-1']
+        self.assertTrue(any('exact parent AC anchors' in e for e in self.errors()))
+
+    def test_ticket_dependency_order_rejects_cycles_and_unknown_dependencies(self):
+        self.data['tickets'][0]['dependencies'] = ['BW-001-T07']
+        self.assertTrue(any('conflicts with execution order' in e for e in self.errors()))
+        self.data['tickets'][0]['dependencies'] = ['BW-001-T99']
+        self.assertTrue(any('undefined dependency' in e for e in self.errors()))
+        self.data['tickets'][0]['dependencies'] = ['BW-001']
+        self.assertTrue(any('own parent epic' in e for e in self.errors()))
+
+    def test_ticket_manual_test_requires_runnable_steps_or_explicit_rationale(self):
+        test = self.data['tickets'][0]['manual_test']
+        del test['reset']
+        self.assertTrue(any('manual test needs' in e for e in self.errors()))
+        self.data['tickets'][0]['manual_test'] = {'not_applicable': 'Synthetic documentation-only validator fixture.'}
+        self.assertEqual([], self.errors())
+
+    def test_ticket_completion_requires_executed_evidence_and_dependencies(self):
+        ticket = self.data['tickets'][1]
+        ticket['status'] = 'Complete'
+        self.assertTrue(any('Complete requires passing evidence' in e for e in self.errors()))
+        ticket['verified_evidence'] = [{
+            'criteria': list(range(1, len(ticket['acceptance_criteria']) + 1)),
+            'artifact': 'https://example.com/test-only-ticket-evidence', 'revision': 'synthetic-fixture',
+            'result': 'Passed', 'summary': 'Synthetic executed evidence fixture; never written to registry.',
+        }]
+        self.assertTrue(any('Complete requires complete dependencies' in e for e in self.errors()))
+        ticket['dependencies'] = []
+        self.assertEqual([], self.errors())
+        ticket['verified_evidence'][0]['result'] = 'Not Executed'
+        self.assertTrue(any('evidence result must be Passed or Failed' in e for e in self.errors()))
+
+    def test_ticket_planning_and_status_do_not_promote_epic_progress(self):
+        before = progress(self.data['epics'])
+        self.data['tickets'][0]['status'] = 'In Progress'
+        self.assertEqual(before, progress(self.data['epics']))
+        self.assertEqual('Not Started', self.by_id['BW-001']['status'])
+        self.assertEqual([], self.errors())
 
     def test_epic_previous_and_next_follow_the_recommended_sequence(self):
         outputs = generated_pages(self.data)
@@ -230,6 +291,11 @@ class RoadmapTests(unittest.TestCase):
             row['required_epics'] = [replacement if i == original else i for i in row['required_epics']]
         for row in self.data['coverage'] + self.data['sequencing_decisions'] + self.data['open_decisions']:
             row['epics'] = [replacement if i == original else i for i in row['epics']]
+        for ticket in self.data['tickets']:
+            ticket['id'] = ticket['id'].replace(original, replacement)
+            ticket['parent_epic'] = replacement if ticket['parent_epic'] == original else ticket['parent_epic']
+            ticket['epic_criteria'] = [c.replace(original, replacement) for c in ticket['epic_criteria']]
+            ticket['dependencies'] = [d.replace(original, replacement) for d in ticket['dependencies']]
         self.assertEqual([], self.errors())
 
 

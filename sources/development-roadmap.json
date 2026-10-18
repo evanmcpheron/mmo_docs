@@ -5209,6 +5209,448 @@
     "A Blocked epic needs a concrete blockers entry identifying the unresolved decision, missing prerequisite or external limit. Ordinary future prerequisites do not make every unstarted epic Blocked. Reopen an epic when a regression invalidates its current evidence; update dependent completion states rather than leaving a false release gate.",
     "To insert work, allocate a new unused BW ID without renumbering existing epics. Put it at a dependency-valid position, choose its phase, add feature coverage and include it in applicable milestone/integration requirements. Gaps are allowed; IDs must never be reused for a different capability. Do not alter canonical gameplay contracts merely to classify planning documentation.",
     "Each epic is published at guide/roadmap-bw-NNN.html with a stable BW identifier and BW-NNN-AC-N criterion links. Use the epic as the parent for future tickets and link each ticket to its covered criteria and verification evidence. Keep criterion numbering aligned with recorded evidence; introduce actual ticket records only when ticket planning is performed.",
-    "Run the commands below after a status or evidence edit. The first rebuilds all derived progress, readiness and HTML pages from the registry. The inventory review refreshes the generated planning-page fingerprints, navigation, search and page counts. The focused validator checks graph, coverage, evidence and output consistency; the existing full check also includes roadmap validation."
+    "Run the commands below after a status or evidence edit. The first rebuilds all derived progress, readiness and HTML pages from the registry. The inventory review refreshes the generated planning-page fingerprints, navigation, search and page counts. The focused validator checks graph, coverage, evidence and output consistency; the existing full check also includes roadmap validation.",
+    "Store implementation tickets in this same registry with stable BW-NNN-TNN IDs, parent_epic and exact epic_criteria anchors. Keep tickets in dependency order and cover every criterion of each split epic. Each ticket defines scope, exclusions, observable acceptance criteria, completion evidence and a runnable manual test with launch, setup, actions, expected results and reset, or an explicit non-applicability rationale. Include required test fixtures and controls in implementation scope. Track ticket status, blockers and verified evidence separately; planning or ticket progress never automatically completes an epic. Complete tickets require actual passing evidence for every ticket criterion and completed dependencies."
+  ],
+  "tickets": [
+    {
+      "id": "BW-001-T01",
+      "parent_epic": "BW-001",
+      "title": "Pin the Godot 4.7 toolchain and macOS baseline",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-001-AC-1"
+      ],
+      "dependencies": [],
+      "scope": [
+        "Inspect the existing project.godot baseline: Godot 4.7, Forward Plus, Jolt and a Windows D3D12 preference are declared, but there are no scenes, scripts, export presets or build tools. Preserve Godot 4.7 as requested; identify its exact release or development build and source revision rather than substituting another minor version.",
+        "Create tools/toolchain.lock.json with the exact engine and matching export-template versions, acquisition locations and checksums, macOS version/CPU architecture used for verification, required Python version, and any source build instructions. Record no engine patches for the initial stock build, or explicitly pin an existing patch set without adopting a new fork.",
+        "Record macOS client and macOS dedicated headless server as the verified BW-001 targets. Linux and Windows are future targets, with no compatibility claim until tested. Record the provisional client Forward Plus/backend settings separately from headless simulation, retaining the Windows setting only as an unverified future-platform preference.",
+        "Add tools/verify_toolchain.py and setup instructions that verify the lock against locally acquired engine/templates, report exact paths and mismatches, and work without a preexisting project import cache. Provide a temporary lock-copy option for negative checks."
+      ],
+      "out_of_scope": [
+        "Selecting a different Godot minor version; renderer feasibility, camera, shaders, art assets or new engine patches (BW-097).",
+        "Linux/Windows execution, release signing/notarization, hosting, gameplay or automated downloads using credentials."
+      ],
+      "acceptance_criteria": [
+        "A fresh macOS environment can acquire the exact recorded Godot 4.7 build and matching templates by following the setup instructions; checksum/version verification succeeds and records the native CPU target.",
+        "A missing engine, missing templates or modified checksum in a temporary lock copy returns a nonzero exit and identifies the missing/mismatched component with a corrective action.",
+        "The lock separates provisional client renderer/backend settings from the headless target and explicitly records the engine patch state; it identifies Linux and Windows as future unverified targets."
+      ],
+      "manual_test": {
+        "launch": "python3 tools/verify_toolchain.py\npython3 tools/verify_toolchain.py --lock /tmp/bw001-toolchain-negative.json",
+        "setup": [
+          "Use a clean checkout on macOS and acquire the engine/templates by the new setup instructions. Do not copy .godot import state from another checkout.",
+          "Copy tools/toolchain.lock.json to /tmp/bw001-toolchain-negative.json and change only the expected engine checksum in that copy."
+        ],
+        "actions": [
+          "Run the default verification and record the engine version, template version, paths and architecture.",
+          "Run verification with the modified lock copy; repeat with a nonexistent engine path using the documented local-path override."
+        ],
+        "expected_results": [
+          "The default lock passes for the acquired matching toolchain.",
+          "Each negative case fails with a specific component/path diagnostic and recovery instruction; no runtime test pass is reported."
+        ],
+        "reset": [
+          "Delete the temporary lock copy and restore any local tool-path overrides. Keep the original lock unchanged."
+        ]
+      },
+      "completion_evidence": "The committed toolchain lock, acquisition/setup instructions, successful verification output and actual missing/mismatched-component diagnostics.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "Verification and evidence boundaries",
+          "href": "guide/testing.html#test-evidence-retained"
+        },
+        {
+          "label": "Art direction and engine-fork decision gate",
+          "href": "guide/decisions.html#art-direction"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-001-T02",
+      "parent_epic": "BW-001",
+      "title": "Launch a minimal macOS client scene",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-001-AC-1"
+      ],
+      "dependencies": [
+        "BW-001-T01"
+      ],
+      "scope": [
+        "Create the project main/bootstrap scene and a separate res://scenes/client/client_shell.tscn using a Control root, a visible Briarwake client baseline label and a Quit button. There is no existing test scene to reuse.",
+        "Add tools/run_baseline.py --role client, resolving the pinned engine and importing a clean project as needed. Keep role selection before scene instantiation so the server ticket can choose a separate root.",
+        "Provide macOS editor/F6 and command-line instructions, and ensure the baseline uses the recorded provisional client renderer settings."
+      ],
+      "out_of_scope": [
+        "Character creation, login, network connection, local gameplay player, world content, renderer/camera acceptance or visual polish.",
+        "Packaged application exports, server startup or configuration validation; these follow in separate tickets."
+      ],
+      "acceptance_criteria": [
+        "The project has a valid main scene and the client launch command opens a visible macOS window displaying Briarwake client baseline without script/import errors.",
+        "Quit and the macOS window close action both end the process cleanly with a zero exit status.",
+        "The client shell is isolated in its own scene and does not instantiate gameplay entities or server services."
+      ],
+      "manual_test": {
+        "launch": "python3 tools/run_baseline.py --role client\nScene: res://scenes/client/client_shell.tscn",
+        "setup": [
+          "Complete T01 and use the pinned toolchain on the recorded macOS architecture.",
+          "Start from a fresh checkout without a .godot cache; the launcher must handle the import step."
+        ],
+        "actions": [
+          "Run the launcher and inspect the window and console.",
+          "Choose Quit. Relaunch and close the window with the normal macOS close control.",
+          "Open the client shell scene in the pinned editor and run it with F6."
+        ],
+        "expected_results": [
+          "Every launch shows the baseline label and Quit control; no missing-main-scene or script errors occur.",
+          "Both close paths return cleanly and leave no client process running."
+        ],
+        "reset": [
+          "Close the editor/test window and stop any leftover test process. No saved gameplay or fixture state needs resetting."
+        ]
+      },
+      "completion_evidence": "A macOS client launch capture and console/exit results for both close paths from a clean import.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "Verification and evidence boundaries",
+          "href": "guide/testing.html#test-evidence-retained"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-001-T03",
+      "parent_epic": "BW-001",
+      "title": "Start a player-free headless server with revision identity",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-001-AC-2"
+      ],
+      "dependencies": [
+        "BW-001-T02"
+      ],
+      "scope": [
+        "Create res://scenes/server/server_root.tscn with a plain Node root and bounded bootstrap heartbeat. Select this root before loading the client shell when --role server is requested.",
+        "Extend tools/run_baseline.py with --role server --headless, --config and --smoke. Normal mode stays alive until stopped; smoke mode confirms readiness and a bounded number of heartbeat iterations, then exits. This is a bootstrap heartbeat, not gameplay simulation.",
+        "Add fixtures/config/server.valid.json using the canonical ServerConfiguration fields and explicit test-only values, including independently identified rules_version and content_version. Carry build revision separately from those two version domains; capture the source commit and mark a dirty development checkout honestly.",
+        "Emit a machine-readable server-ready record containing build, rules and content revisions, selected role and headless status. Supply an observable bootstrap check of the scene tree and zero local-player count without loading graphics-dependent resources. The export ticket will embed this identity in built artifacts."
+      ],
+      "out_of_scope": [
+        "Multiplayer transport, authentication, economic characters, database access, authoritative game ticks or gameplay fixtures (BW-002/BW-003/BW-004).",
+        "Production diagnostics/metrics or content admission; bootstrap fixture versions do not certify compatible gameplay content."
+      ],
+      "acceptance_criteria": [
+        "The normal server command starts with no window or graphics requirement and stays alive without any client connection or local player.",
+        "The server-ready record reports nonempty build, rules and content revisions with separate meanings and values traceable to the checkout and supplied fixture.",
+        "The smoke command observes the server root, absence of the client scene and zero players, executes its bootstrap assertions and exits zero within a documented timeout.",
+        "Changing only a fixture rules/content revision in a temporary copy changes only that reported version domain; build identity remains attributable to the same source."
+      ],
+      "manual_test": {
+        "launch": "python3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke\nScene: res://scenes/server/server_root.tscn",
+        "setup": [
+          "Complete T02; use macOS with the pinned engine, no clients running and no account/database credentials.",
+          "Use the supplied valid server fixture. Prepare a temporary copy with a distinct test content_version for the identity comparison."
+        ],
+        "actions": [
+          "Start normal mode, inspect the readiness/scene-tree diagnostics, let several heartbeat iterations run, then stop it with Ctrl+C.",
+          "Run smoke mode and retain its assertions, readiness record and exit status.",
+          "Run smoke mode again against the temporary fixture copy and compare all three revision fields."
+        ],
+        "expected_results": [
+          "The server starts without an OS window or local player; the bootstrap check confirms no client shell, Camera3D, client-created SubViewport or gameplay player is instantiated.",
+          "Smoke mode actually executes the bootstrap assertions and terminates successfully within its timeout.",
+          "Build identity stays the same while the changed fixture version is reported exactly; no version field is inferred from another."
+        ],
+        "reset": [
+          "Stop normal-mode processes, delete the temporary fixture copy and retain the committed valid fixture unchanged."
+        ]
+      },
+      "completion_evidence": "Actual normal and bounded headless logs, scene-tree/player assertions, revision-comparison output and smoke exit status.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "Verification and evidence boundaries",
+          "href": "guide/testing.html#test-evidence-retained"
+        },
+        {
+          "label": "Canonical server configuration",
+          "href": "guide/data-inventory.html#server-configuration"
+        },
+        {
+          "label": "Version and authority boundaries",
+          "href": "guide/networking.html#security-and-observability"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-001-T04",
+      "parent_epic": "BW-001",
+      "title": "Reject missing or invalid bootstrap configuration",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-001-AC-3"
+      ],
+      "dependencies": [
+        "BW-001-T03"
+      ],
+      "scope": [
+        "Load server configuration from an explicit external --config path and validate it before reporting ready. Reuse canonical ServerConfiguration field names, requiredness and types; apply documented bootstrap semantic checks and identify missing/empty revision values explicitly.",
+        "Add fixtures/config/server.missing-rules.json and server.invalid-rate.json derived from the valid fixture, plus instructions for a nonexistent path and malformed JSON. Keep test-only parameter choices labeled as fixtures, rather than gameplay policy defaults.",
+        "Return nonzero on missing files, malformed JSON, missing required keys or invalid bootstrap values. Diagnostics identify the path/key, expected correction and startup stage while avoiding full configuration dumps or secret values.",
+        "Extend the launcher with an isolated configuration test path so negative cases cannot accidentally fall back to a developer-local configuration. Only valid configuration can reach the server-ready state."
+      ],
+      "out_of_scope": [
+        "Authentication-provider, database, economy or SecurityPolicy configuration for endpoints that do not exist yet.",
+        "Hot reload, remote config services, gameplay defaults, content admission or client-artifact inspection."
+      ],
+      "acceptance_criteria": [
+        "The valid committed fixture reaches readiness and completes the existing headless smoke check.",
+        "A nonexistent file, malformed JSON, absent rules_version and invalid simulation_hz each produce a nonzero exit, an actionable path/key diagnostic and no server-ready record.",
+        "Removing required external configuration cannot silently substitute a developer file or packaged default.",
+        "An unexpected field containing a synthetic secret marker is rejected without printing its value or a full configuration dump."
+      ],
+      "manual_test": {
+        "launch": "python3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.missing-rules.json --smoke\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.invalid-rate.json --smoke",
+        "setup": [
+          "Complete T03. Use the supplied valid/missing-rules/invalid-rate fixtures.",
+          "In an owned temporary directory, create a malformed JSON file and a valid-fixture copy with an unexpected secret_marker field containing a harmless unique sentinel. Also choose a file path that does not exist."
+        ],
+        "actions": [
+          "Run each supplied fixture, then repeat the command against the malformed file, nonexistent file and secret-marker copy.",
+          "Record exit statuses and search stdout/stderr for server-ready and the synthetic marker value."
+        ],
+        "expected_results": [
+          "Only the valid fixture reaches ready and exits zero.",
+          "Every invalid case fails with its stage and correction; no ready record appears, and the synthetic secret value is absent from output."
+        ],
+        "reset": [
+          "Delete temporary fixture files and logs containing test inputs; keep the committed fixtures intact. Stop any process that exceeded the documented timeout."
+        ]
+      },
+      "completion_evidence": "Captured valid/negative startup results with exit statuses, redacted diagnostics and proof that invalid configuration never reaches readiness.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "Verification and evidence boundaries",
+          "href": "guide/testing.html#test-evidence-retained"
+        },
+        {
+          "label": "Canonical server configuration",
+          "href": "guide/data-inventory.html#server-configuration"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-001-T05",
+      "parent_epic": "BW-001",
+      "title": "Export and launch clean macOS client and server artifacts",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-001-AC-1",
+        "BW-001-AC-2"
+      ],
+      "dependencies": [
+        "BW-001-T04"
+      ],
+      "scope": [
+        "Add versioned macOS Client and macOS Dedicated Server export presets using the T01 engine/templates and recorded CPU architecture. Keep the dedicated role, feature flags/resource stripping and external configuration distinct from client rendering settings.",
+        "Add tools/build_baseline.py --clean --output artifacts/baseline to import and export both artifacts from the current checkout without relying on cached .godot state, editor-local presets or undeclared files. Cleaning is restricted to the designated build output and disposable import workspace.",
+        "Embed source build identity and package identifiers at build time; emit an artifact manifest with toolchain lock, source revision/dirty state, target, preset, engine/templates, artifact paths and SHA-256 hashes. Keep rules/content fixture revisions separate and traceable.",
+        "Extend tools/run_baseline.py with --artifact-dir so it launches each exported artifact from outside the editor/source resource path. The exported headless server accepts an external config and supports the existing bounded smoke command; neither artifact needs a locally installed Godot executable at runtime.",
+        "Document macOS local launch steps, provisional renderer/backend and the current platform boundary. Future Linux/Windows presets must be added and executed before support is claimed."
+      ],
+      "out_of_scope": [
+        "Linux/Windows build verification, universal binaries, cross-compilation, store packaging, release signing/notarization or deployment.",
+        "Pixel-identical rendering, byte-identical signed bundles or gameplay/content compatibility claims."
+      ],
+      "acceptance_criteria": [
+        "A clean checkout with only the documented toolchain and prerequisites produces both macOS artifacts and the manifest using one build command.",
+        "The exported client opens the baseline window and quits cleanly from a working directory outside the source tree.",
+        "The exported server runs headlessly without a local player, loads the external valid fixture, reports embedded build plus rules/content revisions and passes the bounded bootstrap smoke test.",
+        "Repeating from another clean/disposable checkout succeeds without copying import caches or local export settings; each run records its actual artifact hashes and any declared nondeterministic packaging metadata."
+      ],
+      "manual_test": {
+        "launch": "python3 tools/build_baseline.py --clean --output artifacts/baseline\npython3 tools/run_baseline.py --artifact-dir artifacts/baseline --role client\npython3 tools/run_baseline.py --artifact-dir artifacts/baseline --role server --headless --config fixtures/config/server.valid.json --smoke",
+        "setup": [
+          "Complete T04. Use a disposable clean checkout on the declared macOS version/architecture with the pinned engine/templates.",
+          "Keep external valid configuration available; do not copy developer-local export settings or caches. Use an absolute artifact/config path when launching from outside the checkout."
+        ],
+        "actions": [
+          "Run the clean build and retain its manifest and logs.",
+          "Launch the exported client and server from a temporary working directory; temporarily remove Godot from the runtime PATH to verify the artifacts do not call the editor.",
+          "Quit the client and repeat the entire build/launch sequence in another disposable clean checkout."
+        ],
+        "expected_results": [
+          "Both clean runs generate separately identified launchable artifacts without undeclared inputs.",
+          "The packaged client displays its label; the packaged server starts without graphics/player objects, reports attributable revisions and actually passes smoke assertions.",
+          "The manifest lists the selected macOS target, exact inputs and hashes; no unexecuted Linux/Windows support is claimed."
+        ],
+        "reset": [
+          "Close launched processes, restore the runtime PATH and remove only the disposable checkout/build directories created for this test after retaining evidence."
+        ]
+      },
+      "completion_evidence": "Two clean-build logs and manifests, artifact identifiers/hashes, packaged client capture and actual packaged-server smoke logs.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "Verification and evidence boundaries",
+          "href": "guide/testing.html#test-evidence-retained"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-001-T06",
+      "parent_epic": "BW-001",
+      "title": "Keep server credentials out of distributed client artifacts",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-001-AC-3"
+      ],
+      "dependencies": [
+        "BW-001-T05"
+      ],
+      "scope": [
+        "Define explicit client export inclusion/exclusion rules for server-private configuration, environment files, credential directories and server-only fixtures; keep server runtime configuration external to distributed client resources.",
+        "Add tools/check_client_artifact.py to inspect the full macOS client bundle and its packed resource inventory/content, reporting forbidden paths or sentinel detections without echoing secret values. Document the credential sources excluded by the packaging policy.",
+        "Provide --self-test --output artifacts/credential-check that creates disposable harmless credential sentinels in representative server-private/config/environment inputs, exports an isolated client with the normal policy, and inspects it. Include an intentionally leaking disposable fixture to prove the inspector detects contamination; never use real credentials.",
+        "Reuse the T05 exported client launch check after inspection and retain a machine-readable inspection result tied to its artifact hash. Place all fixtures, temporary build inputs and cleanup behavior within this ticket."
+      ],
+      "out_of_scope": [
+        "Identity providers, production credentials, secret vault deployment, runtime authentication or security review of future endpoints.",
+        "Treating a raw binary string search alone as proof that compressed/packed resources are safe."
+      ],
+      "acceptance_criteria": [
+        "The normally exported client contains none of the server-private paths or synthetic credential sentinels when both bundle files and packed resources are inspected.",
+        "The deliberate leaking fixture produces a failing inspection and nonzero exit with a safe path/category finding, proving the check is active.",
+        "The clean inspected client still launches and quits; inspection evidence identifies the artifact hash and excluded credential sources.",
+        "Self-test cleanup removes synthetic private inputs and contaminated artifacts from its disposable workspace; no real secret value is collected or printed."
+      ],
+      "manual_test": {
+        "launch": "python3 tools/check_client_artifact.py --self-test --output artifacts/credential-check",
+        "setup": [
+          "Complete T05. Use a disposable checkout and the pinned toolchain on macOS.",
+          "Use only the synthetic private inputs created by the self-test. Do not provide account, service or signing credentials."
+        ],
+        "actions": [
+          "Run the self-test and inspect both the normal-client and deliberately leaking-fixture results.",
+          "Launch the clean artifact using the artifact path reported by the tool; close it with Quit.",
+          "Inspect the self-test workspace and repository status after cleanup."
+        ],
+        "expected_results": [
+          "The normal client passes inspection, while the contaminated fixture fails with an attributable safe diagnostic.",
+          "The inspected client remains launchable, and evidence points to that exact artifact hash.",
+          "No private sentinel inputs or contaminated outputs remain in distributed output; logs report findings without marker values."
+        ],
+        "reset": [
+          "Close the client. Use the documented cleanup command for the owned self-test output after retaining redacted results; leave source fixtures and normal export policy intact."
+        ]
+      },
+      "completion_evidence": "Client packaging policy, packed-resource inspection results, successful negative-control detection, inspected-artifact hash and client launch result.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "Verification and evidence boundaries",
+          "href": "guide/testing.html#test-evidence-retained"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-001-T07",
+      "parent_epic": "BW-001",
+      "title": "Record clean build and executed runtime smoke outcomes separately",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-001-AC-4"
+      ],
+      "dependencies": [
+        "BW-001-T06"
+      ],
+      "scope": [
+        "Add tools/check_baseline.py as the single automated clean verification entry point. It verifies the lock, builds in an isolated workspace, inspects the client artifact, launches the exported headless smoke mode, and checks ready identity, no client/player scene and bounded heartbeat assertions.",
+        "Write a machine-readable run record with source/toolchain/fixture revisions, runner environment, artifact hashes, commands/stages, process exit statuses, timeout information and redacted log paths. Keep build outcome, runtime execution state and assertion outcome separate; Not Executed has no passing assertion result.",
+        "Provide isolated --case pass, build-failure, assertion-failure, startup-failure and timeout controls. Inject failures only in disposable copies: an actual failed import/export, a deliberately false smoke assertion, invalid startup config, and a bounded hung process. Include the fixture controls and cleanup so each case is ready to run.",
+        "Document a clean macOS automation invocation, prerequisites and where run evidence is retained. Use the same command locally and in any configured automation runner, with no provider/deployment dependency.",
+        "Include packaged-client launch as a required manual evidence item alongside automation. A headless run cannot claim the GUI was visually verified, and bootstrap smoke evidence cannot substitute for BW-003 gameplay/runtime fixtures."
+      ],
+      "out_of_scope": [
+        "Gameplay fixture framework, seeded world simulation, throughput/capacity benchmarks, database tests or full release/deployment pipelines.",
+        "Marking BW-001 or any ticket Complete from planning, schema validation, an unexecuted test specification or a started process without executed assertions."
+      ],
+      "acceptance_criteria": [
+        "A clean macOS pass run records a successful build and client inspection, an actually executed exported-server assertion run with a passing result, and returns zero.",
+        "The build-failure case records build Failed and runtime Not Executed with no runtime pass; the assertion-failure case records build Passed, runtime Executed/Failed and nonzero exit.",
+        "Startup failure and timeout return nonzero with their stage and reason, terminate owned processes, and cannot be reported as passing executed smoke checks. Assertion execution state reflects whether the assertion runner was actually reached.",
+        "Every run retains actual commands, revisions, artifact identities when produced and redacted logs; failed-stage output remains available and a fresh pass after failure is independent of prior output.",
+        "Evidence instructions require the packaged macOS client capture and actual headless run before proposing epic completion; Linux/Windows and gameplay checks remain explicitly unverified."
+      ],
+      "manual_test": {
+        "launch": "python3 tools/check_baseline.py --case pass --output artifacts/check-pass\npython3 tools/check_baseline.py --case build-failure --output artifacts/check-build-failure\npython3 tools/check_baseline.py --case assertion-failure --output artifacts/check-assertion-failure\npython3 tools/check_baseline.py --case startup-failure --output artifacts/check-startup-failure\npython3 tools/check_baseline.py --case timeout --output artifacts/check-timeout",
+        "setup": [
+          "Complete T06. Use a fresh disposable checkout, pinned toolchain/templates and declared macOS environment.",
+          "Give every run its own output directory. Use only the supplied synthetic configuration/credential fixtures; no servers or clients should already be running."
+        ],
+        "actions": [
+          "Run all five cases and inspect each process exit status, machine-readable record and retained logs.",
+          "Verify that build failure has no executed runtime assertions, and assertion failure has an executed assertion plus its failure.",
+          "Check startup/timeout stages and process cleanup. Run pass again in a fresh output directory.",
+          "Launch the final pass client artifact and capture the visible baseline window, then quit it."
+        ],
+        "expected_results": [
+          "Only pass returns zero with executed passing smoke assertions and inspected artifact identities.",
+          "Build and runtime failure cases remain distinguishable; startup/timeout cases retain their actual execution state and diagnostic reason.",
+          "No orphaned process or prior output changes the subsequent pass result; failed evidence is retained separately.",
+          "The manual client capture and automated headless record refer to the same final build artifacts."
+        ],
+        "reset": [
+          "Quit the client and confirm all owned headless processes exited. Retain run records/logs; remove only the disposable workspaces/output directories when evidence has been archived."
+        ]
+      },
+      "completion_evidence": "Actual clean pass, build failure, executed assertion failure, startup failure and timeout records/logs, plus final artifact identifiers and a packaged-client launch capture.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "Verification and evidence boundaries",
+          "href": "guide/testing.html#test-evidence-retained"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    }
   ]
 }

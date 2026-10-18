@@ -12,7 +12,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_development_roadmap import (PAGE, SECTIONS, STATUSES, address, anchor_page, generated_page_paths,
-                                      generated_pages, load, phase_page, prerequisite_closure, progress)
+                                      generated_pages, load, phase_page, prerequisite_closure, progress, ticket_page)
 
 
 class Anchors(HTMLParser):
@@ -39,12 +39,14 @@ class Anchors(HTMLParser):
 def roadmap_errors(data, root=ROOT, check_generated=True):
     errors = []
     required = {'version', 'title', 'research_date', 'purpose', 'evidence_baseline', 'reading_guide',
-                'distinctions', 'analysis_method', 'research_docs', 'phases', 'epics', 'milestones',
+                'distinctions', 'analysis_method', 'research_docs', 'phases', 'epics', 'tickets', 'milestones',
                 'sequencing_decisions', 'coverage', 'open_decisions', 'deferred_scope', 'critical_review', 'maintenance'}
     if not isinstance(data, dict) or set(data) != required:
         return ['Roadmap registry keys disagree with format 1']
     if data['version'] != 1 or data['title'] != 'Briarwake Development Roadmap':
         errors.append('Unsupported roadmap version or title')
+    if not isinstance(data['tickets'], list):
+        errors.append('tickets: expected a list')
     for key in ('phases', 'epics', 'milestones', 'coverage', 'sequencing_decisions', 'open_decisions',
                 'reading_guide', 'distinctions', 'research_docs', 'deferred_scope', 'critical_review', 'maintenance'):
         if not isinstance(data[key], list) or not data[key]:
@@ -180,6 +182,114 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 errors.append(f'{context}: Complete requires complete hard prerequisites')
         docs(epic['related_docs'], context)
 
+    ticket_keys = {'id', 'parent_epic', 'title', 'scope', 'out_of_scope', 'dependencies', 'epic_criteria',
+                   'acceptance_criteria', 'manual_test', 'completion_evidence', 'related_docs', 'status',
+                   'blockers', 'verified_evidence'}
+    tickets = data['tickets']
+    if any(not isinstance(t, dict) or set(t) != ticket_keys for t in tickets):
+        errors.append('Ticket fields disagree with format 1')
+        return errors
+    ticket_ids = [t['id'] for t in tickets]
+    if any(not isinstance(i, str) or not re.fullmatch(r'BW-\d{3,}-T\d{2,}', i) for i in ticket_ids):
+        errors.append('Invalid stable ticket ID')
+        return errors
+    if len(set(anchors + ticket_ids)) != len(anchors + ticket_ids):
+        errors.append('Duplicate stable IDs/anchors including tickets')
+    ticket_by_id = {t['id']: t for t in tickets}
+    ticket_position = {i: n for n, i in enumerate(ticket_ids)}
+    coverage = {}
+    for ticket in tickets:
+        context = ticket['id']
+        parent = ticket['parent_epic']
+        if not isinstance(parent, str) or parent not in by_id or not context.startswith(parent + '-T'):
+            errors.append(f'{context}: invalid parent epic')
+            continue
+        for field in ('title', 'completion_evidence'):
+            text(ticket[field], context + ' ' + field)
+        for field in ('scope', 'out_of_scope', 'epic_criteria', 'acceptance_criteria'):
+            values = ticket[field]
+            if not isinstance(values, list) or not values or any(not isinstance(v, str) or not v.strip() for v in values):
+                errors.append(f'{context}: {field} requires nonempty text entries')
+        valid_criteria = {f'{parent}-AC-{n}' for n in range(1, len(by_id[parent]['acceptance_criteria']) + 1)}
+        criteria = ticket['epic_criteria']
+        if isinstance(criteria, list) and all(isinstance(c, str) for c in criteria):
+            if len(criteria) != len(set(criteria)) or set(criteria) - valid_criteria:
+                errors.append(f'{context}: epic criteria must be unique exact parent AC anchors')
+            coverage.setdefault(parent, set()).update(criteria)
+        dependencies = ticket['dependencies']
+        if not isinstance(dependencies, list) or any(not isinstance(d, str) for d in dependencies):
+            errors.append(f'{context}: expected dependency ID list')
+            dependencies = []
+        if len(dependencies) != len(set(dependencies)):
+            errors.append(f'{context}: duplicate dependency')
+        for dependency in dependencies:
+            if dependency not in by_id and dependency not in ticket_by_id:
+                errors.append(f'{context}: undefined dependency {dependency}')
+            elif dependency == parent:
+                errors.append(f'{context}: cannot depend on its own parent epic')
+            elif dependency in ticket_position and ticket_position[dependency] >= ticket_position[context]:
+                errors.append(f'{context}: ticket dependency conflicts with execution order: {dependency}')
+        test = ticket['manual_test']
+        if not isinstance(test, dict):
+            errors.append(f'{context}: manual test must be an object')
+        elif set(test) == {'not_applicable'}:
+            text(test['not_applicable'], context + ' manual test rationale')
+        elif set(test) == {'launch', 'setup', 'actions', 'expected_results', 'reset'}:
+            text(test['launch'], context + ' manual launch')
+            for field in ('setup', 'actions', 'expected_results', 'reset'):
+                values = test[field]
+                if not isinstance(values, list) or not values or any(not isinstance(v, str) or not v.strip() for v in values):
+                    errors.append(f'{context}: manual test {field} requires nonempty steps')
+        else:
+            errors.append(f'{context}: manual test needs launch, setup, actions, expected results and reset, or a rationale')
+        if ticket['status'] not in STATUSES:
+            errors.append(f'{context}: invalid status')
+        blockers = ticket['blockers']
+        if not isinstance(blockers, list) or any(not isinstance(b, str) or not b.strip() for b in blockers):
+            errors.append(f'{context}: invalid blockers')
+        if ticket['status'] == 'Blocked' and not blockers:
+            errors.append(f'{context}: Blocked requires an explicit blocker')
+        evidence = ticket['verified_evidence']
+        passed = set()
+        failed = False
+        if not isinstance(evidence, list):
+            errors.append(f'{context}: verified_evidence must be a list')
+            evidence = []
+        for record in evidence:
+            if not isinstance(record, dict) or set(record) != {'criteria', 'artifact', 'revision', 'result', 'summary'}:
+                errors.append(f'{context}: invalid evidence record')
+                continue
+            for field in ('artifact', 'revision', 'summary'):
+                text(record[field], context + ' evidence ' + field)
+            if record['result'] not in ('Passed', 'Failed'):
+                errors.append(f'{context}: evidence result must be Passed or Failed')
+            numbers = record['criteria']
+            if (not isinstance(numbers, list) or not numbers or any(type(n) is not int or
+                    not 1 <= n <= len(ticket['acceptance_criteria']) for n in numbers)):
+                errors.append(f'{context}: evidence must identify existing ticket AC numbers')
+            elif record['result'] == 'Passed':
+                passed.update(numbers)
+            failed |= record['result'] == 'Failed'
+            artifact = record['artifact']
+            if isinstance(artifact, str):
+                parsed = urlsplit(artifact)
+                path = (root / unquote(parsed.path)).resolve()
+                if parsed.scheme:
+                    if parsed.scheme != 'https' or not parsed.netloc:
+                        errors.append(f'{context}: evidence must use a local path or HTTPS URL')
+                elif not path.is_relative_to(root.resolve()) or not path.is_file():
+                    errors.append(f'{context}: missing evidence artifact {artifact}')
+        if ticket['status'] == 'Complete':
+            if blockers or failed or passed != set(range(1, len(ticket['acceptance_criteria']) + 1)):
+                errors.append(f'{context}: Complete requires passing evidence for every AC and no blockers or failures')
+            if any((ticket_by_id.get(d) or by_id.get(d) or {}).get('status') != 'Complete' for d in dependencies):
+                errors.append(f'{context}: Complete requires complete dependencies')
+        docs(ticket['related_docs'], context)
+    for parent in {t['parent_epic'] for t in tickets if isinstance(t['parent_epic'], str) and t['parent_epic'] in by_id}:
+        expected = {f'{parent}-AC-{n}' for n in range(1, len(by_id[parent]['acceptance_criteria']) + 1)}
+        if coverage.get(parent, set()) != expected:
+            errors.append(f'{parent}: tickets must cover every epic acceptance criterion')
+
     colors = {}
     def visit(identifier, trail):
         if colors.get(identifier) == 'visiting':
@@ -289,6 +399,19 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 anchor = f'{identifier}-AC-{number}'
                 if anchor not in parsed[page].ids:
                     errors.append(f'{identifier}: missing acceptance criterion anchor {anchor}')
+        for ticket in tickets:
+            identifier = ticket['id']
+            page = ticket_page(identifier)
+            parent = anchor_page(data, ticket['parent_epic'])
+            if identifier not in parsed[page].ids:
+                errors.append(f'{identifier}: missing canonical ticket anchor')
+            if address(page, parent, identifier) not in parsed[parent].references:
+                errors.append(f'{identifier}: missing parent-to-ticket link')
+            if address(parent, page, ticket['parent_epic']) not in parsed[page].references:
+                errors.append(f'{identifier}: missing ticket-to-parent link')
+            for anchor in ticket['epic_criteria']:
+                if address(parent, page, anchor) not in parsed[page].references:
+                    errors.append(f'{identifier}: missing exact epic AC link {anchor}')
         if any(parsed[phase_page(p)].epic_ids for p in data['phases']):
             errors.append('Phase indexes must link to epic details rather than embed them')
         if parsed[PAGE].epic_ids:
@@ -301,7 +424,8 @@ def main():
     errors = roadmap_errors(data)
     summary = progress(data['epics'])
     print(json.dumps({'passed': not errors, 'phases': len(data['phases']), 'epics': summary['total'],
-                      'statuses': summary['counts'], 'completion_percentage': summary['percentage'], 'errors': errors}, indent=2))
+                      'tickets': len(data['tickets']), 'statuses': summary['counts'],
+                      'completion_percentage': summary['percentage'], 'errors': errors}, indent=2))
     raise SystemExit(bool(errors))
 
 

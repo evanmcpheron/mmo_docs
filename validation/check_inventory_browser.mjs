@@ -242,6 +242,30 @@ try {
         && document.getElementById('ticket-planning') && document.documentElement.scrollWidth <= innerWidth;
     })()`));
   }
+  for (const ticket of roadmap.tickets) {
+    await navigate(epicPath(ticket.parent_epic));
+    await clickNavigation(`document.querySelector('a[href="${epicHref(ticket.id)}"]').click()`);
+    check(`${ticket.id} opens from its epic with criteria, dependencies and runnable verification`, await evaluate(`(() => {
+      const ticket = ${JSON.stringify(ticket)};
+      const node = document.getElementById(ticket.id);
+      return node?.classList.contains('roadmap-ticket')
+        && ticket.epic_criteria.every(anchor => node.querySelector('a[href="${epicPath(ticket.parent_epic).split('/').pop()}#' + anchor + '"]'))
+        && ticket.dependencies.every(id => [...node.querySelectorAll('a')].some(link => link.hash === '#' + id))
+        && ['scope', 'acceptance-criteria', 'manual-test', 'verification'].every(id => document.getElementById(id).textContent.length > 0)
+        && document.querySelector('#manual-test + p').textContent.includes('unexecuted')
+        && document.documentElement.scrollWidth <= innerWidth;
+    })()`));
+  }
+  if (roadmap.tickets.length) {
+    const ticket = roadmap.tickets[0];
+    check('Offline search opens an individual ticket', await evaluate(`(async () => {
+      const input = document.querySelector('#site-search'); input.value = ${JSON.stringify(ticket.id)}; input.dispatchEvent(new Event('input'));
+      await new Promise(resolve => setTimeout(resolve, 250));
+      return [...document.querySelectorAll('#search-results a')].some(link => link.href.endsWith(${JSON.stringify(epicHref(ticket.id))}));
+    })()`));
+    await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))`);
+    await captureRoadmap('ticket-desktop');
+  }
   const crossPhaseEpic = roadmap.epics.find(epic => epic.hard_dependencies.some(id => epicPhase.get(id).id !== epic.phase));
   const crossPhasePrerequisite = crossPhaseEpic.hard_dependencies.find(id => epicPhase.get(id).id !== crossPhaseEpic.phase);
   await navigate(epicPath(crossPhaseEpic.id) + '#' + crossPhaseEpic.id);
@@ -289,6 +313,11 @@ try {
     await navigate(epicPath(epic.id));
     check(`Mobile ${epic.id} has no body overflow`, await evaluate('document.documentElement.scrollWidth <= innerWidth'));
   }
+  for (const ticket of roadmap.tickets) {
+    await navigate(epicPath(ticket.id));
+    check(`Mobile ${ticket.id} has no body overflow`, await evaluate('document.documentElement.scrollWidth <= innerWidth'));
+  }
+  if (roadmap.tickets.length) await captureRoadmap('ticket-mobile');
   await navigate(epicPath('BW-097'));
   await captureRoadmap('epic-mobile');
   await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false });
@@ -303,6 +332,11 @@ try {
       && getComputedStyle(document.querySelector('.roadmap-epic-nav')).display === 'none';
   })()`));
   await captureRoadmap('print');
+  if (roadmap.tickets.length) {
+    await navigate(epicPath(roadmap.tickets[0].id));
+    check('Ticket scope, criteria and manual test remain visible in print', await evaluate(`['scope', 'acceptance-criteria', 'manual-test', 'verification'].every(id => document.getElementById(id).getBoundingClientRect().height > 0)`));
+    await captureRoadmap('ticket-print');
+  }
   await navigate('guide/roadmap-audit.html');
   check('Audit findings and outstanding decisions remain visible in print', await evaluate(`['RA-001', 'RA-007', 'outstanding-decisions', 'readiness'].every(id => document.getElementById(id).getBoundingClientRect().height > 0) && getComputedStyle(document.querySelector('.sidebar')).display === 'none'`));
   await captureRoadmap('audit-print');
@@ -327,6 +361,14 @@ try {
   }
   await navigate(epicPath('BW-097') + '#BW-097-AC-1');
   await captureRoadmap('nojs-epic');
+  if (roadmap.tickets.length) {
+    const ticket = roadmap.tickets[0];
+    await navigate(epicPath(ticket.parent_epic));
+    await clickNavigation(`document.querySelector('a[href="${epicHref(ticket.id)}"]').click()`);
+    check('Ticket and parent criterion navigation work without JavaScript', await evaluate(`document.getElementById(${JSON.stringify(ticket.id)})?.classList.contains('roadmap-ticket') && document.getElementById('manual-test').getBoundingClientRect().height > 0`));
+    await clickNavigation(`document.querySelector('a[href="${epicPath(ticket.parent_epic).split('/').pop()}#${ticket.epic_criteria[0]}"]').click()`);
+    check('Ticket exact criterion link reaches its parent epic without JavaScript', await evaluate(`document.querySelector(':target')?.id === ${JSON.stringify(ticket.epic_criteria[0])}`));
+  }
   await navigate('guide/data-inventory.html');
   check('Inventory entries remain readable with JavaScript disabled', await evaluate(`document.querySelector('#quest-progress-record').textContent.includes(${JSON.stringify(registry.entries.find(entry => entry.id === 'quest-progress-record').definition_status)}) && document.querySelector('#inventory-enums').tBodies[0].rows.length > 0`));
   check('Canonical properties and enum members disclose without JavaScript', await evaluate(`(() => {
