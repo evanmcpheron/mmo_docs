@@ -5295,7 +5295,7 @@
       "id": "BW-001-T02",
       "parent_epic": "BW-001",
       "title": "Launch a minimal macOS client scene",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-001-AC-1"
       ],
@@ -5317,22 +5317,27 @@
         "The client shell is isolated in its own scene and does not instantiate gameplay entities or server services."
       ],
       "manual_test": {
-        "launch": "python3 tools/run_baseline.py --role client\nScene: res://scenes/client/client_shell.tscn",
+        "launch": "Working directory: /Users/le-evanmcpheron/Documents/Godot/briarwake (or the root of a disposable clean copy).\npython3 tools/verify_toolchain.py\npython3 tools/run_baseline.py --role client\nOptional acquired engine: python3 tools/run_baseline.py --role client --engine \"/path/to/Godot.app/Contents/MacOS/Godot\"\nPinned editor: /usr/bin/arch -arm64 /Applications/Godot.app/Contents/MacOS/Godot --editor --path .\nProject main scene: res://scenes/bootstrap.tscn\nIndependent F6 scene: res://scenes/client/client_shell.tscn",
         "setup": [
-          "Complete T01 and use the pinned toolchain on the recorded macOS architecture.",
-          "Start from a fresh checkout without a .godot cache; the launcher must handle the import step."
+          "Complete BW-001-T01 and follow tools/README.md to verify the locked official engine on native macOS ARM64. Use a normal desktop Terminal session with graphics, user-settings and certificate access.",
+          "For clean-import evidence, create a new disposable copy of the current project including the uncommitted T02 files, excluding .git, .godot and __pycache__. Do not delete or overwrite an existing cache. Run from that copy, verify .godot is initially absent and retain its absolute path.",
+          "No gameplay fixture, credentials, network service, local player or exported application is required. The scene itself contains all UI controls used in this test."
         ],
         "actions": [
-          "Run the launcher and inspect the window and console.",
-          "Choose Quit. Relaunch and close the window with the normal macOS close control.",
-          "Open the client shell scene in the pinned editor and run it with F6."
+          "Run the launcher from the clean copy. Capture the visible baseline window and preserve complete console output. Confirm the first headless editor import finishes without ERROR or SCRIPT ERROR diagnostics, followed by a graphical client using the unchanged provisional Forward Plus settings.",
+          "Confirm the label reads Briarwake client baseline and a Quit button is visible. Click Quit; preserve the printed Baseline client exited with status 0. and terminal return.",
+          "Run the launcher again. Close the graphical window using its red macOS close control; preserve the same zero exit result and terminal return. Confirm neither test leaves a client process running.",
+          "Open scenes/client/client_shell.tscn in the pinned editor and use Run Current Scene (F6, or Fn+F6); confirm the independent shell displays and Quit stops it without errors. Use F5 to check the main bootstrap default client role.",
+          "Inspect the isolated client shell scene tree: Control root, CenterContainer, VBoxContainer, Label and Button only, with no gameplay entity or server service. Record tested game HEAD plus uncommitted file hashes when applicable."
         ],
         "expected_results": [
-          "Every launch shows the baseline label and Quit control; no missing-main-scene or script errors occur.",
-          "Both close paths return cleanly and leave no client process running."
+          "Clean import and every desktop launch show the label and Quit control without missing-main-scene, script or import errors. Renderer/backend remain the provisional T01 baseline; this does not certify renderer feasibility.",
+          "Quit and native red close both end the launcher/client with exit 0. F6 runs the shell independently; F5 defaults to client before loading it.",
+          "Unsupported roles and malformed bootstrap arguments fail before shell instantiation. Import diagnostics cause the launcher to exit nonzero without starting a graphical process; a restricted-session failure is not passing graphical evidence."
         ],
         "reset": [
-          "Close the editor/test window and stop any leftover test process. No saved gameplay or fixture state needs resetting."
+          "Close only the test window/editor and stop any leftover test process you started. No gameplay or fixture state needs resetting.",
+          "Remove only the disposable test copy created for this procedure. Preserve the original checkout, .godot cache, canonical toolchain lock, installed engine/templates and all user files."
         ]
       },
       "completion_evidence": "A macOS client launch capture and console/exit results for both close paths from a clean import.",
@@ -5347,7 +5352,27 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-001-T02/verification.json",
+          "revision": "dc21ff71a8e08d8f3efc603d3a0b989837285da7 + uncommitted BW-001-T02 changes (SHA-256 manifest in artifact)",
+          "result": "Passed",
+          "summary": "Executed headless scene probe on native macOS ARM64 with pinned Godot 4.7.2. Bootstrap loads the separate Control client shell with the exact label and four UI descendants; its connected Quit signal exits 0. Both scripts also parse with exit 0 and empty stderr using a writable test log. Certificate diagnostics in runtime probes are retained; this record does not claim graphical-window or native-close verification."
+        },
+        {
+          "criteria": [
+            1,
+            2
+          ],
+          "artifact": "validation/tickets/BW-001-T02/desktop-runs.json",
+          "revision": "dc21ff71a8e08d8f3efc603d3a0b989837285da7 + uncommitted BW-001-T02 changes (SHA-256 manifest in artifact)",
+          "result": "Passed",
+          "summary": "User executed the desktop helper on macOS 27.0 (26A428), native ARM64/Python 3.14.0, using a new project copy with no .godot cache and SHA-256 identities matching the implementation. Both launches verified pinned Godot 4.7.2, imported without errors, displayed the baseline window and used Metal 4.0 / Forward+ on Apple M2 Max. User confirmed the visible UI and requested physical close actions. Quit and native red close each returned launcher/client status 0 with empty stderr. Actual command arguments, OS/CPU, hashes and complete console captures are retained. Editor F6/F5 and screenshot capture were not run; the independent shell loaded successfully in a separate headless check."
+        }
+      ]
     },
     {
       "id": "BW-001-T03",

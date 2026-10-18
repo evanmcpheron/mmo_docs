@@ -113,6 +113,8 @@ class RoadmapTests(unittest.TestCase):
         self.data['tickets'][0]['verified_evidence'] = []
         ticket = self.data['tickets'][1]
         ticket['status'] = 'Complete'
+        ticket['blockers'] = []
+        ticket['verified_evidence'] = []
         self.assertTrue(any('Complete requires passing evidence' in e for e in self.errors()))
         ticket['verified_evidence'] = [{
             'criteria': list(range(1, len(ticket['acceptance_criteria']) + 1)),
@@ -122,11 +124,18 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('Complete requires complete dependencies' in e for e in self.errors()))
         ticket['dependencies'] = []
         self.assertEqual([], self.errors())
+        ticket['blockers'] = ['Synthetic unfinished verification.']
+        self.assertTrue(any('no blockers or failures' in e for e in self.errors()))
+        ticket['blockers'] = []
         ticket['verified_evidence'][0]['result'] = 'Not Executed'
         self.assertTrue(any('evidence result must be Passed or Failed' in e for e in self.errors()))
 
     def test_ticket_planning_and_status_do_not_promote_epic_progress(self):
         self.by_id['BW-001']['status'] = 'Not Started'
+        for ticket in self.data['tickets']:
+            ticket['status'] = 'Not Started'
+            ticket['verified_evidence'] = []
+            ticket['blockers'] = []
         before = progress(self.data['epics'])
         self.data['tickets'][0]['status'] = 'In Progress'
         self.assertEqual(before, progress(self.data['epics']))
