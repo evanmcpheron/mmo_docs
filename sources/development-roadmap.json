@@ -209,7 +209,7 @@
           "href": "guide/decisions.html#art-direction"
         }
       ],
-      "status": "Not Started",
+      "status": "In Progress",
       "blockers": [],
       "ordering_rationale": "An executable baseline is required for runtime evidence; engine version is selected here rather than inferred from changing stable documentation.",
       "verified_evidence": [],
@@ -5217,7 +5217,7 @@
       "id": "BW-001-T01",
       "parent_epic": "BW-001",
       "title": "Pin the Godot 4.7 toolchain and macOS baseline",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-001-AC-1"
       ],
@@ -5238,21 +5238,27 @@
         "The lock separates provisional client renderer/backend settings from the headless target and explicitly records the engine patch state; it identifies Linux and Windows as future unverified targets."
       ],
       "manual_test": {
-        "launch": "python3 tools/verify_toolchain.py\npython3 tools/verify_toolchain.py --lock /tmp/bw001-toolchain-negative.json",
+        "launch": "Working directory: briarwake repository root.\npython3 tools/verify_toolchain.py\npython3 tools/verify_toolchain.py --engine \"/path/to/Godot.app/Contents/MacOS/Godot\" --templates \"/path/to/templates\"\npython3 tools/verify_toolchain.py --lock \"$BRIARWAKE_NEGATIVE_DIR/toolchain.lock.json\"\npython3 tools/verify_toolchain.py --engine \"$BRIARWAKE_NEGATIVE_DIR/missing-godot\"\npython3 tools/verify_toolchain.py --templates \"$BRIARWAKE_NEGATIVE_DIR/missing-templates\"",
         "setup": [
-          "Use a clean checkout on macOS and acquire the engine/templates by the new setup instructions. Do not copy .godot import state from another checkout.",
-          "Copy tools/toolchain.lock.json to /tmp/bw001-toolchain-negative.json and change only the expected engine checksum in that copy."
+          "Use native ARM64 Python 3.10 or newer on macOS. Follow briarwake/tools/README.md to acquire the stock official Godot 4.7.2-stable editor and matching templates, with download hashes read from tools/toolchain.lock.json. An existing installation may be verified directly; isolated acquired files use the explicit path flags.",
+          "Use a clean checkout without copied .godot state. This ticket is command-line tooling: no scene, local player, graphical launch or gameplay fixture is required.",
+          "Follow the README Negative checks snippet to create BRIARWAKE_NEGATIVE_DIR and a temporary lock copy with only engine.macos.executable_sha256 changed to 64 zeroes. Keep the canonical lock untouched.",
+          "For a missing payload check, create another disposable directory containing only a copy of the matching templates/version.txt, without macos.zip."
         ],
         "actions": [
-          "Run the default verification and record the engine version, template version, paths and architecture.",
-          "Run verification with the modified lock copy; repeat with a nonexistent engine path using the documented local-path override."
+          "Run the default verification against the installed toolchain, then verify an isolated installation with --engine and --templates. Record the paths, OS/build, Python version, native target, hashes and three engine/template version outputs.",
+          "Run against the clean checkout and confirm no .godot directory or project file changes are produced.",
+          "Run the altered lock copy, nonexistent engine path and nonexistent templates path. Verify each exit status using the shell immediately after each command.",
+          "Pass the directory containing only version.txt with --templates to verify that a missing macos.zip is diagnosed separately.",
+          "Inspect the lock target boundaries and unchanged project.godot: client Forward Plus/backend settings remain provisional, the dedicated server is headless with Dummy audio and no graphics dependency, patches is empty, and Linux/Windows are explicitly future unverified targets."
         ],
         "expected_results": [
-          "The default lock passes for the acquired matching toolchain.",
-          "Each negative case fails with a specific component/path diagnostic and recovery instruction; no runtime test pass is reported."
+          "Matching installed and isolated toolchains exit 0 and print engine/debug/release version 4.7.2.stable.official.ed1daf0bf, template version 4.7.2.stable and native arm64 target. No project import cache is required or created.",
+          "Negative cases exit 1, identify the component/path or expected/actual checksum and provide a corrective action. No failed invocation reports a passing build/runtime/gameplay test.",
+          "The lock records the macOS 27.0 (26A428) verification baseline, stock source revision ed1daf0bf001b61586d9930840f2f1394092c079, matching acquisition URLs/checksums and Python minimum. Toolchain verification is separate from subsequent client/server application exports."
         ],
         "reset": [
-          "Delete the temporary lock copy and restore any local tool-path overrides. Keep the original lock unchanged."
+          "Remove only the disposable negative-check directory and any isolated acquisition/checkout directories created for this test; unset BRIARWAKE_NEGATIVE_DIR. Preserve existing editor/template installations, canonical lock and user files."
         ]
       },
       "completion_evidence": "The committed toolchain lock, acquisition/setup instructions, successful verification output and actual missing/mismatched-component diagnostics.",
@@ -5271,7 +5277,19 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-001-T01/verification.json",
+          "revision": "2e4fe30f96e2c5381167bf251d55a96537f024dd + uncommitted BW-001-T01 tools (SHA-256 manifest below)",
+          "result": "Passed",
+          "summary": "17 executed acceptance checks passed on macOS 27.0 (26A428), native arm64, Python 3.14.0. Verified the official editor ZIP checksum and freshly extracted editor plus staged matching macOS debug/release templates in a clean copy without .godot state. Actual native binaries report 4.7.2.stable.official.ed1daf0bf. Missing files, altered checksums, version/native-target mismatches and malformed locks fail deliberately with diagnostics. Executed lock/project consistency checks confirm provisional rendering, independent headless targets, no patches and future unverified Linux/Windows targets. Exact commands, outputs and uncommitted file SHA-256 identities are retained in the artifact. Fresh network acquisition, Python 3.10 execution and application/gameplay builds were not run; those limits are recorded explicitly."
+        }
+      ]
     },
     {
       "id": "BW-001-T02",
