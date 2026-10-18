@@ -212,7 +212,17 @@
       "status": "In Progress",
       "blockers": [],
       "ordering_rationale": "An executable baseline is required for runtime evidence; engine version is selected here rather than inferred from changing stable documentation.",
-      "verified_evidence": [],
+      "verified_evidence": [
+        {
+          "criteria": [
+            2
+          ],
+          "artifact": "validation/tickets/BW-001-T03/verification.json",
+          "revision": "cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted BW-001-T03 changes (SHA-256 manifest in artifact)",
+          "result": "Passed",
+          "summary": "BW-001-T03 executed the source-project headless server with no local player/client scene, independent build/rules/content revision identity and actual normal/smoke heartbeat checks on pinned native macOS ARM64. Exported build identity and remaining epic criteria belong to subsequent tickets; this does not complete BW-001."
+        }
+      ],
       "phase": "phase-foundations"
     },
     {
@@ -5378,7 +5388,7 @@
       "id": "BW-001-T03",
       "parent_epic": "BW-001",
       "title": "Start a player-free headless server with revision identity",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-001-AC-2"
       ],
@@ -5402,23 +5412,27 @@
         "Changing only a fixture rules/content revision in a temporary copy changes only that reported version domain; build identity remains attributable to the same source."
       ],
       "manual_test": {
-        "launch": "python3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke\nScene: res://scenes/server/server_root.tscn",
+        "launch": "Working directory: /Users/le-evanmcpheron/Documents/Godot/briarwake (the game Git checkout).\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke\nMain scene: res://scenes/bootstrap.tscn; selected server scene: res://scenes/server/server_root.tscn\nOptional pinned engine override: append --engine \"/path/to/Godot.app/Contents/MacOS/Godot\".",
         "setup": [
-          "Complete T02; use macOS with the pinned engine, no clients running and no account/database credentials.",
-          "Use the supplied valid server fixture. Prepare a temporary copy with a distinct test content_version for the identity comparison."
+          "Complete BW-001-T02. Use the locked official Godot 4.7.2 engine and native macOS ARM64/Python 3.10+ in a normal local session with Godot settings/certificate access. No clients, credentials, network listener or database are required.",
+          "Keep the game checkout unchanged during revision comparison. Use fixtures/config/server.valid.json, whose canonical ServerConfiguration keys and bootstrap-test-* values are explicit test fixtures. T03 reads only the JSON object and nonempty rules/content labels; T04 owns complete configuration validation.",
+          "For identity comparison, follow the executable Python example in briarwake/tools/README.md, Run the headless server baseline. It makes external temporary copies and changes rules_version and content_version separately without modifying the game checkout."
         ],
         "actions": [
-          "Start normal mode, inspect the readiness/scene-tree diagnostics, let several heartbeat iterations run, then stop it with Ctrl+C.",
-          "Run smoke mode and retain its assertions, readiness record and exit status.",
-          "Run smoke mode again against the temporary fixture copy and compare all three revision fields."
+          "Start normal mode, retain stdout/stderr and inspect server-bootstrap-check and server-ready JSON. Observe at least five one-second server-heartbeat iterations, confirming the process is still alive beyond the three-iteration smoke boundary. Stop it with Ctrl+C and verify no owned Godot process remains.",
+          "Run smoke mode and retain both scene checks, exactly three timer events, the server-smoke Passed record and Baseline server exited with status 0. The editor import has a 120-second limit; the subsequent runtime has a separate 10-second timeout.",
+          "Run the README comparison example. Compare the baseline, changed-rules and changed-content server-ready records. Record game HEAD, dirty status and file hashes with the actual commands/environment.",
+          "In a disposable project copy, verify server startup with the client scene/assets absent. Add an extra plain Node to server_root.tscn in that copy and confirm the scene check fails before readiness. Separately pause the Timer in that copy and confirm the smoke launcher times out nonzero with no passing smoke record and no owned runtime left behind. Keep the canonical project unchanged."
         ],
         "expected_results": [
-          "The server starts without an OS window or local player; the bootstrap check confirms no client shell, Camera3D, client-created SubViewport or gameplay player is instantiated.",
-          "Smoke mode actually executes the bootstrap assertions and terminates successfully within its timeout.",
-          "Build identity stays the same while the changed fixture version is reported exactly; no version field is inferred from another."
+          "The normal server uses headless display and Dummy audio, creates no OS window and stays alive without peers. The scene check lists only /root/ServerRoot and /root/ServerRoot/BootstrapHeartbeat. The engine-owned root Window is excluded; the strict two-node allowlist establishes zero local players without inventing a player registry. The client shell is not cached.",
+          "Each readiness record reports role server, headless true, full Git HEAD with -dirty for a changed/untracked checkout, and the two exact fixture version labels. Build identity describes source, not a packaged artifact hash; export identity belongs to T05.",
+          "Smoke actually executes startup/final scene assertions and three one-second Timer events, then exits 0 within the runtime timeout. This is bootstrap liveness evidence, not a gameplay tick, renderer, multiplayer or capacity test.",
+          "Changing rules_version affects only that ready field; changing content_version affects only that ready field. Build revision stays identical. Unexpected scene nodes fail the bootstrap check, while a stalled heartbeat fails via the launcher timeout; neither can produce passing smoke evidence."
         ],
         "reset": [
-          "Stop normal-mode processes, delete the temporary fixture copy and retain the committed valid fixture unchanged."
+          "Stop only owned normal-mode processes (Ctrl+C normally returns launcher status 130) and confirm no owned child remains. Temporary comparison files are automatically removed by the README example. Remove only disposable copies created for negative controls after retaining their logs.",
+          "Preserve the canonical fixture, game checkout, existing .godot cache and installed toolchain. No gameplay state or network resources need resetting."
         ]
       },
       "completion_evidence": "Actual normal and bounded headless logs, scene-tree/player assertions, revision-comparison output and smoke exit status.",
@@ -5441,7 +5455,28 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            3
+          ],
+          "artifact": "validation/tickets/BW-001-T03/verification.json",
+          "revision": "cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted BW-001-T03 changes (SHA-256 manifest in artifact)",
+          "result": "Passed",
+          "summary": "Executed on native macOS ARM64/macOS 27.0 (26A428), Python 3.14.0 and checksum-verified Godot 4.7.2. Normal launcher stayed alive through five one-second heartbeat events without clients, then Ctrl+C returned 130 with no owned child left. Smoke import/runtime logs were clean, actual startup/final scene assertions allowed only Node ServerRoot plus Timer, client scene was not cached, local-player count was zero, and three executed Timer events produced server-smoke Passed and exit 0. Server also passed with client scene/assets absent. An extra player node failed the real scene check; pausing the Timer reached readiness then triggered the 10-second launcher runtime timeout with no passing smoke or orphan process. The first incorrectly prepared timeout copy and restricted-session certificate/settings failures remain historical; clean corrected executions supersede them."
+        },
+        {
+          "criteria": [
+            2,
+            4
+          ],
+          "artifact": "validation/tickets/BW-001-T03/verification.json",
+          "revision": "cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted BW-001-T03 changes (SHA-256 manifest in artifact)",
+          "result": "Passed",
+          "summary": "The committed fixture passed the existing docs ServerConfiguration schema validator. Actual readiness records reported headless/Dummy, server role, full game HEAD with -dirty and exact distinct bootstrap-test-rules-v1/content-v1 fixture labels. Two external temporary fixture copies changed rules_version and content_version independently; each changed only that one ready field while source build identity remained identical. All commands, OS/CPU, outputs, exit statuses, file hashes and runner source are retained. Revision parsing rejected missing, empty and nonstring labels; source identity was never inferred from a fixture version. This is bootstrap source-project evidence, not an export, full-config-validation, gameplay, network or capacity claim."
+        }
+      ]
     },
     {
       "id": "BW-001-T04",
