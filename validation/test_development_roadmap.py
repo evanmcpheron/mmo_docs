@@ -230,6 +230,7 @@ class RoadmapTests(unittest.TestCase):
     def test_complete_requires_passing_evidence_for_every_ac(self):
         epic = self.data['epics'][0]
         epic['status'] = 'Complete'
+        epic['verified_evidence'] = []
         self.assertTrue(any('passing evidence for every AC' in e for e in self.errors()))
         self.complete(epic['id'])
         epic['verified_evidence'][0]['criteria'].pop()

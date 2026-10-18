@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "producer": "briarwake-baseline-check-v1",
+  "case": "startup-failure",
+  "started_at": "2026-10-18T03:16:10.302196+00:00",
+  "invocation": [
+    "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+    "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/check_baseline.py",
+    "--case",
+    "startup-failure",
+    "--output",
+    "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure"
+  ],
+  "environment": {
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "python": "3.14.0"
+  },
+  "build_outcome": "Passed",
+  "client_inspection": "Passed",
+  "runtime": {
+    "execution_state": "Not Executed",
+    "assertion_result": null,
+    "checks": {},
+    "events": [
+      {
+        "build_revision": "85b656d5d98deec7d502b9d2f987e2474b5d6303-dirty",
+        "dedicated_server": true,
+        "event": "baseline-build",
+        "package_identifier": "com.briarwake.baseline.server",
+        "role": "server",
+        "source_manifest_sha256": "82f0138b615efb3eb3d73e1d903faee7adfc9ff983df4d47c5b919603d154082"
+      }
+    ],
+    "reason": "Exported bootstrap assertion runner was not reached."
+  },
+  "result": "Failed",
+  "stages": [
+    {
+      "name": "toolchain",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/verify_toolchain.py"
+      ],
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "started_at": "2026-10-18T03:16:10.348042+00:00",
+      "timeout_seconds": 120,
+      "timed_out": false,
+      "exit_status": 0,
+      "result": "Passed",
+      "log": "logs/toolchain.log",
+      "process_id": 21290,
+      "process_reaped": true,
+      "process_group_cleanup": "SIGKILL sent if group still existed",
+      "duration_seconds": 4.059
+    },
+    {
+      "name": "build",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/check_baseline.py",
+        "--build-only",
+        "--case",
+        "startup-failure",
+        "--output",
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure/build"
+      ],
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "started_at": "2026-10-18T03:16:14.408960+00:00",
+      "timeout_seconds": 600,
+      "timed_out": false,
+      "exit_status": 0,
+      "result": "Passed",
+      "log": "logs/build.log",
+      "process_id": 21298,
+      "process_reaped": true,
+      "process_group_cleanup": "SIGKILL sent if group still existed",
+      "duration_seconds": 23.77
+    },
+    {
+      "name": "client-inspection",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/check_client_artifact.py",
+        "--bundle",
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure/build/BriarwakeClient.app",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure/client-inspection.json"
+      ],
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "started_at": "2026-10-18T03:16:38.187171+00:00",
+      "timeout_seconds": 120,
+      "timed_out": false,
+      "exit_status": 0,
+      "result": "Passed",
+      "log": "logs/client-inspection.log",
+      "process_id": 23172,
+      "process_reaped": true,
+      "process_group_cleanup": "SIGKILL sent if group still existed",
+      "duration_seconds": 0.853
+    },
+    {
+      "name": "runtime",
+      "command": [
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure/build/BriarwakeServer.app/Contents/MacOS/Briarwake",
+        "--headless",
+        "--",
+        "--config",
+        "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure/fixtures/server.missing-rules.json",
+        "--smoke"
+      ],
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure",
+      "started_at": "2026-10-18T03:16:39.100933+00:00",
+      "timeout_seconds": 10,
+      "timed_out": false,
+      "exit_status": 2,
+      "result": "Failed",
+      "log": "logs/runtime.log",
+      "process_id": 23177,
+      "reason": "Process exited with status 2.",
+      "process_reaped": true,
+      "process_group_cleanup": "SIGKILL sent if group still existed",
+      "duration_seconds": 0.992,
+      "assertion_reason": "Exported bootstrap assertion runner was not reached."
+    }
+  ],
+  "manual_client": {
+    "execution_state": "Not Executed",
+    "capture": null,
+    "required": "Launch this run's packaged client, capture the visible window, quit and retain exit status and bundle hash.",
+    "launch_command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/run_baseline.py",
+      "--artifact-dir",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/check-t07-final-startup-failure/build",
+      "--role",
+      "client"
+    ],
+    "bundle_sha256": "4077fdc34cab850ef069c72c3bac64ea7eb08028c6e14bcc2ee946d86d679fc8"
+  },
+  "unverified": [
+    "Linux",
+    "Windows",
+    "Intel macOS",
+    "gameplay/BW-003",
+    "multiplayer",
+    "capacity"
+  ],
+  "source_revision": "85b656d5d98deec7d502b9d2f987e2474b5d6303-dirty",
+  "checker_sha256": "9c303cd704ce199d198baf4df4899cd650c5778e44548b2442414b010119d77c",
+  "toolchain_lock_sha256": "bf167c415787d64c729bcc3a5147be4f453f5774a5555473aee1af125f785e14",
+  "toolchain": {
+    "schema_version": 1,
+    "engine": {
+      "release": "4.7.2-stable",
+      "version": "4.7.2.stable.official.ed1daf0bf",
+      "distribution": "standard",
+      "source_repository": "https://github.com/godotengine/godot",
+      "source_revision": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "source_revision_url": "https://github.com/godotengine/godot/commit/ed1daf0bf001b61586d9930840f2f1394092c079",
+      "patches": [],
+      "source_build": {
+        "required": false,
+        "reason": "Use the stock official prebuilt editor and matching templates. A local source build is not this binary lock."
+      },
+      "macos": {
+        "archive_url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_macos.universal.zip",
+        "archive_sha256": "c58a24e31d720be9d62f60cb5627c4e695fb72f21b0cfe1bc9ccaa9a3b3ba63e",
+        "archive_executable": "Godot.app/Contents/MacOS/Godot",
+        "default_executable": "/Applications/Godot.app/Contents/MacOS/Godot",
+        "executable_sha256": "c7cccbf8fb143e34e02fd6521e09be2c2b974f0d5db080b19071c9c570718ccf",
+        "binary_architectures": [
+          "arm64",
+          "x86_64"
+        ]
+      }
+    },
+    "export_templates": {
+      "version": "4.7.2.stable",
+      "archive_url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
+      "archive_sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011",
+      "default_directory": "~/Library/Application Support/Godot/export_templates/4.7.2.stable",
+      "macos_archive": "macos.zip",
+      "macos_archive_sha256": "88df5e2e6fee99088699be66e6d42e4da4fb0c5619d054297d755a49558a4792",
+      "debug_executable": "macos_template.app/Contents/MacOS/godot_macos_debug.universal",
+      "release_executable": "macos_template.app/Contents/MacOS/godot_macos_release.universal"
+    },
+    "python": {
+      "minimum_version": "3.10",
+      "verified_version": "3.14.0",
+      "dependencies": "standard library only"
+    },
+    "verification_environment": {
+      "operating_system": "macOS",
+      "version": "27.0",
+      "build": "26A428",
+      "cpu_architecture": "arm64"
+    },
+    "targets": {
+      "macos_client": {
+        "cpu_architecture": "arm64",
+        "toolchain_status": "Verified",
+        "application_build_status": "Not implemented in BW-001-T01",
+        "rendering_status": "Provisional; feasibility belongs to BW-097",
+        "rendering_method": "forward_plus",
+        "macos_rendering_driver": "Godot default; no project override",
+        "physics_engine": "Jolt Physics"
+      },
+      "macos_dedicated_server": {
+        "cpu_architecture": "arm64",
+        "toolchain_status": "Verified",
+        "application_build_status": "Not implemented in BW-001-T01",
+        "display_server": "headless",
+        "audio_driver": "Dummy",
+        "requires_client_renderer": false,
+        "physics_engine": "Jolt Physics"
+      },
+      "linux": {
+        "status": "Future; unverified"
+      },
+      "windows": {
+        "status": "Future; unverified",
+        "rendering_device_driver_preference": "d3d12",
+        "preference_status": "Preserved from project.godot; unverified"
+      },
+      "macos_x86_64": {
+        "status": "Future; unverified despite universal binary availability"
+      }
+    },
+    "provenance": {
+      "official_release": "https://godotengine.org/download/archive/4.7.2-stable/",
+      "official_asset_checksums": "https://github.com/godotengine/godot-builds/releases/expanded_assets/4.7.2-stable",
+      "local_checksums": "Editor executable matches the checksum-verified official editor ZIP. macos.zip was hashed from the installed matching templates; both embedded executables report the pinned engine version."
+    }
+  },
+  "fixtures": {
+    "server.missing-rules.json": "f686f935bd350da0d74ce5c2fa97fee90d34c68dc156b6f4f3d7c014576bb53a",
+    "server.valid.json": "367e17b2cd6f673170072edbab4495b3419cc15715749773cc628f107715ad01"
+  },
+  "fixture_revisions": {
+    "rules_version": "bootstrap-test-rules-v1",
+    "content_version": "bootstrap-test-content-v1"
+  },
+  "build_manifest": "build/manifest.json",
+  "source_manifest_sha256": "82f0138b615efb3eb3d73e1d903faee7adfc9ff983df4d47c5b919603d154082",
+  "artifacts": {
+    "client": {
+      "preset": "macOS Client",
+      "bundle": "BriarwakeClient.app",
+      "executable": "BriarwakeClient.app/Contents/MacOS/Briarwake",
+      "package_identifier": "com.briarwake.baseline.client",
+      "architecture": "arm64",
+      "bundle_sha256": "4077fdc34cab850ef069c72c3bac64ea7eb08028c6e14bcc2ee946d86d679fc8",
+      "files": {
+        "Contents/Info.plist": "a11671a3e06afbdc4d349ee37c4211b290135587ab883f6cbe0b7dc8503a6f50",
+        "Contents/MacOS/Briarwake": "f5b1f9c87eb2ef359d03957a8a1723d0e49f557eff9522159a1667805ae78348",
+        "Contents/PkgInfo": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+        "Contents/Resources/Briarwake.pck": "ce60acb34ef704e31ccb441016bcc3e422b964b8f7c38aedb5403532f09b8cfb",
+        "Contents/Resources/PrivacyInfo.xcprivacy": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+        "Contents/Resources/icon.icns": "c3d75c7efc3765d3934b080718478566488c9912634ed11dae2a5691c414c375",
+        "Contents/_CodeSignature/CodeResources": "59d224df209a6a54e7ee0cf0713f6987ed6615569f8449806a69dfe0c7590ca5"
+      }
+    },
+    "server": {
+      "preset": "macOS Dedicated Server",
+      "bundle": "BriarwakeServer.app",
+      "executable": "BriarwakeServer.app/Contents/MacOS/Briarwake",
+      "package_identifier": "com.briarwake.baseline.server",
+      "architecture": "arm64",
+      "bundle_sha256": "aa2645bb144ebb8130b8cc271054ae1ad09dedfeca0031261692527fe6b62360",
+      "files": {
+        "Contents/Info.plist": "fe171ad1cebae8da4ad6e6ff2c7fd2150d25477bac2bf0d927e9f1a7f458d9b0",
+        "Contents/MacOS/Briarwake": "01efe0a9e23e714a9d8eed585788be79cefd1cc0ed449abbaac39c4ac6ec857c",
+        "Contents/PkgInfo": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+        "Contents/Resources/Briarwake.pck": "3100299e501dd99e729dca5267aaa37184b151c0474aa148e67171ef34e1201d",
+        "Contents/Resources/PrivacyInfo.xcprivacy": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+        "Contents/Resources/icon.icns": "c3d75c7efc3765d3934b080718478566488c9912634ed11dae2a5691c414c375",
+        "Contents/_CodeSignature/CodeResources": "534b0e3fc75e932c802566e95b32f5dc41ff25b3e503ff36c12563b21990a12d"
+      }
+    }
+  },
+  "reason": "Exported runtime did not complete passing assertions; inspect runtime record and log.",
+  "finished_at": "2026-10-18T03:16:40.182552+00:00"
+}

@@ -240,6 +240,15 @@
           "revision": "fc10cb437900e38d858f64da43b16a5553ccabe8 + uncommitted BW-001-T06 changes (SHA-256 source manifest 125c34bab9aa45bca61ff120069bdd139eea50fb8759fd69e41e67d436e63b1f including synthetic inputs; per-source hashes in build-manifest.json)",
           "result": "Passed",
           "summary": "T06 verified credential exclusion using full bundle/mounted PCK inspection, synthetic private inputs and deliberately leaking PCK/ZIP/loose controls. Exact inspected client launched and quit; the current packaged server also rejected missing external configuration with actionable --config diagnostics before readiness. Actual logs, artifact/source hashes and cleanup evidence retained. BW-001 remains In Progress pending its remaining criteria and tickets."
+        },
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "validation/tickets/BW-001-T07/verification.json",
+          "revision": "85b656d5d98deec7d502b9d2f987e2474b5d6303-dirty (uncommitted BW-001-T07 implementation; source manifest SHA-256 d3259f9dfda1ad037840017a1157fc15477086d5d0275202aa83c83e870712cc; per-source hashes in evidence)",
+          "result": "Passed",
+          "summary": "T07 executed clean macOS automation and all failure controls, distinctly recording failed build, unexecuted startup assertions, executed assertion failure, killed timeout and a fresh executed passing smoke. Packaged-client capture, current source/artifact identities and logs retained. Ticket completion does not automatically complete the epic; BW-001 remains In Progress pending explicit epic review."
         }
       ],
       "phase": "phase-foundations"
@@ -5745,7 +5754,7 @@
       "id": "BW-001-T07",
       "parent_epic": "BW-001",
       "title": "Record clean build and executed runtime smoke outcomes separately",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-001-AC-4"
       ],
@@ -5771,25 +5780,27 @@
         "Evidence instructions require the packaged macOS client capture and actual headless run before proposing epic completion; Linux/Windows and gameplay checks remain explicitly unverified."
       ],
       "manual_test": {
-        "launch": "python3 tools/check_baseline.py --case pass --output artifacts/check-pass\npython3 tools/check_baseline.py --case build-failure --output artifacts/check-build-failure\npython3 tools/check_baseline.py --case assertion-failure --output artifacts/check-assertion-failure\npython3 tools/check_baseline.py --case startup-failure --output artifacts/check-startup-failure\npython3 tools/check_baseline.py --case timeout --output artifacts/check-timeout",
+        "launch": "Working directory: briarwake (game repository root).\npython3 tools/check_baseline.py --case pass --output artifacts/check-pass\npython3 tools/check_baseline.py --case build-failure --output artifacts/check-build-failure\npython3 tools/check_baseline.py --case assertion-failure --output artifacts/check-assertion-failure\npython3 tools/check_baseline.py --case startup-failure --output artifacts/check-startup-failure\npython3 tools/check_baseline.py --case timeout --output artifacts/check-timeout\npython3 tools/check_baseline.py --case pass --output artifacts/check-pass-after-failures\npython3 -m unittest discover -s tools -p 'test_*.py' -v",
         "setup": [
-          "Complete T06. Use a fresh disposable checkout, pinned toolchain/templates and declared macOS environment.",
-          "Give every run its own output directory. Use only the supplied synthetic configuration/credential fixtures; no servers or clients should already be running."
+          "Complete T06. Use native macOS ARM64, Python 3.10+, pinned Godot/editor export templates and stock arch/lipo. Follow briarwake/tools/README.md; no provider, deployment, account or network service is required. Use the same command in a macOS automation runner; none is configured in this repository.",
+          "Give every run a new output directory. Only committed synthetic configuration fixtures are used. Each build takes an isolated source snapshot with no import cache; current uncommitted inputs are hashed and the source revision is marked dirty. Preserve existing tools, cache, outputs and user edits."
         ],
         "actions": [
-          "Run all five cases and inspect each process exit status, machine-readable record and retained logs.",
-          "Verify that build failure has no executed runtime assertions, and assertion failure has an executed assertion plus its failure.",
-          "Check startup/timeout stages and process cleanup. Run pass again in a fresh output directory.",
-          "Launch the final pass client artifact and capture the visible baseline window, then quit it."
+          "Execute all five cases, retain actual command exits and inspect run.json, client-inspection.json when produced, build/manifest.json and both logs/ trees. Only pass returns zero; all four failure controls return one.",
+          "Verify build-failure retains the invalid-script import diagnostics, build Failed and runtime Not Executed with null assertion_result. Verify assertion-failure builds/inspects successfully, reaches exported assertions and records Executed/Failed; the deliberately false heartbeat assertion fails even though the server itself exits zero.",
+          "Verify startup-failure uses server.missing-rules.json and exits before bootstrap assertions. Verify timeout reaches bootstrap/readiness but cannot complete smoke, records the ten-second runtime deadline and nonzero killed exit, and reaps the owned process group. Confirm recorded process IDs and child processes are no longer active.",
+          "Run pass again with fresh output after all failures. Compare input/artifact identities, current record timestamps, independent output paths and removed build snapshots. Existing output must be rejected rather than reused.",
+          "Read manual_client.launch_command in the final pass run.json. Execute that exact command from /private/tmp using absolute paths. Capture the visible Briarwake client baseline window and Quit control, click Quit and retain exit zero. Record the source manifest, client bundle hash, capture path and post-launch hash in separate manual evidence; automation leaves its own GUI state Not Executed.",
+          "Archive every run JSON, manifests, redacted logs, case exits, regression results and packaged-client evidence under mmo_docs/validation/tickets/BW-001-T07/; game applications may remain in local artifacts/ identified by their hashes."
         ],
         "expected_results": [
-          "Only pass returns zero with executed passing smoke assertions and inspected artifact identities.",
-          "Build and runtime failure cases remain distinguishable; startup/timeout cases retain their actual execution state and diagnostic reason.",
-          "No orphaned process or prior output changes the subsequent pass result; failed evidence is retained separately.",
-          "The manual client capture and automated headless record refer to the same final build artifacts."
+          "A pass proves a clean isolated macOS build, matching client inspection and actual exported-server identity, headless/Dummy drivers, server-only scene, no client/player, ordered bounded heartbeats and completed passing smoke assertions.",
+          "Build failure, executed assertion failure, startup failure and timeout remain distinguishable by stage, reason, process exit and assertion execution state. Not Executed has no passing assertion result. Failed-stage output is retained.",
+          "Timeout terminates owned processes; failure fixtures never alter the source checkout or installed toolchain. A fresh pass after failure is independent of prior output.",
+          "The manual capture identifies the same final pass client build. Both actual headless execution and packaged-client capture are required before proposing epic completion; Linux/Windows, Intel macOS, gameplay/BW-003, multiplayer and capacity remain unverified."
         ],
         "reset": [
-          "Quit the client and confirm all owned headless processes exited. Retain run records/logs; remove only the disposable workspaces/output directories when evidence has been archived."
+          "Quit the owned client and confirm recorded headless process IDs/descendants exited. Archive evidence first; remove only disposable output/workspaces created for these runs. Retain failure evidence and preserve source, installed tools, pre-existing cache and unrelated output."
         ]
       },
       "completion_evidence": "Actual clean pass, build failure, executed assertion failure, startup failure and timeout records/logs, plus final artifact identifiers and a packaged-client launch capture.",
@@ -5804,7 +5815,21 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "artifact": "validation/tickets/BW-001-T07/verification.json",
+          "revision": "85b656d5d98deec7d502b9d2f987e2474b5d6303-dirty (uncommitted BW-001-T07 implementation; source manifest SHA-256 d3259f9dfda1ad037840017a1157fc15477086d5d0275202aa83c83e870712cc; per-source hashes in evidence)",
+          "result": "Passed",
+          "summary": "Native macOS ARM64 clean build/client inspection and actual exported assertions passed after four isolated failure controls: actual bootstrap import failure (runtime Not Executed), deliberately false executed heartbeat assertion, invalid startup config (Not Executed), and ten-second hung-server termination with observable Executed/Failed state. All expected exits, process cleanup, independent fresh pass, retained redacted logs/revisions/hashes, 31 regressions and final packaged-client capture/Quit with unchanged bundle hash verified. Corrected development attempts are retained separately. Linux/Windows/gameplay and hosted automation remain unverified."
+        }
+      ]
     }
   ]
 }
