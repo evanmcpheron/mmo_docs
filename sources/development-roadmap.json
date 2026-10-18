@@ -209,7 +209,7 @@
           "href": "guide/decisions.html#art-direction"
         }
       ],
-      "status": "In Progress",
+      "status": "Complete",
       "blockers": [],
       "ordering_rationale": "An executable baseline is required for runtime evidence; engine version is selected here rather than inferred from changing stable documentation.",
       "verified_evidence": [
@@ -249,6 +249,18 @@
           "revision": "85b656d5d98deec7d502b9d2f987e2474b5d6303-dirty (uncommitted BW-001-T07 implementation; source manifest SHA-256 d3259f9dfda1ad037840017a1157fc15477086d5d0275202aa83c83e870712cc; per-source hashes in evidence)",
           "result": "Passed",
           "summary": "T07 executed clean macOS automation and all failure controls, distinctly recording failed build, unexecuted startup assertions, executed assertion failure, killed timeout and a fresh executed passing smoke. Packaged-client capture, current source/artifact identities and logs retained. Ticket completion does not automatically complete the epic; BW-001 remains In Progress pending explicit epic review."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/epics/BW-001/completion-review.json",
+          "revision": "5a6b7a702faf963344b4bc9496c6fa2152b86057 (all 36 source inputs match executed T07 manifest SHA-256 d3259f9dfda1ad037840017a1157fc15477086d5d0275202aa83c83e870712cc; tested build identity retained in review)",
+          "result": "Passed",
+          "summary": "Explicit epic review confirms all four criteria and all seven tickets complete for macOS ARM64: pinned clean client/server exports, visible packaged-client capture and Quit, actual isolated headless smoke with build/rules/content identity, rejected missing configuration, credential exclusion with active negative controls, and distinct automated build/runtime outcomes. Current source set and every hash match the final executed T07 build. Retained execution evidence was reviewed; no new runtime run or other-platform/gameplay claim."
         }
       ],
       "phase": "phase-foundations"
@@ -5830,6 +5842,691 @@
           "summary": "Native macOS ARM64 clean build/client inspection and actual exported assertions passed after four isolated failure controls: actual bootstrap import failure (runtime Not Executed), deliberately false executed heartbeat assertion, invalid startup config (Not Executed), and ten-second hung-server termination with observable Executed/Failed state. All expected exits, process cleanup, independent fresh pass, retained redacted logs/revisions/hashes, 31 regressions and final packaged-client capture/Quit with unchanged bundle hash verified. Corrected development attempts are retained separately. Linux/Windows/gameplay and hosted automation remain unverified."
         }
       ]
+    },
+    {
+      "id": "BW-002-T01",
+      "parent_epic": "BW-002",
+      "title": "Record authority owners and state lifecycles",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-1"
+      ],
+      "dependencies": [],
+      "scope": [
+        "Create docs/architecture/authority-boundaries.md in GAME_ROOT. Inspect the current scenes/bootstrap.gd, scenes/server/server_root.gd, scenes/server/server_configuration.gd and tools/run_baseline.py; distinguish these implemented bootstrap owners from future world, session and durable owners.",
+        "Map movement/collision and combat resources, casts, cooldowns, statuses, summons and debt to the owning world process; map items, currency, applied builds and progression to their canonical durable records; map interpolation, animation, rendering and audio to client presentation. Record command entry, authoritative mutation, recipient projection and teardown/recovery responsibility for each.",
+        "Name the one-session-epoch invariant, durable acknowledgement boundary, transfer/reconnect fencing, and build-change preservation of resources/cooldowns/debt. Describe required future lifecycle behavior without implementing those systems or claiming a database exists.",
+        "Link the canonical contracts and identify the narrow admission/serialization owners to be added by this epic. Keep bootstrap build_revision and configuration rules_version/content_version ownership intact; document database revision as a distinct future storage compatibility domain, not an invented ServerConfiguration field."
+      ],
+      "out_of_scope": [
+        "Gameplay simulation, authentication/RPCs, session claiming, persistence provider/schema selection, transfer/reconnect implementation and deployment.",
+        "Editing protected AGENTS.md or docs/ai/**, or redefining canonical contracts in mmo_docs."
+      ],
+      "acceptance_criteria": [
+        "The map names exactly one authoritative owner and lifecycle for every domain in BW-002-AC-1, including creation, mutation, build changes, disconnect/reconnect, transfer, death and recovery where applicable.",
+        "Each implemented owner links to the actual game file; each missing owner is explicitly future work. No client presentation or transport adapter is authorized to commit gameplay or economic outcomes.",
+        "A review traces client intent through world validation, durable mutation where needed and filtered presentation; it records epoch fencing and preserved cooldown/resource/debt and economic ownership invariants without introducing competing mutable state."
+      ],
+      "manual_test": {
+        "not_applicable": "Documentation-only responsibility review. From GAME_ROOT (briarwake/), read docs/architecture/authority-boundaries.md beside the linked current scripts and canonical contracts; inspect each domain/lifecycle row and verify local links. There is no scene or runtime behavior to exercise in this ticket."
+      },
+      "completion_evidence": "Reviewed responsibility/lifecycle map, link-check output and a review record identifying implemented versus future owners; no gameplay execution claim.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Documented ownership",
+          "href": "guide/networking.html#practical-initial-architecture"
+        },
+        {
+          "label": "World-owned live state",
+          "href": "guide/data-inventory.html#character-state"
+        },
+        {
+          "label": "Session fencing",
+          "href": "guide/data-inventory.html#session-ownership-record"
+        },
+        {
+          "label": "Durable item ownership",
+          "href": "guide/data-inventory.html#item-ownership-record"
+        },
+        {
+          "label": "Durable currency",
+          "href": "guide/data-inventory.html#wallet-record"
+        },
+        {
+          "label": "Applied build",
+          "href": "guide/data-inventory.html#talent-build-record"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-002-T02",
+      "parent_epic": "BW-002",
+      "title": "Preserve canonical identifiers, encodings and revision domains",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-4"
+      ],
+      "dependencies": [
+        "BW-002-T01",
+        "BW-001-T01"
+      ],
+      "scope": [
+        "Add a small reviewed compatibility corpus under fixtures/content_admission/ and a reproducible read-only snapshot/extraction of only the canonical definitions and $ref closure needed by this epic. Record the source registry content_version, source/schema digest and selected definition names; mmo_docs/sources/data-inventory.json remains the sole editable definition owner. Resolve snapshots by explicit local paths, not website availability.",
+        "Cover the exact ability_command_v2 discriminator, existing ability/content IDs, case-sensitive EffectOperation and TargetMode strings, ItemGrade and its ItemRarity alias, required versus optional versus nullable fields, and shared Id/Version/CurrencyAmount/CombatAmount semantics. Do not serialize GDScript enum ordinals or derive IDs from names.",
+        "Introduce tools/check_content_admission.py --suite compatibility and a bounded headless fixture entry point under res://tests/content_admission/. Reuse existing tools/verify_toolchain.py and tools/check_configuration.py / tools/check_baseline.py process and unittest patterns; the Python driver launches the same small GDScript boundary functions later used by server admission and never becomes a second implementation of domain validation. No test add-on or generic schema framework is required.",
+        "Keep build_revision, content_version, rules_version, registry format version and optimistic record/build versions distinct. Supply database revision and its expected compatibility as explicit test context only until a storage owner exists. Use exact declared compatibility for the bounded fixtures; no inferred semantic-version range, new production package envelope or database field is added to ServerConfiguration or ContentPackageManifest.",
+        "The checker records commands, source/fixture/schema identities, actual assertions, diagnostics and exit status. Authored ContentValidationFixture run_evidence stays unexecuted; only an actual runner records execution. Schema/compatibility checks cannot set ability runtime readiness."
+      ],
+      "out_of_scope": [
+        "Importing all 501 contracts or the full game catalog, a universal validator/code generator, content editors (BW-095), database migrations or a new wire/package format.",
+        "Engine changes, gameplay execution evidence, and changing canonical IDs, existing serialized keys or prototype readiness markers."
+      ],
+      "acceptance_criteria": [
+        "The compatibility suite round-trips representative supported canonical records without changing identifiers, enum strings, requiredness or nullability; unknown case/ordinal/discriminator values and malformed required fields are rejected with record/field findings.",
+        "Independent fixtures vary content, rules and database revisions one at a time: declared compatible tuples pass; missing or incompatible context fails without substituting build_revision, registry format or record versions. Current bootstrap configuration remains valid and unchanged.",
+        "The selected snapshot matches its recorded canonical source and closure; stale hashes or an unsupported schema construct fail explicitly. No manually editable duplicate schema is introduced.",
+        "An engine/import/startup failure or missing assertion report is reported as not executed/failed, never a passing compatibility or gameplay result."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite compatibility\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
+          "Implement the compatibility fixtures, snapshot provenance, bounded headless entry point and Python checker in this ticket. Include a valid record, unknown enum/discriminator, missing versus null field, changed stable ID reference, stale snapshot and independent version mismatch cases."
+        ],
+        "actions": [
+          "Run the compatibility suite and inspect the decoded/re-encoded values, provenance, per-case findings and content/rules/database context.",
+          "Exercise the runner failure controls with a disposable unavailable engine path or invalid fixture copy using documented checker options; inspect whether assertions actually ran."
+        ],
+        "expected_results": [
+          "The suite succeeds only when every positive and expected-rejection assertion ran; a negative fixture produces its expected finding rather than a fabricated pass.",
+          "No version-domain substitution, enum ordinal encoding, canonical-file mutation or runtime-ready ability appears. Runner failures return nonzero with an unexecuted/failed outcome."
+        ],
+        "reset": [
+          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
+          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+        ]
+      },
+      "completion_evidence": "Executed positive/negative compatibility report with source/schema/fixture digests, exact serialized samples, separate version-domain assertions and runner-failure evidence.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Encoding and authority conventions",
+          "href": "guide/data-inventory.html#conventions"
+        },
+        {
+          "label": "Existing command contract",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "Operation encodings",
+          "href": "guide/data-inventory.html#effect-operation"
+        },
+        {
+          "label": "Target mode encodings",
+          "href": "guide/data-inventory.html#target-mode"
+        },
+        {
+          "label": "Item grades",
+          "href": "guide/data-inventory.html#item-grade"
+        },
+        {
+          "label": "Grade compatibility alias",
+          "href": "guide/data-inventory.html#item-rarity"
+        },
+        {
+          "label": "Existing bootstrap configuration",
+          "href": "guide/data-inventory.html#server-configuration"
+        },
+        {
+          "label": "Existing documentation manifest",
+          "href": "guide/data-inventory.html#content-package-manifest"
+        },
+        {
+          "label": "Validation specification and evidence",
+          "href": "guide/data-inventory.html#content-validation-fixture"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-002-T03",
+      "parent_epic": "BW-002",
+      "title": "Validate intent contracts and filter public projections",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-1",
+        "BW-002-AC-4"
+      ],
+      "dependencies": [
+        "BW-002-T02"
+      ],
+      "scope": [
+        "Add only the typed ability-command reader and pure recipient-filtered combat-result projection needed for boundary fixtures, with explicit trusted session/visibility context. Keep these at the intent/projection boundary identified in T01, reusable by later transport; do not add a network endpoint or combat executor.",
+        "Preserve ability_command_v2 and its three always-present targeting keys. Validate entity/point/direction/none against resolved AbilityTargetingPolicy, finite nonzero direction, optional checked character_id and current-session coordinate scope. Reject client-authored outcome fields rather than ignoring them. Runtime visibility/range/collision and actual session authentication remain future authoritative checks, not facts proven by shape validation.",
+        "Project internal CombatResult to the canonical shared PublicCombatResult inside CombatResultEvent using explicit recipient entitlement. Hidden source IDs become null; hidden-source correlation IDs are recipient-scoped and cannot reveal private action/ledger identity. Exclude raw/mitigation/debt/resource internals. Use EntitySnapshot as the related public-state allowlist without implementing a full snapshot producer.",
+        "Add --suite boundaries fixtures and Python-driver behavioral regression coverage. Include canonical CommandResponse accepted/rejected examples without claiming command execution, replay storage or durable success. No second mutable CharacterState or private result store is created."
+      ],
+      "out_of_scope": [
+        "Authentication, actual RPC transport, movement/combat simulation, idempotency/replay storage, interest management and full EntitySnapshot production.",
+        "Inferring a target/facing fallback, client-selected authority, or serializing a Godot Object/Resource or raw internal CombatResult to observers."
+      ],
+      "acceptance_criteria": [
+        "All 21 documented TargetMode branches accept only their allowed resolved input kinds; ambiguous summon/pet bindings, missing/extra aim inputs, zero/nonfinite direction, mismatched optional character_id and injected outcome fields are rejected.",
+        "Authorized owner/observer fixtures receive only the canonical public result fields. A hidden source produces null source identity and safe correlation; an unauthorized target/recipient receives no result. Private identifiers and numeric breakdowns are absent from serialized output.",
+        "The same boundary functions are invoked by fixtures and are available for future authoritative callers; no shape-check result is presented as permission to execute gameplay or as a durable acknowledgement."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite boundaries\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
+          "Provide synthetic trusted session/recipient contexts, resolved targeting policies, command payloads and internal combat results with recognizable private-field sentinels. No player node, network service or combat handler is required."
+        ],
+        "actions": [
+          "Run the boundary suite across each target-mode/input-kind case and malformed command case; inspect exact field-level rejections.",
+          "Compare owner, visible observer, hidden-source and unauthorized-recipient serialized outputs; search the outputs for fixture private-field sentinels and private action/ledger IDs."
+        ],
+        "expected_results": [
+          "Only contract-compatible intent reaches the typed boundary; the suite never executes an ability.",
+          "Public payloads match CombatResultEvent/PublicCombatResult, omit private state and withhold unauthorized results. Negative fixtures leave source state unchanged."
+        ],
+        "reset": [
+          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
+          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+        ]
+      },
+      "completion_evidence": "Executed command compatibility and recipient-projection matrix, retained redacted payloads and negative findings tied to exact canonical definitions.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Command input-kind matrix",
+          "href": "guide/execution.html#ability-command"
+        },
+        {
+          "label": "Hidden-information boundary",
+          "href": "guide/networking.html#area-of-interest-and-hidden-information"
+        },
+        {
+          "label": "Ability intent",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "Resolved input policy",
+          "href": "guide/data-inventory.html#ability-targeting-policy"
+        },
+        {
+          "label": "Command response",
+          "href": "guide/data-inventory.html#command-response"
+        },
+        {
+          "label": "Private result",
+          "href": "guide/data-inventory.html#combat-result"
+        },
+        {
+          "label": "Public result event and shared PublicCombatResult",
+          "href": "guide/data-inventory.html#combat-result-event"
+        },
+        {
+          "label": "Public state allowlist",
+          "href": "guide/data-inventory.html#entity-snapshot"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-002-T04",
+      "parent_epic": "BW-002",
+      "title": "Stage content and reject invalid references, targets and resources",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-2",
+        "BW-002-AC-4"
+      ],
+      "dependencies": [
+        "BW-002-T02",
+        "BW-002-T03"
+      ],
+      "scope": [
+        "Add the missing server-side admission owner, proposed content/content_admission.gd, as a small non-scene boundary with explicit canonical record collections and compatibility context. Parse into an isolated candidate; no active record is exposed by structural validation. Reuse T02 compatibility support and T03 targeting checks rather than copying policy into the loader.",
+        "Support only the canonical fixture families needed here: AbilityDefinition with optional shared AbilityRuntimeBinding, its targeting/timing/finite operation dependencies, ResourceDefinition/ResourceGainRule and the referenced static catalogs. Resolve the selected $ref and content-reference closure, distinguish instance from definition namespaces, and reject duplicate IDs, unknown references, unsupported families/fields and incompatible content/rules context.",
+        "Validate documented target-mode/input-kind compatibility, relation, positive cap, finite nonnegative geometry, allowlisted floor/line-of-sight/revalidation policies, explicit resolved resource identity/cost and timing/commit constraints. Preserve shared resource aliases and null-derived maximum semantics; never infer costs from ability prose, profile percent conversions or display labels.",
+        "Add --suite structure with canonical ContentValidationFixture expectations and ContentValidationResult/ValidationFinding outputs. Include a compatible nonbehavioral static package and one-mutation invalid candidates for references, target/resource fields, timing, duplicates and versions. Required fixtures/catalog dependencies are implementation scope, not assumed production content."
+      ],
+      "out_of_scope": [
+        "Enabling gameplay records at structural validation, importing every catalog family, inventing missing domain types or changing mmo_docs canonical schemas.",
+        "Content authoring/export tooling (BW-095), actual target geometry simulation, resource spending, build resolution and storage/provider selection."
+      ],
+      "acceptance_criteria": [
+        "A compatible supported fixture stages successfully with unchanged IDs and no active-record mutation. Unknown/duplicate references, invalid target/resource/timing fields and mismatched revisions each produce a stable finding code, record/property path and actionable message.",
+        "References are checked in their declared namespaces; malformed unused fields, nonfinite/negative amounts, illegal policy combinations and unknown handlers are not converted into defaults.",
+        "A mixed candidate containing a valid record and an invalid record exposes neither as active; prior accepted state, if supplied by a fixture, remains unchanged."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite structure\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
+          "Provide a complete small candidate closure under fixtures/content_admission/, including safe static resources and structurally valid but disabled prototype/binding examples. Add one invalid input per stated failure rule and a mixed valid/invalid candidate."
+        ],
+        "actions": [
+          "Run the structure suite; compare findings with expected fixture paths/codes and inspect the candidate versus active record lists.",
+          "Repeat with reversed input order and confirm invalid records cannot partially enter active state or be resolved accidentally through a different ID namespace."
+        ],
+        "expected_results": [
+          "Valid supported records stage; invalid candidates reject deterministically before activation and retain the prior state.",
+          "Structural success leaves behavior readiness and runtime test gates unchanged; all record-level findings remain observable."
+        ],
+        "reset": [
+          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
+          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+        ]
+      },
+      "completion_evidence": "Executed staging/structural/reference matrix, unchanged-active-state assertions and actual canonical validation results with source/content/rules identities.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Definition requirements",
+          "href": "guide/execution.html#definition-fields"
+        },
+        {
+          "label": "Ability and shared runtime binding",
+          "href": "guide/data-inventory.html#ability-definition"
+        },
+        {
+          "label": "Targeting policy",
+          "href": "guide/data-inventory.html#ability-targeting-policy"
+        },
+        {
+          "label": "Timing/commit policy",
+          "href": "guide/data-inventory.html#ability-timing-policy"
+        },
+        {
+          "label": "Finite operations",
+          "href": "guide/data-inventory.html#effect-operation-definition"
+        },
+        {
+          "label": "Resource definitions",
+          "href": "guide/data-inventory.html#resource-definition"
+        },
+        {
+          "label": "Resource hooks",
+          "href": "guide/data-inventory.html#resource-gain-rule"
+        },
+        {
+          "label": "Validation expectations",
+          "href": "guide/data-inventory.html#content-validation-fixture"
+        },
+        {
+          "label": "Actual findings",
+          "href": "guide/data-inventory.html#content-validation-result"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-002-T05",
+      "parent_epic": "BW-002",
+      "title": "Keep unbound or unverified behavior disabled",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-2",
+        "BW-002-AC-3"
+      ],
+      "dependencies": [
+        "BW-002-T04"
+      ],
+      "scope": [
+        "Extend the same admission owner with a closed capability/readiness check using canonical AbilityRuntimeBinding and ResolvedAbilityDefinition semantics. A known operation token is not proof that its handler exists; capabilities come from actual server-owned implementations, never candidate-authored claims.",
+        "Require complete rules-matching bindings, finite supported operation parameters/policies, presentation references, supported talent field paths/operation indices and cleanup rules before behavior eligibility. Missing or unsupported named secondary behavior produces explicit record findings; do not parse effect/review_note prose or execute arbitrary expressions/scripts.",
+        "Keep bindings_resolved, data_tests_passed and runtime_tests_passed independent and attributable to the exact binding/build/content/rules tuple. Unexecuted fixture specifications, forged candidate flags, copied evidence from another revision and schema success cannot establish readiness. Trusted evidence ownership follows T01; this ticket does not invent a cryptographic evidence service.",
+        "Add --suite readiness using existing prototype records as negative controls, missing binding/handler/presentation/talent-policy examples, stale/unexecuted evidence and caller-supplied true flags. Current Briarwake has no combat handlers: preserve this fact and keep ability execution disabled. A safe nonbehavioral resource fixture can still pass its applicable admission checks."
+      ],
+      "out_of_scope": [
+        "Implementing damage, class mechanics, arbitrary scripts, all talent transforms, presentation assets or gameplay fixtures merely to manufacture a ready ability.",
+        "Promoting shipped prototype readiness labels, importing documentation validation as gameplay execution evidence, or weakening unsupported-behavior rejection."
+      ],
+      "acceptance_criteria": [
+        "An ability with a valid numerical profile and descriptive effect but no binding stays disabled with a specific finding; adding a binding with an absent handler, unknown parameter/path/policy or presentation reference also cannot enable it.",
+        "Authored all-true readiness flags, unexecuted/failed evidence or evidence for another binding/build/content/rules tuple do not bypass server-owned readiness. Structural/data tests never count as runtime execution.",
+        "Safe supported static content remains admissible while unsupported behavior is rejected or explicitly retained disabled according to the declared candidate selection; findings identify every requested unsupported record. No free-text interpretation or client-supplied handler capability is used."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite readiness\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
+          "Provide prototype, unknown-handler, missing-presentation, unsupported-talent-path, missing-cleanup, wrong-rules and stale/unexecuted/forged-readiness fixtures. All gameplay execution specifications remain unexecuted until a real later feature runner executes them."
+        ],
+        "actions": [
+          "Run the readiness suite and compare each requested enabled ability with the final eligible/disabled list and findings.",
+          "Alter only a disposable fixture effect sentence or candidate readiness flags; confirm this cannot change the missing server capability or evidence result."
+        ],
+        "expected_results": [
+          "Every unsupported or unverified requested behavior is rejected before activation, with explicit findings; safe static positive controls still pass.",
+          "No ability becomes executable, no canonical readiness label changes, and actual admission-test evidence is kept separate from absent gameplay evidence."
+        ],
+        "reset": [
+          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
+          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+        ]
+      },
+      "completion_evidence": "Executed unsupported-binding/readiness rejection matrix, disabled-record assertions, safe static positive control and exact evidence/capability provenance.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Readiness and execution gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Required content fixtures",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Optional shared AbilityRuntimeBinding",
+          "href": "guide/data-inventory.html#ability-definition"
+        },
+        {
+          "label": "Independent readiness gates",
+          "href": "guide/data-inventory.html#resolved-ability-definition"
+        },
+        {
+          "label": "Finite operation parameters",
+          "href": "guide/data-inventory.html#effect-operation-definition"
+        },
+        {
+          "label": "Talent modifier allowlist",
+          "href": "guide/data-inventory.html#talent-modifier-definition"
+        },
+        {
+          "label": "Presentation references",
+          "href": "guide/data-inventory.html#visual-presentation-definition"
+        },
+        {
+          "label": "Validation run evidence",
+          "href": "guide/data-inventory.html#content-validation-fixture"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-002-T06",
+      "parent_epic": "BW-002",
+      "title": "Require complete economic inputs before route admission",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-5"
+      ],
+      "dependencies": [
+        "BW-002-T04"
+      ],
+      "scope": [
+        "Extend the same staged admission path for VendorOfferDefinition, VendorPricingConfiguration, RecipeDefinition/RecipeIngredient, MaterialDefinition, ItemDefinition and SalvageRule with only their required canonical reference closure. Resolve item versus material namespaces explicitly; do not invent a mapping from display names.",
+        "Build a process-local view of the complete declared enabled vendor/crafting/conversion route set, including already admitted routes and the proposed additions. Include input/output quantities, explicit integer minor-unit NPC prices/sellback, eligible common-material salvage returns, and binding/access constraints relevant to guaranteed repeatability. This derived graph is not a second editable economy schema.",
+        "Reject unknown or missing required prices/quantities/relationships and unsupported route behavior with route/field findings before graph certification. A missing value is not zero; an explicit zero price remains a real value to analyze. Enforce SalvageRule limits: destroy original, at most 25% eligible original common materials, no rare/bound cores, gold or skill XP. Starter assistance cannot become tradable/exportable input.",
+        "Add --suite economy-data with fully authored synthetic canonical records and missing-value/bad-reference/bad-salvage cases. Fixture values exist only to prove admission and are not proposed production balance. Partial/unknown graph inputs keep affected routes disabled; later T07 proves the loop rule."
+      ],
+      "out_of_scope": [
+        "Production price/recipe catalogs, live vendors/crafting/salvage, profession advancement handlers, wallets/transactions, player market prices or a general economic simulation.",
+        "Treating a complete graph as a loop pass, inventing undocumented conversion mechanics or enabling routes whose operational dependencies do not exist."
+      ],
+      "acceptance_criteria": [
+        "The valid fixture produces a complete derived route view with every reference, quantity, price and salvage limit attributable to its canonical source record.",
+        "A missing sellback/purchase input, unknown material/item relation, malformed quantity or unsupported route produces an explicit finding and cannot expose the route as admitted. Explicit zero-priced inputs remain distinguishable from missing values.",
+        "Excess common-material return, rare/bound-core return and starter-assistance export examples fail their documented constraints. Prior admitted route state is unchanged on every rejection."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite economy-data\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
+          "Author the small complete vendor/recipe/material/item/salvage fixture closure, a preexisting-route context and disposable negative copies. Include required repair-pricing fields when using VendorPricingConfiguration even though repair execution is outside this epic."
+        ],
+        "actions": [
+          "Run the economic-data suite; inspect the full combined route set, units and provenance, then each missing-value/reference/salvage diagnostic.",
+          "Compare a missing price with an explicit zero price and verify neither receives an inferred market value or silent fallback."
+        ],
+        "expected_results": [
+          "Only complete supported inputs reach graph analysis; incomplete/invalid routes remain disabled with actionable findings.",
+          "Safe data completeness does not claim loop freedom, operational gameplay readiness, production prices or a currency transaction."
+        ],
+        "reset": [
+          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
+          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+        ]
+      },
+      "completion_evidence": "Executed complete/incomplete economic-input and salvage-constraint results, canonical fixture provenance and unchanged-active-route assertions.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Economic admission rules",
+          "href": "guide/items.html#durability-salvage-and-demand"
+        },
+        {
+          "label": "Vendor offers",
+          "href": "guide/data-inventory.html#vendor-offer-definition"
+        },
+        {
+          "label": "Prices and integer minor units",
+          "href": "guide/data-inventory.html#vendor-pricing-configuration"
+        },
+        {
+          "label": "Recipes and shared RecipeIngredient",
+          "href": "guide/data-inventory.html#recipe-definition"
+        },
+        {
+          "label": "Material identity",
+          "href": "guide/data-inventory.html#material-definition"
+        },
+        {
+          "label": "Item identity",
+          "href": "guide/data-inventory.html#item-definition"
+        },
+        {
+          "label": "Salvage limits",
+          "href": "guide/data-inventory.html#salvage-rule"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-002-T07",
+      "parent_epic": "BW-002",
+      "title": "Reject unlimited guaranteed price and conversion loops",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-5"
+      ],
+      "dependencies": [
+        "BW-002-T06"
+      ],
+      "scope": [
+        "Add the no-unlimited-guaranteed-loop analysis to the same admission owner over T06 complete enabled route view. Preserve integer quantities, recipe batch outputs, required inputs and explicit prices; analyze the combined existing-plus-proposed graph, not each recipe or currency edge alone.",
+        "Enforce crafted output sellback strictly below guaranteed NPC-purchased input cost, accounting for output quantity and the cheapest supported guaranteed conversion path. Reject repeatable guaranteed cycles that generate currency/material value without exhausting required inputs; include salvage/conversion chains and obey their documented binding/access restrictions. Do not reject ordinary player-market arbitrage or assume uncertain rewards are guaranteed.",
+        "Return actionable findings naming the contributing source route IDs and quantities or a concrete repeatable witness. If supported constraints are insufficient to establish safety, keep those routes disabled and report the unsupported case; do not silently certify it or introduce a permissive heuristic.",
+        "Add --suite economy-loops: a lossy safe cycle, safe acyclic chain, crafted sellback at/elevated above guaranteed input cost, multi-step profitable conversion, a loop created only by joining prior admitted routes with a new route, explicit free-input profit, multi-input/batch-output cases and a nonrepeatable scarce-input control. Include craft-salvage material loss and no-XP/no-gold constraints from T06."
+      ],
+      "out_of_scope": [
+        "Player-market optimization, numerical production balancing, speculative conversion mechanics, load/capacity measurement and live crafting/vendor services.",
+        "Approving a route from pairwise price checks alone, rounding floating-point currency into safety, or using a graph pass to bypass later feature/runtime readiness."
+      ],
+      "acceptance_criteria": [
+        "Positive fixture graphs pass the documented value-loss rules; every guaranteed profit/duplication fixture and equality-at-crafted-sellback fixture fails before route admission with contributing record IDs and a reproducible explanation.",
+        "A proposed route that is safe alone but completes a profitable cycle with already admitted routes is rejected. Multi-input recipes, batch quantities and explicit zero costs cannot bypass the gate.",
+        "A scarce nonrenewable-input control is not mislabeled an unlimited cycle; unknown completeness/behavior fails closed with an explicit unsupported finding. Reordering the same fixture graph preserves the decision."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite economy-loops\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
+          "Provide all positive/negative graphs in canonical vendor/recipe/item/material/salvage records plus expected findings and exact finite replay steps for each exploit witness. No gold balance or persistent store is needed."
+        ],
+        "actions": [
+          "Run the graph suite and inspect the route/quantity witness for each rejected graph against the expected repeatable gain or strict crafted-price violation.",
+          "Run the old-route-plus-addition and permuted-order cases; compare with safe lossy and scarce-input controls."
+        ],
+        "expected_results": [
+          "Safe supported graphs pass; unsafe or unsupported graphs leave affected routes disabled with observable reasons. The complete active-plus-candidate graph is evaluated before admission.",
+          "No graph fixture executes a production economy or claims balanced content; integer accounting and documented salvage limits are retained."
+        ],
+        "reset": [
+          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
+          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+        ]
+      },
+      "completion_evidence": "Executed positive and negative graph report with exact route/quantity witnesses, combined-graph regression and safe-control evidence.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "No unlimited vendor/conversion loops",
+          "href": "guide/items.html#durability-salvage-and-demand"
+        },
+        {
+          "label": "Explicit pricing constraints",
+          "href": "guide/data-inventory.html#vendor-pricing-configuration"
+        },
+        {
+          "label": "Guaranteed vendor inputs",
+          "href": "guide/data-inventory.html#vendor-offer-definition"
+        },
+        {
+          "label": "Recipe inputs and batch outputs",
+          "href": "guide/data-inventory.html#recipe-definition"
+        },
+        {
+          "label": "Value-losing salvage",
+          "href": "guide/data-inventory.html#salvage-rule"
+        },
+        {
+          "label": "Findings result",
+          "href": "guide/data-inventory.html#content-validation-result"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-002-T08",
+      "parent_epic": "BW-002",
+      "title": "Admit validated content atomically at the server boundary",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-002-AC-1",
+        "BW-002-AC-2",
+        "BW-002-AC-3",
+        "BW-002-AC-4",
+        "BW-002-AC-5"
+      ],
+      "dependencies": [
+        "BW-002-T05",
+        "BW-002-T07",
+        "BW-001-T03",
+        "BW-001-T04",
+        "BW-001-T07"
+      ],
+      "scope": [
+        "Wire the same admission owner into an explicit server content-loading entry point before any requested records become active/feature-accessible. Pass validated ServerConfiguration rules/content context from its existing owner and preserve tools/run_baseline.py, server-ready/bootstrap smoke behavior and the external configuration contract. Add a narrowly scoped optional fixture-package launch input if needed, separate from canonical ServerConfiguration; no client-supplied package selection or new production package schema.",
+        "Keep static record collections and an explicit requested-enabled selection separate from disabled staged records. Validate compatibility, structure/references, actual capability/readiness and the complete economic graph as applicable, then publish one immutable admitted selection only when every requested record succeeds. A rejected candidate publishes none of its requested records and cannot alter the previous valid selection.",
+        "Use the existing server bootstrap entry plus tools/check_content_admission.py --suite startup / --suite all for bounded integration checks. Include a valid safe-static package, valid mixed-with-disabled-prototype package, requested unbound ability, mixed valid/invalid records, incompatible versions and missing-value/profitable economic graph candidates. Fixtures requiring gameplay handlers remain disabled; a safe economic graph pass alone does not make an unimplemented vendor/crafting feature executable.",
+        "Report admitted/disabled IDs, canonical ValidationFinding diagnostics and distinct build/content/rules context without private data; database compatibility stays explicit fixture context until persistence exists. Test A-accepted/B-rejected/A-retained through the real admission API and real server startup rejection before content readiness. Preserve the existing player-free headless bootstrap assertions and baseline regression checks.",
+        "Document launch/suite commands in GAME_ROOT/tools/README.md and the authority map. Keep fixtures, source and execution reports attributable; no ticket or epic is marked Complete solely from generated plans or schema checks."
+      ],
+      "out_of_scope": [
+        "Live hot reload, production content distribution/signing, catalog authoring, gameplay handlers, persistence integration, authentication, multiplayer sessions and deployment.",
+        "Weakening BW-001 bootstrap/configuration/credential checks, claiming economic execution from graph admission, or automatically promoting epic progress from individual tickets."
+      ],
+      "acceptance_criteria": [
+        "The actual headless loading path admits the compatible safe-static package and exposes exactly its requested supported records only after all applicable checks pass; disabled prototype records remain unavailable.",
+        "Unknown references, invalid target/resource fields, incompatible revisions, unbound/forged-ready behavior and incomplete/unsafe economic candidates fail before activation with actionable findings. A mixed candidate cannot partially activate, regardless of record order.",
+        "The A/B sequence retains A byte-for-byte/semantically unchanged after B fails; fresh startup with a requested invalid package returns nonzero before content readiness. Normal bootstrap without a content request retains its previous behavior and does not advertise enabled gameplay.",
+        "The all-suite and existing Python tool regressions run with executed assertions and pinned-engine diagnostics; build/startup failures remain distinguishable from executed failures/passes. No game, network capacity or database evidence is inferred from this admission run."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite all\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
+          "Implement --suite startup and --suite all in the checker with bounded real headless server launches through scenes/bootstrap.tscn, using existing external valid configuration plus disposable revision-matching fixture copies. Include all cases above and document the exact optional content-input flag in tools/README.md.",
+          "Use res://tests/content_admission/ for direct A/B retained-state assertions against the same admission object. Keep test-only controls in the local runner; no gameplay RPC or graphical/player scene is required."
+        ],
+        "actions": [
+          "Run the all-suite and inspect startup logs for the valid selection, invalid requested packages and unchanged no-content bootstrap.",
+          "Inspect A-accepted/B-rejected/A-retained snapshots and the final active/disabled ID sets; rerun startup alone with python3 tools/check_content_admission.py --suite startup.",
+          "Run python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke and inspect the unchanged baseline result."
+        ],
+        "expected_results": [
+          "Only the fully validated requested selection becomes active. Rejected candidates do not replace or partially amend valid state; all unsupported runtime behaviors remain disabled.",
+          "Real server integration, direct atomicity assertions and baseline regressions have separate executed results. No scene/player, credential, canonical field or version-domain regression is introduced."
+        ],
+        "reset": [
+          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
+          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+        ]
+      },
+      "completion_evidence": "Attributable actual headless admission/startup report, atomic A/B retained-state evidence, positive/negative full-suite output and existing bootstrap/tool regression logs; reviewed responsibility map remains required separately.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Runtime admission and readiness",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Required import/admission boundary",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Economic gate",
+          "href": "guide/items.html#durability-salvage-and-demand"
+        },
+        {
+          "label": "Existing server configuration",
+          "href": "guide/data-inventory.html#server-configuration"
+        },
+        {
+          "label": "Exact readiness semantics",
+          "href": "guide/data-inventory.html#resolved-ability-definition"
+        },
+        {
+          "label": "Validation specification",
+          "href": "guide/data-inventory.html#content-validation-fixture"
+        },
+        {
+          "label": "Actual admission findings",
+          "href": "guide/data-inventory.html#content-validation-result"
+        },
+        {
+          "label": "Economic graph inputs",
+          "href": "guide/data-inventory.html#vendor-pricing-configuration"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
     }
   ]
 }

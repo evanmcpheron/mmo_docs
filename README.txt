@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-173 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-7 individual ticket pages,
+181 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+15 individual ticket pages,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -86,6 +86,9 @@ with prerequisites, downstream work, acceptance criteria, verification and ticke
 planning. Criterion links such as #BW-097-AC-1 support future ticket references.
 BW-001 has seven tickets in execution order, each with its own generated page,
 exact parent-criterion links, dependencies, scope and runnable manual test plan.
+BW-002 has eight tickets covering authority ownership, compatibility, intent and
+projection boundaries, staged validation, readiness, economic inputs, conversion
+loops and atomic server admission. They begin Not Started with no verified evidence.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages
 cover milestones, architectural decisions, feature coverage and progress upkeep.
