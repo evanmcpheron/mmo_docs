@@ -33,17 +33,55 @@ class RoadmapTests(unittest.TestCase):
     def test_published_registry_and_static_page_are_current(self):
         self.assertEqual([], self.errors(generated=True))
 
-    def test_dashboard_is_an_index_and_each_phase_owns_its_epic_details(self):
+    def test_dashboard_and_phases_are_indexes_and_each_epic_has_its_own_page(self):
         outputs = generated_pages(self.data)
         self.assertEqual(set(generated_page_paths(self.data)), set(outputs))
         self.assertEqual([], Anchors(outputs[PAGE]).epic_ids)
         for phase in self.data['phases']:
             expected = [e['id'] for e in self.data['epics'] if e['phase'] == phase['id']]
             source = outputs[phase_page(phase)]
-            self.assertEqual(expected, Anchors(source).epic_ids)
+            parsed = Anchors(source)
+            self.assertEqual([], parsed.epic_ids)
             for identifier in expected:
+                page = epic_page(self.data, identifier)
+                self.assertEqual(address(page, phase_page(phase), identifier), parsed.link_targets[identifier])
+                self.assertEqual([identifier], Anchors(outputs[page]).epic_ids)
                 for criterion in self.by_id[identifier]['acceptance_criteria']:
-                    self.assertIn(escape(criterion), source)
+                    self.assertIn(escape(criterion), outputs[page])
+
+    def test_acceptance_criteria_have_direct_links_for_future_tickets(self):
+        outputs = generated_pages(self.data)
+        for epic in self.data['epics']:
+            source = outputs[epic_page(self.data, epic['id'])]
+            parsed = Anchors(source)
+            for number, criterion in enumerate(epic['acceptance_criteria'], 1):
+                anchor = f'{epic["id"]}-AC-{number}'
+                self.assertIn(anchor, parsed.ids)
+                self.assertIn('#' + anchor, parsed.references)
+                self.assertIn(escape(criterion), source)
+
+    def test_dependencies_and_dependents_link_in_both_directions(self):
+        outputs = generated_pages(self.data)
+        for epic in self.data['epics']:
+            page = epic_page(self.data, epic['id'])
+            for dependency in epic['hard_dependencies']:
+                other = epic_page(self.data, dependency)
+                self.assertIn(address(other, page, dependency), Anchors(outputs[page]).references)
+                self.assertIn(address(page, other, epic['id']), Anchors(outputs[other]).references)
+
+    def test_epic_previous_and_next_follow_the_recommended_sequence(self):
+        outputs = generated_pages(self.data)
+        for index, epic in enumerate(self.data['epics']):
+            page = epic_page(self.data, epic['id'])
+            source = outputs[page]
+            for offset, relation in ((-1, 'prev'), (1, 'next')):
+                target = index + offset
+                if 0 <= target < len(self.data['epics']):
+                    other = self.data['epics'][target]
+                    href = address(epic_page(self.data, other['id']), page, other['id'])
+                    self.assertIn(f'href="{href}" rel="{relation}"', source)
+                else:
+                    self.assertNotIn(f'rel="{relation}"', source)
 
     def test_legacy_bookmarks_offer_direct_canonical_shortcuts_without_javascript(self):
         dashboard = Anchors(generated_pages(self.data)[PAGE])
@@ -63,6 +101,19 @@ class RoadmapTests(unittest.TestCase):
         from unittest.mock import patch
         original_read = Path.read_text
         target = ROOT / phase_page(self.data['phases'][0])
+
+        def read(path, *args, **kwargs):
+            source = original_read(path, *args, **kwargs)
+            return source + '\n' if path == target else source
+
+        with patch.object(Path, 'read_text', read):
+            self.assertTrue(any('Stale generated roadmap: ' + target.relative_to(ROOT).as_posix() in error
+                                for error in self.errors(generated=True)))
+
+    def test_a_stale_epic_is_detected_even_when_its_phase_is_unchanged(self):
+        from unittest.mock import patch
+        original_read = Path.read_text
+        target = ROOT / epic_page(self.data, 'BW-097')
 
         def read(path, *args, **kwargs):
             source = original_read(path, *args, **kwargs)

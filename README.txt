@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-69 HTML pages: 37 system/catalog/planning chapters, 12 class pages, 16 profession pages,
-3 full catalogs, and the main index.
+166 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
 16 professions, 240 profession mastery nodes, 257 representative recipes,
@@ -80,10 +80,14 @@ increment content versions when meanings change.
 DEVELOPMENT ROADMAP AND PROGRESS
 Open guide/development-roadmap.html for the roadmap overview, progress dashboard,
 recommended sequence and actionable epics. Each phase has a separate
-guide/roadmap-*.html page containing its detailed epics. Dedicated reference pages
+guide/roadmap-*.html index. Each epic has its own guide/roadmap-bw-NNN.html page
+with prerequisites, downstream work, acceptance criteria, verification and ticket
+planning. Criterion links such as #BW-097-AC-1 support future ticket references.
+Previous/next links follow the recommended sequence, and breadcrumbs return to
+the containing phase. Dedicated reference pages
 cover milestones, architectural decisions, feature coverage and progress upkeep.
 Use the roadmap navigation on any of these pages to move between them. Existing
-overview-page anchors remain links to the corresponding detail pages.
+overview- and phase-page epic anchors remain links to the corresponding epic pages.
 It is planning/reference documentation; it adds no canonical gameplay contracts.
 All epic statuses begin Not Started because this repository contains design
 evidence, not verified game implementation.
@@ -110,7 +114,8 @@ python3 scripts/build_data_inventory.py --check
 python3 -m unittest discover -s validation -p 'test_*.py'
 python3 validation/run_checks.py
 
-The roadmap builder owns the hub, phase pages and roadmap reference pages. The
+The roadmap builder owns the hub, phase indexes, individual epic pages and
+roadmap reference pages. The
 inventory builder's --review-roadmap option registers and refreshes all of these
 as planning references, without adding gameplay data associations. It refreshes
 navigation, direct detail-page search links, page review metadata and manifest counts.

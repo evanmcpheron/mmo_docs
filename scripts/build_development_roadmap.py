@@ -88,11 +88,12 @@ def phase_page(phase):
 
 
 def epic_page(data, identifier):
-    return phase_page(epic_map(data)[identifier]['phase'])
+    return 'guide/roadmap-' + identifier.lower() + '.html'
 
 
 def generated_page_paths(data):
-    return [PAGE, *(phase_page(p) for p in data['phases']), *(p[0] for p in REFERENCE_PAGES.values())]
+    return [PAGE, *(phase_page(p) for p in data['phases']),
+            *(epic_page(data, e['id']) for e in data['epics']), *(p[0] for p in REFERENCE_PAGES.values())]
 
 
 def anchor_page(data, identifier):
@@ -156,11 +157,13 @@ def phase_navigation(data, phase, page, position):
     return f'<nav class="roadmap-phase-nav" aria-label="Phase navigation ({position})">{previous}{following}</nav>'
 
 
-def shell(data, page, title, description, body, toc, root=ROOT, phase=None):
+def shell(data, page, title, description, body, toc, root=ROOT, phase=None, epic=None):
     breadcrumb = '<a href="../index.html">Reference</a><span>/</span>'
     if page != PAGE:
         breadcrumb += link(PAGE, page, 'Development roadmap') + '<span>/</span>'
-    breadcrumb += escape('Development roadmap' if page == PAGE else title)
+    if epic is not None:
+        breadcrumb += link(phase_page(phase), page, phase['title']) + '<span>/</span>'
+    breadcrumb += escape(epic['id'] if epic is not None else 'Development roadmap' if page == PAGE else title)
     main = (f'<main id="main" tabindex="-1"><div class="breadcrumb">{breadcrumb}</div><h1>{escape(title)}</h1>'
             f'<p class="page-description">{escape(description)}</p><div class="article-body">{roadmap_nav(data, page)}' +
             ''.join(body) + '</div><footer class="page-footer">' + link(PAGE, page, 'Roadmap dashboard') +
@@ -178,15 +181,62 @@ def shell(data, page, title, description, body, toc, root=ROOT, phase=None):
     return navigation(template, page)
 
 
-def epic_content(data, epic, page):
+def epic_list(data, ids, page):
+    by_id = epic_map(data)
+    return ('<ul class="roadmap-contents">' + ''.join(
+        '<li>' + link(epic_page(data, i), page, i + ' · ' + by_id[i]['title'], i) +
+        f' <span class="badge">{escape(by_id[i]["status"])}</span></li>' for i in ids) + '</ul>'
+        if ids else '<p>None.</p>')
+
+
+def epic_navigation(data, epic, page, position):
+    index = next(i for i, e in enumerate(data['epics']) if e['id'] == epic['id'])
+    neighbors = []
+    for offset, label in ((-1, 'Previous'), (1, 'Next')):
+        target = index + offset
+        if 0 <= target < len(data['epics']):
+            other = data['epics'][target]
+            neighbors.append(link(epic_page(data, other['id']), page,
+                                  label + ': ' + other['id'] + ' · ' + other['title'], other['id'],
+                                  f' rel="{"prev" if offset < 0 else "next"}"'))
+    return ('<nav class="roadmap-epic-nav" aria-label="Epics in recommended sequence (' + position + ')">' +
+            ''.join(neighbors) + '</nav>')
+
+
+def render_epic(data, epic, root=ROOT):
     identifier = epic['id']
-    parts = [f'<details open class="roadmap-epic" id="{identifier}"><summary><strong>{identifier} · {escape(epic["title"])}</strong> '
-             f'<span class="badge">{escape(epic["status"])}</span></summary><div class="roadmap-epic-body">',
-             f'<p><strong>Objective:</strong> {escape(epic["objective"])}</p><p><strong>Scope:</strong> {escape(epic["scope"])}</p>',
-             f'<p><strong>Hard dependencies:</strong> {links(data, epic["hard_dependencies"], page)}</p>',
-             f'<p><strong>Recommended predecessors:</strong> {links(data, epic["recommended_predecessors"], page)}</p>',
-             '<h3>Acceptance criteria (AC)</h3>' + bullets(epic['acceptance_criteria'], True),
-             f'<p><strong>Completion evidence required:</strong> {escape(epic["completion_evidence"])}</p>']
+    page = epic_page(data, identifier)
+    phase = next(p for p in data['phases'] if p['id'] == epic['phase'])
+    peers = [e for e in data['epics'] if e['phase'] == phase['id']]
+    milestone = next(m for m in data['milestones'] if m['id'] == phase['milestone'])
+    index = next(i for i, e in enumerate(data['epics']) if e['id'] == identifier)
+    dependents = [e['id'] for e in data['epics'] if identifier in e['hard_dependencies']]
+    ready = identifier in {e['id'] for e in ready_epics(data)}
+    parts = [epic_navigation(data, epic, page, 'top'),
+             f'<article class="roadmap-epic" id="{identifier}"><div class="roadmap-epic-body">',
+             f'<p class="roadmap-epic-meta"><span class="badge">{escape(epic["status"])}</span> ' +
+             ('<span class="badge success">Dependency-ready</span> ' if ready else '') +
+             f'Recommended position {index + 1} of {len(data["epics"])}</p>',
+             '<p><strong>Phase:</strong> ' + link(phase_page(phase), page, phase['title'], identifier) +
+             ' · <strong>Completion milestone:</strong> ' +
+             link(REFERENCE_PAGES['milestones'][0], page, milestone['title'], milestone['id']) + '</p>',
+             f'<h2 id="objective">Objective and scope</h2><p>{escape(epic["objective"])}</p>',
+             f'<p><strong>Scope:</strong> {escape(epic["scope"])}</p>',
+             '<h2 id="dependencies">Dependencies and downstream work</h2><h3>Hard prerequisites</h3>',
+             '<p>These epics must be Complete before this epic can be completed or meaningfully verified.</p>',
+             epic_list(data, epic['hard_dependencies'], page),
+             '<h3>Recommended predecessors</h3><p>Scheduling guidance; these are not completion gates.</p>',
+             epic_list(data, epic['recommended_predecessors'], page),
+             '<h3>Required by</h3><p>These epics directly depend on this capability.</p>',
+             epic_list(data, dependents, page),
+             '<h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance">']
+    for number, criterion in enumerate(epic['acceptance_criteria'], 1):
+        anchor = f'{identifier}-AC-{number}'
+        parts.append(f'<li id="{anchor}">' + link(page, page, f'AC {number}', anchor,
+                                                  ' class="roadmap-criterion-link"') +
+                     f'<p>{escape(criterion)}</p></li>')
+    parts.extend(['</ol><h2 id="verification">Verification and blockers</h2>',
+                  f'<p><strong>Completion evidence required:</strong> {escape(epic["completion_evidence"])}</p>'])
     if epic['verified_evidence']:
         parts.append('<p><strong>Recorded evidence:</strong></p><ul>')
         for evidence in epic['verified_evidence']:
@@ -199,21 +249,31 @@ def epic_content(data, epic, page):
     else:
         parts.append('<p><strong>Recorded evidence:</strong> None. Required evidence above describes future verification.</p>')
     parts.append(f'<p><strong>Blockers:</strong> {escape("; ".join(epic["blockers"])) if epic["blockers"] else "None recorded; see hard prerequisites."}</p>')
+    parts.append('<h2 id="ticket-planning">Ticket planning</h2>'
+                 f'<p>Use <strong>{identifier}</strong> as the parent epic. Link each future ticket to the AC links above and '
+                 'state the evidence it will produce. Split work into demonstrable behaviors; one criterion may require several tickets. '
+                 'Epic completion still requires every criterion, verified evidence and completed hard prerequisites.</p>')
     if epic.get('ordering_rationale'):
         parts.append(f'<p><strong>Ordering rationale:</strong> {escape(epic["ordering_rationale"])}</p>')
     decisions = [d for d in data['open_decisions'] if identifier in d['epics']]
     if decisions:
         parts.append('<p><strong>Related open decisions:</strong> ' + '; '.join(
             link(anchor_page(data, d['id']), page, d['title'], d['id']) for d in decisions) + '</p>')
-    parts.append('<p><strong>Related documentation:</strong> ' + doclinks(epic['related_docs']) + '</p></div></details>')
-    return ''.join(parts)
+    parts.append('<h2 id="documentation">Related documentation</h2><p>' + doclinks(epic['related_docs']) + '</p></div></article>')
+    parts.append('<details class="roadmap-reference-index"><summary>All epics in this phase</summary>' +
+                 epic_list(data, [e['id'] for e in peers], page) + '</details>')
+    parts.append(epic_navigation(data, epic, page, 'bottom'))
+    toc = [('objective', 'Objective and scope'), ('dependencies', 'Dependencies'),
+           ('acceptance-criteria', 'Acceptance criteria'), ('verification', 'Verification and blockers'),
+           ('ticket-planning', 'Ticket planning'), ('documentation', 'Related documentation')]
+    return shell(data, page, identifier + ' · ' + epic['title'], epic['objective'], parts, toc, root, phase, epic)
 
 
 def render(data, root=ROOT):
     page = PAGE
     value = progress(data['epics'])
     parts = ['<h2 id="overview">Development roadmap overview</h2>', f'<p class="lead">{escape(data["purpose"])}</p>',
-             '<p>Start with the next actionable epic below, or open a phase for its scope, dependencies, acceptance criteria and evidence. '
+             '<p>Start with the next actionable epic below, or browse a phase index and open an individual epic for its scope, dependencies, acceptance criteria and evidence. '
              'The order is an engineering recommendation; phases are review groups, and independent work can advance whenever its own hard prerequisites are met.</p>',
              '<h2 id="progress">Progress dashboard</h2>']
     metrics = [('Phases', len(data['phases'])), ('Epics', len(data['epics']))]
@@ -229,7 +289,7 @@ def render(data, root=ROOT):
                                   f' <span class="badge">{escape(e["status"])}</span></li>' for e in ready) + '</ul>'
                   if ready else '<p>None. Review in-progress work and recorded blockers.</p>') +
                  '<p>All hard prerequisites must be Complete. Readiness does not claim that staffing, configuration or external resources are available.</p></div>')
-    parts.append('<h2 id="sequence">Recommended development sequence</h2><p id="epics">Choose a phase to read its detailed epics. '
+    parts.append('<h2 id="sequence">Recommended development sequence</h2><p id="epics">Choose a phase to browse its epic index. '
                  'The ID links jump directly to an epic; IDs remain stable when scheduling changes.</p><div class="roadmap-phase-grid">')
     for phase in data['phases']:
         epics = [e for e in data['epics'] if e['phase'] == phase['id']]
@@ -282,16 +342,17 @@ def render_phase(data, phase, root=ROOT):
              '<h2 id="epic-index">Epics in this phase</h2><ol class="roadmap-contents">']
     ready_ids = {e['id'] for e in ready_epics(data)}
     for epic in epics:
-        parts.append('<li>' + link(page, page, epic['id'] + ' · ' + epic['title'], epic['id']) +
+        parts.append('<li>' + link(epic_page(data, epic['id']), page, epic['id'] + ' · ' + epic['title'], epic['id'],
+                                  f' id="{epic["id"]}" class="roadmap-legacy-link"') +
                      f' <span class="badge">{escape(epic["status"])}</span>' +
-                     (' <span class="badge success">Dependency-ready</span>' if epic['id'] in ready_ids else '') + '</li>')
+                     (' <span class="badge success">Dependency-ready</span>' if epic['id'] in ready_ids else '') +
+                     '<p>' + escape(epic['objective']) + '</p></li>')
     incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
-    parts.append('</ol><p><strong>Direct prerequisites from other phases:</strong> ' + links(data, incoming, page) +
-                 '</p><h2 id="epics">Detailed epics</h2>')
-    parts.extend(epic_content(data, epic, page) for epic in epics)
+    parts.append('</ol><p id="epics">Open an epic for its full scope, dependencies, acceptance criteria, verification and ticket planning.</p>'
+                 '<p><strong>Direct prerequisites from other phases:</strong> ' + links(data, incoming, page) + '</p>')
     parts.append(phase_navigation(data, phase, page, 'bottom'))
     return shell(data, page, phase['title'], phase['objective'], parts,
-                 [(phase['id'], 'Objective and completion'), ('epic-index', 'Epic index')] + [(e['id'], e['id'] + ' · ' + e['title']) for e in epics], root, phase)
+                 [(phase['id'], 'Objective and completion'), ('epic-index', 'Epic index')], root, phase)
 
 
 def render_milestones(data, root=ROOT):
@@ -362,7 +423,7 @@ def render_maintenance(data, root=ROOT):
     parts = ['<h2 id="maintenance">Updating statuses and evidence</h2>']
     parts.extend(f'<p>{escape(paragraph)}</p>' for paragraph in data['maintenance'])
     parts.append('<h2 id="commands">Rebuild and validate</h2><pre><code>python3 scripts/build_development_roadmap.py\npython3 scripts/build_data_inventory.py --review-roadmap\npython3 validation/check_development_roadmap.py\npython3 validation/run_checks.py</code></pre>')
-    parts.append('<p>Commit the registry and generated outputs together. The roadmap builder owns the dashboard, phase guides and reference pages; '
+    parts.append('<p>Commit the registry and generated outputs together. The roadmap builder owns the dashboard, phase indexes, individual epic pages and reference pages; '
                  'the inventory builder owns shared navigation, search and manifest outputs. Reading requires neither a build step nor JavaScript.</p>')
     return shell(data, page, 'Updating roadmap progress', 'Maintain epic statuses, blockers and completion evidence without reorganizing the roadmap.',
                  parts, [('maintenance', 'Statuses and evidence'), ('commands', 'Rebuild and validate')], root)
@@ -380,6 +441,7 @@ def render_audit(data, root=ROOT):
 
 def generated_pages(data, root=ROOT):
     return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+            **{epic_page(data, e['id']): render_epic(data, e, root) for e in data['epics']},
             REFERENCE_PAGES['milestones'][0]: render_milestones(data, root),
             REFERENCE_PAGES['sequencing-decisions'][0]: render_decisions(data, root),
             REFERENCE_PAGES['coverage'][0]: render_coverage(data, root),

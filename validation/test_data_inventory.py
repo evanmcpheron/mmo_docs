@@ -90,6 +90,9 @@ class InventoryTests(unittest.TestCase):
                                         for epic in roadmap['epics'])} <= destinations)
         for phase in roadmap['phases']:
             self.assertIn(phase_page(phase) + '#' + phase['id'], destinations)
+        for epic in roadmap['epics']:
+            for number in range(1, len(epic['acceptance_criteria']) + 1):
+                self.assertIn(epic_page(roadmap, epic['id']) + f'#{epic["id"]}-AC-{number}', destinations)
         for family in ('milestones', 'sequencing_decisions', 'open_decisions'):
             for item in roadmap[family]:
                 self.assertIn(anchor_page(roadmap, item['id']) + '#' + item['id'], destinations)

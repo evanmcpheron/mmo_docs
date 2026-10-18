@@ -314,6 +314,12 @@ def roadmap_search(root=ROOT):
                         'text': ' '.join([epic['objective'], epic['scope'], epic['status'],
                                           *epic['acceptance_criteria'], *epic['hard_dependencies'],
                                           *epic.get('recommended_predecessors', [])])})
+        for number, criterion in enumerate(epic['acceptance_criteria'], 1):
+            anchor = f'{epic["id"]}-AC-{number}'
+            records.append({'title': f'{epic["id"]} · AC {number}',
+                            'section': 'Development Roadmap · Acceptance criterion',
+                            'url': epic_page(roadmap, epic['id']) + '#' + anchor,
+                            'text': ' '.join([anchor, epic['title'], criterion])})
     for milestone in roadmap['milestones']:
         records.append({'title': milestone['title'], 'section': 'Development Roadmap · Milestone',
                         'url': anchor_page(roadmap, milestone['id']) + '#' + milestone['id'],

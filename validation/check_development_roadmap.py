@@ -12,7 +12,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_development_roadmap import (PAGE, SECTIONS, STATUSES, address, anchor_page, generated_page_paths,
-                                      generated_pages, load, prerequisite_closure, progress)
+                                      generated_pages, load, phase_page, prerequisite_closure, progress)
 
 
 class Anchors(HTMLParser):
@@ -32,7 +32,7 @@ class Anchors(HTMLParser):
             self.references.append(values['href'])
             if 'id' in values:
                 self.link_targets[values['id']] = values['href']
-        if tag == 'details' and 'roadmap-epic' in values.get('class', '').split():
+        if 'roadmap-epic' in values.get('class', '').split():
             self.epic_ids.append(values.get('id'))
 
 
@@ -276,7 +276,21 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 errors.append('Legacy roadmap shortcut must open its canonical definition: ' + identifier)
         rendered_epics = [identifier for document in parsed.values() for identifier in document.epic_ids]
         if Counter(rendered_epics) != Counter(ids):
-            errors.append('Each epic must have one detailed definition on its canonical phase page')
+            errors.append('Each epic must have one detailed definition on its own canonical page')
+        for epic in data['epics']:
+            identifier = epic['id']
+            page = anchor_page(data, identifier)
+            phase = phase_page(epic['phase'])
+            if parsed[page].epic_ids != [identifier]:
+                errors.append(f'{identifier}: canonical page must contain only its own epic')
+            if parsed[phase].link_targets.get(identifier) != address(page, phase, identifier):
+                errors.append(f'{identifier}: phase bookmark must link to its canonical epic page')
+            for number in range(1, len(epic['acceptance_criteria']) + 1):
+                anchor = f'{identifier}-AC-{number}'
+                if anchor not in parsed[page].ids:
+                    errors.append(f'{identifier}: missing acceptance criterion anchor {anchor}')
+        if any(parsed[phase_page(p)].epic_ids for p in data['phases']):
+            errors.append('Phase indexes must link to epic details rather than embed them')
         if parsed[PAGE].epic_ids:
             errors.append('Dashboard must link to epic details rather than embed them')
     return errors
