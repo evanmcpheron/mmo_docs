@@ -5482,7 +5482,7 @@
       "id": "BW-001-T04",
       "parent_epic": "BW-001",
       "title": "Reject missing or invalid bootstrap configuration",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-001-AC-3"
       ],
@@ -5506,21 +5506,27 @@
         "An unexpected field containing a synthetic secret marker is rejected without printing its value or a full configuration dump."
       ],
       "manual_test": {
-        "launch": "python3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.missing-rules.json --smoke\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.invalid-rate.json --smoke",
+        "launch": "python3 tools/run_baseline.py --role server --headless --test-config\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.missing-rules.json --smoke\npython3 tools/run_baseline.py --role server --headless --config fixtures/config/server.invalid-rate.json --smoke\npython3 tools/run_baseline.py --role server --headless --smoke",
         "setup": [
-          "Complete T03. Use the supplied valid/missing-rules/invalid-rate fixtures.",
-          "In an owned temporary directory, create a malformed JSON file and a valid-fixture copy with an unexpected secret_marker field containing a harmless unique sentinel. Also choose a file path that does not exist."
+          "Working directory: the briarwake repository root beside mmo_docs. Complete BW-001-T03 and use the locked official Godot 4.7.2 engine, native macOS ARM64 and Python 3.10+ in a normal local session with Godot settings/certificate access. No network listener, credentials, database or client is required.",
+          "The three committed fixtures contain test-only values, not gameplay defaults. The --test-config mode creates isolated temporary copies and negative cases; it cannot be combined with --config or --smoke. Append --engine /absolute/path/to/Godot when using an isolated locked installation.",
+          "Optionally append --test-report /absolute/path/in/an/owned/temporary/directory/configuration-checks.json to the suite command. Capture terminal stdout/stderr separately to retain engine verification and editor import diagnostics. Preserve existing evidence files.",
+          "For individually inspected malformed/nonexistent/secret cases, run the exact temporary-file Python procedure under tools/README.md, Validate external server configuration (BW-001-T04). It creates malformed JSON containing a synthetic marker, a valid-fixture copy with an unexpected secret_marker field and a nonexistent path."
         ],
         "actions": [
-          "Run each supplied fixture, then repeat the command against the malformed file, nonexistent file and secret-marker copy.",
-          "Record exit statuses and search stdout/stderr for server-ready and the synthetic marker value."
+          "Run the suite command. It launches the actual server for valid smoke checks, missing/removed files, malformed JSON, absent/null/wrong-type/empty fields, nonpositive or nonfinite rates, invalid durations, unknown fields and synthetic-secret redaction. It also invokes the bootstrap with no configuration and with res:// and user:// paths.",
+          "Run the three individual fixture commands and the final command without --config. Record exit statuses and inspect stdout/stderr for the startup stage, path, known key, correction and server-ready.",
+          "Run the manual temporary-file procedure and confirm each output reports exit 2, ready: False and secret leaked: False. Synthetic markers must be absent from captured stdout/stderr. The suite report records exact runtime commands, exit statuses, logs, assertions, environment and source identity."
         ],
         "expected_results": [
-          "Only the valid fixture reaches ready and exits zero.",
-          "Every invalid case fails with its stage and correction; no ready record appears, and the synthetic secret value is absent from output."
+          "The suite exits 0 only after all expected outcomes pass; valid fixtures reach server-ready, execute exactly three heartbeats and emit a Passed server-smoke record. The fractional-rate/zero-duration boundary fixture is accepted.",
+          "Individual valid configuration exits 0. Missing rules_version and zero simulation_hz exit 2 at configuration validation with an actionable absolute path/key diagnostic. Missing files identify the read stage; malformed JSON identifies the parse stage and line without echoing input. Unknown fields list allowed keys without printing untrusted names or values.",
+          "Every rejected runtime case exits 2 before any server-ready, heartbeat or smoke record. No external configuration is substituted. Omitted --config exits 2 at launcher argument validation before Godot runs. No full configuration dump or synthetic secret value appears.",
+          "The launcher bounds each smoke runtime to 10 seconds; import is bounded to 120 seconds. Failed import/toolchain checks do not count as executed runtime passes. Suite failures exit 1 and identify the failing case."
         ],
         "reset": [
-          "Delete temporary fixture files and logs containing test inputs; keep the committed fixtures intact. Stop any process that exceeded the documented timeout."
+          "Temporary suite/manual configuration files are removed automatically. Remove only owned optional report/log files when no longer needed; keep committed fixtures and retained ticket evidence intact.",
+          "No gameplay state is written. Stop only owned test processes if an outer runner is interrupted; preserve installed engine/templates, the project cache and existing checkout changes."
         ]
       },
       "completion_evidence": "Captured valid/negative startup results with exit statuses, redacted diagnostics and proof that invalid configuration never reaches readiness.",
@@ -5539,7 +5545,20 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-001-T04/verification.json",
+          "revision": "962482a1ef2b8041a9f41982f3b00303d6695e57 + uncommitted BW-001-T04 changes (SHA-256 manifest in configuration-checks.json)",
+          "result": "Passed",
+          "summary": "Executed 60 isolated configuration runtime cases on pinned Godot 4.7.2/native macOS ARM64: valid smoke readiness; missing/malformed/removed configuration, required-field/type/range rejection, no implicit default and synthetic-secret redaction. Individual launcher, argument-gate, GDScript parse, schema and reload-state checks passed. Previous source admitted the zero-rate regression control. Companion logs retain engine/import evidence; one auxiliary test-generation failure is retained and superseded by a passing corrected probe. No export, GUI or gameplay claim; BW-001 remains In Progress."
+        }
+      ]
     },
     {
       "id": "BW-001-T05",
