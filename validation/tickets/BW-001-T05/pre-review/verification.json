@@ -1,0 +1,153 @@
+{
+  "ticket": "BW-001-T05",
+  "executed_at": "2026-10-18T02:47:33.460637+00:00",
+  "result": "Passed",
+  "criteria": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "revision": "bdb6b63c66783a0f6f941682321e9d34b886986e-dirty",
+  "source_manifest_sha256": "dc4c9235fdd0b1d908747acac2663cd890f49b4e19f35216b33db58f48233c03",
+  "source_file_hashes": "build-one/manifest.json#source_files",
+  "environment": {
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "python": "3.14.0"
+  },
+  "target": "macos-arm64",
+  "clean_builds": [
+    {
+      "manifest": "build-one/manifest.json",
+      "console": "build-one-console.log",
+      "logs": "build-one/logs/",
+      "result": "Passed",
+      "import_cache_initially_absent": true,
+      "artifact_sha256": {
+        "client": "e8ffe3348c961c4d1a8bd2e2845a4da8e3e7c62d62fce83b6be51f770829c72f",
+        "server": "08759cef88003727a2ffa87e1716674b0c4186e66deb8b3baf5832acead02578"
+      }
+    },
+    {
+      "manifest": "build-two/manifest.json",
+      "console": "repeat-build-console.log",
+      "logs": "build-two/logs/",
+      "result": "Passed",
+      "import_cache_initially_absent": true,
+      "artifact_sha256": {
+        "client": "c60805c41eb8f8d14668f9224a3ae46b2aab20c09f192066d208c12a94542229",
+        "server": "c44f038dceb44e6a15a1126519864a777505c7d469b9d5fec1ba1d225f41136a"
+      }
+    }
+  ],
+  "source_inputs_identical": true,
+  "byte_identical_packaging_required": false,
+  "observed_packaging_differences": {
+    "client": [
+      "Contents/MacOS/Briarwake",
+      "Contents/Resources/Briarwake.pck",
+      "Contents/_CodeSignature/CodeResources"
+    ],
+    "server": [
+      "Contents/MacOS/Briarwake",
+      "Contents/Resources/Briarwake.pck",
+      "Contents/_CodeSignature/CodeResources"
+    ]
+  },
+  "desktop_checks": [
+    {
+      "criteria": [
+        2
+      ],
+      "capture": "client-one.png",
+      "process_record": "client-one-quit.json",
+      "action": "Observed Briarwake client baseline and Quit. Focused Quit with Tab, activated with Return. Process/launcher exit 0; empty stderr.",
+      "result": "Passed"
+    },
+    {
+      "criteria": [
+        2,
+        4
+      ],
+      "capture": "client-two.png",
+      "process_record": "client-two-close.json",
+      "action": "Observed the second clean export with the same visible baseline. Activated native macOS close button. Process/launcher exit 0; empty stderr.",
+      "result": "Passed"
+    }
+  ],
+  "runtime_checks": {
+    "artifact": "runtime-checks.json",
+    "count": 11,
+    "result": "Passed",
+    "cwd_outside_source": true,
+    "PATH_empty_directory": true,
+    "installed_Godot_invoked": false
+  },
+  "regression_checks": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "artifact": "output-safety-tests.log",
+      "count": 7,
+      "result": "Passed"
+    },
+    {
+      "command": [
+        "python3",
+        "tools/run_baseline.py",
+        "--role",
+        "server",
+        "--headless",
+        "--test-config",
+        "--test-report",
+        "../mmo_docs/validation/tickets/BW-001-T05/source-configuration-regression.json"
+      ],
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "artifact": "source-configuration-regression.json",
+      "console": "source-configuration-console.log",
+      "count": 60,
+      "result": "Passed"
+    }
+  ],
+  "superseded_export_attempts": [
+    {
+      "result": "Failed",
+      "artifact": "initial-failed-export-client.log",
+      "reason": "ARM64 export requires ETC2/ASTC texture imports. Enabled the import target in project.godot; final exports passed."
+    },
+    {
+      "result": "Failed",
+      "reason": "Pinned exporter requested godot_macos_release.arm64, but the verified official archive provides universal binaries. Staged its unchanged ARM64 slice using system lipo and recorded all derivative hashes. Final exports passed; installed toolchain is unchanged."
+    }
+  ],
+  "reset": {
+    "owned_repeat_checkout_and_runtime_directory_removed": true,
+    "owned_client_processes_remaining": 0,
+    "source_artifacts_retained": "briarwake/artifacts/baseline (local, gitignored)",
+    "installed_engine_and_templates_preserved": true
+  },
+  "review_checklist": {
+    "scope_and_correctness": "Passed: four ticket criteria executed; source behavior and configuration contract preserved.",
+    "ownership_and_readability": "Passed: presets own package settings; lock owns toolchain; builder owns snapshots/exports; bootstrap owns embedded role selection; no new runtime service or gameplay abstraction.",
+    "godot_correctness": "Passed: clean imports/exports, typed bootstrap, actual desktop close paths and source/runtime checks; scene and UID references preserved.",
+    "security_and_networking": "Passed for local bootstrap: mandatory external config, immutable embedded revision/role, safe cleanup and artifact hashes. RPC/authentication/replication checks N/A: no network transport or gameplay was added.",
+    "git_and_standards": "Passed: no commits, branches, remote actions or protected standards edits; docs tracking/evidence authorized by execute-ticket."
+  },
+  "not_run": [
+    "Linux, Windows, Intel macOS or universal application execution",
+    "Python 3.10 execution (Python 3.14.0 used)",
+    "Fresh network acquisition (verified installed locked binaries/templates used)",
+    "Release signing/notarization, deployment, multiplayer or gameplay tests",
+    "T06 credential/packed-resource inspection and T07 injected-failure automation"
+  ]
+}

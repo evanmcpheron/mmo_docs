@@ -221,6 +221,16 @@
           "revision": "cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted BW-001-T03 changes (SHA-256 manifest in artifact)",
           "result": "Passed",
           "summary": "BW-001-T03 executed the source-project headless server with no local player/client scene, independent build/rules/content revision identity and actual normal/smoke heartbeat checks on pinned native macOS ARM64. Exported build identity and remaining epic criteria belong to subsequent tickets; this does not complete BW-001."
+        },
+        {
+          "criteria": [
+            1,
+            2
+          ],
+          "artifact": "validation/tickets/BW-001-T05/verification.json",
+          "revision": "bdb6b63c66783a0f6f941682321e9d34b886986e + uncommitted BW-001-T05 changes (SHA-256 source manifest 71b1a909edd06604b7ac0778b8dbdcc9d110fa98f279fd7a39bb4d2c4172163c in evidence)",
+          "result": "Passed",
+          "summary": "BW-001-T05 executed two isolated native macOS ARM64 client/server exports from identical current-source snapshots, actual visible packaged-client close paths and packaged headless smoke with embedded build identity plus separate rules/content labels. Exact lock, template derivation, source/artifact hashes, manifests, logs and captures are retained. Remaining epic configuration/credential and automated-outcome requirements are not promoted; BW-001 remains In Progress."
         }
       ],
       "phase": "phase-foundations"
@@ -5564,7 +5574,7 @@
       "id": "BW-001-T05",
       "parent_epic": "BW-001",
       "title": "Export and launch clean macOS client and server artifacts",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-001-AC-1",
         "BW-001-AC-2"
@@ -5590,23 +5600,30 @@
         "Repeating from another clean/disposable checkout succeeds without copying import caches or local export settings; each run records its actual artifact hashes and any declared nondeterministic packaging metadata."
       ],
       "manual_test": {
-        "launch": "python3 tools/build_baseline.py --clean --output artifacts/baseline\npython3 tools/run_baseline.py --artifact-dir artifacts/baseline --role client\npython3 tools/run_baseline.py --artifact-dir artifacts/baseline --role server --headless --config fixtures/config/server.valid.json --smoke",
+        "launch": "Working directory: briarwake repository root.\npython3 tools/build_baseline.py --clean --output artifacts/baseline\npython3 -m unittest discover -s tools -p 'test_*.py' -v\npython3 tools/run_baseline.py --artifact-dir artifacts/baseline --role client\npython3 tools/run_baseline.py --artifact-dir artifacts/baseline --role server --headless --config fixtures/config/server.valid.json --smoke\nExternal-working-directory check (adjust absolute paths for another checkout):\ncd /private/tmp\n/Library/Frameworks/Python.framework/Versions/3.14/bin/python3 /Users/le-evanmcpheron/Documents/Godot/briarwake/tools/run_baseline.py --artifact-dir /Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/baseline --role client\n/Library/Frameworks/Python.framework/Versions/3.14/bin/python3 /Users/le-evanmcpheron/Documents/Godot/briarwake/tools/run_baseline.py --artifact-dir /Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/baseline --role server --headless --config /Users/le-evanmcpheron/Documents/Godot/briarwake/fixtures/config/server.valid.json --smoke",
         "setup": [
-          "Complete T04. Use a disposable clean checkout on the declared macOS version/architecture with the pinned engine/templates.",
-          "Keep external valid configuration available; do not copy developer-local export settings or caches. Use an absolute artifact/config path when launching from outside the checkout."
+          "Complete T04. Use native ARM64 Python 3.10+ on macOS with the checksum/version-verified Godot 4.7.2 engine and matching templates from tools/toolchain.lock.json. tools/README.md documents acquisition, optional --engine/--templates paths, /usr/bin/arch and /usr/bin/lipo. Use a desktop session for visible client checks.",
+          "Use versioned export_presets.cfg. The build creates its own disposable project/import cache and derives an architecture-named ARM64 release template from the locked universal executable; it never changes installed templates. No scene, player, network, database or credentials are required.",
+          "Make a second disposable copy including Git metadata and current implementation edits, excluding .godot, artifacts and __pycache__. Confirm .godot is absent. Preserve each build manifest/log before any --clean reuse.",
+          "For runtime independence, create an empty owned directory under /private/tmp, copy server.valid.json outside the checkout, and invoke the absolute Python/launcher/artifact/config paths from that external directory with PATH set to the empty directory. Keep the desktop session available."
         ],
         "actions": [
-          "Run the clean build and retain its manifest and logs.",
-          "Launch the exported client and server from a temporary working directory; temporarily remove Godot from the runtime PATH to verify the artifacts do not call the editor.",
-          "Quit the client and repeat the entire build/launch sequence in another disposable clean checkout."
+          "Run the clean build command in each checkout. Retain manifest.json, logs/import.log, logs/export-client.log and logs/export-server.log. Compare source_files/source_manifest_sha256 and record each actual bundle/file hash. Confirm both import_cache_initially_absent values and Passed build statuses.",
+          "Launch each exported client from the external working directory with the empty PATH. Observe Briarwake client baseline and Quit; capture the window. Activate Quit for one run (Tab then Return works), and the native macOS close button for the other. Preserve launcher output and exit statuses.",
+          "Launch each exported server with the external valid fixture and --smoke. Compare baseline-build to its manifest, including build_revision, source fingerprint, package ID and dedicated_server. Confirm the server-ready rules/content labels match the external fixture.",
+          "Directly run BriarwakeServer.app/Contents/MacOS/Briarwake --headless -- --config /absolute/path/server.valid.json --smoke to check its default dedicated role and absence of a Python/editor runtime requirement. Change rules_version or content_version in isolated external copies and confirm build identity remains unchanged.",
+          "Run the exported server with omitted/removed/invalid configuration and with --build-revision or --role client overrides after --. Each must exit nonzero without server-ready/heartbeat/smoke success. Run the output safety unittest command and the existing --test-config source suite as regression checks."
         ],
         "expected_results": [
-          "Both clean runs generate separately identified launchable artifacts without undeclared inputs.",
-          "The packaged client displays its label; the packaged server starts without graphics/player objects, reports attributable revisions and actually passes smoke assertions.",
-          "The manifest lists the selected macOS target, exact inputs and hashes; no unexecuted Linux/Windows support is claimed."
+          "Both clean builds exit 0 with macOS ARM64 client/server applications and complete manifests. Source inputs match; bundle hashes may differ through declared generated metadata. No cached imports, local export presets or undeclared resources are copied.",
+          "Both clients visibly display the baseline using provisional Forward Plus/default macOS backend and exit 0 through the two close paths. Artifact launches do not invoke installed Godot or use source --path resources.",
+          "Each headless server reports its embedded build/package identity and separate external rules/content versions, headless/Dummy drivers, exactly ServerRoot and its timer, no loaded client scene, zero local players, three heartbeat iterations, then Passed server-smoke and exit 0. Smoke runtime is bounded to ten seconds.",
+          "Rejected startup arguments/configurations exit 2 before readiness. Source configuration regression and seven cleanup safety tests pass. --clean refuses modified/unknown/unowned/symlinked outputs; it replaces only unchanged inventoried output. Logs preserve any failed build instead of reporting a runtime pass.",
+          "Only local native macOS ARM64 execution is established. Release signing/notarization, other platforms, T06 credential inspection, T07 failure-case automation and gameplay remain outside this ticket."
         ],
         "reset": [
-          "Close launched processes, restore the runtime PATH and remove only the disposable checkout/build directories created for this test after retaining evidence."
+          "Close only test clients and stop owned server processes. PATH changes apply only to test subprocesses; preserve the shell environment.",
+          "Retain evidence under mmo_docs/validation/tickets/BW-001-T05, then remove only disposable checkout/runtime/config directories created for the test. Keep source artifacts/baseline for review, or use --clean only after preserving evidence. Preserve installed toolchain, original .godot state, canonical fixtures and user files."
         ]
       },
       "completion_evidence": "Two clean-build logs and manifests, artifact identifiers/hashes, packaged client capture and actual packaged-server smoke logs.",
@@ -5621,7 +5638,20 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-001-T05/verification.json",
+          "revision": "bdb6b63c66783a0f6f941682321e9d34b886986e + uncommitted BW-001-T05 changes (SHA-256 source manifest 71b1a909edd06604b7ac0778b8dbdcc9d110fa98f279fd7a39bb4d2c4172163c in evidence)",
+          "result": "Passed",
+          "summary": "Two clean macOS ARM64 release exports passed with identical source input hashes and no copied import caches/local export settings. Actual exported client windows displayed the baseline and exited 0 through Quit and native close from outside source with empty PATH. Both exported servers passed bounded smoke, embedded identity and independent rules/content checks; missing/invalid config and role/revision overrides were rejected. All 11 packaged runtime checks, 60 source configuration regressions and seven output-safety tests passed. Exact manifests, file/artifact hashes, template-slice provenance, logs and client captures are retained. Packages use local ad-hoc signing; no other platform, credential-inspection or gameplay claim."
+        }
+      ]
     },
     {
       "id": "BW-001-T06",
