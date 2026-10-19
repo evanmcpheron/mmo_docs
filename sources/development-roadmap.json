@@ -404,7 +404,7 @@
       "id": "BW-003",
       "title": "Repeatable runtime fixtures and diagnostics",
       "objective": "Produce attributable runtime evidence from the first experiments.",
-      "scope": "Pinned fixture world/time/content context, bounded test control, action-correlated diagnostics and baseline tick/traffic/queue measurements; no claim of launch capacity.",
+      "scope": "Pinned fixture world/time/content context, bounded test control, action-correlated diagnostics and baseline tick/traffic/queue measurements; no claim of launch capacity. This early proof uses a bounded test-only action probe with logical clients; serialized payload bytes are measured separately from wire traffic.",
       "hard_dependencies": [
         "BW-001",
         "BW-002"
@@ -6887,6 +6887,449 @@
           "summary": "Seven pinned-engine suites pass 620 direct cases and 30 real bootstrap launches; 54 Python regressions pass. Executed A/B retention, record-order invariance, copy isolation, exact admitted/disabled IDs, unsupported/forged readiness, invalid revisions/references/targets/resources, economic rejection and file-boundary checks precede readiness. Clean client/server exports and artifact inspection pass. Regular launcher passes in a clean identical-source worktree; original checkout editor-layout import failure is retained as an environment limitation, not suppressed."
         }
       ]
+    },
+    {
+      "id": "BW-003-T01",
+      "parent_epic": "BW-003",
+      "title": "Record attributable fixture execution evidence",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-003-AC-1"
+      ],
+      "dependencies": [
+        "BW-001",
+        "BW-002"
+      ],
+      "scope": [
+        "Add tools/check_runtime_fixtures.py --suite evidence and a bounded headless runner under tests/runtime_fixtures/, with checked-in fixtures/runtime_fixtures/ inputs and tools/test_runtime_fixtures.py coverage. Reuse tools/check_content_admission.py process isolation, timeout, source/input hashing and strict complete-report checks, plus tools/check_baseline.py stage/outcome primitives; extend existing helpers only where the same meaning is shared.",
+        "Run representative existing content-admission acceptance/rejection behavior through its current owner, content/content_admission.gd. Reuse ContentValidationFixture, ContentValidationResult, FixtureScenarioKind, FixtureRunEvidence, ValidationFinding and TestCheck from the existing canonical extraction; extend tools/extract_content_contracts.py only for newly required definitions and their local $ref closure. Do not copy canonical definitions into a second hand-maintained schema.",
+        "Keep authored specifications immutable and unexecuted. Write separate per-run actual evidence with fixture/scenario identity, scenario/input hashes, runner identity, completion time, exact content/rules revisions, engine/build/source identity, evaluated assertions and actual findings. A tool-local provenance envelope may associate these records; it is not a new gameplay, network or persistence contract.",
+        "Include disposable import-failure, startup-failure, missing-report and assertion-failure controls, and enforce unique case identities, matching revisions and complete assertion coverage. Preserve the baseline distinction between a failed build/startup, assertions not executed and executed assertion failure; never manufacture canonical failed run evidence with a named runner/time when no fixture ran. Document the command, records and reset procedure in tools/README.md."
+      ],
+      "out_of_scope": [
+        "Gameplay execution, a complete AbilityExecutionFixture runner, content authoring/import tools and retroactively rewriting historical BW-001/BW-002 evidence.",
+        "Promoting an authored expectation, schema check or child exit code alone to runtime success; changing canonical registry definitions or existing admission/readiness policy."
+      ],
+      "acceptance_criteria": [
+        "An actual named Godot runner evaluates positive and negative content fixtures and emits matching ContentValidationResult plus valid FixtureRunEvidence. A correctly observed expected rejection passes its test; an unexpected result produces failed evidence with actual findings.",
+        "Authored run_evidence retains status unexecuted, null runner_id/completed_at and empty findings before and after execution. Actual passed/failed records identify the exact executed fixture, revisions, runner and UTC time separately from expectations.",
+        "Unknown scenario tokens, missing/extra canonical fields, invalid evidence nullability, conflicting content/rules revisions, duplicate/missing assertion identities and forged authored pass claims fail visibly without a passing execution result.",
+        "Each failure control exits nonzero and preserves its stage/log/provenance record. Import/startup failure and missing reports cannot appear as a completed passing fixture; the deliberate assertion failure proves an assertion actually ran. A subsequent clean run passes independently."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite evidence\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
+          "Use the ticket-supplied evidence corpus, bounded runtime runner and disposable failure controls. Reuse safe-static and invalid-content cases from fixtures/content_admission/ without modifying their source expectations."
+        ],
+        "actions": [
+          "Run the launch block and open its reported run.json, immutable authored specifications, per-case actual evidence and captured engine logs.",
+          "Run the checker again with --suite evidence --control import-failure, then startup-failure, missing-report and assertion-failure, using a fresh default output directory for each. These options are deliverables of this ticket.",
+          "Run a final clean --suite evidence invocation and compare input hashes and canonical evidence fields with the source corpus."
+        ],
+        "expected_results": [
+          "The clean run contains actual evaluated assertion results with attributable revisions and runner/time; authored specifications remain unchanged and unexecuted.",
+          "Each deliberate failure is observable, nonzero and correctly classified. A build/import/startup problem records assertions not executed; the assertion control records an executed failure. No stale output satisfies a fresh run."
+        ],
+        "reset": [
+          "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
+          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution."
+        ]
+      },
+      "completion_evidence": "Retain clean and negative-control reports, actual per-case canonical evidence, source/scenario hashes, logs and Python regression results. Evidence must distinguish observed expected rejection from an execution failure and must not certify gameplay.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-003.html#BW-003"
+        },
+        {
+          "label": "Fixture context, controls and execution evidence",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Security and observability",
+          "href": "guide/networking.html#security-and-observability"
+        },
+        {
+          "label": "ContentValidationFixture",
+          "href": "guide/data-inventory.html#content-validation-fixture"
+        },
+        {
+          "label": "ContentValidationResult",
+          "href": "guide/data-inventory.html#content-validation-result"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        },
+        {
+          "label": "FixtureScenarioKind",
+          "href": "guide/data-inventory.html#shared-FixtureScenarioKind"
+        },
+        {
+          "label": "ValidationFinding",
+          "href": "guide/data-inventory.html#shared-ValidationFinding"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-003-T02",
+      "parent_epic": "BW-003",
+      "title": "Reproduce seeded context behind isolated test controls",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-003-AC-2"
+      ],
+      "dependencies": [
+        "BW-003-T01"
+      ],
+      "scope": [
+        "Extend the same checker with --suite context and a finite test-only probe owner under tests/runtime_fixtures/. It owns only disposable probe entities, a logical tick/clock, bounded scheduled inputs and an observable non-economic action counter/revision. The probe is the user-selected early experiment: no production character state, combat executor, transport or database is introduced.",
+        "Use FixtureWorldContext exactly: required server_tick, UTC server_time, owner_epoch, world_configuration_id, opaque string random_seed and explicit visible_entities/npc_states/parties collections. Supply a tiny pinned same-floor/collision fixture and context/content hashes; empty collections represent a known empty state, not missing configuration. Resolve seed-to-generator initialization deterministically without narrowing the canonical string seed to an invented wire encoding. Support the FixtureStep ability_command follow-up variant with its canonical timing and payload, and reuse the needed FixtureAssertion scope/idempotency forms. Unsupported valid variants reject explicitly before execution; no cast, NPC, group or transfer behavior is fabricated.",
+        "Exercise content/ability_command_reader.gd with trusted synthetic SessionContext and resolved targeting policy, then allow an explicitly test-authorized probe action to change only its counter/revision. Reader acceptance alone is not gameplay permission. Canonical ability_command_v2 is boundary test input, not an enabled ability; do not publish AbilityExecutionFixture passed evidence or bypass disabled-content admission. The initial boundary input is at t=0; follow-up offsets are finite, nonnegative and nondecreasing, with stable same-offset order.",
+        "Keep clock/seed/context setup and bounded scheduling controls on the isolated test runner only. Include deterministic seed-driven probe ordering, explicit input/step/tick/time limits, fresh-state teardown, malformed context/unknown configuration/unsupported step cases, and attempts to inject seed, clock, ownership or test controls through ability_command_v2. Preserve bootstrap isolation and export exclusions: production/client launch has no probe control endpoint, and test scenes/data remain absent from distributed client artifacts."
+      ],
+      "out_of_scope": [
+        "Implementing movement/collision resolution, combat mechanics, NPC AI, party state, reconnect/transfer, authentication or production replay/idempotency from the fixture specification.",
+        "Allowing gameplay payloads to choose time, seed, owner epoch or authoritative state; treating the bootstrap heartbeat timer as a simulation tick."
+      ],
+      "acceptance_criteria": [
+        "Two fresh runs of an identical scenario, seed, world/content/rules context and step schedule produce the same ordered probe outcomes and final counter/revision. Wall-clock completion timestamps and measured durations may differ and are excluded from rule-outcome equality.",
+        "A changed-seed control demonstrably changes a seed-dependent probe ordering, and restoring the original context reproduces the original outcome. No previous run state survives teardown.",
+        "Missing context fields, invalid UTC time/count/epoch, unknown world configuration, negative/nonfinite/decreasing step offsets, unknown or unsupported step kinds and declared bound overruns produce actionable rejection, with no partial successful scenario claim.",
+        "Injected seed/time/control/outcome fields and stale/mismatched ownership are rejected at the existing command boundary with no probe mutation. Only the isolated runner can initialize/control the probe; client/production launch and exported client contents cannot expose that capability."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite context\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
+          "Use the supplied pinned world/context corpus, deterministic ordering case, same-seed repeat, changed-seed control, malformed/unsupported cases and control-injection attempts. The native-editor headless runner is a ticket deliverable; no editor-created world or manual asset preparation is required."
+        ],
+        "actions": [
+          "Run --suite context twice in fresh output directories. Compare the recorded deterministic outcome sequence and final probe revision, not elapsed time or artifact timestamps.",
+          "Inspect the suite changed-seed/restore controls, timing/bound failures and unsupported-step cases; confirm their exact input hashes and findings.",
+          "Inspect command-injection results and the ticket-supplied launch/export checks proving no test control is reachable from production/client entry points."
+        ],
+        "expected_results": [
+          "Identical contexts reproduce the rule outcomes; the changed-seed control proves the seed is consumed rather than merely recorded.",
+          "Every invalid/unsupported/control-injection case rejects visibly without changing probe state. Ordinary bootstrap and client artifacts retain their existing boundaries."
+        ],
+        "reset": [
+          "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
+          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution."
+        ]
+      },
+      "completion_evidence": "Retain two independent same-context runs, changed-seed/restore outcomes, context/world/content hashes, actual typed assertions, negative controls, launch/export isolation checks and Python regression results. Label all committed probe effects as disposable test behavior.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-003.html#BW-003"
+        },
+        {
+          "label": "Fixture context, controls and execution evidence",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Security and observability",
+          "href": "guide/networking.html#security-and-observability"
+        },
+        {
+          "label": "FixtureWorldContext",
+          "href": "guide/data-inventory.html#shared-FixtureWorldContext"
+        },
+        {
+          "label": "FixtureStep",
+          "href": "guide/data-inventory.html#shared-FixtureStep"
+        },
+        {
+          "label": "FixtureAssertion",
+          "href": "guide/data-inventory.html#shared-FixtureAssertion"
+        },
+        {
+          "label": "ability_command_v2",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "EntitySnapshot",
+          "href": "guide/data-inventory.html#entity-snapshot"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-003-T03",
+      "parent_epic": "BW-003",
+      "title": "Correlate and redact bounded probe action diagnostics",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-003-AC-3"
+      ],
+      "dependencies": [
+        "BW-003-T02"
+      ],
+      "scope": [
+        "Add --suite diagnostics and action-correlated events at the same test probe owner and existing command-reader rejection boundary. Reuse trusted SessionContext, canonical CommandContext identity (session_epoch plus command_sequence), opaque action IDs and nonnegative revisions; add no second gameplay state owner. Name the disposable probe owner/build explicitly so a trace cannot be mistaken for a live character or economic ledger.",
+        "Record rejected command identity/reason and state before/after, and record a committed probe action only after its owner mutates the probe counter/revision. Link run/scenario identity, actual build/source identity, content/rules versions, test owner identity/epoch and resulting probe revision. Preserve identity across the bounded repeated-input case without turning this test-only behavior into production command admission.",
+        "Use an explicit diagnostic field allowlist and bounded safe findings; never dump raw commands, configuration, private results or arbitrary exception text. There is no canonical general operational diagnostic envelope: keep this narrowly local, reuse Id/Version/CommandContext and existing finding vocabulary, and do not repurpose CombatLogRecord, CommandResponse acceptance or OperationReceipt to claim combat/durable success.",
+        "Include valid commit, rejected malformed/stale/control-injected command and repeat cases plus recognizable synthetic credential/token/private-state/hidden-owner sentinels in both successful and failure inputs. Validate serialized logs and the retained shareable sample for redaction while preserving safe action correlation. Reuse content/combat_result_projection.gd for any public combat-result sample; private diagnostic identities must never be copied into recipient-facing projections."
+      ],
+      "out_of_scope": [
+        "Production combat/economy execution, durable receipts/audit storage, full admin/security operations, hosting dashboards and log retention infrastructure.",
+        "Claiming reader acceptance or a transport ACK is a commit, inventing a new canonical log schema, or exposing private action/owner linkage to a logical recipient."
+      ],
+      "acceptance_criteria": [
+        "A selected rejected boundary command and committed probe action can each be traced from scenario/run and command identity to the exact build/content/rules and trusted owner epoch/revision. Rejection leaves the probe revision unchanged; a commit event follows the actual mutation and reports its new revision.",
+        "Repeated probe input has stable correlation and the expected unique probe-effect count; no rejection, startup failure or missing report can create a fabricated committed action.",
+        "Raw and shareable diagnostic output contain none of the synthetic passwords, bearer/recovery tokens, private-result sentinels or unauthorized hidden identifiers, including on malformed-input/failure paths. Safe identity/reason information remains sufficient to attribute the event.",
+        "Canonical identifier types, CommandContext ordering fields and existing command encodings remain compatible. Diagnostics remain internal test evidence; any public projection retains the existing recipient entitlement/redaction behavior."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite diagnostics\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
+          "Use the T02 probe and supplied diagnostics corpus with two synthetic owners/epochs, legal/rejected/repeated inputs, private sentinels and any explicitly labeled constructed public-result sample."
+        ],
+        "actions": [
+          "Run the launch block and follow one rejected command and one committed probe action through the emitted JSON events and final revision assertions.",
+          "Review suite repeated/stale/malformed/control-injection cases, then search all retained diagnostics/shareable samples for every supplied private sentinel.",
+          "Compare any public projection sample with the existing recipient-filtered boundary fixture; verify private probe owner/action linkage is not included in recipient output."
+        ],
+        "expected_results": [
+          "Actual commits and rejections have unambiguous correlation and state evidence, with no false combat or durable-success claim.",
+          "All secret/private sentinels are absent from retained diagnostics and shareable output; rejection details remain bounded and useful."
+        ],
+        "reset": [
+          "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
+          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution."
+        ]
+      },
+      "completion_evidence": "Retain actual correlated rejected/committed/repeated probe traces, source/context hashes, state/revision assertions, redaction checks and a shareable sanitized sample. Record the probe-only boundary and any constructed public projection separately from real gameplay.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-003.html#BW-003"
+        },
+        {
+          "label": "Fixture context, controls and execution evidence",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Security and observability",
+          "href": "guide/networking.html#security-and-observability"
+        },
+        {
+          "label": "CommandContext",
+          "href": "guide/data-inventory.html#shared-CommandContext"
+        },
+        {
+          "label": "ability_command_v2",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "CommandResponse semantics",
+          "href": "guide/data-inventory.html#command-response"
+        },
+        {
+          "label": "CombatResultEvent projection boundary",
+          "href": "guide/data-inventory.html#combat-result-event"
+        },
+        {
+          "label": "ValidationFinding",
+          "href": "guide/data-inventory.html#shared-ValidationFinding"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-003-T04",
+      "parent_epic": "BW-003",
+      "title": "Measure bounded probe ticks, payloads and queues",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-003-AC-4"
+      ],
+      "dependencies": [
+        "BW-003-T02"
+      ],
+      "scope": [
+        "Add --suite metrics to measure the same finite test probe. Collect monotonic elapsed processing duration for each actual probe tick, relevant probe-entity counts and current/peak depth of the queue actually consumed by that probe. Keep scheduling interval, processing duration, wall time and the existing bootstrap heartbeat distinct. Supply idle, active and queued-burst workloads with finite declared entity/client/step/tick bounds.",
+        "Use at least two logical recipient clients and count the exact UTF-8 serialized probe payload bytes produced per recipient over a declared measurement window. Preserve per-recipient totals and disclose the aggregation policy, direction, units, warm-up and sample/percentile calculation. Label these serialized payload bytes, with logical-client counts and no network transport; they are not wire traffic, RTT, protocol overhead or capacity evidence. Include zero-client and unequal-recipient controls without dividing by zero or inventing traffic.",
+        "Associate samples with T01 run provenance, T02 world/seed/context, workload identity/configuration, actual engine/build/content/rules identity, OS/CPU architecture and available hardware details. Report raw samples with derived summaries so tick durations, relevant entities, queue changes and byte totals can be independently recomputed; missing measurements are failures or explicitly unsupported observations, not fabricated zero successes.",
+        "Reuse ServerMetricRecord field meanings and its declared-window invariant when naming comparable measurements, while respecting its durable-service authority and required database fields. This local probe report is not a fabricated canonical ServerMetricRecord or NetworkLoadTestRecord: no database latency, subscriptions, settlement retries or real network load exists to certify. Keep canonical definitions unchanged, document this distinction in tools/README.md, and leave production metric persistence/wire instrumentation to the actual later owners."
+      ],
+      "out_of_scope": [
+        "BW-004 connectivity, real clients/sockets, bandwidth or latency guarantees, production telemetry/storage, database benchmarking and launch player-count targets.",
+        "Measuring the bootstrap timer as simulation cost, estimating wire bytes from payload bytes, or introducing a second production simulation/event queue solely for instrumentation."
+      ],
+      "acceptance_criteria": [
+        "An actual bounded run captures raw finite nonnegative probe-tick processing durations, declared relevant probe-entity counts, per-logical-recipient serialized payload byte totals and the real probe queue depth, joined to its workload, context and environment.",
+        "The active/burst workload produces attributable payloads for two logical recipients and a nonzero observed queue depth before drain; the idle/reset case returns to its declared empty/idle state. Per-recipient bytes match independent serialization, including an unequal-recipient case.",
+        "Declared sample windows, units, counts, warm-up and summary/percentile policy allow raw-to-summary recomputation. Empty/zero-client workloads, malformed/nonfinite input and workload bounds are handled visibly with no divide-by-zero or invented sample.",
+        "Reports label payload versus wire measurement, logical versus connected clients and probe versus production ticks/entities. They record no database/network result that was not measured and make no capacity claim."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite metrics\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
+          "Use the supplied idle, two-recipient active, queued-burst, unequal-recipient, zero-client and invalid/bounds workloads. No external traffic generator or manual server scene setup is required."
+        ],
+        "actions": [
+          "Run the launch block and inspect raw tick/queue samples, recipient payload captures/byte totals and the recorded workload/environment.",
+          "Independently recompute serialized UTF-8 byte lengths, current/peak queue summaries and the declared tick percentiles from retained samples.",
+          "Inspect idle/drain/reset, zero-client and invalid/bound cases; verify unsupported network/database observations cannot become canonical measured successes."
+        ],
+        "expected_results": [
+          "Tick duration, relevant probe entities, payload bytes per logical client and queue depth are actual observations of the declared bounded workload, with complete provenance.",
+          "Recomputed values agree, burst queues are observable before drain, and absent network/database facilities are accurately labeled."
+        ],
+        "reset": [
+          "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
+          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution."
+        ]
+      },
+      "completion_evidence": "Retain workload/context/configuration, environment/toolchain identity, raw measured samples, per-recipient payload-byte verification, recomputed summaries, negative controls and the explicit probe/payload-only limitation.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-003.html#BW-003"
+        },
+        {
+          "label": "Fixture context, controls and execution evidence",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Security and observability",
+          "href": "guide/networking.html#security-and-observability"
+        },
+        {
+          "label": "ServerMetricRecord measurement semantics",
+          "href": "guide/data-inventory.html#server-metric-record"
+        },
+        {
+          "label": "ServerConfiguration",
+          "href": "guide/data-inventory.html#server-configuration"
+        },
+        {
+          "label": "NetworkLoadTestRecord later network boundary",
+          "href": "guide/data-inventory.html#network-load-test-record"
+        },
+        {
+          "label": "FixtureWorldContext",
+          "href": "guide/data-inventory.html#shared-FixtureWorldContext"
+        },
+        {
+          "label": "Network and performance testing",
+          "href": "guide/testing.html#network-and-performance-testing"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-003-T05",
+      "parent_epic": "BW-003",
+      "title": "Verify the complete fixture evidence path in one repeatable run",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-003-AC-1",
+        "BW-003-AC-2",
+        "BW-003-AC-3",
+        "BW-003-AC-4"
+      ],
+      "dependencies": [
+        "BW-003-T03",
+        "BW-003-T04"
+      ],
+      "scope": [
+        "Add --suite all orchestration to tools/check_runtime_fixtures.py using the same evidence/context/diagnostics/metrics suites. Produce one attributable manifest linking immutable expectations, actual assertion/run records, deterministic outcome comparisons, action diagnostics, raw measurements and a sanitized shareable sample, with explicit scope labels rather than copied independent result calculations.",
+        "Exercise the complete bounded probe path twice from fresh isolated projects, including rejected and committed probe actions, seed/context replay, private-sentinel controls and measured two-logical-client/queued workload. Assert same-context rule equality while retaining genuinely varying timing/environment observations. Include a deliberately failing assertion and missing-report run so aggregate success requires actual complete child evidence.",
+        "Preserve current bootstrap/content admission behavior: run tools/check_content_admission.py --suite all, the existing Python tool regressions and a no-content server smoke using tools/run_baseline.py. Reuse export/client-artifact tooling to verify test probe controls/data are excluded when affected; do not add test nodes to the isolated ServerRoot/Timer baseline scene.",
+        "Document one runnable command and reset procedure in tools/README.md. Retain an explicit parent-epic review mapping each of the four criteria to actual artifacts and the accepted test-probe/payload-byte scope, checking BW-001/BW-002 evidence applicability, child dependencies and downstream readiness. Update roadmap progress through the existing documentation workflow only after execution; planning/schema validation alone is never evidence of completion."
+      ],
+      "out_of_scope": [
+        "Completing BW-004 connectivity, BW-012 multiplayer action, BW-018 durability, BW-095 content tooling, BW-097 rendering or later game mechanics.",
+        "Production operations dashboards, benchmark targets, deployment, or treating the finite probe as a gameplay/capacity certification."
+      ],
+      "acceptance_criteria": [
+        "The documented --suite all command executes and joins every required child result with matching run/scenario/source/revision identities. Missing, stale, partial or failed child evidence makes the aggregate fail; specifications remain unexecuted.",
+        "Two independent complete runs reproduce deterministic probe outcomes and include attributable rejection/commit traces, successful redaction controls and actual workload/environment-linked measurements for ticks, entities, per-logical-client payload bytes and queue depth.",
+        "A deliberate assertion failure and missing-report control fail the aggregate distinctly from import/startup failure. A fresh clean aggregate then passes; no prior evidence directory is overwritten or reused as a successful new run.",
+        "Existing content-admission, Python regressions and isolated server smoke pass with no accidental gameplay/test-control enablement. The parent review covers all four BW-003 criteria within the explicitly selected probe scope and records all remaining limitations before any status promotion."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite all\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "setup": [
+          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
+          "Complete T01-T04 and use their committed fixtures/runners. Keep existing server.valid.json and content-admission corpora unchanged; choose fresh evidence directories for all runs and controls."
+        ],
+        "actions": [
+          "Run the launch block twice and inspect aggregate manifest links, exact input/source hashes, same-context comparison, diagnostic sample and raw measurement reports.",
+          "Run --suite all --control assertion-failure and --suite all --control missing-report in fresh outputs, then a clean --suite all. These aggregate controls are deliverables of this ticket.",
+          "Run python3 tools/check_content_admission.py --suite all and python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke; review logs and the applicable client-export isolation checks.",
+          "Review the four epic-criterion mappings and prerequisite applicability, then rebuild/check roadmap and inventory views using DOCS_ROOT/README.txt. Keep actual test evidence separate from documentation-validation results."
+        ],
+        "expected_results": [
+          "Both fresh aggregate runs pass with complete actual child evidence and reproducible probe outcomes. Deliberate controls fail visibly and never contaminate the later clean run.",
+          "Regression/smoke results and parent review accurately identify the completed early diagnostic experiment; gameplay, wire-network and durability work retain their own unfinished statuses."
+        ],
+        "reset": [
+          "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
+          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution."
+        ]
+      },
+      "completion_evidence": "Retain two fresh aggregate runs, negative controls, a sanitized diagnostic/measurement sample, Python/admission/bootstrap/isolation regression results and an explicit BW-003 criterion-by-criterion review. Record tested source revision/hashes and scope limitations; reconcile and regenerate every affected current status/readiness view.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-003.html#BW-003"
+        },
+        {
+          "label": "Fixture context, controls and execution evidence",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Security and observability",
+          "href": "guide/networking.html#security-and-observability"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        },
+        {
+          "label": "FixtureWorldContext",
+          "href": "guide/data-inventory.html#shared-FixtureWorldContext"
+        },
+        {
+          "label": "FixtureAssertion",
+          "href": "guide/data-inventory.html#shared-FixtureAssertion"
+        },
+        {
+          "label": "ServerMetricRecord measurement semantics",
+          "href": "guide/data-inventory.html#server-metric-record"
+        },
+        {
+          "label": "Prerequisite reproducible project",
+          "href": "guide/roadmap-bw-001.html#BW-001"
+        },
+        {
+          "label": "Prerequisite authority/content boundaries",
+          "href": "guide/roadmap-bw-002.html#BW-002"
+        },
+        {
+          "label": "Progress and evidence upkeep",
+          "href": "guide/roadmap-maintenance.html"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
     }
   ]
 }

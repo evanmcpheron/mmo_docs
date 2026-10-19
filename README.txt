@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-181 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-15 individual ticket pages,
+186 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+20 individual ticket pages,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -89,7 +89,12 @@ exact parent-criterion links, dependencies, scope and runnable manual test plan.
 BW-002 has eight completed tickets covering authority ownership, compatibility,
 intent and projection boundaries, staged validation, readiness, economic inputs,
 conversion loops and atomic server admission. BW-001 and BW-002 are Complete;
-current statuses and executed evidence live in the registry. Foundations and
+current statuses and executed evidence live in the registry. BW-003 has five
+Not Started tickets for attributable fixture evidence, deterministic test context,
+redacted probe diagnostics, bounded measurements and integrated verification.
+Its test-only action probe uses logical clients; serialized payload bytes are
+reported separately from wire traffic. BW-003 remains Not Started and
+Dependency-ready; planning has not implemented the game. Foundations and
 milestones remain In Progress, with their remaining epics still required.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages
