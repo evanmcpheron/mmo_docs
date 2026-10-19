@@ -6012,7 +6012,7 @@
       ],
       "scope": [
         "Add only the typed ability-command reader and pure recipient-filtered combat-result projection needed for boundary fixtures, with explicit trusted session/visibility context. Keep these at the intent/projection boundary identified in T01, reusable by later transport; do not add a network endpoint or combat executor.",
-        "Preserve ability_command_v2 and its three always-present targeting keys. Validate entity/point/direction/none against resolved AbilityTargetingPolicy, finite nonzero direction, optional checked character_id and current-session coordinate scope. Reject client-authored outcome fields rather than ignoring them. Runtime visibility/range/collision and actual session authentication remain future authoritative checks, not facts proven by shape validation.",
+        "Preserve ability_command_v2 and its three always-present targeting keys. Validate entity/point/direction/none against resolved AbilityTargetingPolicy, finite nonzero direction, optional checked character_id and current-session coordinate scope. Reject client-authored outcome fields rather than ignoring them. Reject client activation of passive definitions even when all three targeting inputs are null. Runtime visibility/range/collision and actual session authentication remain future authoritative checks, not facts proven by shape validation.",
         "Project internal CombatResult to the canonical shared PublicCombatResult inside CombatResultEvent using explicit recipient entitlement. Hidden source IDs become null; hidden-source correlation IDs are recipient-scoped and cannot reveal private action/ledger identity. Exclude raw/mitigation/debt/resource internals. Use EntitySnapshot as the related public-state allowlist without implementing a full snapshot producer.",
         "Add --suite boundaries fixtures and Python-driver behavioral regression coverage. Include canonical CommandResponse accepted/rejected examples without claiming command execution, replay storage or durable success. No second mutable CharacterState or private result store is created."
       ],
@@ -6021,7 +6021,7 @@
         "Inferring a target/facing fallback, client-selected authority, or serializing a Godot Object/Resource or raw internal CombatResult to observers."
       ],
       "acceptance_criteria": [
-        "All 21 documented TargetMode branches accept only their allowed resolved input kinds; ambiguous summon/pet bindings, missing/extra aim inputs, zero/nonfinite direction, mismatched optional character_id and injected outcome fields are rejected.",
+        "Resolved policies for all 21 documented TargetMode branches obey their allowed input kinds; passive definitions cannot be activated by client commands. Ambiguous summon/pet bindings, missing/extra aim inputs, zero/nonfinite direction, mismatched optional character_id and injected outcome fields are rejected.",
         "Authorized owner/observer fixtures receive only the canonical public result fields. A hidden source produces null source identity and safe correlation; an unauthorized target/recipient receives no result. Private identifiers and numeric breakdowns are absent from serialized output.",
         "The same boundary functions are invoked by fixtures and are available for future authoritative callers; no shape-check result is presented as permission to execute gameplay or as a durable acknowledgement."
       ],
@@ -6029,14 +6029,14 @@
         "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite boundaries\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
           "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Provide synthetic trusted session/recipient contexts, resolved targeting policies, command payloads and internal combat results with recognizable private-field sentinels. No player node, network service or combat handler is required."
+          "Provide synthetic trusted session/recipient contexts, resolved targeting policies, command payloads and internal combat results with recognizable private-field sentinels. Include a passive definition and a client activation command with all three targeting inputs null as a rejection fixture. No player node, network service or combat handler is required."
         ],
         "actions": [
-          "Run the boundary suite across each target-mode/input-kind case and malformed command case; inspect exact field-level rejections.",
+          "Run the boundary suite across each target-mode/input-kind case, passive activation and malformed command case; inspect exact field-level rejections.",
           "Compare owner, visible observer, hidden-source and unauthorized-recipient serialized outputs; search the outputs for fixture private-field sentinels and private action/ledger IDs."
         ],
         "expected_results": [
-          "Only contract-compatible intent reaches the typed boundary; the suite never executes an ability.",
+          "Only contract-compatible intent for activatable abilities reaches the typed boundary; passive activation is rejected even with correctly null targeting inputs. The suite never executes an ability.",
           "Public payloads match CombatResultEvent/PublicCombatResult, omit private state and withhold unauthorized results. Negative fixtures leave source state unchanged."
         ],
         "reset": [
