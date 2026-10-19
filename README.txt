@@ -98,7 +98,9 @@ content evidence and a bounded seeded-context probe behind isolated test control
 BW-003-T03 is Complete with 40 bounded diagnostic scenarios, safe action/retry
 correlation, negative startup/report controls and four constructed recipient
 projection checks. BW-003 remains In Progress and Dependency-ready. T04 is
-eligible; measured workloads and T05 integrated verification remain unstarted.
+Complete with 41 bounded metric workloads/controls, actual tick/queue samples and
+independently verified per-logical-recipient serialized UTF-8 bytes. T05 is now
+eligible; integrated orchestration and verification remain unstarted.
 Foundations and milestones remain In Progress with their other epics required.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages

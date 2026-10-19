@@ -1,0 +1,238 @@
+{
+  "ticket": "BW-003-T04",
+  "result": "Passed",
+  "completed_at": "2026-10-19T19:27:47.618229+00:00",
+  "game_revision": "89ba873c7ff0e64539f5b312e2ab376abb0c751f",
+  "game_main_base": "7ca864a3ef88fae5881ab9f4ecfc089890240111",
+  "docs_main_base": "12003c9d7fa5a591114c6b6b1143e4357e4a0b89",
+  "delivery": "User explicitly requested direct work and pushes on main for this invocation; no task branches or PRs.",
+  "environment": {
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "python": "3.14.0",
+    "operating_system": "Darwin",
+    "os_version": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "cpu_architecture": "arm64",
+    "logical_cpu_count": 12,
+    "hardware": {
+      "model": {
+        "status": "observed",
+        "value": "Mac14,6"
+      },
+      "physical_memory_bytes": {
+        "status": "observed",
+        "value": "34359738368"
+      }
+    }
+  },
+  "toolchain": {
+    "engine": "/Applications/Godot.app/Contents/MacOS/Godot",
+    "engine_sha256": "c7cccbf8fb143e34e02fd6521e09be2c2b974f0d5db080b19071c9c570718ccf",
+    "native_architecture": "arm64",
+    "version_command": [
+      "/usr/bin/arch",
+      "-arm64",
+      "/Applications/Godot.app/Contents/MacOS/Godot",
+      "--headless",
+      "--version"
+    ],
+    "verified_version": "4.7.2.stable.official.ed1daf0bf"
+  },
+  "criteria": [
+    {
+      "criterion": 1,
+      "result": "Passed",
+      "artifacts": [
+        "pass/run.json",
+        "pass/actual-evidence.json",
+        "pass/executed-fixtures.json"
+      ],
+      "summary": "41 actual bounded Godot cases retain finite nonnegative monotonic processing durations, observed pinned entity counts, exact per-recipient payload captures and actual consumed FIFO depth, joined by workload/scenario/context/source/environment identities."
+    },
+    {
+      "criterion": 2,
+      "result": "Passed",
+      "artifacts": [
+        "pass/actual-evidence.json",
+        "restored/actual-evidence.json",
+        "metrics-tests.log"
+      ],
+      "summary": "Burst FIFO before-drain depths are 6,5,4,3,2,1 and after-drain 5,4,3,2,1,0; reused-owner idle reset has no actions or payloads. Independently serialized burst bytes are logical-a=720/logical-β=726; unequal subscriptions produce 720/121. Fresh restoration reproduces rule outcomes and byte totals."
+    },
+    {
+      "criterion": 3,
+      "result": "Passed",
+      "artifacts": [
+        "python-tests.log",
+        "pass/actual-evidence.json",
+        "import-failure/run.json",
+        "startup-failure/run.json",
+        "missing-report/run.json",
+        "assertion-failure/run.json"
+      ],
+      "summary": "82 tool regressions pass, including six measurement tests covering independent raw-to-summary/UTF-8 recomputation, warmup exclusion, empty/zero-client/partial/future/max cases, malformed/nonfinite/bounds, forged reports and expected failure attribution/recovery."
+    },
+    {
+      "criterion": 4,
+      "result": "Passed",
+      "artifacts": [
+        "pass/run.json",
+        "pass/actual-evidence.json"
+      ],
+      "summary": "Exact policy labels probe versus production, logical versus connected recipients, payload versus wire, direction, units, windows and unsupported observations. No database/network latency/persistence/capacity metric is fabricated; canonical definitions are unchanged."
+    }
+  ],
+  "commands": [
+    {
+      "command": "python3 tools/verify_toolchain.py",
+      "cwd": "briarwake",
+      "result": "Passed",
+      "artifact": "toolchain.log"
+    },
+    {
+      "command": "python3 tools/extract_content_contracts.py --check",
+      "cwd": "briarwake",
+      "result": "Passed",
+      "artifact": "snapshot.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tools -p 'test_*.py'",
+      "cwd": "briarwake",
+      "result": "Passed",
+      "tests": 82,
+      "artifact": "python-tests.log",
+      "revision": "Uncommitted final implementation subsequently committed without executable-source changes as 89ba873c7ff0e64539f5b312e2ab376abb0c751f"
+    },
+    {
+      "command": "python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke",
+      "cwd": "briarwake",
+      "result": "Passed",
+      "artifact": "server-smoke.log",
+      "revision": "Same executable sources as 89ba873c7ff0e64539f5b312e2ab376abb0c751f; precommit dirty identity retained in log"
+    },
+    {
+      "command": "python3 tools/check_baseline.py --output artifacts/t04-isolation",
+      "cwd": "briarwake",
+      "result": "Passed",
+      "artifact": "isolation/run.json",
+      "revision": "Same executable sources as 89ba873c7ff0e64539f5b312e2ab376abb0c751f; precommit dirty identity retained in build manifest"
+    }
+  ],
+  "metrics_runs": [
+    {
+      "control": "pass",
+      "artifact": "pass/run.json",
+      "observed_result": "Passed",
+      "expected_result": "Passed",
+      "verification": "Passed",
+      "execution_state": "Executed",
+      "assertion_result": "Passed",
+      "run_id": "72ef2b4602ea4dacbfbd3acae7bfe1b9"
+    },
+    {
+      "control": "import-failure",
+      "artifact": "import-failure/run.json",
+      "observed_result": "Failed",
+      "expected_result": "Failed",
+      "verification": "Passed",
+      "execution_state": "Not Executed",
+      "assertion_result": null,
+      "run_id": "4bcb6d59dbe84d1e895d3b37a648b5ab"
+    },
+    {
+      "control": "startup-failure",
+      "artifact": "startup-failure/run.json",
+      "observed_result": "Failed",
+      "expected_result": "Failed",
+      "verification": "Passed",
+      "execution_state": "Not Executed",
+      "assertion_result": null,
+      "run_id": "aa4b2e1f899f453ab25531b1335ebcf0"
+    },
+    {
+      "control": "missing-report",
+      "artifact": "missing-report/run.json",
+      "observed_result": "Failed",
+      "expected_result": "Failed",
+      "verification": "Passed",
+      "execution_state": "Not Executed",
+      "assertion_result": null,
+      "run_id": "42c3045f89604d0cbef3f905322e1871"
+    },
+    {
+      "control": "assertion-failure",
+      "artifact": "assertion-failure/run.json",
+      "observed_result": "Failed",
+      "expected_result": "Failed",
+      "verification": "Passed",
+      "execution_state": "Executed",
+      "assertion_result": "Failed",
+      "run_id": "f964d0a71d854a25a8f6c0b5340b2cd3"
+    },
+    {
+      "control": "restored",
+      "artifact": "restored/run.json",
+      "observed_result": "Passed",
+      "expected_result": "Passed",
+      "verification": "Passed",
+      "execution_state": "Executed",
+      "assertion_result": "Passed",
+      "run_id": "1dced2e9b6bc48a4af8d46a7019a29fa"
+    }
+  ],
+  "policy": {
+    "aggregation": "sum captures separately per recipient, then sum totals; no client average or rate",
+    "byte_measurement": "exact serialized UTF-8 payload bytes; not wire traffic or protocol overhead",
+    "byte_units": "bytes per declared measurement window",
+    "client_scope": "logical recipients; no connected clients or network transport",
+    "clock": "Time.get_ticks_usec monotonic wall clock; microsecond resolution can quantize an actual tick to zero",
+    "direction": "probe to logical recipient",
+    "entity_scope": "seeded disposable probe entities, not production entities",
+    "percentiles": "nearest rank: sorted[ceil(p*n)-1], p=0.50/0.95/0.99; empty is null",
+    "probe_only": true,
+    "queue": "actual FIFO consumed by probe; depth sampled before enqueue, before drain and after drain",
+    "schedule": "logical offsets; executed without sleeping, not a real-time simulation rate",
+    "serialization": "sorted-key compact JSON, literal UTF-8, integer fields, no trailing newline",
+    "tick_scope": "enqueue, drain, command processing and recipient serialization; excludes sample recording, report and preflight",
+    "tick_units": "milliseconds of monotonic elapsed processing, not CPU time or scheduling interval",
+    "unsupported": [
+      "wire traffic",
+      "RTT",
+      "database latency",
+      "subscriptions",
+      "settlement retries",
+      "production simulation ticks",
+      "bootstrap heartbeat timing",
+      "player capacity"
+    ],
+    "window": "measurement_ticks after warmup_ticks idle ticks; all raw ticks retained; warmup excluded from summaries"
+  },
+  "not_run": [
+    "Browser rendering/interaction was not executed for this tracking update.",
+    "Real network peers, wire traffic, RTT, database telemetry and production capacity remain outside this local probe ticket."
+  ],
+  "evidence_applicability": "Only test-owned probe execution/measurement paths and supporting tooling changed. Prior T01 admission evidence remains applicable; T02 context and T03 diagnostics regressions reran. Production bootstrap, command/admission rules, export exclusions, canonical definition bodies and authority contracts are unchanged. Native and packaged bootstrap smoke and client pack inspection pass.",
+  "final_game_revision": "b69891244c973c46fecbfed3b63f840cb750bad0",
+  "final_provenance_artifact": "final-provenance/run.json",
+  "provenance_applicability": "Only the generated source_registry_sha256 fingerprint changed after documentation page review. Canonical definitions, schema digest, all executable source hashes and deterministic probe outcomes are identical. A fresh metrics run against the final clean commit passes all 41 cases.",
+  "documentation_checks": {
+    "result": "Passed",
+    "artifact": "documentation-checks.json",
+    "log": "documentation-checks.log",
+    "view_review": "generated-view-review.json",
+    "full_validation": {
+      "checks_passed": 242,
+      "checks_failed": 0
+    }
+  },
+  "documentation_tested_revision": "Working tree based on 12003c9d7fa5a591114c6b6b1143e4357e4a0b89; canonical/generated input identities retained below.",
+  "documentation_tested_sha256": {
+    "sources/development-roadmap.json": "3af4c2028ccc160e83ef878d7dfc2a30139a10d8f5414b8eebf68696c4f0bae2",
+    "sources/data-inventory.json": "b26ae40ad76fc32ddccb33a998766d188d157989b9259cf8671af6b68f56452d",
+    "guide/roadmap-bw-003.html": "4f0c3737dfa8655597d4935aabdc973fcf6d92ae28098337dd6fc6a561b0021f",
+    "guide/roadmap-bw-003-t04.html": "d2cb446220b145cf9d901d0230c942a5ef16f826c703bfac0e171fbfb9391b58",
+    "guide/roadmap-foundations.html": "1d543f67bb697c0712a044b66f3e71d74407e42a06e66e98a6de3468f82bb518",
+    "guide/roadmap-milestones.html": "09e1da76d319a95166183f845a1cf69d3a13d02a6104088d8beb9054cfb020a3",
+    "guide/development-roadmap.html": "3c701853489fe0b7eff7207259f7aad102c7a11c479f9e9ed07f9638b1c04078",
+    "assets/search-index.js": "6f7ba3d20736b99f99a9f0b91bd32a13d28282ab8399c600d05cf0b56a5cacda"
+  }
+}

@@ -461,6 +461,15 @@
           "revision": "1e480f0aed5d31e87590dacd98fb14459f3ee950; actual probe diagnostics and retained runtime/failure evidence; prior prerequisite applicability reviewed.",
           "result": "Passed",
           "summary": "AC3 is verified by attributed rejected/committed/repeated probe events, safe findings, secret-bearing malformed/failure controls and unchanged recipient projection. AC1/AC2 retained evidence remains applicable and regressions pass. BW-003 remains In Progress: AC4 measurements (T04) and T05 integration remain unstarted. T04 is eligible; T05 and downstream epics remain gated. Foundations and milestones stay In Progress."
+        },
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T04/epic-review.json",
+          "revision": "89ba873c7ff0e64539f5b312e2ab376abb0c751f; actual workload records and prior evidence applicability review.",
+          "result": "Passed",
+          "summary": "AC4 is verified within the accepted bounded probe/payload scope; AC1/2/3 evidence remains applicable with passing context/diagnostic/admission regressions. T04 is Complete and T05 is now dependency-eligible. BW-003 stays In Progress pending T05 integrated orchestration/verification. Downstream epics, Foundations and milestones retain their unfinished status."
         }
       ],
       "phase": "phase-foundations"
@@ -7233,7 +7242,7 @@
       "id": "BW-003-T04",
       "parent_epic": "BW-003",
       "title": "Measure bounded probe ticks, payloads and queues",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-003-AC-4"
       ],
@@ -7257,19 +7266,21 @@
         "Reports label payload versus wire measurement, logical versus connected clients and probe versus production ticks/entities. They record no database/network result that was not measured and make no capacity claim."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite metrics\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite metrics\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
           "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
-          "Use the supplied idle, two-recipient active, queued-burst, unequal-recipient, zero-client and invalid/bounds workloads. No external traffic generator or manual server scene setup is required."
+          "Use fixtures/runtime_fixtures/metrics.json, which pins the existing T02 context hash and declares 41 finite cases: idle, active, burst, reset, unequal recipients, zero clients, empty window/subscriptions, partial drain, future arrivals, limits and negative controls. No external traffic generator or manual server scene setup is required."
         ],
         "actions": [
-          "Run the launch block and inspect raw tick/queue samples, recipient payload captures/byte totals and the recorded workload/environment.",
-          "Independently recompute serialized UTF-8 byte lengths, current/peak queue summaries and the declared tick percentiles from retained samples.",
-          "Inspect idle/drain/reset, zero-client and invalid/bound cases; verify unsupported network/database observations cannot become canonical measured successes."
+          "Run the launch block and inspect run.json, actual-evidence.json, executed-fixtures.json and logs. Check per-case full workload/context hashes and environment/toolchain identities. One probe owner executes the ordered cases; idle-reset follows queued-burst.",
+          "For each measured sample, recompute (finished_usec - started_usec) / 1000 and each payload_utf8 UTF-8 byte length. Sum bytes separately by recipient over measured samples. Sort measured durations and select ceil(p*n)-1 for p=.50/.95/.99; exclude declared idle warmup samples. Check FIFO before-enqueue/before-drain/after-drain depths and pending arrivals.",
+          "Confirm queued-burst observes depth 6 before draining to 0, unequal-recipient totals differ, zero-client has an empty total map, and empty-window has no samples with null timing/queue summaries. Partial drain and future arrivals remain explicitly nonempty at their bounded stop.",
+          "Run python3 tools/check_runtime_fixtures.py --suite metrics --control import-failure, then startup-failure, missing-report and assertion-failure as separate fresh-output invocations. Each exits nonzero; the first three lack complete executed assertions and assertion-failure records executed failed assertions. Rerun --suite metrics without a control and confirm a fresh passing run.",
+          "Review the explicit serialized-payload/logical-client/probe-only policy and unsupported observations. The Python regressions mutate raw durations, queues, identities, bytes, summaries and unsupported fields to verify failure. Do not compare these local values to wire traffic or production capacity."
         ],
         "expected_results": [
-          "Tick duration, relevant probe entities, payload bytes per logical client and queue depth are actual observations of the declared bounded workload, with complete provenance.",
-          "Recomputed values agree, burst queues are observable before drain, and absent network/database facilities are accurately labeled."
+          "All 41 authored cases pass their expected positive/rejection checks in actual pinned Godot execution. Every raw tick, entity count, real FIFO transition and per-recipient UTF-8 byte total can be attributed and recomputed; malformed/nonfinite/bounded inputs never partially execute.",
+          "Expected failure controls fail at their actual stage and clean recovery passes with a new run ID. Existing context/diagnostic behavior remains verified. Network/database/production observations remain explicitly unsupported."
         ],
         "reset": [
           "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
@@ -7309,10 +7320,31 @@
         {
           "label": "Network and performance testing",
           "href": "guide/testing.html#network-and-performance-testing"
+        },
+        {
+          "label": "FixtureStep",
+          "href": "guide/data-inventory.html#shared-FixtureStep"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T04/verification.json",
+          "revision": "89ba873c7ff0e64539f5b312e2ab376abb0c751f; actual pinned Godot runs, source hashes and 82 tool regressions retained.",
+          "result": "Passed",
+          "summary": "41 finite metric workloads/controls record actual processing times, probe entities, independently verified UTF-8 bytes per logical recipient and consumed FIFO depth. Six-command burst/drain/reset, unequal recipients, zero clients/empty windows, invalid/nonfinite/bounds and report-tampering checks pass. Native/exported smoke and client exclusion checks pass. Probe/payload-only policy excludes wire/database/capacity claims."
+        }
+      ]
     },
     {
       "id": "BW-003-T05",
