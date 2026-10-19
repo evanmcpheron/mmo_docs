@@ -1,5 +1,425 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-001."><title>BW-001-T03 · Start a player-free headless server with revision identity · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-001.html#BW-001">BW-001</a><span>/</span>BW-001-T03</div><h1>BW-001-T03 · Start a player-free headless server with revision identity</h1><p class="page-description">Implementation ticket for BW-001.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-001-T03"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-001.html#BW-001">BW-001 · Reproducible client and headless project</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-001.html#BW-001-AC-2">BW-001-AC-2</a></p><h2 id="scope">Implementation scope</h2><ul><li>Create res://scenes/server/server_root.tscn with a plain Node root and bounded bootstrap heartbeat. Select this root before loading the client shell when --role server is requested.</li><li>Extend tools/run_baseline.py with --role server --headless, --config and --smoke. Normal mode stays alive until stopped; smoke mode confirms readiness and a bounded number of heartbeat iterations, then exits. This is a bootstrap heartbeat, not gameplay simulation.</li><li>Add fixtures/config/server.valid.json using the canonical ServerConfiguration fields and explicit test-only values, including independently identified rules_version and content_version. Carry build revision separately from those two version domains; capture the source commit and mark a dirty development checkout honestly.</li><li>Emit a machine-readable server-ready record containing build, rules and content revisions, selected role and headless status. Supply an observable bootstrap check of the scene tree and zero local-player count without loading graphics-dependent resources. The export ticket will embed this identity in built artifacts.</li></ul><h3>Out of scope</h3><ul><li>Multiplayer transport, authentication, economic characters, database access, authoritative game ticks or gameplay fixtures (BW-002/BW-003/BW-004).</li><li>Production diagnostics/metrics or content admission; bootstrap fixture versions do not certify compatible gameplay content.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> <a href="roadmap-bw-001-t02.html#BW-001-T02">BW-001-T02</a></p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-001-T03-AC-1"><a href="#BW-001-T03-AC-1" class="roadmap-criterion-link">AC 1</a><p>The normal server command starts with no window or graphics requirement and stays alive without any client connection or local player.</p></li><li id="BW-001-T03-AC-2"><a href="#BW-001-T03-AC-2" class="roadmap-criterion-link">AC 2</a><p>The server-ready record reports nonempty build, rules and content revisions with separate meanings and values traceable to the checkout and supplied fixture.</p></li><li id="BW-001-T03-AC-3"><a href="#BW-001-T03-AC-3" class="roadmap-criterion-link">AC 3</a><p>The smoke command observes the server root, absence of the client scene and zero players, executes its bootstrap assertions and exits zero within a documented timeout.</p></li><li id="BW-001-T03-AC-4"><a href="#BW-001-T03-AC-4" class="roadmap-criterion-link">AC 4</a><p>Changing only a fixture rules/content revision in a temporary copy changes only that reported version domain; build identity remains attributable to the same source.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: /Users/le-evanmcpheron/Documents/Godot/briarwake (the game Git checkout).
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-001." />
+    <title>
+      BW-001-T03 · Start a player-free headless server with revision identity · Briarwake
+      Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-001.html#BW-001">BW-001</a><span>/</span>BW-001-T03
+          </div>
+          <h1>BW-001-T03 · Start a player-free headless server with revision identity</h1>
+          <p class="page-description">Implementation ticket for BW-001.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-001-T03">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-001.html#BW-001"
+                  >BW-001 · Reproducible client and headless project</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-001.html#BW-001-AC-2">BW-001-AC-2</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Create res://scenes/server/server_root.tscn with a plain Node root and bounded
+                  bootstrap heartbeat. Select this root before loading the client shell when --role
+                  server is requested.
+                </li>
+                <li>
+                  Extend tools/run_baseline.py with --role server --headless, --config and --smoke.
+                  Normal mode stays alive until stopped; smoke mode confirms readiness and a bounded
+                  number of heartbeat iterations, then exits. This is a bootstrap heartbeat, not
+                  gameplay simulation.
+                </li>
+                <li>
+                  Add fixtures/config/server.valid.json using the canonical ServerConfiguration
+                  fields and explicit test-only values, including independently identified
+                  rules_version and content_version. Carry build revision separately from those two
+                  version domains; capture the source commit and mark a dirty development checkout
+                  honestly.
+                </li>
+                <li>
+                  Emit a machine-readable server-ready record containing build, rules and content
+                  revisions, selected role and headless status. Supply an observable bootstrap check
+                  of the scene tree and zero local-player count without loading graphics-dependent
+                  resources. The export ticket will embed this identity in built artifacts.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Multiplayer transport, authentication, economic characters, database access,
+                  authoritative game ticks or gameplay fixtures (BW-002/BW-003/BW-004).
+                </li>
+                <li>
+                  Production diagnostics/metrics or content admission; bootstrap fixture versions do
+                  not certify compatible gameplay content.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-001-t02.html#BW-001-T02">BW-001-T02</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-001-T03-AC-1">
+                  <a href="#BW-001-T03-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    The normal server command starts with no window or graphics requirement and
+                    stays alive without any client connection or local player.
+                  </p>
+                </li>
+                <li id="BW-001-T03-AC-2">
+                  <a href="#BW-001-T03-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    The server-ready record reports nonempty build, rules and content revisions with
+                    separate meanings and values traceable to the checkout and supplied fixture.
+                  </p>
+                </li>
+                <li id="BW-001-T03-AC-3">
+                  <a href="#BW-001-T03-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    The smoke command observes the server root, absence of the client scene and zero
+                    players, executes its bootstrap assertions and exits zero within a documented
+                    timeout.
+                  </p>
+                </li>
+                <li id="BW-001-T03-AC-4">
+                  <a href="#BW-001-T03-AC-4" class="roadmap-criterion-link">AC 4</a>
+                  <p>
+                    Changing only a fixture rules/content revision in a temporary copy changes only
+                    that reported version domain; build identity remains attributable to the same
+                    source.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: /Users/le-evanmcpheron/Documents/Godot/briarwake (the game Git checkout).
 python3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json
 python3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke
 Main scene: res://scenes/bootstrap.tscn; selected server scene: res://scenes/server/server_root.tscn
-Optional pinned engine override: append --engine &quot;/path/to/Godot.app/Contents/MacOS/Godot&quot;.</code></pre><h3>Setup</h3><ol><li>Complete BW-001-T02. Use the locked official Godot 4.7.2 engine and native macOS ARM64/Python 3.10+ in a normal local session with Godot settings/certificate access. No clients, credentials, network listener or database are required.</li><li>Keep the game checkout unchanged during revision comparison. Use fixtures/config/server.valid.json, whose canonical ServerConfiguration keys and bootstrap-test-* values are explicit test fixtures. T03 reads only the JSON object and nonempty rules/content labels; T04 owns complete configuration validation.</li><li>For identity comparison, follow the executable Python example in briarwake/tools/README.md, Run the headless server baseline. It makes external temporary copies and changes rules_version and content_version separately without modifying the game checkout.</li></ol><h3>Actions</h3><ol><li>Start normal mode, retain stdout/stderr and inspect server-bootstrap-check and server-ready JSON. Observe at least five one-second server-heartbeat iterations, confirming the process is still alive beyond the three-iteration smoke boundary. Stop it with Ctrl+C and verify no owned Godot process remains.</li><li>Run smoke mode and retain both scene checks, exactly three timer events, the server-smoke Passed record and Baseline server exited with status 0. The editor import has a 120-second limit; the subsequent runtime has a separate 10-second timeout.</li><li>Run the README comparison example. Compare the baseline, changed-rules and changed-content server-ready records. Record game HEAD, dirty status and file hashes with the actual commands/environment.</li><li>In a disposable project copy, verify server startup with the client scene/assets absent. Add an extra plain Node to server_root.tscn in that copy and confirm the scene check fails before readiness. Separately pause the Timer in that copy and confirm the smoke launcher times out nonzero with no passing smoke record and no owned runtime left behind. Keep the canonical project unchanged.</li></ol><h3>Expected results</h3><ol><li>The normal server uses headless display and Dummy audio, creates no OS window and stays alive without peers. The scene check lists only /root/ServerRoot and /root/ServerRoot/BootstrapHeartbeat. The engine-owned root Window is excluded; the strict two-node allowlist establishes zero local players without inventing a player registry. The client shell is not cached.</li><li>Each readiness record reports role server, headless true, full Git HEAD with -dirty for a changed/untracked checkout, and the two exact fixture version labels. Build identity describes source, not a packaged artifact hash; export identity belongs to T05.</li><li>Smoke actually executes startup/final scene assertions and three one-second Timer events, then exits 0 within the runtime timeout. This is bootstrap liveness evidence, not a gameplay tick, renderer, multiplayer or capacity test.</li><li>Changing rules_version affects only that ready field; changing content_version affects only that ready field. Build revision stays identical. Unexpected scene nodes fail the bootstrap check, while a stalled heartbeat fails via the launcher timeout; neither can produce passing smoke evidence.</li></ol><h3>Reset</h3><ol><li>Stop only owned normal-mode processes (Ctrl+C normally returns launcher status 130) and confirm no owned child remains. Temporary comparison files are automatically removed by the README example. Remove only disposable copies created for negative controls after retaining their logs.</li><li>Preserve the canonical fixture, game checkout, existing .godot cache and installed toolchain. No gameplay state or network resources need resetting.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> Actual normal and bounded headless logs, scene-tree/player assertions, revision-comparison output and smoke exit status.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-001-T03/verification.json">Executed on native macOS ARM64/macOS 27.0 (26A428), Python 3.14.0 and checksum-verified Godot 4.7.2. Normal launcher stayed alive through five one-second heartbeat events without clients, then Ctrl+C returned 130 with no owned child left. Smoke import/runtime logs were clean, actual startup/final scene assertions allowed only Node ServerRoot plus Timer, client scene was not cached, local-player count was zero, and three executed Timer events produced server-smoke Passed and exit 0. Server also passed with client scene/assets absent. An extra player node failed the real scene check; pausing the Timer reached readiness then triggered the 10-second launcher runtime timeout with no passing smoke or orphan process. The first incorrectly prepared timeout copy and restricted-session certificate/settings failures remain historical; clean corrected executions supersede them.</a> — AC 1, 3; Passed; revision cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted BW-001-T03 changes (SHA-256 manifest in artifact)</li><li><a href="../validation/tickets/BW-001-T03/verification.json">The committed fixture passed the existing docs ServerConfiguration schema validator. Actual readiness records reported headless/Dummy, server role, full game HEAD with -dirty and exact distinct bootstrap-test-rules-v1/content-v1 fixture labels. Two external temporary fixture copies changed rules_version and content_version independently; each changed only that one ready field while source build identity remained identical. All commands, OS/CPU, outputs, exit statuses, file hashes and runner source are retained. Revision parsing rejected missing, empty and nonstring labels; source identity was never inferred from a fixture version. This is bootstrap source-project evidence, not an export, full-config-validation, gameplay, network or capacity claim.</a> — AC 2, 4; Passed; revision cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted BW-001-T03 changes (SHA-256 manifest in artifact)</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/networking.html#practical-initial-architecture">Authority and networking</a>; <a href="../guide/testing.html#test-evidence-retained">Verification and evidence boundaries</a>; <a href="../guide/data-inventory.html#server-configuration">Canonical server configuration</a>; <a href="../guide/networking.html#security-and-observability">Version and authority boundaries</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-001-t02.html#BW-001-T02">Previous: BW-001-T02</a><a href="roadmap-bw-001-t04.html#BW-001-T04">Next: BW-001-T04</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+Optional pinned engine override: append --engine &quot;/path/to/Godot.app/Contents/MacOS/Godot&quot;.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Complete BW-001-T02. Use the locked official Godot 4.7.2 engine and native macOS
+                  ARM64/Python 3.10+ in a normal local session with Godot settings/certificate
+                  access. No clients, credentials, network listener or database are required.
+                </li>
+                <li>
+                  Keep the game checkout unchanged during revision comparison. Use
+                  fixtures/config/server.valid.json, whose canonical ServerConfiguration keys and
+                  bootstrap-test-* values are explicit test fixtures. T03 reads only the JSON object
+                  and nonempty rules/content labels; T04 owns complete configuration validation.
+                </li>
+                <li>
+                  For identity comparison, follow the executable Python example in
+                  briarwake/tools/README.md, Run the headless server baseline. It makes external
+                  temporary copies and changes rules_version and content_version separately without
+                  modifying the game checkout.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Start normal mode, retain stdout/stderr and inspect server-bootstrap-check and
+                  server-ready JSON. Observe at least five one-second server-heartbeat iterations,
+                  confirming the process is still alive beyond the three-iteration smoke boundary.
+                  Stop it with Ctrl+C and verify no owned Godot process remains.
+                </li>
+                <li>
+                  Run smoke mode and retain both scene checks, exactly three timer events, the
+                  server-smoke Passed record and Baseline server exited with status 0. The editor
+                  import has a 120-second limit; the subsequent runtime has a separate 10-second
+                  timeout.
+                </li>
+                <li>
+                  Run the README comparison example. Compare the baseline, changed-rules and
+                  changed-content server-ready records. Record game HEAD, dirty status and file
+                  hashes with the actual commands/environment.
+                </li>
+                <li>
+                  In a disposable project copy, verify server startup with the client scene/assets
+                  absent. Add an extra plain Node to server_root.tscn in that copy and confirm the
+                  scene check fails before readiness. Separately pause the Timer in that copy and
+                  confirm the smoke launcher times out nonzero with no passing smoke record and no
+                  owned runtime left behind. Keep the canonical project unchanged.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  The normal server uses headless display and Dummy audio, creates no OS window and
+                  stays alive without peers. The scene check lists only /root/ServerRoot and
+                  /root/ServerRoot/BootstrapHeartbeat. The engine-owned root Window is excluded; the
+                  strict two-node allowlist establishes zero local players without inventing a
+                  player registry. The client shell is not cached.
+                </li>
+                <li>
+                  Each readiness record reports role server, headless true, full Git HEAD with
+                  -dirty for a changed/untracked checkout, and the two exact fixture version labels.
+                  Build identity describes source, not a packaged artifact hash; export identity
+                  belongs to T05.
+                </li>
+                <li>
+                  Smoke actually executes startup/final scene assertions and three one-second Timer
+                  events, then exits 0 within the runtime timeout. This is bootstrap liveness
+                  evidence, not a gameplay tick, renderer, multiplayer or capacity test.
+                </li>
+                <li>
+                  Changing rules_version affects only that ready field; changing content_version
+                  affects only that ready field. Build revision stays identical. Unexpected scene
+                  nodes fail the bootstrap check, while a stalled heartbeat fails via the launcher
+                  timeout; neither can produce passing smoke evidence.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Stop only owned normal-mode processes (Ctrl+C normally returns launcher status
+                  130) and confirm no owned child remains. Temporary comparison files are
+                  automatically removed by the README example. Remove only disposable copies created
+                  for negative controls after retaining their logs.
+                </li>
+                <li>
+                  Preserve the canonical fixture, game checkout, existing .godot cache and installed
+                  toolchain. No gameplay state or network resources need resetting.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Actual normal and bounded headless logs,
+                scene-tree/player assertions, revision-comparison output and smoke exit status.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-001-T03/verification.json"
+                    >Executed on native macOS ARM64/macOS 27.0 (26A428), Python 3.14.0 and
+                    checksum-verified Godot 4.7.2. Normal launcher stayed alive through five
+                    one-second heartbeat events without clients, then Ctrl+C returned 130 with no
+                    owned child left. Smoke import/runtime logs were clean, actual startup/final
+                    scene assertions allowed only Node ServerRoot plus Timer, client scene was not
+                    cached, local-player count was zero, and three executed Timer events produced
+                    server-smoke Passed and exit 0. Server also passed with client scene/assets
+                    absent. An extra player node failed the real scene check; pausing the Timer
+                    reached readiness then triggered the 10-second launcher runtime timeout with no
+                    passing smoke or orphan process. The first incorrectly prepared timeout copy and
+                    restricted-session certificate/settings failures remain historical; clean
+                    corrected executions supersede them.</a
+                  >
+                  — AC 1, 3; Passed; revision cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted
+                  BW-001-T03 changes (SHA-256 manifest in artifact)
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-001-T03/verification.json"
+                    >The committed fixture passed the existing docs ServerConfiguration schema
+                    validator. Actual readiness records reported headless/Dummy, server role, full
+                    game HEAD with -dirty and exact distinct bootstrap-test-rules-v1/content-v1
+                    fixture labels. Two external temporary fixture copies changed rules_version and
+                    content_version independently; each changed only that one ready field while
+                    source build identity remained identical. All commands, OS/CPU, outputs, exit
+                    statuses, file hashes and runner source are retained. Revision parsing rejected
+                    missing, empty and nonstring labels; source identity was never inferred from a
+                    fixture version. This is bootstrap source-project evidence, not an export,
+                    full-config-validation, gameplay, network or capacity claim.</a
+                  >
+                  — AC 2, 4; Passed; revision cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted
+                  BW-001-T03 changes (SHA-256 manifest in artifact)
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/networking.html#practical-initial-architecture"
+                  >Authority and networking</a
+                >;
+                <a href="../guide/testing.html#test-evidence-retained"
+                  >Verification and evidence boundaries</a
+                >;
+                <a href="../guide/data-inventory.html#server-configuration"
+                  >Canonical server configuration</a
+                >;
+                <a href="../guide/networking.html#security-and-observability"
+                  >Version and authority boundaries</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-001-t02.html#BW-001-T02">Previous: BW-001-T02</a
+              ><a href="roadmap-bw-001-t04.html#BW-001-T04">Next: BW-001-T04</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

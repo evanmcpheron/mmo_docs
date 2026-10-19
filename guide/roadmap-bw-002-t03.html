@@ -1,7 +1,415 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-002."><title>BW-002-T03 · Validate intent contracts and filter public projections · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T03</div><h1>BW-002-T03 · Validate intent contracts and filter public projections</h1><p class="page-description">Implementation ticket for BW-002.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-002-T03"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-002.html#BW-002">BW-002 · Authority boundaries and content admission</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-002.html#BW-002-AC-1">BW-002-AC-1</a>, <a href="roadmap-bw-002.html#BW-002-AC-4">BW-002-AC-4</a></p><h2 id="scope">Implementation scope</h2><ul><li>Add only the typed ability-command reader and pure recipient-filtered combat-result projection needed for boundary fixtures, with explicit trusted session/visibility context. Keep these at the intent/projection boundary identified in T01, reusable by later transport; do not add a network endpoint or combat executor.</li><li>Preserve ability_command_v2 and its three always-present targeting keys. Validate entity/point/direction/none against resolved AbilityTargetingPolicy, finite nonzero direction, optional checked character_id and current-session coordinate scope. Reject client-authored outcome fields rather than ignoring them. Reject client activation of passive definitions even when all three targeting inputs are null. Runtime visibility/range/collision and actual session authentication remain future authoritative checks, not facts proven by shape validation.</li><li>Project internal CombatResult to the canonical shared PublicCombatResult inside CombatResultEvent using explicit recipient entitlement. Hidden source IDs become null; hidden-source correlation IDs are recipient-scoped and cannot reveal private action/ledger identity. Exclude raw/mitigation/debt/resource internals. Use EntitySnapshot as the related public-state allowlist without implementing a full snapshot producer.</li><li>Add --suite boundaries fixtures and Python-driver behavioral regression coverage. Include canonical CommandResponse accepted/rejected examples without claiming command execution, replay storage or durable success. No second mutable CharacterState or private result store is created.</li></ul><h3>Out of scope</h3><ul><li>Authentication, actual RPC transport, movement/combat simulation, idempotency/replay storage, interest management and full EntitySnapshot production.</li><li>Inferring a target/facing fallback, client-selected authority, or serializing a Godot Object/Resource or raw internal CombatResult to observers.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> <a href="roadmap-bw-002-t02.html#BW-002-T02">BW-002-T02</a></p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-002-T03-AC-1"><a href="#BW-002-T03-AC-1" class="roadmap-criterion-link">AC 1</a><p>Resolved policies for all 21 documented TargetMode branches obey their allowed input kinds; passive definitions cannot be activated by client commands. Ambiguous summon/pet bindings, missing/extra aim inputs, zero/nonfinite direction, mismatched optional character_id and injected outcome fields are rejected.</p></li><li id="BW-002-T03-AC-2"><a href="#BW-002-T03-AC-2" class="roadmap-criterion-link">AC 2</a><p>Authorized owner/observer fixtures receive only the canonical public result fields. A hidden source produces null source identity and safe correlation; an unauthorized target/recipient receives no result. Private identifiers and numeric breakdowns are absent from serialized output.</p></li><li id="BW-002-T03-AC-3"><a href="#BW-002-T03-AC-3" class="roadmap-criterion-link">AC 3</a><p>The same boundary functions are invoked by fixtures and are available for future authoritative callers; no shape-check result is presented as permission to execute gameplay or as a durable acknowledgement.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-002." />
+    <title>
+      BW-002-T03 · Validate intent contracts and filter public projections · Briarwake Development
+      Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T03
+          </div>
+          <h1>BW-002-T03 · Validate intent contracts and filter public projections</h1>
+          <p class="page-description">Implementation ticket for BW-002.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-002-T03">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-002.html#BW-002"
+                  >BW-002 · Authority boundaries and content admission</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-002.html#BW-002-AC-1">BW-002-AC-1</a>,
+                <a href="roadmap-bw-002.html#BW-002-AC-4">BW-002-AC-4</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Add only the typed ability-command reader and pure recipient-filtered
+                  combat-result projection needed for boundary fixtures, with explicit trusted
+                  session/visibility context. Keep these at the intent/projection boundary
+                  identified in T01, reusable by later transport; do not add a network endpoint or
+                  combat executor.
+                </li>
+                <li>
+                  Preserve ability_command_v2 and its three always-present targeting keys. Validate
+                  entity/point/direction/none against resolved AbilityTargetingPolicy, finite
+                  nonzero direction, optional checked character_id and current-session coordinate
+                  scope. Reject client-authored outcome fields rather than ignoring them. Reject
+                  client activation of passive definitions even when all three targeting inputs are
+                  null. Runtime visibility/range/collision and actual session authentication remain
+                  future authoritative checks, not facts proven by shape validation.
+                </li>
+                <li>
+                  Project internal CombatResult to the canonical shared PublicCombatResult inside
+                  CombatResultEvent using explicit recipient entitlement. Hidden source IDs become
+                  null; hidden-source correlation IDs are recipient-scoped and cannot reveal private
+                  action/ledger identity. Exclude raw/mitigation/debt/resource internals. Use
+                  EntitySnapshot as the related public-state allowlist without implementing a full
+                  snapshot producer.
+                </li>
+                <li>
+                  Add --suite boundaries fixtures and Python-driver behavioral regression coverage.
+                  Include canonical CommandResponse accepted/rejected examples without claiming
+                  command execution, replay storage or durable success. No second mutable
+                  CharacterState or private result store is created.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Authentication, actual RPC transport, movement/combat simulation,
+                  idempotency/replay storage, interest management and full EntitySnapshot
+                  production.
+                </li>
+                <li>
+                  Inferring a target/facing fallback, client-selected authority, or serializing a
+                  Godot Object/Resource or raw internal CombatResult to observers.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-002-t02.html#BW-002-T02">BW-002-T02</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-002-T03-AC-1">
+                  <a href="#BW-002-T03-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    Resolved policies for all 21 documented TargetMode branches obey their allowed
+                    input kinds; passive definitions cannot be activated by client commands.
+                    Ambiguous summon/pet bindings, missing/extra aim inputs, zero/nonfinite
+                    direction, mismatched optional character_id and injected outcome fields are
+                    rejected.
+                  </p>
+                </li>
+                <li id="BW-002-T03-AC-2">
+                  <a href="#BW-002-T03-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    Authorized owner/observer fixtures receive only the canonical public result
+                    fields. A hidden source produces null source identity and safe correlation; an
+                    unauthorized target/recipient receives no result. Private identifiers and
+                    numeric breakdowns are absent from serialized output.
+                  </p>
+                </li>
+                <li id="BW-002-T03-AC-3">
+                  <a href="#BW-002-T03-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    The same boundary functions are invoked by fixtures and are available for future
+                    authoritative callers; no shape-check result is presented as permission to
+                    execute gameplay or as a durable acknowledgement.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.
 python3 tools/verify_toolchain.py
 python3 tools/extract_content_contracts.py --check
 python3 tools/check_content_admission.py --suite boundaries
 python3 tools/check_content_admission.py --suite compatibility
 python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27;
-python3 tools/run_baseline.py --role server --headless --config &quot;$PWD/fixtures/config/server.valid.json&quot; --smoke</code></pre><h3>Setup</h3><ol><li>Use the pinned native macOS Godot 4.7.2 editor and Python 3.10+ from tools/toolchain.lock.json, with sibling mmo_docs canonical sources available. No dependencies or network peers are needed.</li><li>Use fixtures/content_admission/boundaries.json and contracts.snapshot.json unchanged. The corpus contains trusted synthetic SessionContext/RecipientContext inputs, all 21 resolved TargetMode branches, command overrides and recognizable private-result sentinels. The fixed HMAC fixture key is synthetic; production session wiring/key lifecycle is future work.</li><li>Each checker invocation creates a fresh artifacts/&lt;suite&gt;-&lt;timestamp&gt;/ directory, or use --output with a new absolute directory. run.json retains exact source/input SHA-256 hashes, Git revision, engine identity, per-case assertions and logs.</li></ol><h3>Actions</h3><ol><li>Run the launch commands. Inspect the 121 command cases, 14 recipient projection cases and 2 CommandResponse shape examples in the boundaries run report. Verify the passive-none case rejects activation, every allowed summon/pet alternative is explicit, and malformed/injected/ambiguous cases produce the expected field findings.</li><li>Compare owner-hidden-source, observer-visible, observer-hidden-source, hidden-another-recipient, hidden-new-key, entitlement-revoked and observer-target-hidden outputs. Hidden sources must be null; action/event references must match independent HMAC expectations and differ by recipient/key. Search serialized public output for private source/action/event IDs and raw/mitigation/debt/resource fields.</li><li>Run disposable failure controls by adding --control import-failure, startup-failure, missing-report, assertion-failure or unsupported-schema to the boundary command, using a new output directory each time. All exit 1; an executed false expectation is Executed/Failed while import/startup/missing-report paths cannot be passing assertions. Rerun boundaries cleanly afterwards.</li></ol><h3>Expected results</h3><ol><li>All 137 clean boundary cases pass in the pinned engine; compatibility and Python regression checks pass without engine errors or warnings. Negative expectations are actual rejections, with no returned intent/event and unchanged input state.</li><li>Typed intents use the trusted actor/current session epoch and zone/instance/floor. Direction is normalized; coordinates remain intent. Public events have only canonical CombatResultEvent/PublicCombatResult fields; unauthorized recipients or hidden observer targets receive no event.</li><li>The direct fixture runner invokes content/ability_command_reader.gd and content/combat_result_projection.gd, available to later authoritative callers. CommandResponse examples are schema-compatible examples only. No authentication, RPC, gameplay execution, replay storage, durable success, full EntitySnapshot producer or content readiness is claimed.</li></ol><h3>Reset</h3><ol><li>Allow each bounded checker/engine process to exit; disposable harness projects are removed automatically. No database, account, world state or network session exists to reset.</li><li>Preserve run.json and logs before removing only runner-owned artifact directories. Leave tracked fixtures, canonical definitions and bootstrap configuration unchanged; a subsequent clean run must reproduce the results.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> Executed command compatibility and recipient-projection matrix, retained redacted payloads and negative findings tied to exact canonical definitions.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-002-T03/boundaries/run.json">Pinned-engine execution passes 137 boundary cases: the complete 21-mode/input-kind matrix, passive and malformed/injected intent refusal, trusted session scope, canonical recipient projection, hidden-source HMAC known-answer/isolation checks and accepted/rejected response examples. The functions are the reusable production boundary owners; no command execution or durable acknowledgement occurs.</a> — AC 1, 2, 3; Passed; revision Exact tested game Git revision and per-source/input SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json</li><li><a href="../validation/tickets/BW-002-T03/verification.json">Executed compatibility, Python-driver behavioral regressions, baseline smoke and failure controls support the boundary run; source/link/ownership review preserves the existing server bootstrap and canonical contracts. This is pure-boundary evidence, not authenticated RPC, gameplay, multi-peer or full snapshot evidence.</a> — AC 1, 2, 3; Passed; revision Exact tested game Git revision and per-source/input SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a>; <a href="../guide/execution.html#ability-command">Command input-kind matrix</a>; <a href="../guide/networking.html#area-of-interest-and-hidden-information">Hidden-information boundary</a>; <a href="../guide/data-inventory.html#ability-command-v2">Ability intent</a>; <a href="../guide/data-inventory.html#ability-targeting-policy">Resolved input policy</a>; <a href="../guide/data-inventory.html#command-response">Command response</a>; <a href="../guide/data-inventory.html#combat-result">Private result</a>; <a href="../guide/data-inventory.html#combat-result-event">Public result event and shared PublicCombatResult</a>; <a href="../guide/data-inventory.html#entity-snapshot">Public state allowlist</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-002-t02.html#BW-002-T02">Previous: BW-002-T02</a><a href="roadmap-bw-002-t04.html#BW-002-T04">Next: BW-002-T04</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+python3 tools/run_baseline.py --role server --headless --config &quot;$PWD/fixtures/config/server.valid.json&quot; --smoke</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use the pinned native macOS Godot 4.7.2 editor and Python 3.10+ from
+                  tools/toolchain.lock.json, with sibling mmo_docs canonical sources available. No
+                  dependencies or network peers are needed.
+                </li>
+                <li>
+                  Use fixtures/content_admission/boundaries.json and contracts.snapshot.json
+                  unchanged. The corpus contains trusted synthetic SessionContext/RecipientContext
+                  inputs, all 21 resolved TargetMode branches, command overrides and recognizable
+                  private-result sentinels. The fixed HMAC fixture key is synthetic; production
+                  session wiring/key lifecycle is future work.
+                </li>
+                <li>
+                  Each checker invocation creates a fresh artifacts/&lt;suite&gt;-&lt;timestamp&gt;/
+                  directory, or use --output with a new absolute directory. run.json retains exact
+                  source/input SHA-256 hashes, Git revision, engine identity, per-case assertions
+                  and logs.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Run the launch commands. Inspect the 121 command cases, 14 recipient projection
+                  cases and 2 CommandResponse shape examples in the boundaries run report. Verify
+                  the passive-none case rejects activation, every allowed summon/pet alternative is
+                  explicit, and malformed/injected/ambiguous cases produce the expected field
+                  findings.
+                </li>
+                <li>
+                  Compare owner-hidden-source, observer-visible, observer-hidden-source,
+                  hidden-another-recipient, hidden-new-key, entitlement-revoked and
+                  observer-target-hidden outputs. Hidden sources must be null; action/event
+                  references must match independent HMAC expectations and differ by recipient/key.
+                  Search serialized public output for private source/action/event IDs and
+                  raw/mitigation/debt/resource fields.
+                </li>
+                <li>
+                  Run disposable failure controls by adding --control import-failure,
+                  startup-failure, missing-report, assertion-failure or unsupported-schema to the
+                  boundary command, using a new output directory each time. All exit 1; an executed
+                  false expectation is Executed/Failed while import/startup/missing-report paths
+                  cannot be passing assertions. Rerun boundaries cleanly afterwards.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  All 137 clean boundary cases pass in the pinned engine; compatibility and Python
+                  regression checks pass without engine errors or warnings. Negative expectations
+                  are actual rejections, with no returned intent/event and unchanged input state.
+                </li>
+                <li>
+                  Typed intents use the trusted actor/current session epoch and zone/instance/floor.
+                  Direction is normalized; coordinates remain intent. Public events have only
+                  canonical CombatResultEvent/PublicCombatResult fields; unauthorized recipients or
+                  hidden observer targets receive no event.
+                </li>
+                <li>
+                  The direct fixture runner invokes content/ability_command_reader.gd and
+                  content/combat_result_projection.gd, available to later authoritative callers.
+                  CommandResponse examples are schema-compatible examples only. No authentication,
+                  RPC, gameplay execution, replay storage, durable success, full EntitySnapshot
+                  producer or content readiness is claimed.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Allow each bounded checker/engine process to exit; disposable harness projects are
+                  removed automatically. No database, account, world state or network session exists
+                  to reset.
+                </li>
+                <li>
+                  Preserve run.json and logs before removing only runner-owned artifact directories.
+                  Leave tracked fixtures, canonical definitions and bootstrap configuration
+                  unchanged; a subsequent clean run must reproduce the results.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Executed command compatibility and
+                recipient-projection matrix, retained redacted payloads and negative findings tied
+                to exact canonical definitions.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-002-T03/boundaries/run.json"
+                    >Pinned-engine execution passes 137 boundary cases: the complete
+                    21-mode/input-kind matrix, passive and malformed/injected intent refusal,
+                    trusted session scope, canonical recipient projection, hidden-source HMAC
+                    known-answer/isolation checks and accepted/rejected response examples. The
+                    functions are the reusable production boundary owners; no command execution or
+                    durable acknowledgement occurs.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision Exact tested game Git revision and per-source/input
+                  SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-002-T03/verification.json"
+                    >Executed compatibility, Python-driver behavioral regressions, baseline smoke
+                    and failure controls support the boundary run; source/link/ownership review
+                    preserves the existing server bootstrap and canonical contracts. This is
+                    pure-boundary evidence, not authenticated RPC, gameplay, multi-peer or full
+                    snapshot evidence.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision Exact tested game Git revision and per-source/input
+                  SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a
+                >; <a href="../guide/execution.html#ability-command">Command input-kind matrix</a>;
+                <a href="../guide/networking.html#area-of-interest-and-hidden-information"
+                  >Hidden-information boundary</a
+                >; <a href="../guide/data-inventory.html#ability-command-v2">Ability intent</a>;
+                <a href="../guide/data-inventory.html#ability-targeting-policy"
+                  >Resolved input policy</a
+                >; <a href="../guide/data-inventory.html#command-response">Command response</a>;
+                <a href="../guide/data-inventory.html#combat-result">Private result</a>;
+                <a href="../guide/data-inventory.html#combat-result-event"
+                  >Public result event and shared PublicCombatResult</a
+                >; <a href="../guide/data-inventory.html#entity-snapshot">Public state allowlist</a>
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-002-t02.html#BW-002-T02">Previous: BW-002-T02</a
+              ><a href="roadmap-bw-002-t04.html#BW-002-T04">Next: BW-002-T04</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

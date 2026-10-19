@@ -1,234 +1,510 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Audit &amp; open gates · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a aria-current=page href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Validation</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Validation</div><h1>Audit &amp; open gates</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<h2 id="audit-scope">Audit scope</h2>
-<p>This revision audits the supplied v1 files, the v2 system contracts and the generated data. It checks progression capacity, references, arithmetic, race/faction eligibility, recipe coverage and documentation navigation. It also corrects identified semantic contradictions. It does <strong>not</strong> claim exhaustive manual certification of every ability interaction, production database testing or measured game balance.</p>
-<div class="callout"><strong>Scope of evidence</strong><p>330 named ability records have prototype profiles; 329 still carry a bespoke-behavior binding review flag. 882 inherited talent nodes require bespoke binding; 882 added nodes use shared handling contracts. These are content-readiness states, not failed arithmetic tests.</p><p>All 257 representative recipe outputs have explicit prototype effect or equipment-budget definitions. They are not a complete launch recipe inventory.</p></div>
-<h2 id="findings-and-resolutions">Findings and resolutions</h2>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Finding</th>
-<th>Resolution</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>A01</td>
-<td>V1 assumed 50 talent points; requested cadence creates 118</td>
-<td>One class and one specialization point on each level-up; bank specialization points before 10</td>
-<td>Resolved in v2 policy/data</td>
-</tr>
-<tr>
-<td>A02</td>
-<td>V1 trees cannot absorb 59 points each while preserving meaningful scarcity</td>
-<td>36 nodes, 92 legal ranks per tree, 59-point budget, two exclusive choice groups</td>
-<td>Capacity checked; gameplay density needs testing</td>
-</tr>
-<tr>
-<td>A03</td>
-<td>Generic early talents accidentally referenced late core attacks for Beastmaster, Ironbody and Demonologist</td>
-<td>Bind shared handling rules to an already available primary action; recheck all levels</td>
-<td>Corrected; valid allocation exists at every spendable level</td>
-</tr>
-<tr>
-<td>A04</td>
-<td>Races and factions were coupled, including Ogres</td>
-<td>Remove Ogre; single Human record allows both factions; 11 races/12 combinations</td>
-<td>Resolved</td>
-</tr>
-<tr>
-<td>A05</td>
-<td>V1 gave all classes to both sides</td>
-<td>Paladin/Cleric good-only, Necromancer/Warlock evil-only; shared capability coverage</td>
-<td>Resolved structurally; faction balance unmeasured</td>
-</tr>
-<tr>
-<td>A06</td>
-<td>Shared class armor definitions were ambiguous</td>
-<td>Explicit four-family assignments; no hidden extra combat slot for instruments/tools</td>
-<td>Resolved</td>
-</tr>
-<tr>
-<td>A07</td>
-<td>Racial multipliers could preserve a permanent endgame advantage</td>
-<td>Fixed zero-sum offsets after attribute scaling; inspect derived-stat effects separately</td>
-<td>Arithmetic examples checked; full gear-set audit remains</td>
-</tr>
-<tr>
-<td>A08</td>
-<td>“Accuracy” referenced an undefined random-hit statistic</td>
-<td>Baseline removes hit-rating tax; Marksman stationary bonus affects output instead</td>
-<td>Corrected</td>
-</tr>
-<tr>
-<td>A09</td>
-<td>A Paladin healing talent targeted an enemy mark</td>
-<td>Mark enables the next friendly Votive Light, never healing the hostile enemy</td>
-<td>Corrected intent; runtime fixture required</td>
-</tr>
-<tr>
-<td>A10</td>
-<td>Bard movement talent had no value when songs were mobile</td>
-<td>Moving Stage now governs a short diminished overlap on song replacement</td>
-<td>Corrected contract; balance unmeasured</td>
-</tr>
-<tr>
-<td>A11</td>
-<td>Three-song Bard could add a free multiplicative support layer</td>
-<td>Third slot divides one aggregate budget rather than adding full-strength amplification</td>
-<td>Corrected contract</td>
-</tr>
-<tr>
-<td>A12</td>
-<td>Fast-regenerating energy could give healers unlimited sustained output</td>
-<td>Every healer uses Mana plus a signature meter</td>
-<td>Resolved system rule; all ability hooks still need binding</td>
-</tr>
-<tr>
-<td>A13</td>
-<td>Damage received could farm Rage or pet/redirect resources</td>
-<td>No baseline damage-received Rage; transfer/debt proc exclusions</td>
-<td>Corrected</td>
-</tr>
-<tr>
-<td>A14</td>
-<td>Talent descriptions were not executable operations</td>
-<td>Numerical ability profiles, explicit modifier order, stable IDs, schema examples and binding status</td>
-<td>Core contract specified; bespoke bindings still open</td>
-</tr>
-<tr>
-<td>A15</td>
-<td>Pet counts implied unbounded per-player simulation/output</td>
-<td>Shared capacity, aggregate output, bounded chain depth and targeting</td>
-<td>Specified; load testing open</td>
-</tr>
-<tr>
-<td>A16</td>
-<td>Profession relevance existed only as aspiration</td>
-<td>Six bands, useful equipment/consumable/service output, representative recipes and commissions</td>
-<td>Design/data coverage checked; actual demand unmeasured</td>
-</tr>
-<tr>
-<td>A17</td>
-<td>Bound crafting ingredients could be traded through commissions</td>
-<td>Customer escrow ownership and atomic output delivery; no crafter ownership interval</td>
-<td>Specified; real concurrency/failure tests required</td>
-</tr>
-<tr>
-<td>A18</td>
-<td>Crafting, salvage or vendor conversions could create infinite loops</td>
-<td>Bounded salvage, no salvage XP, explicit vendor constraints, conversion graph acceptance gate</td>
-<td>Policy specified; full launch price graph not authored</td>
-</tr>
-<tr>
-<td>A19</td>
-<td>Equipment effects could double-count slots, grades or enhancements</td>
-<td>Slot weights, adaptive primary, one grade multiplier, reserved enchant budget</td>
-<td>Formula checks; full item-set tuning open</td>
-</tr>
-<tr>
-<td>A20</td>
-<td>Performance instruments were accidentally classified as utility objects</td>
-<td>Woodworking performance instruments use ordinary equipment slots and budgets</td>
-<td>Corrected data</td>
-</tr>
-<tr>
-<td>A21</td>
-<td>Old narrative/faction culture text exceeded current scope</td>
-<td>Current reference contains mechanics only; source files are not reproduced as current lore</td>
-<td>Resolved scope</td>
-</tr>
-<tr>
-<td>A23</td>
-<td>A band-I late recipe required level 10, outside its own customer band</td>
-<td>Clamp customer level to the band maximum, including level 9 for band I</td>
-<td>Corrected and checked for every recipe</td>
-</tr>
-<tr>
-<td>A22</td>
-<td>Prior prose could imply every named ability was implementation-ready</td>
-<td>Explicit readiness labels distinguish prototype profiles, contracts and unbound intent</td>
-<td>Documented throughout</td>
-</tr>
-</tbody>
-</table>
-<h2 id="user-request-coverage">User-request coverage</h2>
-<table>
-<thead>
-<tr>
-<th>Request</th>
-<th>Where it is addressed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>World of Warcraft-style character creation</td>
-<td><a href="character-creation.html#character-creation-experience">Screen layout, choices, customization, naming, review and entry flow</a></td>
-</tr>
-<tr>
-<td>Beginner starting area to level 10</td>
-<td><a href="character-creation.html#beginner-starting-area">Required solo path, learning stages, specialization, final challenge and departure</a></td>
-</tr>
-<tr>
-<td>Beginner area as a testing ground</td>
-<td><a href="character-creation.html#testing-ground">First complete playable journey and repeat playtest goals</a></td>
-</tr>
-<tr>
-<td>Meaningful specialization changes</td>
-<td>Playstyle chapter and all 37 specialization sections</td>
-</tr>
-<tr>
-<td>Meaningful talent choices</td>
-<td>Playstyle examples, six-tier rules, tradeoffs and class catalogs</td>
-</tr>
-<tr>
-<td>Two points per level</td>
-<td>Progression page, level table and validation fixtures</td>
-</tr>
-<tr>
-<td>Humans on both sides, no Ogres</td>
-<td>Race/faction page, creation eligibility matrix and JSON</td>
-</tr>
-<tr>
-<td>Exclusive good/evil classes</td>
-<td>Class eligibility and encounter-capability coverage</td>
-</tr>
-<tr>
-<td>Combat mathematics</td>
-<td>Attributes, combat and status-effect pages</td>
-</tr>
-<tr>
-<td>Ability/talent execution</td>
-<td>Execution contracts, 63 numeric profiles, catalogs and review labels</td>
-</tr>
-<tr>
-<td>Equipment and itemization</td>
-<td>Item budgets, binding, upgrades, enhancement and transaction rules</td>
-</tr>
-<tr>
-<td>Relevant professions</td>
-<td>Profession overview, 16 detail pages, six bands and recipe catalog</td>
-</tr>
-<tr>
-<td>Missing gameplay</td>
-<td>PvP/encounters, UI, economy, ownership, social and operations chapters</td>
-</tr>
-<tr>
-<td>No worldbuilding</td>
-<td>Mechanics-only labels, no capitals, maps, histories or fictional cultures</td>
-</tr>
-<tr>
-<td>Navigable HTML ZIP</td>
-<td>Offline index, grouped sidebar, page contents, search and data files</td>
-</tr>
-</tbody>
-</table>
-<h2 id="blocking-before-a-playable-release">Blocking before a playable release</h2><p><strong>Current phase:</strong> Briarwake is the implementation target, while this repository remains a design/contract reference. The current schema questions are resolved; future art/maps, concrete balance records, handlers, provider/database setup and actual gameplay/integration evidence remain explicitly unimplemented. Fully Defined describes the complete documented contract, never a claim that the game has been written or tested.</p><p>The 2.1.0-design contract review settles serialization, ordinary targeting inputs, equipment placement, invitation lifecycle, resource terminology and client disclosure. The remaining design questions are now resolved in the 2.2 documentation pass; future content production and runtime evidence remain listed under decision history. The current repository still contains no game server or executed gameplay fixtures; an open gate cannot be cleared by a schema match or an adopted recommendation alone.</p>
-<p><strong>Bespoke content binding.</strong> Most inherited named abilities have a numeric primary-effect profile, but some intended secondary effects, summon behavior, talent rewrites and resource hooks are not fully bound. Enabling those entries by reading free-text intent is forbidden. The exact unresolved counts are in the generated report. Broadly repeated handling talents are candidates for pruning if playtests show no meaningful decisions.</p>
-<p><strong>Combat and economy balance.</strong> No playable server/client, actual rotations, human usability sessions, completed item sets or live economy has been run here. DPS, healing sustainability, faction win rates, skill progression time, repair costs and crafting profitability remain measurements to obtain, not established results.</p>
-<p><strong>Full content production.</strong> Representative recipe blueprints prove level-band coverage; they are not hundreds of commissioned item icons, finished stat variants, animation sheets or a complete launch drop table. Additional named role-service abilities and UI assets still need authoring.</p>
-<p><strong>Operational correctness.</strong> Structural JSON and arithmetic tests do not prove database transaction correctness under failures, anti-cheat effectiveness, network capacity or backup restoration. The testing page separates shipped checks from required future integration tests.</p>
-<h2 id="change-control">Change control</h2>
-<p>Treat the JSON content version, rules version and database schema version separately. A change to a talent's meaning requires a versioned migration and a safe build refund/revalidation policy. A numeric balance patch must include affected-item/build simulations and clear patch notes. Preserve IDs where meaning remains compatible; do not silently repurpose a deleted ID for an unrelated spell or recipe.</p>
-</div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#audit-scope">Audit scope</a><a href="#findings-and-resolutions">Findings and resolutions</a><a href="#user-request-coverage">User-request coverage</a><a href="#blocking-before-a-playable-release">Blocking before a playable release</a><a href="#change-control">Change control</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Audit &amp; open gates · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a aria-current="page" href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Validation</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span>Validation
+          </div>
+          <h1>Audit &amp; open gates</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <h2 id="audit-scope">Audit scope</h2>
+            <p>
+              This revision audits the supplied v1 files, the v2 system contracts and the generated
+              data. It checks progression capacity, references, arithmetic, race/faction
+              eligibility, recipe coverage and documentation navigation. It also corrects identified
+              semantic contradictions. It does <strong>not</strong> claim exhaustive manual
+              certification of every ability interaction, production database testing or measured
+              game balance.
+            </p>
+            <div class="callout">
+              <strong>Scope of evidence</strong>
+              <p>
+                330 named ability records have prototype profiles; 329 still carry a
+                bespoke-behavior binding review flag. 882 inherited talent nodes require bespoke
+                binding; 882 added nodes use shared handling contracts. These are content-readiness
+                states, not failed arithmetic tests.
+              </p>
+              <p>
+                All 257 representative recipe outputs have explicit prototype effect or
+                equipment-budget definitions. They are not a complete launch recipe inventory.
+              </p>
+            </div>
+            <h2 id="findings-and-resolutions">Findings and resolutions</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Finding</th>
+                  <th>Resolution</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>A01</td>
+                  <td>V1 assumed 50 talent points; requested cadence creates 118</td>
+                  <td>
+                    One class and one specialization point on each level-up; bank specialization
+                    points before 10
+                  </td>
+                  <td>Resolved in v2 policy/data</td>
+                </tr>
+                <tr>
+                  <td>A02</td>
+                  <td>
+                    V1 trees cannot absorb 59 points each while preserving meaningful scarcity
+                  </td>
+                  <td>
+                    36 nodes, 92 legal ranks per tree, 59-point budget, two exclusive choice groups
+                  </td>
+                  <td>Capacity checked; gameplay density needs testing</td>
+                </tr>
+                <tr>
+                  <td>A03</td>
+                  <td>
+                    Generic early talents accidentally referenced late core attacks for Beastmaster,
+                    Ironbody and Demonologist
+                  </td>
+                  <td>
+                    Bind shared handling rules to an already available primary action; recheck all
+                    levels
+                  </td>
+                  <td>Corrected; valid allocation exists at every spendable level</td>
+                </tr>
+                <tr>
+                  <td>A04</td>
+                  <td>Races and factions were coupled, including Ogres</td>
+                  <td>
+                    Remove Ogre; single Human record allows both factions; 11 races/12 combinations
+                  </td>
+                  <td>Resolved</td>
+                </tr>
+                <tr>
+                  <td>A05</td>
+                  <td>V1 gave all classes to both sides</td>
+                  <td>
+                    Paladin/Cleric good-only, Necromancer/Warlock evil-only; shared capability
+                    coverage
+                  </td>
+                  <td>Resolved structurally; faction balance unmeasured</td>
+                </tr>
+                <tr>
+                  <td>A06</td>
+                  <td>Shared class armor definitions were ambiguous</td>
+                  <td>
+                    Explicit four-family assignments; no hidden extra combat slot for
+                    instruments/tools
+                  </td>
+                  <td>Resolved</td>
+                </tr>
+                <tr>
+                  <td>A07</td>
+                  <td>Racial multipliers could preserve a permanent endgame advantage</td>
+                  <td>
+                    Fixed zero-sum offsets after attribute scaling; inspect derived-stat effects
+                    separately
+                  </td>
+                  <td>Arithmetic examples checked; full gear-set audit remains</td>
+                </tr>
+                <tr>
+                  <td>A08</td>
+                  <td>“Accuracy” referenced an undefined random-hit statistic</td>
+                  <td>
+                    Baseline removes hit-rating tax; Marksman stationary bonus affects output
+                    instead
+                  </td>
+                  <td>Corrected</td>
+                </tr>
+                <tr>
+                  <td>A09</td>
+                  <td>A Paladin healing talent targeted an enemy mark</td>
+                  <td>
+                    Mark enables the next friendly Votive Light, never healing the hostile enemy
+                  </td>
+                  <td>Corrected intent; runtime fixture required</td>
+                </tr>
+                <tr>
+                  <td>A10</td>
+                  <td>Bard movement talent had no value when songs were mobile</td>
+                  <td>Moving Stage now governs a short diminished overlap on song replacement</td>
+                  <td>Corrected contract; balance unmeasured</td>
+                </tr>
+                <tr>
+                  <td>A11</td>
+                  <td>Three-song Bard could add a free multiplicative support layer</td>
+                  <td>
+                    Third slot divides one aggregate budget rather than adding full-strength
+                    amplification
+                  </td>
+                  <td>Corrected contract</td>
+                </tr>
+                <tr>
+                  <td>A12</td>
+                  <td>Fast-regenerating energy could give healers unlimited sustained output</td>
+                  <td>Every healer uses Mana plus a signature meter</td>
+                  <td>Resolved system rule; all ability hooks still need binding</td>
+                </tr>
+                <tr>
+                  <td>A13</td>
+                  <td>Damage received could farm Rage or pet/redirect resources</td>
+                  <td>No baseline damage-received Rage; transfer/debt proc exclusions</td>
+                  <td>Corrected</td>
+                </tr>
+                <tr>
+                  <td>A14</td>
+                  <td>Talent descriptions were not executable operations</td>
+                  <td>
+                    Numerical ability profiles, explicit modifier order, stable IDs, schema examples
+                    and binding status
+                  </td>
+                  <td>Core contract specified; bespoke bindings still open</td>
+                </tr>
+                <tr>
+                  <td>A15</td>
+                  <td>Pet counts implied unbounded per-player simulation/output</td>
+                  <td>Shared capacity, aggregate output, bounded chain depth and targeting</td>
+                  <td>Specified; load testing open</td>
+                </tr>
+                <tr>
+                  <td>A16</td>
+                  <td>Profession relevance existed only as aspiration</td>
+                  <td>
+                    Six bands, useful equipment/consumable/service output, representative recipes
+                    and commissions
+                  </td>
+                  <td>Design/data coverage checked; actual demand unmeasured</td>
+                </tr>
+                <tr>
+                  <td>A17</td>
+                  <td>Bound crafting ingredients could be traded through commissions</td>
+                  <td>
+                    Customer escrow ownership and atomic output delivery; no crafter ownership
+                    interval
+                  </td>
+                  <td>Specified; real concurrency/failure tests required</td>
+                </tr>
+                <tr>
+                  <td>A18</td>
+                  <td>Crafting, salvage or vendor conversions could create infinite loops</td>
+                  <td>
+                    Bounded salvage, no salvage XP, explicit vendor constraints, conversion graph
+                    acceptance gate
+                  </td>
+                  <td>Policy specified; full launch price graph not authored</td>
+                </tr>
+                <tr>
+                  <td>A19</td>
+                  <td>Equipment effects could double-count slots, grades or enhancements</td>
+                  <td>
+                    Slot weights, adaptive primary, one grade multiplier, reserved enchant budget
+                  </td>
+                  <td>Formula checks; full item-set tuning open</td>
+                </tr>
+                <tr>
+                  <td>A20</td>
+                  <td>Performance instruments were accidentally classified as utility objects</td>
+                  <td>
+                    Woodworking performance instruments use ordinary equipment slots and budgets
+                  </td>
+                  <td>Corrected data</td>
+                </tr>
+                <tr>
+                  <td>A21</td>
+                  <td>Old narrative/faction culture text exceeded current scope</td>
+                  <td>
+                    Current reference contains mechanics only; source files are not reproduced as
+                    current lore
+                  </td>
+                  <td>Resolved scope</td>
+                </tr>
+                <tr>
+                  <td>A23</td>
+                  <td>A band-I late recipe required level 10, outside its own customer band</td>
+                  <td>Clamp customer level to the band maximum, including level 9 for band I</td>
+                  <td>Corrected and checked for every recipe</td>
+                </tr>
+                <tr>
+                  <td>A22</td>
+                  <td>Prior prose could imply every named ability was implementation-ready</td>
+                  <td>
+                    Explicit readiness labels distinguish prototype profiles, contracts and unbound
+                    intent
+                  </td>
+                  <td>Documented throughout</td>
+                </tr>
+              </tbody>
+            </table>
+            <h2 id="user-request-coverage">User-request coverage</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Where it is addressed</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>World of Warcraft-style character creation</td>
+                  <td>
+                    <a href="character-creation.html#character-creation-experience"
+                      >Screen layout, choices, customization, naming, review and entry flow</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Beginner starting area to level 10</td>
+                  <td>
+                    <a href="character-creation.html#beginner-starting-area"
+                      >Required solo path, learning stages, specialization, final challenge and
+                      departure</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Beginner area as a testing ground</td>
+                  <td>
+                    <a href="character-creation.html#testing-ground"
+                      >First complete playable journey and repeat playtest goals</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Meaningful specialization changes</td>
+                  <td>Playstyle chapter and all 37 specialization sections</td>
+                </tr>
+                <tr>
+                  <td>Meaningful talent choices</td>
+                  <td>Playstyle examples, six-tier rules, tradeoffs and class catalogs</td>
+                </tr>
+                <tr>
+                  <td>Two points per level</td>
+                  <td>Progression page, level table and validation fixtures</td>
+                </tr>
+                <tr>
+                  <td>Humans on both sides, no Ogres</td>
+                  <td>Race/faction page, creation eligibility matrix and JSON</td>
+                </tr>
+                <tr>
+                  <td>Exclusive good/evil classes</td>
+                  <td>Class eligibility and encounter-capability coverage</td>
+                </tr>
+                <tr>
+                  <td>Combat mathematics</td>
+                  <td>Attributes, combat and status-effect pages</td>
+                </tr>
+                <tr>
+                  <td>Ability/talent execution</td>
+                  <td>Execution contracts, 63 numeric profiles, catalogs and review labels</td>
+                </tr>
+                <tr>
+                  <td>Equipment and itemization</td>
+                  <td>Item budgets, binding, upgrades, enhancement and transaction rules</td>
+                </tr>
+                <tr>
+                  <td>Relevant professions</td>
+                  <td>Profession overview, 16 detail pages, six bands and recipe catalog</td>
+                </tr>
+                <tr>
+                  <td>Missing gameplay</td>
+                  <td>PvP/encounters, UI, economy, ownership, social and operations chapters</td>
+                </tr>
+                <tr>
+                  <td>No worldbuilding</td>
+                  <td>Mechanics-only labels, no capitals, maps, histories or fictional cultures</td>
+                </tr>
+                <tr>
+                  <td>Navigable HTML ZIP</td>
+                  <td>Offline index, grouped sidebar, page contents, search and data files</td>
+                </tr>
+              </tbody>
+            </table>
+            <h2 id="blocking-before-a-playable-release">Blocking before a playable release</h2>
+            <p>
+              <strong>Current phase:</strong> Briarwake is the implementation target, while this
+              repository remains a design/contract reference. The current schema questions are
+              resolved; future art/maps, concrete balance records, handlers, provider/database setup
+              and actual gameplay/integration evidence remain explicitly unimplemented. Fully
+              Defined describes the complete documented contract, never a claim that the game has
+              been written or tested.
+            </p>
+            <p>
+              The 2.1.0-design contract review settles serialization, ordinary targeting inputs,
+              equipment placement, invitation lifecycle, resource terminology and client disclosure.
+              The remaining design questions are now resolved in the 2.2 documentation pass; future
+              content production and runtime evidence remain listed under decision history. The
+              current repository still contains no game server or executed gameplay fixtures; an
+              open gate cannot be cleared by a schema match or an adopted recommendation alone.
+            </p>
+            <p>
+              <strong>Bespoke content binding.</strong> Most inherited named abilities have a
+              numeric primary-effect profile, but some intended secondary effects, summon behavior,
+              talent rewrites and resource hooks are not fully bound. Enabling those entries by
+              reading free-text intent is forbidden. The exact unresolved counts are in the
+              generated report. Broadly repeated handling talents are candidates for pruning if
+              playtests show no meaningful decisions.
+            </p>
+            <p>
+              <strong>Combat and economy balance.</strong> No playable server/client, actual
+              rotations, human usability sessions, completed item sets or live economy has been run
+              here. DPS, healing sustainability, faction win rates, skill progression time, repair
+              costs and crafting profitability remain measurements to obtain, not established
+              results.
+            </p>
+            <p>
+              <strong>Full content production.</strong> Representative recipe blueprints prove
+              level-band coverage; they are not hundreds of commissioned item icons, finished stat
+              variants, animation sheets or a complete launch drop table. Additional named
+              role-service abilities and UI assets still need authoring.
+            </p>
+            <p>
+              <strong>Operational correctness.</strong> Structural JSON and arithmetic tests do not
+              prove database transaction correctness under failures, anti-cheat effectiveness,
+              network capacity or backup restoration. The testing page separates shipped checks from
+              required future integration tests.
+            </p>
+            <h2 id="change-control">Change control</h2>
+            <p>
+              Treat the JSON content version, rules version and database schema version separately.
+              A change to a talent's meaning requires a versioned migration and a safe build
+              refund/revalidation policy. A numeric balance patch must include affected-item/build
+              simulations and clear patch notes. Preserve IDs where meaning remains compatible; do
+              not silently repurpose a deleted ID for an unrelated spell or recipe.
+            </p>
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#audit-scope">Audit scope</a
+          ><a href="#findings-and-resolutions">Findings and resolutions</a
+          ><a href="#user-request-coverage">User-request coverage</a
+          ><a href="#blocking-before-a-playable-release">Blocking before a playable release</a
+          ><a href="#change-control">Change control</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

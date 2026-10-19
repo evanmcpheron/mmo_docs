@@ -59,7 +59,7 @@ class RoadmapTests(unittest.TestCase):
                 self.assertEqual(address(page, phase_page(phase), identifier), parsed.link_targets[identifier])
                 self.assertEqual([identifier], Anchors(outputs[page]).epic_ids)
                 for criterion in self.by_id[identifier]['acceptance_criteria']:
-                    self.assertIn(escape(criterion), outputs[page])
+                    self.assertIn(escape(criterion), ' '.join(outputs[page].split()))
 
     def test_acceptance_criteria_have_direct_links_for_future_tickets(self):
         outputs = generated_pages(self.data)
@@ -70,7 +70,7 @@ class RoadmapTests(unittest.TestCase):
                 anchor = f'{epic["id"]}-AC-{number}'
                 self.assertIn(anchor, parsed.ids)
                 self.assertIn('#' + anchor, parsed.references)
-                self.assertIn(escape(criterion), source)
+                self.assertIn(escape(criterion), ' '.join(source.split()))
 
     def test_dependencies_and_dependents_link_in_both_directions(self):
         outputs = generated_pages(self.data)

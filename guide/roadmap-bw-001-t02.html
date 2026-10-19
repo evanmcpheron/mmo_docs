@@ -1,7 +1,383 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-001."><title>BW-001-T02 · Launch a minimal macOS client scene · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-001.html#BW-001">BW-001</a><span>/</span>BW-001-T02</div><h1>BW-001-T02 · Launch a minimal macOS client scene</h1><p class="page-description">Implementation ticket for BW-001.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-001-T02"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-001.html#BW-001">BW-001 · Reproducible client and headless project</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-001.html#BW-001-AC-1">BW-001-AC-1</a></p><h2 id="scope">Implementation scope</h2><ul><li>Create the project main/bootstrap scene and a separate res://scenes/client/client_shell.tscn using a Control root, a visible Briarwake client baseline label and a Quit button. There is no existing test scene to reuse.</li><li>Add tools/run_baseline.py --role client, resolving the pinned engine and importing a clean project as needed. Keep role selection before scene instantiation so the server ticket can choose a separate root.</li><li>Provide macOS editor/F6 and command-line instructions, and ensure the baseline uses the recorded provisional client renderer settings.</li></ul><h3>Out of scope</h3><ul><li>Character creation, login, network connection, local gameplay player, world content, renderer/camera acceptance or visual polish.</li><li>Packaged application exports, server startup or configuration validation; these follow in separate tickets.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> <a href="roadmap-bw-001-t01.html#BW-001-T01">BW-001-T01</a></p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-001-T02-AC-1"><a href="#BW-001-T02-AC-1" class="roadmap-criterion-link">AC 1</a><p>The project has a valid main scene and the client launch command opens a visible macOS window displaying Briarwake client baseline without script/import errors.</p></li><li id="BW-001-T02-AC-2"><a href="#BW-001-T02-AC-2" class="roadmap-criterion-link">AC 2</a><p>Quit and the macOS window close action both end the process cleanly with a zero exit status.</p></li><li id="BW-001-T02-AC-3"><a href="#BW-001-T02-AC-3" class="roadmap-criterion-link">AC 3</a><p>The client shell is isolated in its own scene and does not instantiate gameplay entities or server services.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: /Users/le-evanmcpheron/Documents/Godot/briarwake (or the root of a disposable clean copy).
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-001." />
+    <title>BW-001-T02 · Launch a minimal macOS client scene · Briarwake Development Roadmap</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-001.html#BW-001">BW-001</a><span>/</span>BW-001-T02
+          </div>
+          <h1>BW-001-T02 · Launch a minimal macOS client scene</h1>
+          <p class="page-description">Implementation ticket for BW-001.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-001-T02">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-001.html#BW-001"
+                  >BW-001 · Reproducible client and headless project</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-001.html#BW-001-AC-1">BW-001-AC-1</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Create the project main/bootstrap scene and a separate
+                  res://scenes/client/client_shell.tscn using a Control root, a visible Briarwake
+                  client baseline label and a Quit button. There is no existing test scene to reuse.
+                </li>
+                <li>
+                  Add tools/run_baseline.py --role client, resolving the pinned engine and importing
+                  a clean project as needed. Keep role selection before scene instantiation so the
+                  server ticket can choose a separate root.
+                </li>
+                <li>
+                  Provide macOS editor/F6 and command-line instructions, and ensure the baseline
+                  uses the recorded provisional client renderer settings.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Character creation, login, network connection, local gameplay player, world
+                  content, renderer/camera acceptance or visual polish.
+                </li>
+                <li>
+                  Packaged application exports, server startup or configuration validation; these
+                  follow in separate tickets.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-001-t01.html#BW-001-T01">BW-001-T01</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-001-T02-AC-1">
+                  <a href="#BW-001-T02-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    The project has a valid main scene and the client launch command opens a visible
+                    macOS window displaying Briarwake client baseline without script/import errors.
+                  </p>
+                </li>
+                <li id="BW-001-T02-AC-2">
+                  <a href="#BW-001-T02-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    Quit and the macOS window close action both end the process cleanly with a zero
+                    exit status.
+                  </p>
+                </li>
+                <li id="BW-001-T02-AC-3">
+                  <a href="#BW-001-T02-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    The client shell is isolated in its own scene and does not instantiate gameplay
+                    entities or server services.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: /Users/le-evanmcpheron/Documents/Godot/briarwake (or the root of a disposable clean copy).
 python3 tools/verify_toolchain.py
 python3 tools/run_baseline.py --role client
 Optional acquired engine: python3 tools/run_baseline.py --role client --engine &quot;/path/to/Godot.app/Contents/MacOS/Godot&quot;
 Pinned editor: /usr/bin/arch -arm64 /Applications/Godot.app/Contents/MacOS/Godot --editor --path .
 Project main scene: res://scenes/bootstrap.tscn
-Independent F6 scene: res://scenes/client/client_shell.tscn</code></pre><h3>Setup</h3><ol><li>Complete BW-001-T01 and follow tools/README.md to verify the locked official engine on native macOS ARM64. Use a normal desktop Terminal session with graphics, user-settings and certificate access.</li><li>For clean-import evidence, create a new disposable copy of the current project including the uncommitted T02 files, excluding .git, .godot and __pycache__. Do not delete or overwrite an existing cache. Run from that copy, verify .godot is initially absent and retain its absolute path.</li><li>No gameplay fixture, credentials, network service, local player or exported application is required. The scene itself contains all UI controls used in this test.</li></ol><h3>Actions</h3><ol><li>Run the launcher from the clean copy. Capture the visible baseline window and preserve complete console output. Confirm the first headless editor import finishes without ERROR or SCRIPT ERROR diagnostics, followed by a graphical client using the unchanged provisional Forward Plus settings.</li><li>Confirm the label reads Briarwake client baseline and a Quit button is visible. Click Quit; preserve the printed Baseline client exited with status 0. and terminal return.</li><li>Run the launcher again. Close the graphical window using its red macOS close control; preserve the same zero exit result and terminal return. Confirm neither test leaves a client process running.</li><li>Open scenes/client/client_shell.tscn in the pinned editor and use Run Current Scene (F6, or Fn+F6); confirm the independent shell displays and Quit stops it without errors. Use F5 to check the main bootstrap default client role.</li><li>Inspect the isolated client shell scene tree: Control root, CenterContainer, VBoxContainer, Label and Button only, with no gameplay entity or server service. Record tested game HEAD plus uncommitted file hashes when applicable.</li></ol><h3>Expected results</h3><ol><li>Clean import and every desktop launch show the label and Quit control without missing-main-scene, script or import errors. Renderer/backend remain the provisional T01 baseline; this does not certify renderer feasibility.</li><li>Quit and native red close both end the launcher/client with exit 0. F6 runs the shell independently; F5 defaults to client before loading it.</li><li>Unsupported roles and malformed bootstrap arguments fail before shell instantiation. Import diagnostics cause the launcher to exit nonzero without starting a graphical process; a restricted-session failure is not passing graphical evidence.</li></ol><h3>Reset</h3><ol><li>Close only the test window/editor and stop any leftover test process you started. No gameplay or fixture state needs resetting.</li><li>Remove only the disposable test copy created for this procedure. Preserve the original checkout, .godot cache, canonical toolchain lock, installed engine/templates and all user files.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> A macOS client launch capture and console/exit results for both close paths from a clean import.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-001-T02/verification.json">Executed headless scene probe on native macOS ARM64 with pinned Godot 4.7.2. Bootstrap loads the separate Control client shell with the exact label and four UI descendants; its connected Quit signal exits 0. Both scripts also parse with exit 0 and empty stderr using a writable test log. Certificate diagnostics in runtime probes are retained; this record does not claim graphical-window or native-close verification.</a> — AC 3; Passed; revision dc21ff71a8e08d8f3efc603d3a0b989837285da7 + uncommitted BW-001-T02 changes (SHA-256 manifest in artifact)</li><li><a href="../validation/tickets/BW-001-T02/desktop-runs.json">User executed the desktop helper on macOS 27.0 (26A428), native ARM64/Python 3.14.0, using a new project copy with no .godot cache and SHA-256 identities matching the implementation. Both launches verified pinned Godot 4.7.2, imported without errors, displayed the baseline window and used Metal 4.0 / Forward+ on Apple M2 Max. User confirmed the visible UI and requested physical close actions. Quit and native red close each returned launcher/client status 0 with empty stderr. Actual command arguments, OS/CPU, hashes and complete console captures are retained. Editor F6/F5 and screenshot capture were not run; the independent shell loaded successfully in a separate headless check.</a> — AC 1, 2; Passed; revision dc21ff71a8e08d8f3efc603d3a0b989837285da7 + uncommitted BW-001-T02 changes (SHA-256 manifest in artifact)</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/networking.html#practical-initial-architecture">Authority and networking</a>; <a href="../guide/testing.html#test-evidence-retained">Verification and evidence boundaries</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-001-t01.html#BW-001-T01">Previous: BW-001-T01</a><a href="roadmap-bw-001-t03.html#BW-001-T03">Next: BW-001-T03</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+Independent F6 scene: res://scenes/client/client_shell.tscn</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Complete BW-001-T01 and follow tools/README.md to verify the locked official
+                  engine on native macOS ARM64. Use a normal desktop Terminal session with graphics,
+                  user-settings and certificate access.
+                </li>
+                <li>
+                  For clean-import evidence, create a new disposable copy of the current project
+                  including the uncommitted T02 files, excluding .git, .godot and __pycache__. Do
+                  not delete or overwrite an existing cache. Run from that copy, verify .godot is
+                  initially absent and retain its absolute path.
+                </li>
+                <li>
+                  No gameplay fixture, credentials, network service, local player or exported
+                  application is required. The scene itself contains all UI controls used in this
+                  test.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Run the launcher from the clean copy. Capture the visible baseline window and
+                  preserve complete console output. Confirm the first headless editor import
+                  finishes without ERROR or SCRIPT ERROR diagnostics, followed by a graphical client
+                  using the unchanged provisional Forward Plus settings.
+                </li>
+                <li>
+                  Confirm the label reads Briarwake client baseline and a Quit button is visible.
+                  Click Quit; preserve the printed Baseline client exited with status 0. and
+                  terminal return.
+                </li>
+                <li>
+                  Run the launcher again. Close the graphical window using its red macOS close
+                  control; preserve the same zero exit result and terminal return. Confirm neither
+                  test leaves a client process running.
+                </li>
+                <li>
+                  Open scenes/client/client_shell.tscn in the pinned editor and use Run Current
+                  Scene (F6, or Fn+F6); confirm the independent shell displays and Quit stops it
+                  without errors. Use F5 to check the main bootstrap default client role.
+                </li>
+                <li>
+                  Inspect the isolated client shell scene tree: Control root, CenterContainer,
+                  VBoxContainer, Label and Button only, with no gameplay entity or server service.
+                  Record tested game HEAD plus uncommitted file hashes when applicable.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Clean import and every desktop launch show the label and Quit control without
+                  missing-main-scene, script or import errors. Renderer/backend remain the
+                  provisional T01 baseline; this does not certify renderer feasibility.
+                </li>
+                <li>
+                  Quit and native red close both end the launcher/client with exit 0. F6 runs the
+                  shell independently; F5 defaults to client before loading it.
+                </li>
+                <li>
+                  Unsupported roles and malformed bootstrap arguments fail before shell
+                  instantiation. Import diagnostics cause the launcher to exit nonzero without
+                  starting a graphical process; a restricted-session failure is not passing
+                  graphical evidence.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Close only the test window/editor and stop any leftover test process you started.
+                  No gameplay or fixture state needs resetting.
+                </li>
+                <li>
+                  Remove only the disposable test copy created for this procedure. Preserve the
+                  original checkout, .godot cache, canonical toolchain lock, installed
+                  engine/templates and all user files.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> A macOS client launch capture and console/exit
+                results for both close paths from a clean import.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-001-T02/verification.json"
+                    >Executed headless scene probe on native macOS ARM64 with pinned Godot 4.7.2.
+                    Bootstrap loads the separate Control client shell with the exact label and four
+                    UI descendants; its connected Quit signal exits 0. Both scripts also parse with
+                    exit 0 and empty stderr using a writable test log. Certificate diagnostics in
+                    runtime probes are retained; this record does not claim graphical-window or
+                    native-close verification.</a
+                  >
+                  — AC 3; Passed; revision dc21ff71a8e08d8f3efc603d3a0b989837285da7 + uncommitted
+                  BW-001-T02 changes (SHA-256 manifest in artifact)
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-001-T02/desktop-runs.json"
+                    >User executed the desktop helper on macOS 27.0 (26A428), native ARM64/Python
+                    3.14.0, using a new project copy with no .godot cache and SHA-256 identities
+                    matching the implementation. Both launches verified pinned Godot 4.7.2, imported
+                    without errors, displayed the baseline window and used Metal 4.0 / Forward+ on
+                    Apple M2 Max. User confirmed the visible UI and requested physical close
+                    actions. Quit and native red close each returned launcher/client status 0 with
+                    empty stderr. Actual command arguments, OS/CPU, hashes and complete console
+                    captures are retained. Editor F6/F5 and screenshot capture were not run; the
+                    independent shell loaded successfully in a separate headless check.</a
+                  >
+                  — AC 1, 2; Passed; revision dc21ff71a8e08d8f3efc603d3a0b989837285da7 + uncommitted
+                  BW-001-T02 changes (SHA-256 manifest in artifact)
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/networking.html#practical-initial-architecture"
+                  >Authority and networking</a
+                >;
+                <a href="../guide/testing.html#test-evidence-retained"
+                  >Verification and evidence boundaries</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-001-t01.html#BW-001-T01">Previous: BW-001-T01</a
+              ><a href="roadmap-bw-001-t03.html#BW-001-T03">Next: BW-001-T03</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

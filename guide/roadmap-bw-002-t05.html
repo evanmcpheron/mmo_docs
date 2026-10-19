@@ -1,5 +1,404 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-002."><title>BW-002-T05 · Keep unbound or unverified behavior disabled · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T05</div><h1>BW-002-T05 · Keep unbound or unverified behavior disabled</h1><p class="page-description">Implementation ticket for BW-002.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-002-T05"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-002.html#BW-002">BW-002 · Authority boundaries and content admission</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-002.html#BW-002-AC-2">BW-002-AC-2</a>, <a href="roadmap-bw-002.html#BW-002-AC-3">BW-002-AC-3</a></p><h2 id="scope">Implementation scope</h2><ul><li>Extend the same admission owner with a closed capability/readiness check using canonical AbilityRuntimeBinding and ResolvedAbilityDefinition semantics. A known operation token is not proof that its handler exists; capabilities come from actual server-owned implementations, never candidate-authored claims.</li><li>Require complete rules-matching bindings, finite supported operation parameters/policies, presentation references, supported talent field paths/operation indices and cleanup rules before behavior eligibility. Missing or unsupported named secondary behavior produces explicit record findings; do not parse effect/review_note prose or execute arbitrary expressions/scripts.</li><li>Keep bindings_resolved, data_tests_passed and runtime_tests_passed independent and attributable to the exact binding/build/content/rules tuple. Unexecuted fixture specifications, forged candidate flags, copied evidence from another revision and schema success cannot establish readiness. Trusted evidence ownership follows T01; this ticket does not invent a cryptographic evidence service.</li><li>Add --suite readiness using existing prototype records as negative controls, missing binding/handler/presentation/talent-policy examples, stale/unexecuted evidence and caller-supplied true flags. Current Briarwake has no combat handlers: preserve this fact and keep ability execution disabled. A safe nonbehavioral resource fixture can still pass its applicable admission checks.</li></ul><h3>Out of scope</h3><ul><li>Implementing damage, class mechanics, arbitrary scripts, all talent transforms, presentation assets or gameplay fixtures merely to manufacture a ready ability.</li><li>Promoting shipped prototype readiness labels, importing documentation validation as gameplay execution evidence, or weakening unsupported-behavior rejection.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> <a href="roadmap-bw-002-t04.html#BW-002-T04">BW-002-T04</a></p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-002-T05-AC-1"><a href="#BW-002-T05-AC-1" class="roadmap-criterion-link">AC 1</a><p>An ability with a valid numerical profile and descriptive effect but no binding stays disabled with a specific finding; adding a binding with an absent handler, unknown parameter/path/policy or presentation reference also cannot enable it.</p></li><li id="BW-002-T05-AC-2"><a href="#BW-002-T05-AC-2" class="roadmap-criterion-link">AC 2</a><p>Authored all-true readiness flags, unexecuted/failed evidence or evidence for another binding/build/content/rules tuple do not bypass server-owned readiness. Structural/data tests never count as runtime execution.</p></li><li id="BW-002-T05-AC-3"><a href="#BW-002-T05-AC-3" class="roadmap-criterion-link">AC 3</a><p>Safe supported static content remains admissible while unsupported behavior is rejected or explicitly retained disabled according to the declared candidate selection; findings identify every requested unsupported record. No free-text interpretation or client-supplied handler capability is used.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: GAME_ROOT, the briarwake/ repository root. Use a normal macOS Terminal with Godot editor-data access.
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-002." />
+    <title>
+      BW-002-T05 · Keep unbound or unverified behavior disabled · Briarwake Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T05
+          </div>
+          <h1>BW-002-T05 · Keep unbound or unverified behavior disabled</h1>
+          <p class="page-description">Implementation ticket for BW-002.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-002-T05">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-002.html#BW-002"
+                  >BW-002 · Authority boundaries and content admission</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-002.html#BW-002-AC-2">BW-002-AC-2</a>,
+                <a href="roadmap-bw-002.html#BW-002-AC-3">BW-002-AC-3</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Extend the same admission owner with a closed capability/readiness check using
+                  canonical AbilityRuntimeBinding and ResolvedAbilityDefinition semantics. A known
+                  operation token is not proof that its handler exists; capabilities come from
+                  actual server-owned implementations, never candidate-authored claims.
+                </li>
+                <li>
+                  Require complete rules-matching bindings, finite supported operation
+                  parameters/policies, presentation references, supported talent field
+                  paths/operation indices and cleanup rules before behavior eligibility. Missing or
+                  unsupported named secondary behavior produces explicit record findings; do not
+                  parse effect/review_note prose or execute arbitrary expressions/scripts.
+                </li>
+                <li>
+                  Keep bindings_resolved, data_tests_passed and runtime_tests_passed independent and
+                  attributable to the exact binding/build/content/rules tuple. Unexecuted fixture
+                  specifications, forged candidate flags, copied evidence from another revision and
+                  schema success cannot establish readiness. Trusted evidence ownership follows T01;
+                  this ticket does not invent a cryptographic evidence service.
+                </li>
+                <li>
+                  Add --suite readiness using existing prototype records as negative controls,
+                  missing binding/handler/presentation/talent-policy examples, stale/unexecuted
+                  evidence and caller-supplied true flags. Current Briarwake has no combat handlers:
+                  preserve this fact and keep ability execution disabled. A safe nonbehavioral
+                  resource fixture can still pass its applicable admission checks.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Implementing damage, class mechanics, arbitrary scripts, all talent transforms,
+                  presentation assets or gameplay fixtures merely to manufacture a ready ability.
+                </li>
+                <li>
+                  Promoting shipped prototype readiness labels, importing documentation validation
+                  as gameplay execution evidence, or weakening unsupported-behavior rejection.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-002-t04.html#BW-002-T04">BW-002-T04</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-002-T05-AC-1">
+                  <a href="#BW-002-T05-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    An ability with a valid numerical profile and descriptive effect but no binding
+                    stays disabled with a specific finding; adding a binding with an absent handler,
+                    unknown parameter/path/policy or presentation reference also cannot enable it.
+                  </p>
+                </li>
+                <li id="BW-002-T05-AC-2">
+                  <a href="#BW-002-T05-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    Authored all-true readiness flags, unexecuted/failed evidence or evidence for
+                    another binding/build/content/rules tuple do not bypass server-owned readiness.
+                    Structural/data tests never count as runtime execution.
+                  </p>
+                </li>
+                <li id="BW-002-T05-AC-3">
+                  <a href="#BW-002-T05-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Safe supported static content remains admissible while unsupported behavior is
+                    rejected or explicitly retained disabled according to the declared candidate
+                    selection; findings identify every requested unsupported record. No free-text
+                    interpretation or client-supplied handler capability is used.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root. Use a normal macOS Terminal with Godot editor-data access.
 python3 tools/verify_toolchain.py
 python3 tools/extract_content_contracts.py --check
 python3 tools/check_content_admission.py --suite readiness
-python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27; -v</code></pre><h3>Setup</h3><ol><li>Use the pinned macOS arm64 Godot 4.7.2 editor and Python environment in tools/toolchain.lock.json. No gameplay scene, database, account or network peer is required.</li><li>The tracked fixtures/content_admission/readiness.json includes 47 cases with unchanged shipped prototypes, synthetic bindings, exact findings and unexecuted authored specifications. The canonical snapshot includes TalentModifierDefinition; it adds no editable domain definition.</li><li>The standard driver imports and checks a disposable project, then invokes tests/content_admission/readiness_runner.gd against the production ContentAdmission owner. Import errors or missing reports never become an assertion pass.</li></ol><h3>Actions</h3><ol><li>Run the readiness suite and inspect run.json, logs/, each selection_accepted result, per-ability eligibility/gates, tuple identities and explicit finding paths.</li><li>Run --suite readiness --control assertion-failure with a new --output directory; expect exit 1 and Executed/Failed. Import/startup/missing-report controls must not pass.</li><li>Compare effect-prose/all-true/individual-readiness cases with the missing-handler baseline: tuple identity and false gates remain unchanged. Changed applied-build/binding cases have different identities. The static-resource and retained-disabled controls remain admissible.</li></ol><h3>Expected results</h3><ol><li>Every unsupported or unverified requested behavior is rejected before activation, with explicit findings; safe static positive controls still pass.</li><li>No ability becomes executable, no canonical readiness label changes, and actual admission-test evidence is kept separate from absent gameplay evidence.</li></ol><h3>Reset</h3><ol><li>Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.</li><li>Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> Executed unsupported-binding/readiness rejection matrix, disabled-record assertions, safe static positive control and exact evidence/capability provenance.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-002-T05/direct-readiness-final/run.json">Executed 47 direct Godot admission cases with all three readiness gates false and every ability disabled. Safe static and retained-disabled controls pass; unsupported bindings/capabilities/presentation/talent/cleanup and forged/stale evidence refuse selection. Same production owner/runner as the standard suite; this direct procedure does not claim editor import or gameplay execution. Standard pipeline remains blocked by sandbox permissions.</a> — AC 1, 2, 3; Passed; revision Exact tested game revision and per-source/input hashes retained in the linked run report and verification.json.</li><li><a href="../validation/tickets/BW-002-T05/standard-verification-2026-10-19/verification.json">Standard pinned-engine readiness suite executes all 47 cases after successful editor import and script checks. Missing binding/handler/presentation/talent/cleanup capabilities and forged/stale/unexecuted evidence remain disabled; safe static and retained-disabled controls pass. Full 45-test Python regressions pass. The previous sandbox blocker is resolved; no gameplay capability or readiness label is promoted.</a> — AC 1, 2, 3; Passed; revision Exact committed game revision, main bases and per-source/input hashes retained in the verification record and standard suite reports.</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a>; <a href="../guide/execution.html#data-and-runtime-gates">Readiness and execution gates</a>; <a href="../guide/operations.html#content-tools">Required content fixtures</a>; <a href="../guide/data-inventory.html#ability-definition">Optional shared AbilityRuntimeBinding</a>; <a href="../guide/data-inventory.html#resolved-ability-definition">Independent readiness gates</a>; <a href="../guide/data-inventory.html#effect-operation-definition">Finite operation parameters</a>; <a href="../guide/data-inventory.html#talent-modifier-definition">Talent modifier allowlist</a>; <a href="../guide/data-inventory.html#visual-presentation-definition">Presentation references</a>; <a href="../guide/data-inventory.html#content-validation-fixture">Validation run evidence</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-002-t04.html#BW-002-T04">Previous: BW-002-T04</a><a href="roadmap-bw-002-t06.html#BW-002-T06">Next: BW-002-T06</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27; -v</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use the pinned macOS arm64 Godot 4.7.2 editor and Python environment in
+                  tools/toolchain.lock.json. No gameplay scene, database, account or network peer is
+                  required.
+                </li>
+                <li>
+                  The tracked fixtures/content_admission/readiness.json includes 47 cases with
+                  unchanged shipped prototypes, synthetic bindings, exact findings and unexecuted
+                  authored specifications. The canonical snapshot includes TalentModifierDefinition;
+                  it adds no editable domain definition.
+                </li>
+                <li>
+                  The standard driver imports and checks a disposable project, then invokes
+                  tests/content_admission/readiness_runner.gd against the production
+                  ContentAdmission owner. Import errors or missing reports never become an assertion
+                  pass.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Run the readiness suite and inspect run.json, logs/, each selection_accepted
+                  result, per-ability eligibility/gates, tuple identities and explicit finding
+                  paths.
+                </li>
+                <li>
+                  Run --suite readiness --control assertion-failure with a new --output directory;
+                  expect exit 1 and Executed/Failed. Import/startup/missing-report controls must not
+                  pass.
+                </li>
+                <li>
+                  Compare effect-prose/all-true/individual-readiness cases with the missing-handler
+                  baseline: tuple identity and false gates remain unchanged. Changed
+                  applied-build/binding cases have different identities. The static-resource and
+                  retained-disabled controls remain admissible.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Every unsupported or unverified requested behavior is rejected before activation,
+                  with explicit findings; safe static positive controls still pass.
+                </li>
+                <li>
+                  No ability becomes executable, no canonical readiness label changes, and actual
+                  admission-test evidence is kept separate from absent gameplay evidence.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Let each bounded checker process exit and discard its in-memory candidate/active
+                  registries. Use runner-owned temporary copies for negative mutations; leave
+                  tracked canonical snapshots, fixtures and bootstrap configuration unchanged.
+                </li>
+                <li>
+                  Retain the attributable run report and logs in the chosen evidence location. A
+                  subsequent clean suite run must reproduce the original outcomes without a
+                  database, account, network peer or gameplay scene.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Executed unsupported-binding/readiness rejection
+                matrix, disabled-record assertions, safe static positive control and exact
+                evidence/capability provenance.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-002-T05/direct-readiness-final/run.json"
+                    >Executed 47 direct Godot admission cases with all three readiness gates false
+                    and every ability disabled. Safe static and retained-disabled controls pass;
+                    unsupported bindings/capabilities/presentation/talent/cleanup and forged/stale
+                    evidence refuse selection. Same production owner/runner as the standard suite;
+                    this direct procedure does not claim editor import or gameplay execution.
+                    Standard pipeline remains blocked by sandbox permissions.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision Exact tested game revision and per-source/input
+                  hashes retained in the linked run report and verification.json.
+                </li>
+                <li>
+                  <a
+                    href="../validation/tickets/BW-002-T05/standard-verification-2026-10-19/verification.json"
+                    >Standard pinned-engine readiness suite executes all 47 cases after successful
+                    editor import and script checks. Missing
+                    binding/handler/presentation/talent/cleanup capabilities and
+                    forged/stale/unexecuted evidence remain disabled; safe static and
+                    retained-disabled controls pass. Full 45-test Python regressions pass. The
+                    previous sandbox blocker is resolved; no gameplay capability or readiness label
+                    is promoted.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision Exact committed game revision, main bases and
+                  per-source/input hashes retained in the verification record and standard suite
+                  reports.
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a
+                >;
+                <a href="../guide/execution.html#data-and-runtime-gates"
+                  >Readiness and execution gates</a
+                >; <a href="../guide/operations.html#content-tools">Required content fixtures</a>;
+                <a href="../guide/data-inventory.html#ability-definition"
+                  >Optional shared AbilityRuntimeBinding</a
+                >;
+                <a href="../guide/data-inventory.html#resolved-ability-definition"
+                  >Independent readiness gates</a
+                >;
+                <a href="../guide/data-inventory.html#effect-operation-definition"
+                  >Finite operation parameters</a
+                >;
+                <a href="../guide/data-inventory.html#talent-modifier-definition"
+                  >Talent modifier allowlist</a
+                >;
+                <a href="../guide/data-inventory.html#visual-presentation-definition"
+                  >Presentation references</a
+                >;
+                <a href="../guide/data-inventory.html#content-validation-fixture"
+                  >Validation run evidence</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-002-t04.html#BW-002-T04">Previous: BW-002-T04</a
+              ><a href="roadmap-bw-002-t06.html#BW-002-T06">Next: BW-002-T06</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

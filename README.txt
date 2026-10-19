@@ -60,7 +60,10 @@ No Godot client/server, production database, economy or load test is included.
 
 VALIDATION
 Run: python validation/run_checks.py
-Requires Python 3.10+; standard library only. The script rewrites report.json
+Maintainer checks require Python 3.10+, Node.js 22+ and the pinned Prettier
+dependency installed with npm ci. Python code uses the standard library;
+generated-output checks also invoke the local HTML formatter.
+The script rewrites report.json
 and allocation_examples.json. It does not regenerate HTML or run a game.
 The HTML evidence page records checks from package generation; report.json is
 the source of truth after a later rerun.
@@ -136,6 +139,7 @@ statuses do not automatically promote epic or milestone progress; completion
 requires actual evidence and completed dependencies. Ticket blockers and
 verified_evidence follow the same rules and record shape as epics.
 Do not edit the generated pages or search records. Rebuild and validate with:
+npm ci
 python3 scripts/build_development_roadmap.py
 python3 scripts/build_data_inventory.py --review-roadmap
 python3 scripts/build_development_roadmap.py --check
@@ -150,6 +154,16 @@ as planning references, without adding gameplay data associations. It refreshes
 navigation, direct detail-page search links, page review metadata and manifest counts.
 Generated dashboards, phase progress and milestone states derive from the same
 epic statuses. Every page remains readable offline and with JavaScript disabled.
+
+HTML FORMATTING
+Prettier is pinned in package-lock.json and configured in .prettierrc.json.
+Both Python builders format their HTML output automatically, including in
+--check mode, so rebuilding preserves readable diffs. After npm ci, use:
+npm run format:html
+npm run check:html
+These commands cover published HTML and leave retained validation evidence alone.
+The first formatting pass is a mechanical baseline; later changes stay localized.
+Opening the published site still requires no Node.js or package installation.
 
 DATA INVENTORY AND CANONICAL CONTRACTS
 Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.
@@ -223,7 +237,8 @@ Focused consistency check: python3 validation/check_data_inventory.py
 Regression tests: python3 -m unittest discover -s validation -p 'test_*.py'
 Full existing checks, including inventory: python3 validation/run_checks.py
 Optional rendered checks: node validation/check_inventory_browser.mjs
-All Python commands require Python 3.10+ and the standard library only.
+Python commands require Python 3.10+; HTML generation and generated-output
+checks also require Node.js 22+ and npm ci for the pinned formatter.
 The browser check uses Node 22+ and installed Chrome/Chromium without downloads.
 Set BRIARWAKE_CHROME_BIN if needed. Its evidence is stored separately from the
 historical rendering-only record in validation/data-inventory-browser-checks.json.
