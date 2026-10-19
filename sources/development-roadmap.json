@@ -371,6 +371,18 @@
           "revision": "Tested game revisions and retained-evidence applicability recorded in the linked parent review and suite source/input manifests.",
           "result": "Passed",
           "summary": "T06 completes economic input/constraint coverage toward AC5. Retain AC1 ownership/lifecycle evidence and AC3 readiness refusal; executed compatibility/boundary/structure/readiness regressions preserve AC4. Parent remains In Progress: AC5 still requires T07 complete-graph loop certification; AC2 still requires T08 real atomic startup admission. T07 is now ticket-dependency-ready; downstream epics remain gated on BW-002."
+        },
+        {
+          "criteria": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "artifact": "validation/tickets/BW-002-T07/epic-review.json",
+          "revision": "Exact suite revisions/source hashes and documentation-only delivery applicability are retained in the linked review and verification.json.",
+          "result": "Passed",
+          "summary": "T07 completes AC5 with exact complete-graph value conservation and strict crafted sellback, 26 executed graph cases, independent witness replay and fresh T06 constraints. AC1 ownership/lifecycle and AC3 readiness refusal remain applicable; fresh compatibility/boundary/structure/readiness regressions retain AC4. BW-002 remains In Progress solely for AC2: T08 real atomic startup publication/rejection. T08 now has all ticket prerequisites Complete; dependent epics remain gated on unfinished BW-002."
         }
       ],
       "phase": "phase-foundations"
@@ -6643,7 +6655,7 @@
       "id": "BW-002-T07",
       "parent_epic": "BW-002",
       "title": "Reject unlimited guaranteed price and conversion loops",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-5"
       ],
@@ -6666,22 +6678,26 @@
         "A scarce nonrenewable-input control is not mislabeled an unlimited cycle; unknown completeness/behavior fails closed with an explicit unsupported finding. Reordering the same fixture graph preserves the decision."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite economy-loops\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite economy-loops\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
-          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Provide all positive/negative graphs in canonical vendor/recipe/item/material/salvage records plus expected findings and exact finite replay steps for each exploit witness. No gold balance or persistent store is needed."
+          "Use the pinned native macOS Godot 4.7.2 standard editor and Python environment in tools/toolchain.lock.json. The checker executes actual GDScript in an owned temporary Godot project; no database, account, peers or gameplay scene is required.",
+          "The 26 canonical vendor/recipe/item/material/salvage cases are in fixtures/content_admission/economy-loops.json. Their expected ContentValidationFixture evidence remains authored/unexecuted. Default --output creates a fresh timestamped artifact directory; inspect its run.json and logs.",
+          "Optional editor sanity: open project.godot in Godot. Reload Current Project after branch/source updates if stale parser/UID output persists. F5 starts the existing client shell, which has no economy controls and does not execute these fixtures. Graphical Play was attempted during this ticket and remains unverified; see manual-editor-review.json."
         ],
         "actions": [
-          "Run the graph suite and inspect the route/quantity witness for each rejected graph against the expected repeatable gain or strict crafted-price violation.",
-          "Run the old-route-plus-addition and permuted-order cases; compare with safe lossy and scarce-input controls."
+          "Run the suite and inspect each actual finding. economic_loop/crafted_sellback messages include JSON steps with source IDs, exact integer executions, canonical inputs/outputs, seed and net_gain.",
+          "For every supported rejection, start with seed, consume/produce the listed quantities for each execution count in order, then compare final stock with seed plus net_gain. Python regressions independently perform this replay against canonical records.",
+          "Compare proposed-route-safe-alone with cycle-created-by-retained-routes, multi-input/batch profit with safe controls, and nonrenewable-scarce-input-control with replenished material duplication. Every runner case also reverses catalog order and checks the previous candidate is unchanged.",
+          "Confirm salvage-no-gold, salvage-no-xp, excluded cores and starter owner/binding cases remain rejected before graph certification. Inspect explicit unsupported access/arithmetic/unknown-source cases. For an intentional failed execution, run python3 tools/check_content_admission.py --suite economy-loops --control assertion-failure; it must exit 1 and report an executed failed assertion."
         ],
         "expected_results": [
-          "Safe supported graphs pass; unsafe or unsupported graphs leave affected routes disabled with observable reasons. The complete active-plus-candidate graph is evaluated before admission.",
-          "No graph fixture executes a production economy or claims balanced content; integer accounting and documented salvage limits are retained."
+          "All 26 authored expected decisions match actual Godot assertions. Lossy, acyclic and finite scarce-stock controls pass; guaranteed profit/duplication and crafted equality reject before candidate creation, with exact replay witnesses.",
+          "Every supported profit witness replenishes all inputs and gains a nonnegative resource vector with at least one positive quantity. Crafted equality replenishes the seed exactly and is refused by strict-loss policy.",
+          "Unknown behavior/completeness and unsupported access, arithmetic or analysis budgets keep routes disabled with explicit findings. Prices and batch arithmetic use integers throughout. Graph certification cannot satisfy ability readiness or publish active server content."
         ],
         "reset": [
-          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
-          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+          "Let each bounded checker process exit; its owned temporary Godot project and in-memory registries are discarded. Use a new --output path for every run and preserve earlier evidence.",
+          "The driver preserves tracked fixtures, canonical snapshots, scenes and bootstrap configuration. No database, account or persistent economy needs reset. A subsequent clean run reproduces the original decisions."
         ]
       },
       "completion_evidence": "Executed positive and negative graph report with exact route/quantity witnesses, combined-graph regression and safe-control evidence.",
@@ -6695,28 +6711,52 @@
           "href": "guide/items.html#durability-salvage-and-demand"
         },
         {
-          "label": "Explicit pricing constraints",
+          "label": "VendorPricingConfiguration — explicit integer prices",
           "href": "guide/data-inventory.html#vendor-pricing-configuration"
         },
         {
-          "label": "Guaranteed vendor inputs",
+          "label": "VendorOfferDefinition — guaranteed NPC inputs",
           "href": "guide/data-inventory.html#vendor-offer-definition"
         },
         {
-          "label": "Recipe inputs and batch outputs",
+          "label": "RecipeDefinition — required inputs and batch outputs",
           "href": "guide/data-inventory.html#recipe-definition"
         },
         {
-          "label": "Value-losing salvage",
+          "label": "SalvageRule — value-losing returns",
           "href": "guide/data-inventory.html#salvage-rule"
         },
         {
-          "label": "Findings result",
+          "label": "ContentValidationResult — observable findings",
           "href": "guide/data-inventory.html#content-validation-result"
+        },
+        {
+          "label": "ItemDefinition",
+          "href": "guide/data-inventory.html#item-definition"
+        },
+        {
+          "label": "MaterialDefinition",
+          "href": "guide/data-inventory.html#material-definition"
+        },
+        {
+          "label": "RecipeIngredient",
+          "href": "guide/data-inventory.html#recipe-ingredient"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T07/verification.json",
+          "revision": "Exact executed game revisions, unchanged runtime/tool source hashes and final canonical-snapshot provenance refresh are recorded in validation/tickets/BW-002-T07/verification.json and the linked suite reports.",
+          "result": "Passed",
+          "summary": "26 canonical loop graph cases pass in native pinned Godot with reversed-order/retained-state checks; 50 tooling regressions include independent exact witness replay and false-expectation refusal. Strict crafted equality, cheapest multistep procurement, free-input profit, combined prior/proposed and multi-input/batch duplication reject; lossy/acyclic/scarce controls pass. Unknown behavior/completeness and unsupported access/arithmetic fail closed. Fresh 57 economic-input, 154 compatibility, 137 boundary, 174 structure and 47 readiness cases pass. Full project import is clean. Graphical editor Play is separately unverified; no production economy or startup activation is claimed."
+        }
+      ]
     },
     {
       "id": "BW-002-T08",
