@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-19",
+  "ticket": "BW-002-T04",
+  "result": "Passed",
+  "execution": "All suites below executed in the pinned native macOS ARM64 Godot 4.7.2 harness against the clean committed game revision. Staging cases also reverse record arrays and verify retained-candidate/input/snapshot isolation.",
+  "development_evidence": "development/precommit/run.json",
+  "revision": "1f6845a782bb2d53bbb01eb764df20392dcd572b",
+  "limitations": [
+    "No gameplay execution, readiness certification, active-selection publication, bootstrap content integration, database or multiplayer testing. Those gates are outside T04."
+  ],
+  "development_corrections": [
+    "Initial run exposed order-dependent duplicate binding paths and test-harness NaN serialization; both corrected.",
+    "The shared numeric adapter avoids duplicate annotation-only checks while preserving reference sibling constraints; fresh boundary regression passes.",
+    "A final new regression reproduced acceptance of a trailing newline in a UTC timestamp. Full-match validation fixes it; final compatibility suite passes all 154 cases including this rejection. Historical failed execution is retained in development/timestamp-regression/run.json."
+  ],
+  "suites": {
+    "structure": {
+      "artifact": "final/structure/run.json",
+      "result": "Passed",
+      "executed_cases": 174,
+      "game_revision": "1f6845a782bb2d53bbb01eb764df20392dcd572b",
+      "source_hashes_match_committed_revision": true
+    },
+    "compatibility": {
+      "artifact": "final/compatibility/run.json",
+      "result": "Passed",
+      "executed_cases": 154,
+      "game_revision": "1f6845a782bb2d53bbb01eb764df20392dcd572b",
+      "source_hashes_match_committed_revision": true
+    },
+    "boundaries": {
+      "artifact": "final/boundaries/run.json",
+      "result": "Passed",
+      "executed_cases": 137,
+      "game_revision": "1f6845a782bb2d53bbb01eb764df20392dcd572b",
+      "source_hashes_match_committed_revision": true
+    }
+  },
+  "game_tool_tests": {
+    "command": "python3 -m unittest discover -s tools -p 'test_*.py' -v",
+    "result": "Passed",
+    "count": 43,
+    "artifact": "final-python-tests.log",
+    "game_revision": "1f6845a782bb2d53bbb01eb764df20392dcd572b"
+  },
+  "failure_controls": {
+    "artifact": "failure-controls.json",
+    "result": "Passed",
+    "expected_refusals": 5,
+    "applicability": "Final follow-up changes only UTC full-match validation and adds two regression fixtures. Driver/control behavior is unchanged; final tool tests rerun import/false-expectation controls and final clean suites pass."
+  },
+  "documentation": {
+    "artifact": "documentation-checks.json",
+    "result": "Passed",
+    "regression_tests": 72,
+    "full_checks_passed": 242,
+    "full_checks_failed": 0
+  },
+  "generated_views": "generated-view-review.json",
+  "authority_links": {
+    "artifact": "authority-links.json",
+    "result": "Passed",
+    "links": 62
+  },
+  "final_source_sha256": {
+    "content/content_admission.gd": "4bfcae4c30dd17761486d08bc058452eb4faeea84faeb97ed0debd12b3f32a05",
+    "content/content_compatibility.gd": "9752d43c1260f86114c01c5ad10a50860d5ed8ba0e7f5135801731973c937e3a",
+    "tests/content_admission/structure_runner.gd": "50fcb57e5048c0e211e22b3d5e3e59e5d2b2746d63175cf18863b8b8294da26e",
+    "fixtures/content_admission/contracts.snapshot.json": "f651a27775f645ebe273cf9ad813da35e7ea8659bcab2aacc1941fe5794a6390",
+    "fixtures/content_admission/structure.json": "389f3ac5b60e3b847648d5f2a2ccb6205948a3af3369e28a88ea0eff57c07ff7",
+    "fixtures/content_admission/compatibility.json": "48813ae4408e2aa5ea761bb13a99eeae0bbcc3c9c12ddb3f03f199f2bc415b24"
+  }
+}
