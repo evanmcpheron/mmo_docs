@@ -1,0 +1,44 @@
+{
+  "recorded_at": "2026-10-19T14:28:39.763632+00:00",
+  "game": {
+    "branch": "codex/bw-002-t02-compatibility",
+    "base_main": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b",
+    "committed_revision": "99acc3a2a2a7e756ebeb66b4bcd7c56a5c5e387b",
+    "tested_revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b-dirty",
+    "evidence": "final-pass/run.json",
+    "source_applicability": "Every runtime reader, runner, tooling source and fixture matches retained executed evidence. The later authorized AGENTS.md policy change has no runtime behavior."
+  },
+  "documentation": {
+    "branch": "codex/bw-002-t02-tracking",
+    "base_main": "15a2a1dac810e23286bc4964d9fe59e528cdac59",
+    "checks": "docs-checks-final/results.json",
+    "pre_push_checks": [
+      "python3 scripts/build_development_roadmap.py --check",
+      "python3 scripts/build_data_inventory.py --check",
+      "python3 validation/check_development_roadmap.py",
+      "python3 validation/check_data_inventory.py"
+    ],
+    "pre_push_result": "Passed"
+  },
+  "policy": {
+    "user_confirmed_destination": "Both repositories AGENTS.md files",
+    "policy_sha256": "591d019ccc3272467f8311adbfd218966068bda47a0fedc6aa4d77b55c5729aa",
+    "workspace_copy": "The parent workspace file is outside Git; its exact Git/PR section is now versioned in each changed repository."
+  },
+  "whitespace_review": {
+    "source": "No source whitespace errors.",
+    "raw_evidence": "git diff --cached --check flags seven blank final lines in verbatim captured engine logs. These original logs are intentionally preserved byte-for-byte; no source check or validator was weakened."
+  },
+  "validation_summary": {
+    "godot_cases": 140,
+    "failure_controls": 7,
+    "tooling_tests": 37,
+    "documentation_tests": 72,
+    "full_validation_passed": 242,
+    "not_run": [
+      "GUI/gameplay",
+      "network peers",
+      "other platforms"
+    ]
+  }
+}

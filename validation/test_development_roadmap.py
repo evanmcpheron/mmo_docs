@@ -109,8 +109,10 @@ class RoadmapTests(unittest.TestCase):
         self.assertEqual([], self.errors())
 
     def test_ticket_completion_requires_executed_evidence_and_dependencies(self):
-        self.data['tickets'][0]['status'] = 'Not Started'
-        self.data['tickets'][0]['verified_evidence'] = []
+        for existing in self.data['tickets']:
+            existing['status'] = 'Not Started'
+            existing['verified_evidence'] = []
+            existing['blockers'] = []
         ticket = self.data['tickets'][1]
         ticket['status'] = 'Complete'
         ticket['blockers'] = []

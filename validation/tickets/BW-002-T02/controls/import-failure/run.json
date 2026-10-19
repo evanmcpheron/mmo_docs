@@ -1,0 +1,173 @@
+{
+  "suite": "compatibility",
+  "control": "import-failure",
+  "command": [
+    "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+    "tools/check_content_admission.py",
+    "--suite",
+    "compatibility",
+    "--output",
+    "../mmo_docs/validation/tickets/BW-002-T02/controls/import-failure",
+    "--control",
+    "import-failure"
+  ],
+  "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+  "started_at": "2026-10-19T14:10:27.794679+00:00",
+  "environment": {
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "python": "3.14.0"
+  },
+  "result": "Failed",
+  "runtime": {
+    "execution_state": "Not Executed",
+    "assertion_result": null
+  },
+  "stages": [
+    {
+      "name": "import",
+      "command": [
+        "/usr/bin/arch",
+        "-arm64",
+        "/Applications/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-compatibility-xgtr6jv5",
+        "--editor",
+        "--quit"
+      ],
+      "cwd": "/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-compatibility-xgtr6jv5",
+      "started_at": "2026-10-19T14:10:28.217843+00:00",
+      "timeout_seconds": 30,
+      "timed_out": false,
+      "exit_status": 0,
+      "result": "Passed",
+      "log": "logs/import.log",
+      "process_id": 65903,
+      "process_reaped": true,
+      "process_group_cleanup": "SIGKILL sent if group still existed",
+      "duration_seconds": 1.562
+    },
+    {
+      "name": "script-check",
+      "command": [
+        "/usr/bin/arch",
+        "-arm64",
+        "/Applications/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--path",
+        "/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-compatibility-xgtr6jv5",
+        "--check-only",
+        "--script",
+        "res://tests/content_admission/compatibility_runner.gd"
+      ],
+      "cwd": "/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-compatibility-xgtr6jv5",
+      "started_at": "2026-10-19T14:10:29.782285+00:00",
+      "timeout_seconds": 10,
+      "timed_out": false,
+      "exit_status": 0,
+      "result": "Failed",
+      "log": "logs/script-check.log",
+      "process_id": 65905,
+      "process_reaped": true,
+      "process_group_cleanup": "SIGKILL sent if group still existed",
+      "duration_seconds": 0.197
+    }
+  ],
+  "gameplay_executed": false,
+  "build_revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b-dirty",
+  "source_sha256": {
+    "content/content_compatibility.gd": "2d67d4cc10c9f1522cb5fcc533d4ed096ee91f381935aeb1cea68c52fc7670c9",
+    "tests/content_admission/compatibility_runner.gd": "ec7b542280140e86c4d82bc2cf3a2c62a7ebbc330e733274ea4ffc854962e8cb",
+    "tools/toolchain.lock.json": "bf167c415787d64c729bcc3a5147be4f453f5774a5555473aee1af125f785e14",
+    "tools/build_baseline.py": "3e8fcfebbbdc973dbe478eca5d3c844013f1b404898570be2b0178274d38ba9a",
+    "tools/check_baseline.py": "9c303cd704ce199d198baf4df4899cd650c5778e44548b2442414b010119d77c",
+    "tools/check_client_artifact.py": "6bc6efc13e0cfefa364047207e39fcec01f326f05d38c2d50a48d20c976cdb8d",
+    "tools/check_configuration.py": "52b3369e58eae5c45137633ceb09daaff885b03a6fea842a78e18597f1aa5b55",
+    "tools/check_content_admission.py": "4a05f98502a00f5754be9992afe57eafc32c4dcb85bb35e7791295250ff2cb48",
+    "tools/extract_content_contracts.py": "9ed611e53f99fc6bfa44381ae7ac7801b474f948a3b2a084e6b53edda28d076a",
+    "tools/run_baseline.py": "04ee062bb4cdcbf77b52365fc1469458a5f7d65f84216324af40523a0ec9aca3",
+    "tools/test_build_baseline.py": "319c76d6fa4790bd94f8483de77909d7b2f0afc932a5f4f95106519d92adc67f",
+    "tools/test_check_baseline.py": "cfab8ec29747e9f3624bb3fb3f9c03b746e66745e781cd75ea35fa2ba0fe8d3c",
+    "tools/test_client_artifact.py": "ba979e1c77170969ba4296d52d8cae8e80d0aef68b67fbe9de7632da6eb54dba",
+    "tools/test_content_admission.py": "3aee77ccc9cd0edeb1cc79e1f8bedb5d1e22928791e58019ceb1eb18b6ff598d",
+    "tools/verify_toolchain.py": "a19efff6a77f334a6a5a92016fbf996e1834a8819a9a38e51f7d26e38564e31a"
+  },
+  "inputs": {
+    "registry": {
+      "path": "/Users/le-evanmcpheron/Documents/Godot/mmo_docs/sources/data-inventory.json",
+      "sha256": "c52ab371f6091bfeb773ee71e4e1bad376c71b2245e424ba8fc80cb64ff0944e"
+    },
+    "snapshot": {
+      "path": "/Users/le-evanmcpheron/Documents/Godot/briarwake/fixtures/content_admission/contracts.snapshot.json",
+      "sha256": "1cce751474434c7180ffa53ed18b91f97fef860eaf15230a44dfa7173eca0c65"
+    },
+    "fixtures": {
+      "path": "/Users/le-evanmcpheron/Documents/Godot/briarwake/fixtures/content_admission/compatibility.json",
+      "sha256": "b45a0ce9facfecc88d24f9c7d4679a40e99267d3e15a15aaa3ac78287d520435"
+    }
+  },
+  "provenance": {
+    "generated_by": "tools/extract_content_contracts.py; read-only extraction",
+    "source_registry": "mmo_docs/sources/data-inventory.json",
+    "source_registry_sha256": "c52ab371f6091bfeb773ee71e4e1bad376c71b2245e424ba8fc80cb64ff0944e",
+    "registry_format_version": 2,
+    "content_version": "2.2.0-design",
+    "schema_dialect": "https://json-schema.org/draft/2020-12/schema",
+    "selected_definitions": [
+      "ability_command_v2",
+      "EffectOperation",
+      "TargetMode",
+      "ItemGrade",
+      "ItemRarity",
+      "Id",
+      "Version",
+      "CurrencyAmount",
+      "CombatAmount"
+    ],
+    "schema_sha256": "26b96bfa14dba4316ca7ad9ae31c2ff243dbe4461dd7f7b3acf87a44d15814ba",
+    "sample_sources_sha256": {
+      "data/abilities.json": "7ad33b5b9ec6f49aac00b81d4d686ec649237ab8a13bfd99eba116e9c2af3f26",
+      "data/item_examples.json": "b7441cd099824a89c7fedb9ca9163ee2f75e1e2e7f3cca29cccb63ae189e98c1"
+    },
+    "samples": {
+      "ability": {
+        "id": "ability.warrior.iron_cut",
+        "name": "Iron Cut",
+        "target_mode": "enemy_melee",
+        "request_schema": "ability_command_v2",
+        "content_status": "prototype_profile_assigned_bespoke_binding_review"
+      },
+      "operation": "DAMAGE",
+      "item": {
+        "id": "item.blacksmithing.b1.metal_weapon",
+        "name": "Metal weapon — band 1",
+        "grade": "standard",
+        "definition_status": "representative_numerical_blueprint_not_playtested"
+      }
+    }
+  },
+  "snapshot_sha256": "1cce751474434c7180ffa53ed18b91f97fef860eaf15230a44dfa7173eca0c65",
+  "fixtures_sha256": "b45a0ce9facfecc88d24f9c7d4679a40e99267d3e15a15aaa3ac78287d520435",
+  "toolchain": {
+    "engine": "/Applications/Godot.app/Contents/MacOS/Godot",
+    "engine_sha256": "c7cccbf8fb143e34e02fd6521e09be2c2b974f0d5db080b19071c9c570718ccf",
+    "native_architecture": "arm64",
+    "version_command": [
+      "/usr/bin/arch",
+      "-arm64",
+      "/Applications/Godot.app/Contents/MacOS/Godot",
+      "--headless",
+      "--version"
+    ],
+    "verified_version": "4.7.2.stable.official.ed1daf0bf"
+  },
+  "executed_inputs_sha256": {
+    "project.godot": "37e4e67eb903e86489f3bddb2a50edfe3a3a6b0a07c14f3e255017e78d990e99",
+    "content/content_compatibility.gd": "89f0cdf9ad634325c172b42b7b2b981e5e5350d7f0ef947674b5351781e81fbb",
+    "tests/content_admission/compatibility_runner.gd": "ec7b542280140e86c4d82bc2cf3a2c62a7ebbc330e733274ea4ffc854962e8cb",
+    "snapshot.json": "1cce751474434c7180ffa53ed18b91f97fef860eaf15230a44dfa7173eca0c65",
+    "fixtures.json": "b45a0ce9facfecc88d24f9c7d4679a40e99267d3e15a15aaa3ac78287d520435"
+  },
+  "failure": "Engine script check failed; compatibility assertions were not executed.",
+  "finished_at": "2026-10-19T14:10:29.991974+00:00"
+}

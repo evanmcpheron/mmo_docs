@@ -1,0 +1,68 @@
+{
+  "ticket": "BW-002-T02",
+  "reviewed_at": "2026-10-19T14:12:55.421659+00:00",
+  "result": "Passed",
+  "build_revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b-dirty",
+  "compatibility_report": "final-pass/run.json",
+  "criteria": {
+    "1": {
+      "result": "Passed",
+      "evidence": "140 executed compatibility cases, including exact enum and alias round trips, command missing/null/optional fields, opaque stable content references, numeric bounds and rejected malformed input; decoded and serialized inputs and field findings are retained."
+    },
+    "2": {
+      "result": "Passed",
+      "evidence": "21 independent revision-context cases cover exact declared tuples, each missing/incompatible/null/empty/wrong-type domain and no mixed-tuple/version substitution. Actual unchanged server bootstrap smoke and source comparisons are in game-checks.json."
+    },
+    "3": {
+      "result": "Passed",
+      "evidence": "Twelve-definition exact local canonical closure with registry/sample/schema hashes. Stale snapshot rejects before assertions; unsupported pattern rejects explicitly in GDScript. Canonical definitions are unchanged."
+    },
+    "4": {
+      "result": "Passed",
+      "evidence": "Seven actual nonzero controls: parse/import, startup, absent report, executed false expectation, unsupported schema, unavailable engine and stale snapshot. No failed/unexecuted control became a compatibility or gameplay pass."
+    }
+  },
+  "failure_controls": "controls/review.json",
+  "game_checks": "game-checks.json",
+  "regression_note": "The unchanged baseline process cleanup test raised macOS EPERM during the first broad run. The failure log is retained; all 37 tests passed on a sequential retry after controls ended. No test or cleanup code was weakened.",
+  "review_checklist": {
+    "scope": "Only compatibility extraction, structural reader, headless corpus/driver, meaningful regressions and ticket tracking/evidence were added. No gameplay, production package format, storage owner or canonical contract changes.",
+    "ownership": "Canonical registry remains the definition owner. Generated snapshot is checked byte-for-byte against local extraction. GDScript owns record/revision/reference checks; Python owns provenance and process evidence. No parallel domain validator or mutable gameplay state.",
+    "responsibilities": "Reader is 204 lines with typed methods/findings; JSON dictionaries remain at dynamic schema/fixture boundaries. Driver main orchestrates one bounded fixture run; its process/toolchain/reporting steps share that responsibility and require no new general framework.",
+    "compatibility": "Exact IDs/enum strings and key presence/nullability preserved. JSON precision overflow is explicitly rejected; accepted serialization uses full precision. Numeric adapter limits are documented without altering canonical bounds.",
+    "godot": "Pinned native macOS ARM64 import, explicit runner/preload parse check and actual fixture execution pass. UIDs retained. Existing scenes/configuration and all originally tracked game files remain unchanged.",
+    "authority": "N/A for live authorization, RPC, persistence, peer/lifecycle mutation: none added. Structural checks cannot authorize an actor or enable runtime content.",
+    "protected_files": "AGENTS.md and docs/ai/** unchanged. mmo_docs tracking and generated views are explicitly authorized by execute-ticket.",
+    "not_run": "GUI/gameplay, network peers, other platforms and production admission are outside T02; none is claimed by this evidence."
+  },
+  "remaining_limits": [
+    "Only the selected structural schema subset is supported; text invariants and resolved targeting/session checks remain later tickets.",
+    "JSON numeric precision refusal is a bounded-reader limitation; no storage provider/schema or production content admission is present."
+  ],
+  "source_sha256": {
+    "content/content_compatibility.gd": "2d67d4cc10c9f1522cb5fcc533d4ed096ee91f381935aeb1cea68c52fc7670c9",
+    "tests/content_admission/compatibility_runner.gd": "ec7b542280140e86c4d82bc2cf3a2c62a7ebbc330e733274ea4ffc854962e8cb",
+    "tools/toolchain.lock.json": "bf167c415787d64c729bcc3a5147be4f453f5774a5555473aee1af125f785e14",
+    "tools/build_baseline.py": "3e8fcfebbbdc973dbe478eca5d3c844013f1b404898570be2b0178274d38ba9a",
+    "tools/check_baseline.py": "9c303cd704ce199d198baf4df4899cd650c5778e44548b2442414b010119d77c",
+    "tools/check_client_artifact.py": "6bc6efc13e0cfefa364047207e39fcec01f326f05d38c2d50a48d20c976cdb8d",
+    "tools/check_configuration.py": "52b3369e58eae5c45137633ceb09daaff885b03a6fea842a78e18597f1aa5b55",
+    "tools/check_content_admission.py": "4a05f98502a00f5754be9992afe57eafc32c4dcb85bb35e7791295250ff2cb48",
+    "tools/extract_content_contracts.py": "9ed611e53f99fc6bfa44381ae7ac7801b474f948a3b2a084e6b53edda28d076a",
+    "tools/run_baseline.py": "04ee062bb4cdcbf77b52365fc1469458a5f7d65f84216324af40523a0ec9aca3",
+    "tools/test_build_baseline.py": "319c76d6fa4790bd94f8483de77909d7b2f0afc932a5f4f95106519d92adc67f",
+    "tools/test_check_baseline.py": "cfab8ec29747e9f3624bb3fb3f9c03b746e66745e781cd75ea35fa2ba0fe8d3c",
+    "tools/test_client_artifact.py": "ba979e1c77170969ba4296d52d8cae8e80d0aef68b67fbe9de7632da6eb54dba",
+    "tools/test_content_admission.py": "3aee77ccc9cd0edeb1cc79e1f8bedb5d1e22928791e58019ceb1eb18b6ff598d",
+    "tools/verify_toolchain.py": "a19efff6a77f334a6a5a92016fbf996e1834a8819a9a38e51f7d26e38564e31a"
+  },
+  "fixtures_sha256": "b45a0ce9facfecc88d24f9c7d4679a40e99267d3e15a15aaa3ac78287d520435",
+  "snapshot_sha256": "867f483b47a511e017229f3e6e2ee8d930d020dbdc3a2cef68af91198b7d5578",
+  "canonical_registry_sha256": "a7a904558dbb3a3bb9402f3caedb267ea3028cfdf9a74fc3860e8593f9dedbcc",
+  "schema_sha256": "26b96bfa14dba4316ca7ad9ae31c2ff243dbe4461dd7f7b3acf87a44d15814ba",
+  "documentation_checks": "docs-checks-final/results.json",
+  "control_applicability": "The final snapshot was refreshed after generated-roadmap page review metadata changed. The twelve-definition schema digest, all reader/runner/tooling source hashes and authored fixture digest exactly match the executed controls and pre-review pass; canonical definitions/catalog samples are unchanged. The final 140-case run independently passes against the current complete registry hash.",
+  "documentation_regression": "The first docs regression run exposed a synthetic ticket-completion fixture that inherited new live completed dependents. The test now initializes only its in-memory ticket states before exercising the unchanged evidence, prerequisite and blocker assertions. No validator or gate was weakened; historical failed output is retained in docs-checks/07.log.",
+  "documentation_result": "Passed: all eight required commands, 72 regressions and full validation.",
+  "final_review": "Final diffs and evidence identities checked in both repositories; original game files, protected standards and canonical definitions are unchanged. The only documentation test change isolates synthetic ticket states. Generated status/readiness inspection is retained in generated-view-review.json. No required T02 criterion remains unverified."
+}
