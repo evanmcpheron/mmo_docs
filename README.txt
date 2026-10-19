@@ -105,11 +105,14 @@ smoke, client exclusion inspection and test-control launch rejection evidence.
 BW-095 and BW-097 are now Dependency-ready; BW-012 still requires its other hard
 prerequisites. BW-097 is In Progress: T01 is Complete with a source-only graphical probe,
 Forward+/Metal capability checks and retained diagnostic captures on Apple M2 Max.
-Its nine remaining tickets cover world viewport, concept-based acceptance, camera
-stability, outlines/toon lighting, pass composition, water, contact depth, combined
-motion and packaged measured feasibility. Human art approval and exports remain
-unverified. BW-097-T02 now has its prerequisite satisfied; BW-098 still awaits
-BW-097 completion.
+T02 is Complete: its fixed 384x216 orthographic viewport, native Retina 2x
+presentation, independently scaled HUD/pointer, resize/minimum/zoom checks and
+invalid-setting controls have retained execution evidence. T03 now has its
+prerequisite satisfied and remains Not Started. The eight remaining tickets cover
+concept-based acceptance, camera stability, outlines/toon lighting, pass
+composition, water, contact depth, combined motion and packaged measured
+feasibility. Human art approval, alternate physical displays/OS scaling and
+exports remain unverified. BW-098 still awaits BW-097 completion.
 Foundations and milestones remain In Progress. The completed BW-003 bounded probe
 certifies no connected-client, gameplay, durability, wire-network or capacity work.
 Previous/next links follow the recommended sequence, and breadcrumbs return to

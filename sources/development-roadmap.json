@@ -507,7 +507,7 @@
         "Water feasibility records whether shaders, animation, geometry and particles satisfy the approved visual requirements before proposing physical fluid simulation. The chosen reflection/refraction method and fallback are exercised with off-screen and newly visible objects, moving outlined/transparent objects and synthetic authorized/excluded views; missing information, stale buffers, pass-order artifacts and unsupported renderer paths have tested mitigations or approved visual alternatives on the pinned build.",
         "Ambient-occlusion/contact-depth feasibility evaluates applicable baked, real-time or authored approaches on the pinned renderer and measures their cost and lower-cost fallback. A controllable prototype combines the candidate with water, lighting/shadows, outlines, foliage/transparency, animated actors and atmosphere during stationary, continuous slow and diagonal camera/actor motion; recorded pass composition, silhouette visibility and pixel stability meet the approved acceptance bounds before asset-volume production."
       ],
-      "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions. Review 2026-10-19: T01 establishes source-only Forward+/Metal capabilities on Apple M2 Max, with retained diagnostic captures and failure controls. Epic AC1 still requires the packaged same-scene proof in T10; AC2–9 require T02–T10 viewport, visual baseline, motion, outlines, composition, water/contact-depth and measured integrated review. No epic criterion is promoted from source-only checks. See validation/tickets/BW-097-T01/visual-review.json and parent-review.json.",
+      "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions. Review 2026-10-19: T01 establishes source-only Forward+/Metal capabilities on Apple M2 Max, with retained diagnostic captures and failure controls. Epic AC1 still requires the packaged same-scene proof in T10; AC2–9 require T02–T10 viewport, visual baseline, motion, outlines, composition, water/contact-depth and measured integrated review. No epic criterion is promoted from source-only checks. See validation/tickets/BW-097-T01/visual-review.json and parent-review.json. Review 2026-10-19 (T02): epic AC2 has passing source viewport/Retina evidence in validation/tickets/BW-097-T02/source-run/run.json and visual-review.json. T02 is Complete; T03–T10 remain Not Started. Packaged AC1 and AC3–9 remain unfinished; see BW-097-T02/parent-review.json. Alternate physical display/OS scaling and human drag/click cases remain unverified.",
       "related_docs": [
         {
           "label": "Selected 3D pixel-art direction",
@@ -537,7 +537,17 @@
       "status": "In Progress",
       "blockers": [],
       "ordering_rationale": "Probe renderer and camera risks alongside headless simulation. The reference describes a custom historical build, so neither a fork nor current engine support is assumed.",
-      "verified_evidence": [],
+      "verified_evidence": [
+        {
+          "criteria": [
+            2
+          ],
+          "artifact": "validation/tickets/BW-097-T02/source-run/run.json",
+          "revision": "dfbb756a1d2e4576d7a07a29fec6a0fb0c1c16b5",
+          "result": "Passed",
+          "summary": "Fixed 384x216 orthographic view and declared integer physical/letterbox/minimum policy passed native window/zoom/resize checks on actual Retina 2x. Separately scaled native HUD/pointer bounds and diagnostic capture review passed; untested displays remain explicit."
+        }
+      ],
       "phase": "phase-foundations"
     },
     {
@@ -7616,7 +7626,7 @@
       "id": "BW-097-T02",
       "parent_epic": "BW-097",
       "title": "Establish the orthographic world viewport and readable UI scaling",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-097-AC-2"
       ],
@@ -7637,22 +7647,27 @@
         "Window/zoom changes never alter fixture foot anchors or floor identity. Invalid resolution/scale/zoom settings are rejected visibly and cannot produce a passing viewport result."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case viewport",
+        "launch": "Working directory: GAME_ROOT (briarwake/). Python 3.10+, sibling mmo_docs and the pinned native macOS ARM64 graphical desktop are required.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case viewport\npython3 tools/run_rendering_probe.py --case viewport --interactive\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
-          "Use T01 graphics hardware and fixtures. This ticket supplies the pixel grid, HUD/pointer samples, presets, zoom controls and declared minimum-window policy.",
-          "Have a high-DPI display available; record logical and physical dimensions plus OS scaling. Test every declared supported preset and zoom, with a real resize in addition to preset selection."
+          "Use the locked 4.7.2-stable engine/templates with Forward+; actual tested backend is Metal on Apple M2 Max with built-in Retina display scale 2. Other displays/OS scaling remain unverified.",
+          "fixtures/rendering/viewport.json is the versioned settings owner: fixed 384x216, keep-height orthographic size 9, pitch -35/yaw -45 degrees, zoom 1/2, nearest integer physical presentation and 640x480 logical minimum. HUD/pointer scales are native display scale times independent UI 1/1.25/1.5.",
+          "The launcher creates a fresh owned artifacts/rendering-<UTC>/ directory and disposable scene-only project. Optional --output must name a new directory. No production project settings or game state change."
         ],
         "actions": [
-          "Run viewport, capture native internal pixels and presented output, and inspect the grid at each permitted zoom. Resize through normal, minimum, odd-size, wide and tall cases.",
-          "Repeat at available high-DPI settings; compare HUD text/pointer with the world grid and content-rectangle overlay. Use disposable invalid settings and check the diagnostic. Compare fixture anchors before and after."
+          "Run the unattended case. Inspect run.json settings/actual identity, all 21 TestChecks, canonical automated_evidence, 19-row matrix, 16 native resize observations, unchanged scoped anchors, display_coverage and 40 paired internal/output captures.",
+          "In interactive mode wait until controls enable, then change window/aspect presets, zoom and UI scale. Resize the actual native window through odd/wide/tall/minimum transitions. Capture writes manual-NNN-internal.png, manual-NNN-output.png and actual dimensions/anchors in manual-NNN.json. Reset restores the first preset and scales; close normally to finish.",
+          "Repeat on each available physical display/OS scaling. Compare logical size (physical divided by display scale), framebuffer dimensions, gold content rectangle, exact checker block widths and readable HUD/pointer. Treat unavailable cases as not run.",
+          "Run each negative in fresh output: --case viewport --control invalid-settings; --case viewport --control missing-report; --case viewport --control check-failure; --case viewport --renderer mobile. Use disposable --settings copies for orthographic_size=0, zooms=[1.0,1.5], or a fractional output_policy. Rerun a clean viewport case afterward."
         ],
         "expected_results": [
-          "Recorded dimensions, nearest scaling, framing and letterbox/minimum behavior match the declared policy. UI remains readable independently of world resolution.",
-          "Invalid settings fail visibly; anchor coordinates/scopes remain unchanged. Missing physical display coverage is recorded as not run."
+          "Every preset/zoom preserves the fixed world frame and exact integer physical checker blocks. Zoom changes camera size only; UI/pointer scaling is independent. Scoped non-grid foot anchors, floor identity and marker transforms never change.",
+          "Below either logical minimum dimension, world output is hidden with an orange diagnostic. At/above minimum it restores without fractional downscaling. Largest UI fits the minimum window above the world. Odd remainders use right/bottom borders.",
+          "Invalid settings/unsupported candidates fail before graphical assertions; missing-report has no complete assertion evidence; deliberate check failure retains canonical failed findings. No negative can produce a passing viewport run. Fresh recovery passes independently.",
+          "Actual Retina 2x/source checks and Codex diagnostic capture review are retained; manual drag/click, alternate screens/OS scaling, human art approval, motion stability and exports are unverified."
         ],
         "reset": [
-          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
-          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+          "Use Reset, then close the graphical process normally. Start a new launcher invocation for a new owned output; no gameplay state persists.",
+          "Keep all previous failures/captures/reports intact. Restore only deliberately edited disposable settings; preserve canonical inputs, installed binaries and unrelated user files."
         ]
       },
       "completion_evidence": "Retain versioned viewport settings, logical/physical dimension matrix, internal and presented captures, resize/high-DPI review, rejected-settings output and unchanged anchor comparisons.",
@@ -7684,10 +7699,62 @@
         {
           "label": "Resolution reference",
           "href": "guide/sources.html#s13"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        },
+        {
+          "label": "ValidationFinding",
+          "href": "guide/data-inventory.html#shared-ValidationFinding"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-097-T02/source-run/run.json",
+          "revision": "dfbb756a1d2e4576d7a07a29fec6a0fb0c1c16b5",
+          "result": "Passed",
+          "summary": "Pinned native macOS ARM64 Forward+/Metal execution: 21 graphical checks, 19 window/zoom/UI/minimum cases, 16 real native pixel-step resizes and 40 paired captures. Actual Retina scale 2, unchanged scoped anchors, integer checker blocks and bounded independently scaled HUD/pointer. Other physical displays remain unverified."
+        },
+        {
+          "criteria": [
+            1,
+            2
+          ],
+          "artifact": "validation/tickets/BW-097-T02/visual-review.json",
+          "revision": "dfbb756a1d2e4576d7a07a29fec6a0fb0c1c16b5",
+          "result": "Passed",
+          "summary": "Attributable Codex diagnostic review of final default, tall/zoomed, odd-physical, minimum/large-UI and below-minimum captures. Initial formatting/clipping failures were corrected and retained historically. No human art or motion approval inferred."
+        },
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-097-T02/failure-controls.json",
+          "revision": "dfbb756a1d2e4576d7a07a29fec6a0fb0c1c16b5",
+          "result": "Passed",
+          "summary": "Seven actual CLI controls rejected invalid resolution, zero scale, unapproved zoom, fractional policy, unsupported renderer, missing report and deliberate failed checks. Failed/no-execution evidence remains explicit."
+        },
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-097-T02/viewport-regressions.log",
+          "revision": "dfbb756a1d2e4576d7a07a29fec6a0fb0c1c16b5",
+          "result": "Passed",
+          "summary": "11 focused regressions passed for canonical finite scoped anchors, malformed/missing/nullable fields, bad scale/zoom/policy, authored execution forgery, clipped HUD/pointer and partial/stale evidence. Existing 18 capability regressions also passed."
+        }
+      ]
     },
     {
       "id": "BW-097-T03",

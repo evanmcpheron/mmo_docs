@@ -1,0 +1,39 @@
+{
+  "reviewed_at": "2026-10-19T21:39:21.979707+00:00",
+  "reviewer": "Codex; diagnostic image inspection, no human art approval",
+  "tested_revision": "dfbb756a1d2e4576d7a07a29fec6a0fb0c1c16b5",
+  "result": "Passed",
+  "criteria": [
+    1,
+    2
+  ],
+  "reviewed_captures": [
+    "source-run/preset-0-zoom-0-output.png",
+    "source-run/preset-3-zoom-1-output.png",
+    "source-run/odd-physical-output.png",
+    "source-run/minimum-large-ui-output.png",
+    "source-run/minimum-639-output.png"
+  ],
+  "inspection_basis": "Final default, tall/zoomed and odd-physical captures were inspected directly. Final minimum/large-UI and below-minimum captures are pixel-identical to the reviewed layout-final versions; their source SHA/capture hashes are checked in validation-evidence.json.",
+  "observations": [
+    "The gold content border encloses fixed-aspect world output. Every native checker block agrees with the measured integer physical scale. Wide/tall bars and odd right/bottom remainders preserve framing.",
+    "Native HUD/pointer are visibly distinct from the low-resolution world. All reported HUD bounds fit above content, including UI 1.5 at 640x480 logical. Minimum diagnostics replace the hidden world without covering the HUD.",
+    "Terrain labels are world-pixel fixtures; their fine detail at zoom 1 is not a production font or art acceptance claim. Gold/violet capsules preserve their continuous non-grid anchors and distinct local floor scope.",
+    "Automated captures deliberately show disabled controls while checks run. Controls are enabled when interactive execution starts; no human interaction is inferred."
+  ],
+  "resolved_findings": [
+    {
+      "artifact": "historical-failures/bw-097-t02-first/run.json",
+      "finding": "Unsupported %g formatting caused engine errors and unreadable placeholder text. Replaced with supported, bounded numeric formats."
+    },
+    {
+      "artifact": "historical-failures/bw-097-t02-second/run.json",
+      "finding": "Long floating-point camera text clipped at the largest UI/minimum window. Precision, layout and the independently scaled HUD were corrected; native bounds now enforce the fix."
+    }
+  ],
+  "not_run": [
+    "Human drag/click playtest",
+    "External/1x displays and alternate OS scaling",
+    "Human concept/art approval, camera-motion stability and packaged exports (later tickets)"
+  ]
+}
