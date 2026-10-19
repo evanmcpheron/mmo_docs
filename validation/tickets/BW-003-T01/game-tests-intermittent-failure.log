@@ -1,0 +1,27 @@
+..............Build stage: import
+.Baseline stage: failure
+..Baseline stage: timeout
+E..............................................
+======================================================================
+ERROR: test_timeout_kills_and_reaps_owned_group_including_child (test_check_baseline.BaselineProcessTests.test_timeout_kills_and_reaps_owned_group_including_child)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_check_baseline.py", line 118, in test_timeout_kills_and_reaps_owned_group_including_child
+    stage, captured = run_stage(
+                      ~~~~~~~~~^
+        "timeout", [sys.executable, "-c", script], self.directory, self.directory, [], 0.3,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/check_baseline.py", line 79, in run_stage
+    stop_process_group(process)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/check_baseline.py", line 36, in stop_process_group
+    os.killpg(process.pid, signal.SIGKILL)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 1] Operation not permitted
+
+----------------------------------------------------------------------
+Ran 64 tests in 103.528s
+
+FAILED (errors=1)

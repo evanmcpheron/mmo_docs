@@ -30,6 +30,12 @@ class RoadmapTests(unittest.TestCase):
             'result': 'Passed', 'summary': 'Synthetic validator fixture; never written to the roadmap.',
         }]
 
+    def reset_ticket_progress(self):
+        for ticket in self.data['tickets']:
+            ticket['status'] = 'Not Started'
+            ticket['verified_evidence'] = []
+            ticket['blockers'] = []
+
     def test_published_registry_and_static_page_are_current(self):
         self.assertEqual([], self.errors(generated=True))
 
@@ -213,6 +219,8 @@ class RoadmapTests(unittest.TestCase):
 
     def test_recommended_predecessor_is_not_a_hard_gate(self):
         epic = self.by_id['BW-018']
+        self.by_id['BW-003']['status'] = 'Not Started'
+        self.by_id['BW-003']['verified_evidence'] = []
         for dependency in prerequisite_closure(self.data, epic['hard_dependencies']):
             self.complete(dependency)
         ready = {e['id'] for e in ready_epics(self.data)}
@@ -221,6 +229,7 @@ class RoadmapTests(unittest.TestCase):
         self.assertEqual([], self.errors())
 
     def test_status_and_blocker_rules(self):
+        self.reset_ticket_progress()
         self.data['epics'][0]['status'] = 'Done'
         self.assertTrue(any('invalid status' in e for e in self.errors()))
         self.data['epics'][0]['status'] = 'Blocked'
@@ -250,6 +259,7 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('complete hard prerequisites' in e for e in self.errors()))
 
     def test_progress_changes_all_derived_views_without_duplicate_status(self):
+        self.reset_ticket_progress()
         for epic in self.data['epics']:
             epic['status'] = 'Not Started'
             epic['verified_evidence'] = []

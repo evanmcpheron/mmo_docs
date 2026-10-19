@@ -1,0 +1,109 @@
+$ python3 scripts/build_development_roadmap.py --check
+All 132 roadmap pages are current.
+$ python3 scripts/build_data_inventory.py --check
+{
+  "mode": "check",
+  "changed_files": 0,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 185,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252
+}
+$ python3 validation/check_development_roadmap.py
+{
+  "passed": true,
+  "phases": 9,
+  "epics": 97,
+  "tickets": 20,
+  "statuses": {
+    "Not Started": 94,
+    "In Progress": 1,
+    "Blocked": 0,
+    "Complete": 2
+  },
+  "completion_percentage": 2.1,
+  "errors": []
+}
+$ python3 validation/check_data_inventory.py
+{
+  "passed": true,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 185,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252,
+  "errors": []
+}
+$ python3 -m unittest discover -s validation -p test_*.py
+.............................................F.FF........................
+======================================================================
+FAIL: test_progress_changes_all_derived_views_without_duplicate_status (test_development_roadmap.RoadmapTests.test_progress_changes_all_derived_views_without_duplicate_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/mmo_docs/validation/test_development_roadmap.py", line 258, in test_progress_changes_all_derived_views_without_duplicate_status
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-003-T01: Complete requires complete dependencies']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'BW-003-T01: Complete requires complete dependencies'
+
+- []
++ ['BW-003-T01: Complete requires complete dependencies']
+
+======================================================================
+FAIL: test_recommended_predecessor_is_not_a_hard_gate (test_development_roadmap.RoadmapTests.test_recommended_predecessor_is_not_a_hard_gate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/mmo_docs/validation/test_development_roadmap.py", line 220, in test_recommended_predecessor_is_not_a_hard_gate
+    self.assertEqual('Not Started', self.by_id['BW-003']['status'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Not Started' != 'In Progress'
+- Not Started
++ In Progress
+
+
+======================================================================
+FAIL: test_status_and_blocker_rules (test_development_roadmap.RoadmapTests.test_status_and_blocker_rules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/mmo_docs/validation/test_development_roadmap.py", line 229, in test_status_and_blocker_rules
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-003-T01: Complete requires complete dependencies']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'BW-003-T01: Complete requires complete dependencies'
+
+- []
++ ['BW-003-T01: Complete requires complete dependencies']
+
+----------------------------------------------------------------------
+Ran 73 tests in 66.338s
+
+FAILED (failures=3)

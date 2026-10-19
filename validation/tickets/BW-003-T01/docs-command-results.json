@@ -1,0 +1,67 @@
+[
+  {
+    "command": [
+      "python3",
+      "scripts/build_development_roadmap.py"
+    ],
+    "exit_status": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/build_data_inventory.py",
+      "--review-roadmap"
+    ],
+    "exit_status": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/build_development_roadmap.py",
+      "--check"
+    ],
+    "exit_status": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/build_data_inventory.py",
+      "--check"
+    ],
+    "exit_status": 0
+  },
+  {
+    "command": [
+      "python3",
+      "validation/check_development_roadmap.py"
+    ],
+    "exit_status": 0
+  },
+  {
+    "command": [
+      "python3",
+      "validation/check_data_inventory.py"
+    ],
+    "exit_status": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "validation",
+      "-p",
+      "test_*.py"
+    ],
+    "exit_status": 0
+  },
+  {
+    "command": [
+      "python3",
+      "validation/run_checks.py"
+    ],
+    "exit_status": 0
+  }
+]
