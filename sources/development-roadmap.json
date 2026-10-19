@@ -339,6 +339,16 @@
           "revision": "Exact tested revisions and source/input hashes retained in the T04 verification and suite reports.",
           "result": "Passed",
           "summary": "Parent review retains AC1 owner/lifecycle requirements and AC4 compatibility encodings/revision separation, with fresh compatibility and boundary regressions. T04 adds executed staging coverage toward AC2. BW-002 remains In Progress: AC2 real atomic startup admission, AC3 actual capability/readiness refusal and AC5 economic graph certification still require T05–T08. T05 and T06 now have complete ticket prerequisites; downstream epics remain gated on BW-002."
+        },
+        {
+          "criteria": [
+            1,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T05/epic-review.json",
+          "revision": "Exact tested game revisions and unchanged-source applicability retained in validation/tickets/BW-002-T05/verification.json.",
+          "result": "Passed",
+          "summary": "Parent review retains AC1 ownership/lifecycle and AC4 compatibility evidence; direct compatibility, boundary and structure regressions pass with unchanged applicable sources/inputs. T05 direct refusal cases contribute to AC3 but its normal pipeline remains blocked by sandbox access. BW-002 stays In Progress: real startup atomic admission and economic graph gates require T06–T08."
         }
       ],
       "phase": "phase-foundations"
@@ -6391,7 +6401,7 @@
       "id": "BW-002-T05",
       "parent_epic": "BW-002",
       "title": "Keep unbound or unverified behavior disabled",
-      "status": "Not Started",
+      "status": "Blocked",
       "epic_criteria": [
         "BW-002-AC-2",
         "BW-002-AC-3"
@@ -6415,14 +6425,16 @@
         "Safe supported static content remains admissible while unsupported behavior is rejected or explicitly retained disabled according to the declared candidate selection; findings identify every requested unsupported record. No free-text interpretation or client-supplied handler capability is used."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite readiness\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root. Use a normal macOS Terminal with Godot editor-data access.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_content_admission.py --suite readiness\npython3 -m unittest discover -s tools -p 'test_*.py' -v",
         "setup": [
-          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Provide prototype, unknown-handler, missing-presentation, unsupported-talent-path, missing-cleanup, wrong-rules and stale/unexecuted/forged-readiness fixtures. All gameplay execution specifications remain unexecuted until a real later feature runner executes them."
+          "Use the pinned macOS arm64 Godot 4.7.2 editor and Python environment in tools/toolchain.lock.json. No gameplay scene, database, account or network peer is required.",
+          "The tracked fixtures/content_admission/readiness.json includes 47 cases with unchanged shipped prototypes, synthetic bindings, exact findings and unexecuted authored specifications. The canonical snapshot includes TalentModifierDefinition; it adds no editable domain definition.",
+          "The standard driver imports and checks a disposable project, then invokes tests/content_admission/readiness_runner.gd against the production ContentAdmission owner. Import errors or missing reports never become an assertion pass."
         ],
         "actions": [
-          "Run the readiness suite and compare each requested enabled ability with the final eligible/disabled list and findings.",
-          "Alter only a disposable fixture effect sentence or candidate readiness flags; confirm this cannot change the missing server capability or evidence result."
+          "Run the readiness suite and inspect run.json, logs/, each selection_accepted result, per-ability eligibility/gates, tuple identities and explicit finding paths.",
+          "Run --suite readiness --control assertion-failure with a new --output directory; expect exit 1 and Executed/Failed. Import/startup/missing-report controls must not pass.",
+          "Compare effect-prose/all-true/individual-readiness cases with the missing-handler baseline: tuple identity and false gates remain unchanged. Changed applied-build/binding cases have different identities. The static-resource and retained-disabled controls remain admissible."
         ],
         "expected_results": [
           "Every unsupported or unverified requested behavior is rejected before activation, with explicit findings; safe static positive controls still pass.",
@@ -6472,8 +6484,22 @@
           "href": "guide/data-inventory.html#content-validation-fixture"
         }
       ],
-      "blockers": [],
-      "verified_evidence": []
+      "blockers": [
+        "Required normal readiness suite and full Python regressions need non-sandboxed Terminal execution: this sandbox denies Godot editor settings/certificate access and ps. Direct script assertions pass; standard import remains unverified."
+      ],
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T05/direct-readiness-final/run.json",
+          "revision": "Exact tested game revision and per-source/input hashes retained in the linked run report and verification.json.",
+          "result": "Passed",
+          "summary": "Executed 47 direct Godot admission cases with all three readiness gates false and every ability disabled. Safe static and retained-disabled controls pass; unsupported bindings/capabilities/presentation/talent/cleanup and forged/stale evidence refuse selection. Same production owner/runner as the standard suite; this direct procedure does not claim editor import or gameplay execution. Standard pipeline remains blocked by sandbox permissions."
+        }
+      ]
     },
     {
       "id": "BW-002-T06",
