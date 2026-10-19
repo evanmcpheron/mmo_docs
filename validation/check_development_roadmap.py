@@ -124,8 +124,8 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
         if epic['status'] not in STATUSES:
             errors.append(f'{context}: invalid status')
         criteria = epic['acceptance_criteria']
-        if not isinstance(criteria, list) or not 3 <= len(criteria) <= 6:
-            errors.append(f'{context}: expected 3–6 acceptance criteria')
+        if not isinstance(criteria, list) or len(criteria) < 3:
+            errors.append(f'{context}: expected at least 3 acceptance criteria')
             criteria = []
         for criterion in criteria:
             text(criterion, context + ' AC')

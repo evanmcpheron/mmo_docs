@@ -72,6 +72,32 @@ class RoadmapTests(unittest.TestCase):
                 self.assertIn('#' + anchor, parsed.references)
                 self.assertIn(escape(criterion), source)
 
+    def test_appended_epic_criteria_preserve_anchors_and_require_completion_evidence(self):
+        epic = self.by_id['BW-097']
+        original = list(epic['acceptance_criteria'])
+        epic['acceptance_criteria'].append('An additional observable requirement has executed evidence.')
+        self.assertGreater(len(epic['acceptance_criteria']), 6)
+        self.assertEqual([], self.errors())
+        source = generated_pages(self.data)[epic_page(self.data, epic['id'])]
+        anchors = [anchor for anchor in Anchors(source).ids if anchor.startswith(epic['id'] + '-AC-')]
+        self.assertEqual([f'{epic["id"]}-AC-{n}' for n in range(1, len(original) + 2)], anchors)
+        for criterion in original:
+            self.assertIn(escape(criterion), source)
+        self.complete(epic['id'])
+        epic['verified_evidence'][0]['criteria'].pop()
+        self.assertTrue(any('passing evidence for every AC' in error for error in self.errors()))
+        self.complete(epic['id'])
+        self.assertEqual([], self.errors())
+
+    def test_epic_criteria_still_require_at_least_three_nonempty_strings(self):
+        epic = self.by_id['BW-097']
+        for criteria in (None, 'invalid', [], ['One', 'Two']):
+            with self.subTest(criteria=criteria):
+                epic['acceptance_criteria'] = criteria
+                self.assertTrue(any('acceptance criteria' in error for error in self.errors()))
+        epic['acceptance_criteria'] = ['One', 'Two', '']
+        self.assertTrue(any('AC: expected nonempty text' in error for error in self.errors()))
+
     def test_dependencies_and_dependents_link_in_both_directions(self):
         outputs = generated_pages(self.data)
         for epic in self.data['epics']:
