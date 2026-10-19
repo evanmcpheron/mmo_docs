@@ -310,6 +310,15 @@
           "revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b; authority document SHA-256 2626252d36eaa74b64b94e6fdedb7d10f1bd247ebe0a96fb06e77aab5b6f8bec",
           "result": "Passed",
           "summary": "BW-002-AC-1 passes the executed T01 owner/lifecycle review. Parent remains In Progress: AC2 staged package validation, AC3 unbound-behavior denial, AC4 executed compatibility fixtures and AC5 complete economic graph admission still require BW-002-T02–T08; those behaviors were not executed in this ticket. Review snapshot is unchanged at this committed game revision; supplementary manual launch/Quit evidence and platform/browser limitations are retained in manual-verification.json."
+        },
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T02/epic-review.json",
+          "revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b-dirty (uncommitted BW-002-T02 implementation; per-source and executed-input SHA-256 hashes retained in the reports)",
+          "result": "Passed",
+          "summary": "Explicit parent review: AC4 passes the executed T02 compatibility/revision corpus. AC1 retains applicable T01 evidence because its authority map/bootstrap owners are unchanged. BW-002 remains In Progress: AC2 staged/atomic admission, AC3 binding/readiness refusal and AC5 complete economic graph gate require T03–T08. T03 prerequisites are satisfied; downstream epics remain gated by BW-002."
         }
       ],
       "phase": "phase-foundations"
@@ -5994,7 +6003,7 @@
       "id": "BW-002-T02",
       "parent_epic": "BW-002",
       "title": "Preserve canonical identifiers, encodings and revision domains",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-4"
       ],
@@ -6020,22 +6029,25 @@
         "An engine/import/startup failure or missing assertion report is reported as not executed/failed, never a passing compatibility or gameplay result."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite compatibility\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT (briarwake/). Run python3 tools/verify_toolchain.py; python3 tools/extract_content_contracts.py --check; python3 tools/check_content_admission.py --suite compatibility; python3 -m unittest discover -s tools -p 'test_*.py' -v. For the unchanged bootstrap: python3 tools/run_baseline.py --role server --headless --config fixtures/config/server.valid.json --smoke.",
         "setup": [
-          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Implement the compatibility fixtures, snapshot provenance, bounded headless entry point and Python checker in this ticket. Include a valid record, unknown enum/discriminator, missing versus null field, changed stable ID reference, stale snapshot and independent version mismatch cases."
+          "Use the pinned native macOS ARM64 editor/templates and Python from tools/toolchain.lock.json. No database, account, network service, test add-on or gameplay scene is required.",
+          "fixtures/content_admission/README.md documents the twelve-definition read-only local extraction, 140-case corpus and controls. The checker prepares an isolated minimal project using copies of the actual GDScript reader/runner. --output PATH must select a new directory; existing outputs are preserved.",
+          "After a reviewed canonical registry update, refresh with python3 tools/extract_content_contracts.py --registry ../mmo_docs/sources/data-inventory.json. Never edit contracts.snapshot.json by hand."
         ],
         "actions": [
-          "Run the compatibility suite and inspect the decoded/re-encoded values, provenance, per-case findings and content/rules/database context.",
-          "Exercise the runner failure controls with a disposable unavailable engine path or invalid fixture copy using documented checker options; inspect whether assertions actually ran."
+          "Run the compatibility suite and inspect run.json and logs/. Confirm all 140 cases ran, accepted records include serialized round trips, expected rejections contain exact record/field findings, and source/schema/fixture/toolchain identities are retained.",
+          "Run separate controls using --control import-failure, startup-failure, missing-report, assertion-failure and unsupported-schema. Each must exit 1. Repeat with --engine /nonexistent/bw-test-engine. For stale provenance, alter source_registry_sha256 only in a temporary snapshot copy and use --snapshot PATH; expect nonzero before assertions.",
+          "Inspect explicit content/rules/database tuples and the independent build/registry/record versions. Run a fresh clean suite after controls. Authored specification run_evidence must remain unexecuted; no sample prototype/readiness marker changes."
         ],
         "expected_results": [
-          "The suite succeeds only when every positive and expected-rejection assertion ran; a negative fixture produces its expected finding rather than a fabricated pass.",
-          "No version-domain substitution, enum ordinal encoding, canonical-file mutation or runtime-ready ability appears. Runner failures return nonzero with an unexecuted/failed outcome."
+          "A clean suite returns 0 only after all 140 actual GDScript assertions pass; no enum ordinal/case/discriminator, malformed key/nullability, unknown stable reference or incompatible revision is silently accepted.",
+          "Unavailable-engine, parse/import/startup and absent-report controls remain Not Executed with no assertion pass; the deliberate false expectation records Executed/Failed. Unsupported schema and stale provenance fail explicitly.",
+          "The unchanged external bootstrap configuration still produces the three-heartbeat headless smoke pass. No database field, package envelope, ability enabling or gameplay execution is introduced."
         ],
         "reset": [
-          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
-          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+          "Allow each bounded process to exit; disposable fixture projects are automatically removed and their process groups reaped. No persistent candidate, world, database or peer state is created.",
+          "Retain run.json and logs in the selected evidence location. Remove only owned temporary inputs/output after retention; leave canonical sources, snapshots, corpus and bootstrap configuration unchanged. See validation/tickets/BW-002-T02/ in DOCS_ROOT for actual results, including the retained baseline-test EPERM failure and passing sequential retry."
         ]
       },
       "completion_evidence": "Executed positive/negative compatibility report with source/schema/fixture digests, exact serialized samples, separate version-domain assertions and runner-failure evidence.",
@@ -6079,10 +6091,39 @@
         {
           "label": "Validation specification and evidence",
           "href": "guide/data-inventory.html#content-validation-fixture"
+        },
+        {
+          "label": "Id — shared canonical semantics",
+          "href": "guide/data-inventory.html#shared-Id"
+        },
+        {
+          "label": "Version — shared canonical semantics",
+          "href": "guide/data-inventory.html#shared-Version"
+        },
+        {
+          "label": "CurrencyAmount — shared canonical semantics",
+          "href": "guide/data-inventory.html#shared-CurrencyAmount"
+        },
+        {
+          "label": "CombatAmount — shared canonical semantics",
+          "href": "guide/data-inventory.html#shared-CombatAmount"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T02/verification.json",
+          "revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b-dirty (uncommitted BW-002-T02 implementation; per-source and executed-input SHA-256 hashes retained in the reports)",
+          "result": "Passed",
+          "summary": "Executed 140 GDScript compatibility cases, all seven runner/provenance/schema failure controls, pinned toolchain, unchanged server bootstrap smoke and 37 game tooling regressions (passing sequential retry after one retained baseline cleanup EPERM). Twelve canonical definitions and exact serialized samples retain IDs/enum strings, nullable/optional fields, amount semantics and separate revision domains. This is structural compatibility evidence; no gameplay/runtime readiness or production package admission claim."
+        }
+      ]
     },
     {
       "id": "BW-002-T03",
