@@ -1,0 +1,54 @@
+{
+  "review_id": "BW-097-T01-diagnostic-review-v1",
+  "reviewer": "Codex (image inspection; not human art approval)",
+  "reviewed_run_id": "c1bc1be0fcdb4dc7a4ebe3e986ddbd2e",
+  "status": "Passed for T01 diagnostic readability only",
+  "human_visual_approval": {
+    "status": "Not Recorded",
+    "reviewer": null
+  },
+  "capture_annotations": [
+    {
+      "captures": [
+        "source-run/00-source.png",
+        "source-run/01-buffer.png"
+      ],
+      "observation": "Known red/green/blue faces and green slope are visible. The magenta inverse-screen swatch covers the center green face in final composition, and is absent from the opaque copy."
+    },
+    {
+      "captures": [
+        "source-run/02-buffer.png",
+        "source-run/03-buffer.png"
+      ],
+      "observation": "Near/middle/far raw reversed depths darken in order; decoded view distances brighten in order. The tilted face has a continuous depth gradient. Known-plane readback checks pass. White decoded background denotes the far clear depth."
+    },
+    {
+      "captures": [
+        "source-run/04-buffer.png",
+        "source-run/05-buffer.png",
+        "source-run/08-rotated-view-normal.png",
+        "source-run/09-rotated-world-normal.png"
+      ],
+      "observation": "Frontal planes share +Z normal color. The slope differs. Camera yaw changes encoded view normal; decoded world +Z color remains stable. No normal is attributed to background: zero-depth background is masked black in current source."
+    },
+    {
+      "captures": [
+        "source-run/06-buffer.png"
+      ],
+      "observation": "Swatches shift left by eight internal texels, with sharp boundaries; exact scan checks compare 80 readback pixels spanning both red edges."
+    },
+    {
+      "captures": [
+        "source-run/07-updated-copy.png",
+        "source-run/manual-000.png"
+      ],
+      "observation": "Cyan appears in the updated opaque copy. The wired Reset and Capture sequence restores red, source view, magenta reader and camera. Text labels and the current device are readable."
+    }
+  ],
+  "limitations": [
+    "Source-only macOS ARM64 Forward+/Metal on Apple M2 Max. No other GPU/backend/platform is certified.",
+    "Rotated normal sample reframes surfaces; rightmost face partly clips. Final framing/window/DPI policy belongs to T02.",
+    "Readback and still inspection do not approve art direction, camera motion, performance, water/transparency composition or a packaged export.",
+    "Earlier failure-control captures predate the cosmetic normal-background mask/control lock; their executed failure classifications remain applicable."
+  ]
+}
