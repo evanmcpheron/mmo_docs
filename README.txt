@@ -90,12 +90,14 @@ BW-002 has eight completed tickets covering authority ownership, compatibility,
 intent and projection boundaries, staged validation, readiness, economic inputs,
 conversion loops and atomic server admission. BW-001 and BW-002 are Complete;
 current statuses and executed evidence live in the registry. BW-003 has five
-Not Started tickets for attributable fixture evidence, deterministic test context,
-redacted probe diagnostics, bounded measurements and integrated verification.
+tickets for attributable fixture evidence, deterministic test context, redacted
+probe diagnostics, bounded measurements and integrated verification.
 Its test-only action probe uses logical clients; serialized payload bytes are
-reported separately from wire traffic. BW-003 remains Not Started and
-Dependency-ready; planning has not implemented the game. Foundations and
-milestones remain In Progress, with their remaining epics still required.
+reported separately from wire traffic. BW-003-T01/T02 are Complete, with actual
+content evidence and a bounded seeded-context probe behind isolated test controls.
+BW-003 remains In Progress and Dependency-ready. T03/T04 are now eligible;
+redacted diagnostics, measurements and T05 integration remain unstarted.
+Foundations and milestones remain In Progress with their other epics required.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages
 cover milestones, architectural decisions, feature coverage and progress upkeep.

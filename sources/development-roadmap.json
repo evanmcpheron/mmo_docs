@@ -443,6 +443,15 @@
           "revision": "BW-003-T01 actual Godot execution and source/input identities in the linked per-run reports; historical BW-001/BW-002 applicability reviewed.",
           "result": "Passed",
           "summary": "AC1 is verified by attributable content-validation execution with immutable authored expectations and separate actual assertions/results. Parent review leaves AC2 for T02/T03, AC3 for T04 and AC4 for T05. Prerequisites BW-001/BW-002 remain Complete; T02 is now ready. BW-003 and Foundations remain In Progress, and no downstream epic is newly dependency-ready."
+        },
+        {
+          "criteria": [
+            2
+          ],
+          "artifact": "validation/tickets/BW-003-T02/epic-review.json",
+          "revision": "BW-003-T02 actual Godot run/source identities in linked reports; prior BW-001/BW-002/T01 evidence applicability reviewed.",
+          "result": "Passed",
+          "summary": "AC2 is verified within the selected disposable probe scope: same-context reproduction, consumed changed seed, restoration, bounded scheduling and no gameplay test-control endpoint. BW-003 remains In Progress: action-correlated redacted diagnostics (T03), measured workloads (T04) and integrated orchestration (T05) remain unstarted. T03/T04 prerequisites are now complete; Foundations and milestones remain In Progress, with no newly ready downstream epic."
         }
       ],
       "phase": "phase-foundations"
@@ -7005,7 +7014,7 @@
       "id": "BW-003-T02",
       "parent_epic": "BW-003",
       "title": "Reproduce seeded context behind isolated test controls",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-003-AC-2"
       ],
@@ -7016,7 +7025,8 @@
         "Extend the same checker with --suite context and a finite test-only probe owner under tests/runtime_fixtures/. It owns only disposable probe entities, a logical tick/clock, bounded scheduled inputs and an observable non-economic action counter/revision. The probe is the user-selected early experiment: no production character state, combat executor, transport or database is introduced.",
         "Use FixtureWorldContext exactly: required server_tick, UTC server_time, owner_epoch, world_configuration_id, opaque string random_seed and explicit visible_entities/npc_states/parties collections. Supply a tiny pinned same-floor/collision fixture and context/content hashes; empty collections represent a known empty state, not missing configuration. Resolve seed-to-generator initialization deterministically without narrowing the canonical string seed to an invented wire encoding. Support the FixtureStep ability_command follow-up variant with its canonical timing and payload, and reuse the needed FixtureAssertion scope/idempotency forms. Unsupported valid variants reject explicitly before execution; no cast, NPC, group or transfer behavior is fabricated.",
         "Exercise content/ability_command_reader.gd with trusted synthetic SessionContext and resolved targeting policy, then allow an explicitly test-authorized probe action to change only its counter/revision. Reader acceptance alone is not gameplay permission. Canonical ability_command_v2 is boundary test input, not an enabled ability; do not publish AbilityExecutionFixture passed evidence or bypass disabled-content admission. The initial boundary input is at t=0; follow-up offsets are finite, nonnegative and nondecreasing, with stable same-offset order.",
-        "Keep clock/seed/context setup and bounded scheduling controls on the isolated test runner only. Include deterministic seed-driven probe ordering, explicit input/step/tick/time limits, fresh-state teardown, malformed context/unknown configuration/unsupported step cases, and attempts to inject seed, clock, ownership or test controls through ability_command_v2. Preserve bootstrap isolation and export exclusions: production/client launch has no probe control endpoint, and test scenes/data remain absent from distributed client artifacts."
+        "Keep clock/seed/context setup and bounded scheduling controls on the isolated test runner only. Include deterministic seed-driven probe ordering, explicit input/step/tick/time limits, fresh-state teardown, malformed context/unknown configuration/unsupported step cases, and attempts to inject seed, clock, ownership or test controls through ability_command_v2. Preserve bootstrap isolation and export exclusions: production/client launch has no probe control endpoint, and test scenes/data remain absent from distributed client artifacts.",
+        "Retain explicit tests/* export exclusions for both presets, with actual client PCK inspection and native/exported launch-argument rejection evidence. Extend the existing canonical reader only for propertyNames key validation and the x-identity annotation required by the newly extracted $ref closure; preserve every prior definition and reject unsupported schema constructs as before."
       ],
       "out_of_scope": [
         "Implementing movement/collision resolution, combat mechanics, NPC AI, party state, reconnect/transfer, authentication or production replay/idempotency from the fixture specification.",
@@ -7029,15 +7039,18 @@
         "Injected seed/time/control/outcome fields and stale/mismatched ownership are rejected at the existing command boundary with no probe mutation. Only the isolated runner can initialize/control the probe; client/production launch and exported client contents cannot expose that capability."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite context\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite context\npython3 tools/check_runtime_fixtures.py --suite context\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
           "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
-          "Use the supplied pinned world/context corpus, deterministic ordering case, same-seed repeat, changed-seed control, malformed/unsupported cases and control-injection attempts. The native-editor headless runner is a ticket deliverable; no editor-created world or manual asset preparation is required."
+          "Use fixtures/runtime_fixtures/context.json and tests/runtime_fixtures/context_runner.gd with its isolated context_probe.gd owner. The corpus supplies pinned same-floor/collision data, opaque UTF-8 seeds, explicit UTC/tick/epoch and known empty world collections, initial command at t=0, nondecreasing follow-ups, malformed/unsupported/bound cases and command-injection attempts. No editor-created world or manual asset preparation is required."
         ],
         "actions": [
           "Run --suite context twice in fresh output directories. Compare the recorded deterministic outcome sequence and final probe revision, not elapsed time or artifact timestamps.",
           "Inspect the suite changed-seed/restore controls, timing/bound failures and unsupported-step cases; confirm their exact input hashes and findings.",
-          "Inspect command-injection results and the ticket-supplied launch/export checks proving no test control is reachable from production/client entry points."
+          "Inspect command-injection results and the ticket-supplied launch/export checks proving no test control is reachable from production/client entry points.",
+          "Exercise --control import-failure, startup-failure, missing-report and assertion-failure in fresh context outputs; each exits 1. Then run a clean --suite context, which exits 0. Import/startup/missing-report stay Not Executed; assertion failure records actual evaluated failure.",
+          "From GAME_ROOT run python3 tools/build_baseline.py --output artifacts/context-exports, then python3 tools/check_client_artifact.py --bundle artifacts/context-exports/BriarwakeClient.app --report artifacts/context-client-inspection.json. The actual mounted client pack must contain no tests/ or fixtures/ resources. Run the retained validation/tickets/BW-003-T02/verify_launch_isolation.py from DOCS_ROOT as `python3 validation/tickets/BW-003-T02/verify_launch_isolation.py --game-root ../briarwake --artifact-dir ../briarwake/artifacts/context-exports --output /tmp/bw-003-t02-launch-isolation-NEW`; it checks native/client/server control flags and expects exit 2 before readiness.",
+          "Run python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke, and repeat with --artifact-dir \"$PWD/artifacts/context-exports\". The isolated ServerRoot/Timer smoke must pass with gameplay disabled."
         ],
         "expected_results": [
           "Identical contexts reproduce the rule outcomes; the changed-seed control proves the seed is consumed rather than merely recorded.",
@@ -7084,7 +7097,20 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T02/verification.json",
+          "revision": "Godot 4.7.2.stable.official.ed1daf0bf; exact game build_revision and executed source/input hashes are retained in the linked run reports.",
+          "result": "Passed",
+          "summary": "Fresh isolated Godot context runs reproduce ordered outcomes and final state, consume a changed opaque seed, and restore the original context. Canonical context/step/assertion validation, bounded schedules, malformed/unsupported cases, rejected command injection/ownership and retry checks pass. Actual client-pack inspection excludes test resources; 16 native/exported control flags reject before readiness. No gameplay, ability readiness, network or persistence pass is claimed."
+        }
+      ]
     },
     {
       "id": "BW-003-T03",

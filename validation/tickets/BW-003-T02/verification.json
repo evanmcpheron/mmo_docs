@@ -1,0 +1,112 @@
+{
+  "ticket": "BW-003-T02",
+  "result": "Passed",
+  "scope": "Disposable context probe only; no gameplay, ability readiness, network, persistence or capacity certification.",
+  "environment": {
+    "os": "macOS 27.0 (26A428)",
+    "architecture": "arm64",
+    "python": "3.14.0",
+    "godot": "4.7.2.stable.official.ed1daf0bf"
+  },
+  "criteria": {
+    "1": "Separate fresh headless runs reproduce all ordered outcomes and final counter/revision. Canonical scope/idempotency/TestCheck assertions execute. Run IDs/completion times are excluded from equality.",
+    "2": "The changed opaque UTF-8 seed changes probe entity ordering; restored context reproduces the original with no surviving state.",
+    "3": "Missing and malformed context, UTC/count/epoch, unknown world, negative/nonfinite/decreasing offsets, unknown and valid unsupported steps/assertions, size/time/tick/step limits reject before any scenario action.",
+    "4": "Command-boundary injected controls/outcomes and stale/mismatched ownership reject without mutation. Real client pack excludes tests/fixtures; all 16 native/exported client/server control arguments exit 2 before readiness."
+  },
+  "runs": "committed-runs/executions.json",
+  "launch_isolation": "launch-isolation-committed/verification.json",
+  "client_pack": "client-inspection.json",
+  "export": "build-manifest.json",
+  "regressions": {
+    "content_admission": "admission/run.json",
+    "python_tests": "python-tests-committed.log",
+    "tests": 70,
+    "game_revision": "9c57e2d4d20311c568a4271855b68356ba8ced7a"
+  },
+  "source_identity": "Committed context runs identify the exact clean game revision plus all source/input hashes. Export manifest predates the final probe-only changes; packaging policy, bootstrap and production sources are identical. Actual client pack excludes the changed probe/fixture files, so that inspection remains applicable. Earlier dirty-run evidence is retained under runs/. No canonical definition body was altered.",
+  "observed_failures": [
+    {
+      "artifact": "python-tests-initial-failure.log",
+      "cause": "The exact extraction closure test expected the pre-T02 definition set. The fixture contract closure adds 36 definitions. Its exact expected set was extended; no assertion or schema gate was removed."
+    }
+  ],
+  "not_run": [
+    "Visual client QA (no UI behavior changed).",
+    "Real transport peers, combat, movement/collision simulation, database and production capacity are outside this test probe."
+  ],
+  "game_revision": "9c57e2d4d20311c568a4271855b68356ba8ced7a",
+  "case_count": 63,
+  "actual_check_count": 308,
+  "commands": [
+    {
+      "command": "python3 tools/verify_toolchain.py",
+      "result": "Passed",
+      "artifact": "toolchain.log"
+    },
+    {
+      "command": "python3 tools/extract_content_contracts.py --check",
+      "result": "Passed",
+      "artifact": "snapshot.log"
+    },
+    {
+      "command": "python3 tools/check_runtime_fixtures.py --suite context",
+      "result": "Passed",
+      "artifact": "committed-runs/first/run.json"
+    },
+    {
+      "command": "python3 tools/check_content_admission.py --suite all",
+      "result": "Passed",
+      "artifact": "admission/run.json"
+    },
+    {
+      "command": "python3 tools/build_baseline.py --output artifacts/bw-003-t02-exports",
+      "result": "Passed",
+      "artifact": "build-manifest.json"
+    },
+    {
+      "command": "python3 tools/check_client_artifact.py --bundle artifacts/bw-003-t02-exports/BriarwakeClient.app --report artifacts/bw-003-t02-client-inspection.json",
+      "result": "Passed",
+      "artifact": "client-inspection.json"
+    },
+    {
+      "command": "python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke",
+      "result": "Passed",
+      "artifact": "native-smoke.log"
+    },
+    {
+      "command": "python3 tools/run_baseline.py --artifact-dir \"$PWD/artifacts/bw-003-t02-exports\" --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke",
+      "result": "Passed",
+      "artifact": "exported-smoke.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tools -p 'test_*.py'",
+      "result": "Passed",
+      "artifact": "python-tests-committed.log",
+      "tests": 70,
+      "revision": "9c57e2d4d20311c568a4271855b68356ba8ced7a"
+    }
+  ],
+  "fresh_process_comparison": {
+    "result": "Passed",
+    "unique_runs": 3,
+    "all_ordered_case_outcomes_equal": true,
+    "all_source_hashes_equal": true,
+    "cases_per_run": 63,
+    "actual_checks_per_run": 308
+  },
+  "documentation_checks": {
+    "result": "Passed",
+    "artifact": "docs-checks.log",
+    "unit_tests": 73,
+    "full_checks_passed": 242,
+    "full_checks_failed": 0,
+    "generated_views": "generated-view-review.json",
+    "committed_revision": "da8f973633453b67a1c2c6233a08fcb64b68e513",
+    "committed_checks": "docs-committed-checks.log"
+  },
+  "pull_requests": {
+    "game": "https://github.com/evanmcpheron/Briarwake/pull/11",
+    "docs": "https://github.com/evanmcpheron/mmo_docs/pull/17"
+  }
+}
