@@ -1,6 +1,389 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-001."><title>BW-001-T01 · Pin the Godot 4.7 toolchain and macOS baseline · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-001.html#BW-001">BW-001</a><span>/</span>BW-001-T01</div><h1>BW-001-T01 · Pin the Godot 4.7 toolchain and macOS baseline</h1><p class="page-description">Implementation ticket for BW-001.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-001-T01"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-001.html#BW-001">BW-001 · Reproducible client and headless project</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-001.html#BW-001-AC-1">BW-001-AC-1</a></p><h2 id="scope">Implementation scope</h2><ul><li>Inspect the existing project.godot baseline: Godot 4.7, Forward Plus, Jolt and a Windows D3D12 preference are declared, but there are no scenes, scripts, export presets or build tools. Preserve Godot 4.7 as requested; identify its exact release or development build and source revision rather than substituting another minor version.</li><li>Create tools/toolchain.lock.json with the exact engine and matching export-template versions, acquisition locations and checksums, macOS version/CPU architecture used for verification, required Python version, and any source build instructions. Record no engine patches for the initial stock build, or explicitly pin an existing patch set without adopting a new fork.</li><li>Record macOS client and macOS dedicated headless server as the verified BW-001 targets. Linux and Windows are future targets, with no compatibility claim until tested. Record the provisional client Forward Plus/backend settings separately from headless simulation, retaining the Windows setting only as an unverified future-platform preference.</li><li>Add tools/verify_toolchain.py and setup instructions that verify the lock against locally acquired engine/templates, report exact paths and mismatches, and work without a preexisting project import cache. Provide a temporary lock-copy option for negative checks.</li></ul><h3>Out of scope</h3><ul><li>Selecting a different Godot minor version; renderer feasibility, camera, shaders, art assets or new engine patches (BW-097).</li><li>Linux/Windows execution, release signing/notarization, hosting, gameplay or automated downloads using credentials.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> None</p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-001-T01-AC-1"><a href="#BW-001-T01-AC-1" class="roadmap-criterion-link">AC 1</a><p>A fresh macOS environment can acquire the exact recorded Godot 4.7 build and matching templates by following the setup instructions; checksum/version verification succeeds and records the native CPU target.</p></li><li id="BW-001-T01-AC-2"><a href="#BW-001-T01-AC-2" class="roadmap-criterion-link">AC 2</a><p>A missing engine, missing templates or modified checksum in a temporary lock copy returns a nonzero exit and identifies the missing/mismatched component with a corrective action.</p></li><li id="BW-001-T01-AC-3"><a href="#BW-001-T01-AC-3" class="roadmap-criterion-link">AC 3</a><p>The lock separates provisional client renderer/backend settings from the headless target and explicitly records the engine patch state; it identifies Linux and Windows as future unverified targets.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: briarwake repository root.
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-001." />
+    <title>
+      BW-001-T01 · Pin the Godot 4.7 toolchain and macOS baseline · Briarwake Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-001.html#BW-001">BW-001</a><span>/</span>BW-001-T01
+          </div>
+          <h1>BW-001-T01 · Pin the Godot 4.7 toolchain and macOS baseline</h1>
+          <p class="page-description">Implementation ticket for BW-001.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-001-T01">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-001.html#BW-001"
+                  >BW-001 · Reproducible client and headless project</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-001.html#BW-001-AC-1">BW-001-AC-1</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Inspect the existing project.godot baseline: Godot 4.7, Forward Plus, Jolt and a
+                  Windows D3D12 preference are declared, but there are no scenes, scripts, export
+                  presets or build tools. Preserve Godot 4.7 as requested; identify its exact
+                  release or development build and source revision rather than substituting another
+                  minor version.
+                </li>
+                <li>
+                  Create tools/toolchain.lock.json with the exact engine and matching
+                  export-template versions, acquisition locations and checksums, macOS version/CPU
+                  architecture used for verification, required Python version, and any source build
+                  instructions. Record no engine patches for the initial stock build, or explicitly
+                  pin an existing patch set without adopting a new fork.
+                </li>
+                <li>
+                  Record macOS client and macOS dedicated headless server as the verified BW-001
+                  targets. Linux and Windows are future targets, with no compatibility claim until
+                  tested. Record the provisional client Forward Plus/backend settings separately
+                  from headless simulation, retaining the Windows setting only as an unverified
+                  future-platform preference.
+                </li>
+                <li>
+                  Add tools/verify_toolchain.py and setup instructions that verify the lock against
+                  locally acquired engine/templates, report exact paths and mismatches, and work
+                  without a preexisting project import cache. Provide a temporary lock-copy option
+                  for negative checks.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Selecting a different Godot minor version; renderer feasibility, camera, shaders,
+                  art assets or new engine patches (BW-097).
+                </li>
+                <li>
+                  Linux/Windows execution, release signing/notarization, hosting, gameplay or
+                  automated downloads using credentials.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p><strong>Hard prerequisites:</strong> None</p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-001-T01-AC-1">
+                  <a href="#BW-001-T01-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    A fresh macOS environment can acquire the exact recorded Godot 4.7 build and
+                    matching templates by following the setup instructions; checksum/version
+                    verification succeeds and records the native CPU target.
+                  </p>
+                </li>
+                <li id="BW-001-T01-AC-2">
+                  <a href="#BW-001-T01-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    A missing engine, missing templates or modified checksum in a temporary lock
+                    copy returns a nonzero exit and identifies the missing/mismatched component with
+                    a corrective action.
+                  </p>
+                </li>
+                <li id="BW-001-T01-AC-3">
+                  <a href="#BW-001-T01-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    The lock separates provisional client renderer/backend settings from the
+                    headless target and explicitly records the engine patch state; it identifies
+                    Linux and Windows as future unverified targets.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: briarwake repository root.
 python3 tools/verify_toolchain.py
 python3 tools/verify_toolchain.py --engine &quot;/path/to/Godot.app/Contents/MacOS/Godot&quot; --templates &quot;/path/to/templates&quot;
 python3 tools/verify_toolchain.py --lock &quot;$BRIARWAKE_NEGATIVE_DIR/toolchain.lock.json&quot;
 python3 tools/verify_toolchain.py --engine &quot;$BRIARWAKE_NEGATIVE_DIR/missing-godot&quot;
-python3 tools/verify_toolchain.py --templates &quot;$BRIARWAKE_NEGATIVE_DIR/missing-templates&quot;</code></pre><h3>Setup</h3><ol><li>Use native ARM64 Python 3.10 or newer on macOS. Follow briarwake/tools/README.md to acquire the stock official Godot 4.7.2-stable editor and matching templates, with download hashes read from tools/toolchain.lock.json. An existing installation may be verified directly; isolated acquired files use the explicit path flags.</li><li>Use a clean checkout without copied .godot state. This ticket is command-line tooling: no scene, local player, graphical launch or gameplay fixture is required.</li><li>Follow the README Negative checks snippet to create BRIARWAKE_NEGATIVE_DIR and a temporary lock copy with only engine.macos.executable_sha256 changed to 64 zeroes. Keep the canonical lock untouched.</li><li>For a missing payload check, create another disposable directory containing only a copy of the matching templates/version.txt, without macos.zip.</li></ol><h3>Actions</h3><ol><li>Run the default verification against the installed toolchain, then verify an isolated installation with --engine and --templates. Record the paths, OS/build, Python version, native target, hashes and three engine/template version outputs.</li><li>Run against the clean checkout and confirm no .godot directory or project file changes are produced.</li><li>Run the altered lock copy, nonexistent engine path and nonexistent templates path. Verify each exit status using the shell immediately after each command.</li><li>Pass the directory containing only version.txt with --templates to verify that a missing macos.zip is diagnosed separately.</li><li>Inspect the lock target boundaries and unchanged project.godot: client Forward Plus/backend settings remain provisional, the dedicated server is headless with Dummy audio and no graphics dependency, patches is empty, and Linux/Windows are explicitly future unverified targets.</li></ol><h3>Expected results</h3><ol><li>Matching installed and isolated toolchains exit 0 and print engine/debug/release version 4.7.2.stable.official.ed1daf0bf, template version 4.7.2.stable and native arm64 target. No project import cache is required or created.</li><li>Negative cases exit 1, identify the component/path or expected/actual checksum and provide a corrective action. No failed invocation reports a passing build/runtime/gameplay test.</li><li>The lock records the macOS 27.0 (26A428) verification baseline, stock source revision ed1daf0bf001b61586d9930840f2f1394092c079, matching acquisition URLs/checksums and Python minimum. Toolchain verification is separate from subsequent client/server application exports.</li></ol><h3>Reset</h3><ol><li>Remove only the disposable negative-check directory and any isolated acquisition/checkout directories created for this test; unset BRIARWAKE_NEGATIVE_DIR. Preserve existing editor/template installations, canonical lock and user files.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> The committed toolchain lock, acquisition/setup instructions, successful verification output and actual missing/mismatched-component diagnostics.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-001-T01/verification.json">17 executed acceptance checks passed on macOS 27.0 (26A428), native arm64, Python 3.14.0. Verified the official editor ZIP checksum and freshly extracted editor plus staged matching macOS debug/release templates in a clean copy without .godot state. Actual native binaries report 4.7.2.stable.official.ed1daf0bf. Missing files, altered checksums, version/native-target mismatches and malformed locks fail deliberately with diagnostics. Executed lock/project consistency checks confirm provisional rendering, independent headless targets, no patches and future unverified Linux/Windows targets. Exact commands, outputs and uncommitted file SHA-256 identities are retained in the artifact. Fresh network acquisition, Python 3.10 execution and application/gameplay builds were not run; those limits are recorded explicitly.</a> — AC 1, 2, 3; Passed; revision 2e4fe30f96e2c5381167bf251d55a96537f024dd + uncommitted BW-001-T01 tools (SHA-256 manifest below)</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/networking.html#practical-initial-architecture">Authority and networking</a>; <a href="../guide/testing.html#test-evidence-retained">Verification and evidence boundaries</a>; <a href="../guide/decisions.html#art-direction">Art direction and engine-fork decision gate</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-001-t02.html#BW-001-T02">Next: BW-001-T02</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+python3 tools/verify_toolchain.py --templates &quot;$BRIARWAKE_NEGATIVE_DIR/missing-templates&quot;</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use native ARM64 Python 3.10 or newer on macOS. Follow briarwake/tools/README.md
+                  to acquire the stock official Godot 4.7.2-stable editor and matching templates,
+                  with download hashes read from tools/toolchain.lock.json. An existing installation
+                  may be verified directly; isolated acquired files use the explicit path flags.
+                </li>
+                <li>
+                  Use a clean checkout without copied .godot state. This ticket is command-line
+                  tooling: no scene, local player, graphical launch or gameplay fixture is required.
+                </li>
+                <li>
+                  Follow the README Negative checks snippet to create BRIARWAKE_NEGATIVE_DIR and a
+                  temporary lock copy with only engine.macos.executable_sha256 changed to 64 zeroes.
+                  Keep the canonical lock untouched.
+                </li>
+                <li>
+                  For a missing payload check, create another disposable directory containing only a
+                  copy of the matching templates/version.txt, without macos.zip.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Run the default verification against the installed toolchain, then verify an
+                  isolated installation with --engine and --templates. Record the paths, OS/build,
+                  Python version, native target, hashes and three engine/template version outputs.
+                </li>
+                <li>
+                  Run against the clean checkout and confirm no .godot directory or project file
+                  changes are produced.
+                </li>
+                <li>
+                  Run the altered lock copy, nonexistent engine path and nonexistent templates path.
+                  Verify each exit status using the shell immediately after each command.
+                </li>
+                <li>
+                  Pass the directory containing only version.txt with --templates to verify that a
+                  missing macos.zip is diagnosed separately.
+                </li>
+                <li>
+                  Inspect the lock target boundaries and unchanged project.godot: client Forward
+                  Plus/backend settings remain provisional, the dedicated server is headless with
+                  Dummy audio and no graphics dependency, patches is empty, and Linux/Windows are
+                  explicitly future unverified targets.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Matching installed and isolated toolchains exit 0 and print engine/debug/release
+                  version 4.7.2.stable.official.ed1daf0bf, template version 4.7.2.stable and native
+                  arm64 target. No project import cache is required or created.
+                </li>
+                <li>
+                  Negative cases exit 1, identify the component/path or expected/actual checksum and
+                  provide a corrective action. No failed invocation reports a passing
+                  build/runtime/gameplay test.
+                </li>
+                <li>
+                  The lock records the macOS 27.0 (26A428) verification baseline, stock source
+                  revision ed1daf0bf001b61586d9930840f2f1394092c079, matching acquisition
+                  URLs/checksums and Python minimum. Toolchain verification is separate from
+                  subsequent client/server application exports.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Remove only the disposable negative-check directory and any isolated
+                  acquisition/checkout directories created for this test; unset
+                  BRIARWAKE_NEGATIVE_DIR. Preserve existing editor/template installations, canonical
+                  lock and user files.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> The committed toolchain lock, acquisition/setup
+                instructions, successful verification output and actual missing/mismatched-component
+                diagnostics.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-001-T01/verification.json"
+                    >17 executed acceptance checks passed on macOS 27.0 (26A428), native arm64,
+                    Python 3.14.0. Verified the official editor ZIP checksum and freshly extracted
+                    editor plus staged matching macOS debug/release templates in a clean copy
+                    without .godot state. Actual native binaries report
+                    4.7.2.stable.official.ed1daf0bf. Missing files, altered checksums,
+                    version/native-target mismatches and malformed locks fail deliberately with
+                    diagnostics. Executed lock/project consistency checks confirm provisional
+                    rendering, independent headless targets, no patches and future unverified
+                    Linux/Windows targets. Exact commands, outputs and uncommitted file SHA-256
+                    identities are retained in the artifact. Fresh network acquisition, Python 3.10
+                    execution and application/gameplay builds were not run; those limits are
+                    recorded explicitly.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 2e4fe30f96e2c5381167bf251d55a96537f024dd +
+                  uncommitted BW-001-T01 tools (SHA-256 manifest below)
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/networking.html#practical-initial-architecture"
+                  >Authority and networking</a
+                >;
+                <a href="../guide/testing.html#test-evidence-retained"
+                  >Verification and evidence boundaries</a
+                >;
+                <a href="../guide/decisions.html#art-direction"
+                  >Art direction and engine-fork decision gate</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-001-t02.html#BW-001-T02">Next: BW-001-T02</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

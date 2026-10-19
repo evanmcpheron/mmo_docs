@@ -1,6 +1,430 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-003."><title>BW-003-T02 · Reproduce seeded context behind isolated test controls · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-003.html#BW-003">BW-003</a><span>/</span>BW-003-T02</div><h1>BW-003-T02 · Reproduce seeded context behind isolated test controls</h1><p class="page-description">Implementation ticket for BW-003.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-003-T02"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-003.html#BW-003">BW-003 · Repeatable runtime fixtures and diagnostics</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-003.html#BW-003-AC-2">BW-003-AC-2</a></p><h2 id="scope">Implementation scope</h2><ul><li>Extend the same checker with --suite context and a finite test-only probe owner under tests/runtime_fixtures/. It owns only disposable probe entities, a logical tick/clock, bounded scheduled inputs and an observable non-economic action counter/revision. The probe is the user-selected early experiment: no production character state, combat executor, transport or database is introduced.</li><li>Use FixtureWorldContext exactly: required server_tick, UTC server_time, owner_epoch, world_configuration_id, opaque string random_seed and explicit visible_entities/npc_states/parties collections. Supply a tiny pinned same-floor/collision fixture and context/content hashes; empty collections represent a known empty state, not missing configuration. Resolve seed-to-generator initialization deterministically without narrowing the canonical string seed to an invented wire encoding. Support the FixtureStep ability_command follow-up variant with its canonical timing and payload, and reuse the needed FixtureAssertion scope/idempotency forms. Unsupported valid variants reject explicitly before execution; no cast, NPC, group or transfer behavior is fabricated.</li><li>Exercise content/ability_command_reader.gd with trusted synthetic SessionContext and resolved targeting policy, then allow an explicitly test-authorized probe action to change only its counter/revision. Reader acceptance alone is not gameplay permission. Canonical ability_command_v2 is boundary test input, not an enabled ability; do not publish AbilityExecutionFixture passed evidence or bypass disabled-content admission. The initial boundary input is at t=0; follow-up offsets are finite, nonnegative and nondecreasing, with stable same-offset order.</li><li>Keep clock/seed/context setup and bounded scheduling controls on the isolated test runner only. Include deterministic seed-driven probe ordering, explicit input/step/tick/time limits, fresh-state teardown, malformed context/unknown configuration/unsupported step cases, and attempts to inject seed, clock, ownership or test controls through ability_command_v2. Preserve bootstrap isolation and export exclusions: production/client launch has no probe control endpoint, and test scenes/data remain absent from distributed client artifacts.</li><li>Retain explicit tests/* export exclusions for both presets, with actual client PCK inspection and native/exported launch-argument rejection evidence. Extend the existing canonical reader only for propertyNames key validation and the x-identity annotation required by the newly extracted $ref closure; preserve every prior definition and reject unsupported schema constructs as before.</li></ul><h3>Out of scope</h3><ul><li>Implementing movement/collision resolution, combat mechanics, NPC AI, party state, reconnect/transfer, authentication or production replay/idempotency from the fixture specification.</li><li>Allowing gameplay payloads to choose time, seed, owner epoch or authoritative state; treating the bootstrap heartbeat timer as a simulation tick.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> <a href="roadmap-bw-003-t01.html#BW-003-T01">BW-003-T01</a></p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-003-T02-AC-1"><a href="#BW-003-T02-AC-1" class="roadmap-criterion-link">AC 1</a><p>Two fresh runs of an identical scenario, seed, world/content/rules context and step schedule produce the same ordered probe outcomes and final counter/revision. Wall-clock completion timestamps and measured durations may differ and are excluded from rule-outcome equality.</p></li><li id="BW-003-T02-AC-2"><a href="#BW-003-T02-AC-2" class="roadmap-criterion-link">AC 2</a><p>A changed-seed control demonstrably changes a seed-dependent probe ordering, and restoring the original context reproduces the original outcome. No previous run state survives teardown.</p></li><li id="BW-003-T02-AC-3"><a href="#BW-003-T02-AC-3" class="roadmap-criterion-link">AC 3</a><p>Missing context fields, invalid UTC time/count/epoch, unknown world configuration, negative/nonfinite/decreasing step offsets, unknown or unsupported step kinds and declared bound overruns produce actionable rejection, with no partial successful scenario claim.</p></li><li id="BW-003-T02-AC-4"><a href="#BW-003-T02-AC-4" class="roadmap-criterion-link">AC 4</a><p>Injected seed/time/control/outcome fields and stale/mismatched ownership are rejected at the existing command boundary with no probe mutation. Only the isolated runner can initialize/control the probe; client/production launch and exported client contents cannot expose that capability.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-003." />
+    <title>
+      BW-003-T02 · Reproduce seeded context behind isolated test controls · Briarwake Development
+      Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-003.html#BW-003">BW-003</a><span>/</span>BW-003-T02
+          </div>
+          <h1>BW-003-T02 · Reproduce seeded context behind isolated test controls</h1>
+          <p class="page-description">Implementation ticket for BW-003.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-003-T02">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-003.html#BW-003"
+                  >BW-003 · Repeatable runtime fixtures and diagnostics</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-003.html#BW-003-AC-2">BW-003-AC-2</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Extend the same checker with --suite context and a finite test-only probe owner
+                  under tests/runtime_fixtures/. It owns only disposable probe entities, a logical
+                  tick/clock, bounded scheduled inputs and an observable non-economic action
+                  counter/revision. The probe is the user-selected early experiment: no production
+                  character state, combat executor, transport or database is introduced.
+                </li>
+                <li>
+                  Use FixtureWorldContext exactly: required server_tick, UTC server_time,
+                  owner_epoch, world_configuration_id, opaque string random_seed and explicit
+                  visible_entities/npc_states/parties collections. Supply a tiny pinned
+                  same-floor/collision fixture and context/content hashes; empty collections
+                  represent a known empty state, not missing configuration. Resolve
+                  seed-to-generator initialization deterministically without narrowing the canonical
+                  string seed to an invented wire encoding. Support the FixtureStep ability_command
+                  follow-up variant with its canonical timing and payload, and reuse the needed
+                  FixtureAssertion scope/idempotency forms. Unsupported valid variants reject
+                  explicitly before execution; no cast, NPC, group or transfer behavior is
+                  fabricated.
+                </li>
+                <li>
+                  Exercise content/ability_command_reader.gd with trusted synthetic SessionContext
+                  and resolved targeting policy, then allow an explicitly test-authorized probe
+                  action to change only its counter/revision. Reader acceptance alone is not
+                  gameplay permission. Canonical ability_command_v2 is boundary test input, not an
+                  enabled ability; do not publish AbilityExecutionFixture passed evidence or bypass
+                  disabled-content admission. The initial boundary input is at t=0; follow-up
+                  offsets are finite, nonnegative and nondecreasing, with stable same-offset order.
+                </li>
+                <li>
+                  Keep clock/seed/context setup and bounded scheduling controls on the isolated test
+                  runner only. Include deterministic seed-driven probe ordering, explicit
+                  input/step/tick/time limits, fresh-state teardown, malformed context/unknown
+                  configuration/unsupported step cases, and attempts to inject seed, clock,
+                  ownership or test controls through ability_command_v2. Preserve bootstrap
+                  isolation and export exclusions: production/client launch has no probe control
+                  endpoint, and test scenes/data remain absent from distributed client artifacts.
+                </li>
+                <li>
+                  Retain explicit tests/* export exclusions for both presets, with actual client PCK
+                  inspection and native/exported launch-argument rejection evidence. Extend the
+                  existing canonical reader only for propertyNames key validation and the x-identity
+                  annotation required by the newly extracted $ref closure; preserve every prior
+                  definition and reject unsupported schema constructs as before.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Implementing movement/collision resolution, combat mechanics, NPC AI, party state,
+                  reconnect/transfer, authentication or production replay/idempotency from the
+                  fixture specification.
+                </li>
+                <li>
+                  Allowing gameplay payloads to choose time, seed, owner epoch or authoritative
+                  state; treating the bootstrap heartbeat timer as a simulation tick.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-003-t01.html#BW-003-T01">BW-003-T01</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-003-T02-AC-1">
+                  <a href="#BW-003-T02-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    Two fresh runs of an identical scenario, seed, world/content/rules context and
+                    step schedule produce the same ordered probe outcomes and final
+                    counter/revision. Wall-clock completion timestamps and measured durations may
+                    differ and are excluded from rule-outcome equality.
+                  </p>
+                </li>
+                <li id="BW-003-T02-AC-2">
+                  <a href="#BW-003-T02-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    A changed-seed control demonstrably changes a seed-dependent probe ordering, and
+                    restoring the original context reproduces the original outcome. No previous run
+                    state survives teardown.
+                  </p>
+                </li>
+                <li id="BW-003-T02-AC-3">
+                  <a href="#BW-003-T02-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Missing context fields, invalid UTC time/count/epoch, unknown world
+                    configuration, negative/nonfinite/decreasing step offsets, unknown or
+                    unsupported step kinds and declared bound overruns produce actionable rejection,
+                    with no partial successful scenario claim.
+                  </p>
+                </li>
+                <li id="BW-003-T02-AC-4">
+                  <a href="#BW-003-T02-AC-4" class="roadmap-criterion-link">AC 4</a>
+                  <p>
+                    Injected seed/time/control/outcome fields and stale/mismatched ownership are
+                    rejected at the existing command boundary with no probe mutation. Only the
+                    isolated runner can initialize/control the probe; client/production launch and
+                    exported client contents cannot expose that capability.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.
 python3 tools/verify_toolchain.py
 python3 tools/extract_content_contracts.py --check
 python3 tools/check_runtime_fixtures.py --suite context
 python3 tools/check_runtime_fixtures.py --suite context
-python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27;</code></pre><h3>Setup</h3><ol><li>Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.</li><li>Use fixtures/runtime_fixtures/context.json and tests/runtime_fixtures/context_runner.gd with its isolated context_probe.gd owner. The corpus supplies pinned same-floor/collision data, opaque UTF-8 seeds, explicit UTC/tick/epoch and known empty world collections, initial command at t=0, nondecreasing follow-ups, malformed/unsupported/bound cases and command-injection attempts. No editor-created world or manual asset preparation is required.</li></ol><h3>Actions</h3><ol><li>Run --suite context twice in fresh output directories. Compare the recorded deterministic outcome sequence and final probe revision, not elapsed time or artifact timestamps.</li><li>Inspect the suite changed-seed/restore controls, timing/bound failures and unsupported-step cases; confirm their exact input hashes and findings.</li><li>Inspect command-injection results and the ticket-supplied launch/export checks proving no test control is reachable from production/client entry points.</li><li>Exercise --control import-failure, startup-failure, missing-report and assertion-failure in fresh context outputs; each exits 1. Then run a clean --suite context, which exits 0. Import/startup/missing-report stay Not Executed; assertion failure records actual evaluated failure.</li><li>From GAME_ROOT run python3 tools/build_baseline.py --output artifacts/context-exports, then python3 tools/check_client_artifact.py --bundle artifacts/context-exports/BriarwakeClient.app --report artifacts/context-client-inspection.json. The actual mounted client pack must contain no tests/ or fixtures/ resources. Run the retained validation/tickets/BW-003-T02/verify_launch_isolation.py from DOCS_ROOT as `python3 validation/tickets/BW-003-T02/verify_launch_isolation.py --game-root ../briarwake --artifact-dir ../briarwake/artifacts/context-exports --output /tmp/bw-003-t02-launch-isolation-NEW`; it checks native/client/server control flags and expects exit 2 before readiness.</li><li>Run python3 tools/run_baseline.py --role server --headless --config &quot;$PWD/fixtures/config/server.valid.json&quot; --smoke, and repeat with --artifact-dir &quot;$PWD/artifacts/context-exports&quot;. The isolated ServerRoot/Timer smoke must pass with gameplay disabled.</li></ol><h3>Expected results</h3><ol><li>Identical contexts reproduce the rule outcomes; the changed-seed control proves the seed is consumed rather than merely recorded.</li><li>Every invalid/unsupported/control-injection case rejects visibly without changing probe state. Ordinary bootstrap and client artifacts retain their existing boundaries.</li></ol><h3>Reset</h3><ol><li>Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.</li><li>Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> Retain two independent same-context runs, changed-seed/restore outcomes, context/world/content hashes, actual typed assertions, negative controls, launch/export isolation checks and Python regression results. Label all committed probe effects as disposable test behavior.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-003-T02/verification.json">Fresh isolated Godot context runs reproduce ordered outcomes and final state, consume a changed opaque seed, and restore the original context. Canonical context/step/assertion validation, bounded schedules, malformed/unsupported cases, rejected command injection/ownership and retry checks pass. Actual client-pack inspection excludes test resources; 16 native/exported control flags reject before readiness. No gameplay, ability readiness, network or persistence pass is claimed.</a> — AC 1, 2, 3, 4; Passed; revision Godot 4.7.2.stable.official.ed1daf0bf; exact game build_revision and executed source/input hashes are retained in the linked run reports.</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/roadmap-bw-003.html#BW-003">Parent epic and exact criteria</a>; <a href="../guide/operations.html#content-tools">Fixture context, controls and execution evidence</a>; <a href="../guide/networking.html#security-and-observability">Security and observability</a>; <a href="../guide/data-inventory.html#shared-FixtureWorldContext">FixtureWorldContext</a>; <a href="../guide/data-inventory.html#shared-FixtureStep">FixtureStep</a>; <a href="../guide/data-inventory.html#shared-FixtureAssertion">FixtureAssertion</a>; <a href="../guide/data-inventory.html#ability-command-v2">ability_command_v2</a>; <a href="../guide/data-inventory.html#entity-snapshot">EntitySnapshot</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-003-t01.html#BW-003-T01">Previous: BW-003-T01</a><a href="roadmap-bw-003-t03.html#BW-003-T03">Next: BW-003-T03</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27;</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in
+                  tools/toolchain.lock.json; the checker resolves that executable rather than
+                  assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No
+                  provider, database or network service is required.
+                </li>
+                <li>
+                  Use fixtures/runtime_fixtures/context.json and
+                  tests/runtime_fixtures/context_runner.gd with its isolated context_probe.gd owner.
+                  The corpus supplies pinned same-floor/collision data, opaque UTF-8 seeds, explicit
+                  UTC/tick/epoch and known empty world collections, initial command at t=0,
+                  nondecreasing follow-ups, malformed/unsupported/bound cases and command-injection
+                  attempts. No editor-created world or manual asset preparation is required.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Run --suite context twice in fresh output directories. Compare the recorded
+                  deterministic outcome sequence and final probe revision, not elapsed time or
+                  artifact timestamps.
+                </li>
+                <li>
+                  Inspect the suite changed-seed/restore controls, timing/bound failures and
+                  unsupported-step cases; confirm their exact input hashes and findings.
+                </li>
+                <li>
+                  Inspect command-injection results and the ticket-supplied launch/export checks
+                  proving no test control is reachable from production/client entry points.
+                </li>
+                <li>
+                  Exercise --control import-failure, startup-failure, missing-report and
+                  assertion-failure in fresh context outputs; each exits 1. Then run a clean --suite
+                  context, which exits 0. Import/startup/missing-report stay Not Executed; assertion
+                  failure records actual evaluated failure.
+                </li>
+                <li>
+                  From GAME_ROOT run python3 tools/build_baseline.py --output
+                  artifacts/context-exports, then python3 tools/check_client_artifact.py --bundle
+                  artifacts/context-exports/BriarwakeClient.app --report
+                  artifacts/context-client-inspection.json. The actual mounted client pack must
+                  contain no tests/ or fixtures/ resources. Run the retained
+                  validation/tickets/BW-003-T02/verify_launch_isolation.py from DOCS_ROOT as
+                  `python3 validation/tickets/BW-003-T02/verify_launch_isolation.py --game-root
+                  ../briarwake --artifact-dir ../briarwake/artifacts/context-exports --output
+                  /tmp/bw-003-t02-launch-isolation-NEW`; it checks native/client/server control
+                  flags and expects exit 2 before readiness.
+                </li>
+                <li>
+                  Run python3 tools/run_baseline.py --role server --headless --config
+                  &quot;$PWD/fixtures/config/server.valid.json&quot; --smoke, and repeat with
+                  --artifact-dir &quot;$PWD/artifacts/context-exports&quot;. The isolated
+                  ServerRoot/Timer smoke must pass with gameplay disabled.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Identical contexts reproduce the rule outcomes; the changed-seed control proves
+                  the seed is consumed rather than merely recorded.
+                </li>
+                <li>
+                  Every invalid/unsupported/control-injection case rejects visibly without changing
+                  probe state. Ordinary bootstrap and client artifacts retain their existing
+                  boundaries.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Let bounded child processes finish; the checker must stop any timed-out child and
+                  discard its disposable project. Probe state exists only in that process.
+                </li>
+                <li>
+                  Keep prior evidence directories intact and rerun with a fresh default output
+                  directory. Restore any deliberately modified fixture only in its disposable copy;
+                  do not edit canonical sources or reuse prior results as a new execution.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Retain two independent same-context runs,
+                changed-seed/restore outcomes, context/world/content hashes, actual typed
+                assertions, negative controls, launch/export isolation checks and Python regression
+                results. Label all committed probe effects as disposable test behavior.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-003-T02/verification.json"
+                    >Fresh isolated Godot context runs reproduce ordered outcomes and final state,
+                    consume a changed opaque seed, and restore the original context. Canonical
+                    context/step/assertion validation, bounded schedules, malformed/unsupported
+                    cases, rejected command injection/ownership and retry checks pass. Actual
+                    client-pack inspection excludes test resources; 16 native/exported control flags
+                    reject before readiness. No gameplay, ability readiness, network or persistence
+                    pass is claimed.</a
+                  >
+                  — AC 1, 2, 3, 4; Passed; revision Godot 4.7.2.stable.official.ed1daf0bf; exact
+                  game build_revision and executed source/input hashes are retained in the linked
+                  run reports.
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-003.html#BW-003">Parent epic and exact criteria</a>;
+                <a href="../guide/operations.html#content-tools"
+                  >Fixture context, controls and execution evidence</a
+                >;
+                <a href="../guide/networking.html#security-and-observability"
+                  >Security and observability</a
+                >;
+                <a href="../guide/data-inventory.html#shared-FixtureWorldContext"
+                  >FixtureWorldContext</a
+                >; <a href="../guide/data-inventory.html#shared-FixtureStep">FixtureStep</a>;
+                <a href="../guide/data-inventory.html#shared-FixtureAssertion">FixtureAssertion</a>;
+                <a href="../guide/data-inventory.html#ability-command-v2">ability_command_v2</a>;
+                <a href="../guide/data-inventory.html#entity-snapshot">EntitySnapshot</a>
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-003-t01.html#BW-003-T01">Previous: BW-003-T01</a
+              ><a href="roadmap-bw-003-t03.html#BW-003-T03">Next: BW-003-T03</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

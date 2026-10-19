@@ -1,5 +1,402 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-002."><title>BW-002-T06 · Require complete economic inputs before route admission · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T06</div><h1>BW-002-T06 · Require complete economic inputs before route admission</h1><p class="page-description">Implementation ticket for BW-002.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-002-T06"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-002.html#BW-002">BW-002 · Authority boundaries and content admission</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-002.html#BW-002-AC-5">BW-002-AC-5</a></p><h2 id="scope">Implementation scope</h2><ul><li>Extend the same staged admission path for VendorOfferDefinition, VendorPricingConfiguration, RecipeDefinition/RecipeIngredient, MaterialDefinition, ItemDefinition and SalvageRule with only their required canonical reference closure. Resolve item versus material namespaces explicitly; do not invent a mapping from display names.</li><li>Build a process-local view of the complete declared enabled vendor/crafting/conversion route set, including already admitted routes and the proposed additions. Include input/output quantities, explicit integer minor-unit NPC prices/sellback, eligible common-material salvage returns, and binding/access constraints relevant to guaranteed repeatability. This derived graph is not a second editable economy schema.</li><li>Reject unknown or missing required prices/quantities/relationships and unsupported route behavior with route/field findings before graph certification. A missing value is not zero; an explicit zero price remains a real value to analyze. Enforce SalvageRule limits: destroy original, at most 25% eligible original common materials, no rare/bound cores, gold or skill XP. Starter assistance cannot become tradable/exportable input.</li><li>Add --suite economy-data with fully authored synthetic canonical records and missing-value/bad-reference/bad-salvage cases. Fixture values exist only to prove admission and are not proposed production balance. Partial/unknown graph inputs keep affected routes disabled; later T07 proves the loop rule.</li><li>Approved canonical extension: content 2.2.1-design adds optional MaterialDefinition.item_definition_id/salvage_class and ItemDefinition.starter_assistance, preserving legacy records/IDs while economic staging requires explicit values. Fixtures and semantic checks include nonexportable starter crafting without cross-owner commissions.</li></ul><h3>Out of scope</h3><ul><li>Production price/recipe catalogs, live vendors/crafting/salvage, profession advancement handlers, wallets/transactions, player market prices or a general economic simulation.</li><li>Treating a complete graph as a loop pass, inventing undocumented conversion mechanics or enabling routes whose operational dependencies do not exist.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> <a href="roadmap-bw-002-t04.html#BW-002-T04">BW-002-T04</a></p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-002-T06-AC-1"><a href="#BW-002-T06-AC-1" class="roadmap-criterion-link">AC 1</a><p>The valid fixture produces a complete derived route view with every reference, quantity, price and salvage limit attributable to its canonical source record.</p></li><li id="BW-002-T06-AC-2"><a href="#BW-002-T06-AC-2" class="roadmap-criterion-link">AC 2</a><p>A missing sellback/purchase input, unknown material/item relation, malformed quantity or unsupported route produces an explicit finding and cannot expose the route as admitted. Explicit zero-priced inputs remain distinguishable from missing values.</p></li><li id="BW-002-T06-AC-3"><a href="#BW-002-T06-AC-3" class="roadmap-criterion-link">AC 3</a><p>Excess common-material return, rare/bound-core return and starter-assistance export examples fail their documented constraints. Prior admitted route state is unchanged on every rejection.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: GAME_ROOT (briarwake/ repository root). No game scene or database is required; the checker executes the production RefCounted staging boundary in an isolated headless project.
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-002." />
+    <title>
+      BW-002-T06 · Require complete economic inputs before route admission · Briarwake Development
+      Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T06
+          </div>
+          <h1>BW-002-T06 · Require complete economic inputs before route admission</h1>
+          <p class="page-description">Implementation ticket for BW-002.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-002-T06">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-002.html#BW-002"
+                  >BW-002 · Authority boundaries and content admission</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-002.html#BW-002-AC-5">BW-002-AC-5</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Extend the same staged admission path for VendorOfferDefinition,
+                  VendorPricingConfiguration, RecipeDefinition/RecipeIngredient, MaterialDefinition,
+                  ItemDefinition and SalvageRule with only their required canonical reference
+                  closure. Resolve item versus material namespaces explicitly; do not invent a
+                  mapping from display names.
+                </li>
+                <li>
+                  Build a process-local view of the complete declared enabled
+                  vendor/crafting/conversion route set, including already admitted routes and the
+                  proposed additions. Include input/output quantities, explicit integer minor-unit
+                  NPC prices/sellback, eligible common-material salvage returns, and binding/access
+                  constraints relevant to guaranteed repeatability. This derived graph is not a
+                  second editable economy schema.
+                </li>
+                <li>
+                  Reject unknown or missing required prices/quantities/relationships and unsupported
+                  route behavior with route/field findings before graph certification. A missing
+                  value is not zero; an explicit zero price remains a real value to analyze. Enforce
+                  SalvageRule limits: destroy original, at most 25% eligible original common
+                  materials, no rare/bound cores, gold or skill XP. Starter assistance cannot become
+                  tradable/exportable input.
+                </li>
+                <li>
+                  Add --suite economy-data with fully authored synthetic canonical records and
+                  missing-value/bad-reference/bad-salvage cases. Fixture values exist only to prove
+                  admission and are not proposed production balance. Partial/unknown graph inputs
+                  keep affected routes disabled; later T07 proves the loop rule.
+                </li>
+                <li>
+                  Approved canonical extension: content 2.2.1-design adds optional
+                  MaterialDefinition.item_definition_id/salvage_class and
+                  ItemDefinition.starter_assistance, preserving legacy records/IDs while economic
+                  staging requires explicit values. Fixtures and semantic checks include
+                  nonexportable starter crafting without cross-owner commissions.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Production price/recipe catalogs, live vendors/crafting/salvage, profession
+                  advancement handlers, wallets/transactions, player market prices or a general
+                  economic simulation.
+                </li>
+                <li>
+                  Treating a complete graph as a loop pass, inventing undocumented conversion
+                  mechanics or enabling routes whose operational dependencies do not exist.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-002-t04.html#BW-002-T04">BW-002-T04</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-002-T06-AC-1">
+                  <a href="#BW-002-T06-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    The valid fixture produces a complete derived route view with every reference,
+                    quantity, price and salvage limit attributable to its canonical source record.
+                  </p>
+                </li>
+                <li id="BW-002-T06-AC-2">
+                  <a href="#BW-002-T06-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    A missing sellback/purchase input, unknown material/item relation, malformed
+                    quantity or unsupported route produces an explicit finding and cannot expose the
+                    route as admitted. Explicit zero-priced inputs remain distinguishable from
+                    missing values.
+                  </p>
+                </li>
+                <li id="BW-002-T06-AC-3">
+                  <a href="#BW-002-T06-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Excess common-material return, rare/bound-core return and starter-assistance
+                    export examples fail their documented constraints. Prior admitted route state is
+                    unchanged on every rejection.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: GAME_ROOT (briarwake/ repository root). No game scene or database is required; the checker executes the production RefCounted staging boundary in an isolated headless project.
 python3 tools/verify_toolchain.py
 python3 tools/extract_content_contracts.py --check
 python3 tools/check_content_admission.py --suite economy-data --output /absolute/new/evidence-directory
-python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27; -v</code></pre><h3>Setup</h3><ol><li>Use the pinned native ARM64 macOS Godot 4.7.2 and Python environment in tools/toolchain.lock.json. Both game and mmo_docs PRs are required: the snapshot is extracted from the sibling canonical registry.</li><li>Use fixtures/content_admission/economy-data.json unchanged. It includes complete synthetic item/material identity, explicit prices and repair fields, recipe/profession/faction/cooldown closure, salvage origins and a retained route context. All numerical inputs are test values, not balance proposals.</li></ol><h3>Actions</h3><ol><li>Run the 57-case suite. Inspect run.json: the valid combined view has seven routes, including retained purchase/sellback and new purchase, two sellbacks, crafting and salvage, with canonical source paths and integer minor-unit prices.</li><li>Compare explicit-zero-purchase and explicit-zero-sellback with missing price cases. Inspect namespace, malformed quantity, unsupported recraft/random/prose conversion, fractional/excess/rare/bound salvage, duplicate identity/return and starter export/commission diagnostics.</li><li>Check every rejection has no candidate routes and prior_candidate_unchanged is true. The positive bound-starter case preserves the restriction without sellback, salvage or cross-owner commission.</li><li>In fresh output paths, run --control import-failure, startup-failure, missing-report, assertion-failure and unsupported-schema; each must exit nonzero. False expectations execute and fail; startup/import failure is not execution. Run a clean suite again.</li></ol><h3>Expected results</h3><ol><li>All 57 authored expectations execute successfully in the normal suite; candidate data and returned snapshots remain isolated and reversing catalog order preserves findings/routes.</li><li>A missing value never becomes zero. Unknown references, unsupported routes, ineligible/excess salvage and starter export reject the whole proposed set without modifying retained state.</li><li>Completeness alone supplies no loop certificate or active content. T07 graph certification, T08 actual startup publication and live economy/gameplay remain unimplemented.</li></ol><h3>Reset</h3><ol><li>Let the bounded checker exit and remove its owned temporary project automatically. Use a fresh output directory for each run; no database/account/peers or bootstrap configuration is touched.</li><li>Keep attributable run.json and logs under mmo_docs/validation/tickets/BW-002-T06/ for review. Do not overwrite fixture/canonical sources or earlier evidence.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> Executed complete/incomplete economic-input and salvage-constraint results, canonical fixture provenance and unchanged-active-route assertions.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-002-T06/verification.json">Executed 57-case pinned-engine economic input suite: complete attributable combined routes, explicit zero versus missing prices, reference/quantity/unsupported-route rejections, salvage and starter/commission constraints, snapshot isolation and unchanged prior routes. Full tooling/contract regressions are retained separately. Completeness does not claim loop freedom, activation or live economic execution.</a> — AC 1, 2, 3; Passed; revision Exact initial/final game Git revisions, per-source/input SHA-256 manifests and final fetched main SHAs are retained in the verification report and linked run.json files.</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a>; <a href="../guide/items.html#durability-salvage-and-demand">Economic admission rules</a>; <a href="../guide/data-inventory.html#vendor-offer-definition">VendorOfferDefinition</a>; <a href="../guide/data-inventory.html#vendor-pricing-configuration">VendorPricingConfiguration / RepairPricingRule</a>; <a href="../guide/data-inventory.html#recipe-definition">RecipeDefinition / RecipeIngredient</a>; <a href="../guide/data-inventory.html#material-definition">MaterialDefinition</a>; <a href="../guide/data-inventory.html#item-definition">ItemDefinition</a>; <a href="../guide/data-inventory.html#salvage-rule">SalvageRule</a>; <a href="../guide/data-inventory.html#profession-definition">ProfessionDefinition (required reference closure)</a>; <a href="../guide/data-inventory.html#item-binding-state">ItemBindingState</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-002-t05.html#BW-002-T05">Previous: BW-002-T05</a><a href="roadmap-bw-002-t07.html#BW-002-T07">Next: BW-002-T07</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27; -v</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use the pinned native ARM64 macOS Godot 4.7.2 and Python environment in
+                  tools/toolchain.lock.json. Both game and mmo_docs PRs are required: the snapshot
+                  is extracted from the sibling canonical registry.
+                </li>
+                <li>
+                  Use fixtures/content_admission/economy-data.json unchanged. It includes complete
+                  synthetic item/material identity, explicit prices and repair fields,
+                  recipe/profession/faction/cooldown closure, salvage origins and a retained route
+                  context. All numerical inputs are test values, not balance proposals.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Run the 57-case suite. Inspect run.json: the valid combined view has seven routes,
+                  including retained purchase/sellback and new purchase, two sellbacks, crafting and
+                  salvage, with canonical source paths and integer minor-unit prices.
+                </li>
+                <li>
+                  Compare explicit-zero-purchase and explicit-zero-sellback with missing price
+                  cases. Inspect namespace, malformed quantity, unsupported recraft/random/prose
+                  conversion, fractional/excess/rare/bound salvage, duplicate identity/return and
+                  starter export/commission diagnostics.
+                </li>
+                <li>
+                  Check every rejection has no candidate routes and prior_candidate_unchanged is
+                  true. The positive bound-starter case preserves the restriction without sellback,
+                  salvage or cross-owner commission.
+                </li>
+                <li>
+                  In fresh output paths, run --control import-failure, startup-failure,
+                  missing-report, assertion-failure and unsupported-schema; each must exit nonzero.
+                  False expectations execute and fail; startup/import failure is not execution. Run
+                  a clean suite again.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  All 57 authored expectations execute successfully in the normal suite; candidate
+                  data and returned snapshots remain isolated and reversing catalog order preserves
+                  findings/routes.
+                </li>
+                <li>
+                  A missing value never becomes zero. Unknown references, unsupported routes,
+                  ineligible/excess salvage and starter export reject the whole proposed set without
+                  modifying retained state.
+                </li>
+                <li>
+                  Completeness alone supplies no loop certificate or active content. T07 graph
+                  certification, T08 actual startup publication and live economy/gameplay remain
+                  unimplemented.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Let the bounded checker exit and remove its owned temporary project automatically.
+                  Use a fresh output directory for each run; no database/account/peers or bootstrap
+                  configuration is touched.
+                </li>
+                <li>
+                  Keep attributable run.json and logs under mmo_docs/validation/tickets/BW-002-T06/
+                  for review. Do not overwrite fixture/canonical sources or earlier evidence.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Executed complete/incomplete economic-input and
+                salvage-constraint results, canonical fixture provenance and unchanged-active-route
+                assertions.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-002-T06/verification.json"
+                    >Executed 57-case pinned-engine economic input suite: complete attributable
+                    combined routes, explicit zero versus missing prices,
+                    reference/quantity/unsupported-route rejections, salvage and starter/commission
+                    constraints, snapshot isolation and unchanged prior routes. Full
+                    tooling/contract regressions are retained separately. Completeness does not
+                    claim loop freedom, activation or live economic execution.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision Exact initial/final game Git revisions,
+                  per-source/input SHA-256 manifests and final fetched main SHAs are retained in the
+                  verification report and linked run.json files.
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a
+                >;
+                <a href="../guide/items.html#durability-salvage-and-demand"
+                  >Economic admission rules</a
+                >;
+                <a href="../guide/data-inventory.html#vendor-offer-definition"
+                  >VendorOfferDefinition</a
+                >;
+                <a href="../guide/data-inventory.html#vendor-pricing-configuration"
+                  >VendorPricingConfiguration / RepairPricingRule</a
+                >;
+                <a href="../guide/data-inventory.html#recipe-definition"
+                  >RecipeDefinition / RecipeIngredient</a
+                >;
+                <a href="../guide/data-inventory.html#material-definition">MaterialDefinition</a>;
+                <a href="../guide/data-inventory.html#item-definition">ItemDefinition</a>;
+                <a href="../guide/data-inventory.html#salvage-rule">SalvageRule</a>;
+                <a href="../guide/data-inventory.html#profession-definition"
+                  >ProfessionDefinition (required reference closure)</a
+                >; <a href="../guide/data-inventory.html#item-binding-state">ItemBindingState</a>
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-002-t05.html#BW-002-T05">Previous: BW-002-T05</a
+              ><a href="roadmap-bw-002-t07.html#BW-002-T07">Next: BW-002-T07</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>
