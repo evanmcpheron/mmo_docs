@@ -319,6 +319,16 @@
           "revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b-dirty (uncommitted BW-002-T02 implementation; per-source and executed-input SHA-256 hashes retained in the reports)",
           "result": "Passed",
           "summary": "Explicit parent review: AC4 passes the executed T02 compatibility/revision corpus. AC1 retains applicable T01 evidence because its authority map/bootstrap owners are unchanged. BW-002 remains In Progress: AC2 staged/atomic admission, AC3 binding/readiness refusal and AC5 complete economic graph gate require T03–T08. T03 prerequisites are satisfied; downstream epics remain gated by BW-002."
+        },
+        {
+          "criteria": [
+            1,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T03/epic-review.json",
+          "revision": "Exact tested game Git revision and per-source/input SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json",
+          "result": "Passed",
+          "summary": "Explicit parent review retains AC1 owner/lifecycle mapping and AC4 compatibility evidence, with executed T03 intent/projection behavior and a fresh compatibility regression. T01 authority/lifecycle requirements and existing bootstrap owners are preserved. BW-002 remains In Progress: AC2 atomic staged admission, AC3 binding/readiness refusal and AC5 complete economic graph validation require T04–T08. T04 is now ticket-dependency-ready; BW-002-dependent epics remain gated."
         }
       ],
       "phase": "phase-foundations"
@@ -6129,7 +6139,7 @@
       "id": "BW-002-T03",
       "parent_epic": "BW-002",
       "title": "Validate intent contracts and filter public projections",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-1",
         "BW-002-AC-4"
@@ -6153,22 +6163,25 @@
         "The same boundary functions are invoked by fixtures and are available for future authoritative callers; no shape-check result is presented as permission to execute gameplay or as a durable acknowledgement."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite boundaries\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_content_admission.py --suite boundaries\npython3 tools/check_content_admission.py --suite compatibility\npython3 -m unittest discover -s tools -p 'test_*.py'\npython3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke",
         "setup": [
-          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Provide synthetic trusted session/recipient contexts, resolved targeting policies, command payloads and internal combat results with recognizable private-field sentinels. Include a passive definition and a client activation command with all three targeting inputs null as a rejection fixture. No player node, network service or combat handler is required."
+          "Use the pinned native macOS Godot 4.7.2 editor and Python 3.10+ from tools/toolchain.lock.json, with sibling mmo_docs canonical sources available. No dependencies or network peers are needed.",
+          "Use fixtures/content_admission/boundaries.json and contracts.snapshot.json unchanged. The corpus contains trusted synthetic SessionContext/RecipientContext inputs, all 21 resolved TargetMode branches, command overrides and recognizable private-result sentinels. The fixed HMAC fixture key is synthetic; production session wiring/key lifecycle is future work.",
+          "Each checker invocation creates a fresh artifacts/<suite>-<timestamp>/ directory, or use --output with a new absolute directory. run.json retains exact source/input SHA-256 hashes, Git revision, engine identity, per-case assertions and logs."
         ],
         "actions": [
-          "Run the boundary suite across each target-mode/input-kind case, passive activation and malformed command case; inspect exact field-level rejections.",
-          "Compare owner, visible observer, hidden-source and unauthorized-recipient serialized outputs; search the outputs for fixture private-field sentinels and private action/ledger IDs."
+          "Run the launch commands. Inspect the 121 command cases, 14 recipient projection cases and 2 CommandResponse shape examples in the boundaries run report. Verify the passive-none case rejects activation, every allowed summon/pet alternative is explicit, and malformed/injected/ambiguous cases produce the expected field findings.",
+          "Compare owner-hidden-source, observer-visible, observer-hidden-source, hidden-another-recipient, hidden-new-key, entitlement-revoked and observer-target-hidden outputs. Hidden sources must be null; action/event references must match independent HMAC expectations and differ by recipient/key. Search serialized public output for private source/action/event IDs and raw/mitigation/debt/resource fields.",
+          "Run disposable failure controls by adding --control import-failure, startup-failure, missing-report, assertion-failure or unsupported-schema to the boundary command, using a new output directory each time. All exit 1; an executed false expectation is Executed/Failed while import/startup/missing-report paths cannot be passing assertions. Rerun boundaries cleanly afterwards."
         ],
         "expected_results": [
-          "Only contract-compatible intent for activatable abilities reaches the typed boundary; passive activation is rejected even with correctly null targeting inputs. The suite never executes an ability.",
-          "Public payloads match CombatResultEvent/PublicCombatResult, omit private state and withhold unauthorized results. Negative fixtures leave source state unchanged."
+          "All 137 clean boundary cases pass in the pinned engine; compatibility and Python regression checks pass without engine errors or warnings. Negative expectations are actual rejections, with no returned intent/event and unchanged input state.",
+          "Typed intents use the trusted actor/current session epoch and zone/instance/floor. Direction is normalized; coordinates remain intent. Public events have only canonical CombatResultEvent/PublicCombatResult fields; unauthorized recipients or hidden observer targets receive no event.",
+          "The direct fixture runner invokes content/ability_command_reader.gd and content/combat_result_projection.gd, available to later authoritative callers. CommandResponse examples are schema-compatible examples only. No authentication, RPC, gameplay execution, replay storage, durable success, full EntitySnapshot producer or content readiness is claimed."
         ],
         "reset": [
-          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
-          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+          "Allow each bounded checker/engine process to exit; disposable harness projects are removed automatically. No database, account, world state or network session exists to reset.",
+          "Preserve run.json and logs before removing only runner-owned artifact directories. Leave tracked fixtures, canonical definitions and bootstrap configuration unchanged; a subsequent clean run must reproduce the results."
         ]
       },
       "completion_evidence": "Executed command compatibility and recipient-projection matrix, retained redacted payloads and negative findings tied to exact canonical definitions.",
@@ -6211,7 +6224,30 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T03/boundaries/run.json",
+          "revision": "Exact tested game Git revision and per-source/input SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json",
+          "result": "Passed",
+          "summary": "Pinned-engine execution passes 137 boundary cases: the complete 21-mode/input-kind matrix, passive and malformed/injected intent refusal, trusted session scope, canonical recipient projection, hidden-source HMAC known-answer/isolation checks and accepted/rejected response examples. The functions are the reusable production boundary owners; no command execution or durable acknowledgement occurs."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T03/verification.json",
+          "revision": "Exact tested game Git revision and per-source/input SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json",
+          "result": "Passed",
+          "summary": "Executed compatibility, Python-driver behavioral regressions, baseline smoke and failure controls support the boundary run; source/link/ownership review preserves the existing server bootstrap and canonical contracts. This is pure-boundary evidence, not authenticated RPC, gameplay, multi-peer or full snapshot evidence."
+        }
+      ]
     },
     {
       "id": "BW-002-T04",
