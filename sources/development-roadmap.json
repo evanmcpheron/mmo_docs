@@ -360,6 +360,17 @@
           "revision": "Exact tested game revision, retained-evidence applicability and fresh standard regression reports recorded in the linked parent review.",
           "result": "Passed",
           "summary": "T05 normal import/readiness and Python regressions pass, clearing its environment blocker and completing AC3 refusal coverage. Retained T01 ownership/lifecycle evidence remains applicable; fresh compatibility, boundary and structure suites preserve AC1/AC4 and support staged validation. BW-002 remains In Progress: AC2 real atomic startup admission needs T08, and AC5 economic input/loop certification needs T06/T07. T06 is dependency-ready; T08 still requires T07; downstream epics remain gated on BW-002."
+        },
+        {
+          "criteria": [
+            1,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T06/epic-review.json",
+          "revision": "Tested game revisions and retained-evidence applicability recorded in the linked parent review and suite source/input manifests.",
+          "result": "Passed",
+          "summary": "T06 completes economic input/constraint coverage toward AC5. Retain AC1 ownership/lifecycle evidence and AC3 readiness refusal; executed compatibility/boundary/structure/readiness regressions preserve AC4. Parent remains In Progress: AC5 still requires T07 complete-graph loop certification; AC2 still requires T08 real atomic startup admission. T07 is now ticket-dependency-ready; downstream epics remain gated on BW-002."
         }
       ],
       "phase": "phase-foundations"
@@ -6525,7 +6536,7 @@
       "id": "BW-002-T06",
       "parent_epic": "BW-002",
       "title": "Require complete economic inputs before route admission",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-5"
       ],
@@ -6536,7 +6547,8 @@
         "Extend the same staged admission path for VendorOfferDefinition, VendorPricingConfiguration, RecipeDefinition/RecipeIngredient, MaterialDefinition, ItemDefinition and SalvageRule with only their required canonical reference closure. Resolve item versus material namespaces explicitly; do not invent a mapping from display names.",
         "Build a process-local view of the complete declared enabled vendor/crafting/conversion route set, including already admitted routes and the proposed additions. Include input/output quantities, explicit integer minor-unit NPC prices/sellback, eligible common-material salvage returns, and binding/access constraints relevant to guaranteed repeatability. This derived graph is not a second editable economy schema.",
         "Reject unknown or missing required prices/quantities/relationships and unsupported route behavior with route/field findings before graph certification. A missing value is not zero; an explicit zero price remains a real value to analyze. Enforce SalvageRule limits: destroy original, at most 25% eligible original common materials, no rare/bound cores, gold or skill XP. Starter assistance cannot become tradable/exportable input.",
-        "Add --suite economy-data with fully authored synthetic canonical records and missing-value/bad-reference/bad-salvage cases. Fixture values exist only to prove admission and are not proposed production balance. Partial/unknown graph inputs keep affected routes disabled; later T07 proves the loop rule."
+        "Add --suite economy-data with fully authored synthetic canonical records and missing-value/bad-reference/bad-salvage cases. Fixture values exist only to prove admission and are not proposed production balance. Partial/unknown graph inputs keep affected routes disabled; later T07 proves the loop rule.",
+        "Approved canonical extension: content 2.2.1-design adds optional MaterialDefinition.item_definition_id/salvage_class and ItemDefinition.starter_assistance, preserving legacy records/IDs while economic staging requires explicit values. Fixtures and semantic checks include nonexportable starter crafting without cross-owner commissions."
       ],
       "out_of_scope": [
         "Production price/recipe catalogs, live vendors/crafting/salvage, profession advancement handlers, wallets/transactions, player market prices or a general economic simulation.",
@@ -6548,22 +6560,25 @@
         "Excess common-material return, rare/bound-core return and starter-assistance export examples fail their documented constraints. Prior admitted route state is unchanged on every rejection."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite economy-data\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT (briarwake/ repository root). No game scene or database is required; the checker executes the production RefCounted staging boundary in an isolated headless project.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_content_admission.py --suite economy-data --output /absolute/new/evidence-directory\npython3 -m unittest discover -s tools -p 'test_*.py' -v",
         "setup": [
-          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Author the small complete vendor/recipe/material/item/salvage fixture closure, a preexisting-route context and disposable negative copies. Include required repair-pricing fields when using VendorPricingConfiguration even though repair execution is outside this epic."
+          "Use the pinned native ARM64 macOS Godot 4.7.2 and Python environment in tools/toolchain.lock.json. Both game and mmo_docs PRs are required: the snapshot is extracted from the sibling canonical registry.",
+          "Use fixtures/content_admission/economy-data.json unchanged. It includes complete synthetic item/material identity, explicit prices and repair fields, recipe/profession/faction/cooldown closure, salvage origins and a retained route context. All numerical inputs are test values, not balance proposals."
         ],
         "actions": [
-          "Run the economic-data suite; inspect the full combined route set, units and provenance, then each missing-value/reference/salvage diagnostic.",
-          "Compare a missing price with an explicit zero price and verify neither receives an inferred market value or silent fallback."
+          "Run the 57-case suite. Inspect run.json: the valid combined view has seven routes, including retained purchase/sellback and new purchase, two sellbacks, crafting and salvage, with canonical source paths and integer minor-unit prices.",
+          "Compare explicit-zero-purchase and explicit-zero-sellback with missing price cases. Inspect namespace, malformed quantity, unsupported recraft/random/prose conversion, fractional/excess/rare/bound salvage, duplicate identity/return and starter export/commission diagnostics.",
+          "Check every rejection has no candidate routes and prior_candidate_unchanged is true. The positive bound-starter case preserves the restriction without sellback, salvage or cross-owner commission.",
+          "In fresh output paths, run --control import-failure, startup-failure, missing-report, assertion-failure and unsupported-schema; each must exit nonzero. False expectations execute and fail; startup/import failure is not execution. Run a clean suite again."
         ],
         "expected_results": [
-          "Only complete supported inputs reach graph analysis; incomplete/invalid routes remain disabled with actionable findings.",
-          "Safe data completeness does not claim loop freedom, operational gameplay readiness, production prices or a currency transaction."
+          "All 57 authored expectations execute successfully in the normal suite; candidate data and returned snapshots remain isolated and reversing catalog order preserves findings/routes.",
+          "A missing value never becomes zero. Unknown references, unsupported routes, ineligible/excess salvage and starter export reject the whole proposed set without modifying retained state.",
+          "Completeness alone supplies no loop certificate or active content. T07 graph certification, T08 actual startup publication and live economy/gameplay remain unimplemented."
         ],
         "reset": [
-          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
-          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+          "Let the bounded checker exit and remove its owned temporary project automatically. Use a fresh output directory for each run; no database/account/peers or bootstrap configuration is touched.",
+          "Keep attributable run.json and logs under mmo_docs/validation/tickets/BW-002-T06/ for review. Do not overwrite fixture/canonical sources or earlier evidence."
         ]
       },
       "completion_evidence": "Executed complete/incomplete economic-input and salvage-constraint results, canonical fixture provenance and unchanged-active-route assertions.",
@@ -6577,32 +6592,52 @@
           "href": "guide/items.html#durability-salvage-and-demand"
         },
         {
-          "label": "Vendor offers",
+          "label": "VendorOfferDefinition",
           "href": "guide/data-inventory.html#vendor-offer-definition"
         },
         {
-          "label": "Prices and integer minor units",
+          "label": "VendorPricingConfiguration / RepairPricingRule",
           "href": "guide/data-inventory.html#vendor-pricing-configuration"
         },
         {
-          "label": "Recipes and shared RecipeIngredient",
+          "label": "RecipeDefinition / RecipeIngredient",
           "href": "guide/data-inventory.html#recipe-definition"
         },
         {
-          "label": "Material identity",
+          "label": "MaterialDefinition",
           "href": "guide/data-inventory.html#material-definition"
         },
         {
-          "label": "Item identity",
+          "label": "ItemDefinition",
           "href": "guide/data-inventory.html#item-definition"
         },
         {
-          "label": "Salvage limits",
+          "label": "SalvageRule",
           "href": "guide/data-inventory.html#salvage-rule"
+        },
+        {
+          "label": "ProfessionDefinition (required reference closure)",
+          "href": "guide/data-inventory.html#profession-definition"
+        },
+        {
+          "label": "ItemBindingState",
+          "href": "guide/data-inventory.html#item-binding-state"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T06/verification.json",
+          "revision": "Exact initial/final game Git revisions, per-source/input SHA-256 manifests and final fetched main SHAs are retained in the verification report and linked run.json files.",
+          "result": "Passed",
+          "summary": "Executed 57-case pinned-engine economic input suite: complete attributable combined routes, explicit zero versus missing prices, reference/quantity/unsupported-route rejections, salvage and starter/commission constraints, snapshot isolation and unchanged prior routes. Full tooling/contract regressions are retained separately. Completeness does not claim loop freedom, activation or live economic execution."
+        }
+      ]
     },
     {
       "id": "BW-002-T07",
