@@ -86,9 +86,11 @@ with prerequisites, downstream work, acceptance criteria, verification and ticke
 planning. Criterion links such as #BW-097-AC-1 support future ticket references.
 BW-001 has seven tickets in execution order, each with its own generated page,
 exact parent-criterion links, dependencies, scope and runnable manual test plan.
-BW-002 has eight tickets covering authority ownership, compatibility, intent and
-projection boundaries, staged validation, readiness, economic inputs, conversion
-loops and atomic server admission. They begin Not Started with no verified evidence.
+BW-002 has eight completed tickets covering authority ownership, compatibility,
+intent and projection boundaries, staged validation, readiness, economic inputs,
+conversion loops and atomic server admission. BW-001 and BW-002 are Complete;
+current statuses and executed evidence live in the registry. Foundations and
+milestones remain In Progress, with their remaining epics still required.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages
 cover milestones, architectural decisions, feature coverage and progress upkeep.
