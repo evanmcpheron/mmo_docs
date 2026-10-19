@@ -1,0 +1,233 @@
+# Authority owners and state lifecycles
+
+BW-002-T01 responsibility review, 19 October 2026. The implemented baseline was
+inspected at game revision `4633e7cf5c2509bbf53754dfd496ba3e69c95681` and design
+revision `84cef2cf0668d7ae726a86c604a81e4f404295a4`. This document is an ownership
+map; it adds no runtime owner, RPC, authentication, storage, or gameplay behavior.
+
+The [canonical registry](../../../mmo_docs/sources/data-inventory.json) owns the
+definitions (registry format 2, content revision `2.2.0-design`). Its generated
+[inventory](../../../mmo_docs/guide/data-inventory.html) and the linked mechanics
+are references, not separate definitions. Cross-repository links assume the
+workspace's sibling `briarwake/` and `mmo_docs/` checkouts.
+
+## Implemented bootstrap owners
+
+| Owner and source | Creation, mutation, and teardown actually implemented | Boundary |
+| --- | --- | --- |
+| [Baseline runner](../../tools/run_baseline.py) | Verifies the pinned editor, imports the project, derives the source commit with an optional `-dirty` suffix, and launches the selected role; bounded smoke launches exit after their check. Artifact launches verify the package manifest/checksums and use embedded build identity. | A development launcher, with no world or player state. |
+| [Bootstrap](../../scenes/bootstrap.gd), mounted by [bootstrap.tscn](../../scenes/bootstrap.tscn) from [project.godot](../../project.godot) | Reads role/configuration/build arguments, or immutable exported identity; loads the client shell or configures and mounts ServerRoot. Removes and frees itself on server handoff. | Chooses process role; never claims a character session or commits gameplay. |
+| [ServerRoot](../../scenes/server/server_root.gd) and [server_root.tscn](../../scenes/server/server_root.tscn) | Loads configuration, checks that only ServerRoot and its heartbeat Timer are present with headless/Dummy drivers, reports bootstrap readiness, and runs the Timer. Smoke mode stops after three heartbeats and rechecks isolation. | This player-free bootstrap is not an implemented world simulation, admission gate, network listener, or persistence service. `server-ready` currently means bootstrap readiness only. |
+| [ServerConfiguration](../../scenes/server/server_configuration.gd) | Loads an explicit absolute external JSON path; clears its exposed version fields before loading; rejects malformed/missing/unknown fields and invalid rates/durations; publishes `rules_version` and `content_version` on success. Its instance is local to ServerRoot startup. | These strings describe configured versions; accepting their shape does not establish package compatibility or executable content readiness. |
+| [ClientShell](../../scenes/client/client_shell.gd) and [client_shell.tscn](../../scenes/client/client_shell.tscn) | Displays a label and Quit button; Quit exits the process. | No player, input prediction, interpolation, animation system, rendering pipeline, or gameplay audio owner is implemented here. |
+
+[Toolchain lock](../../tools/toolchain.lock.json) pins Godot
+`4.7.2.stable.official.ed1daf0bf`, matching export templates, and native macOS
+arm64 verification. Existing [tool procedures](../../tools/README.md) and Python
+regressions cover the bootstrap/build baseline. They do not prove the future
+lifecycles below. No database, session claimant, world scene, or durable mutation
+implementation exists in this inspected checkout.
+
+## Required authoritative owners
+
+Every owner in this section is **future work**. Roles describe responsibility,
+not new classes or a decision to deploy separate microservices. The
+[networking ownership model](../../../mmo_docs/guide/networking.html#ownership)
+requires one write owner for each state domain. Checkpoints and filtered views
+never become competing mutable authorities.
+
+| Domain | Single authoritative write owner and canonical state | Command entry and authoritative mutation | Recipient projection |
+| --- | --- | --- | --- |
+| Session claim | Durable transactional boundary owns [SessionOwnershipRecord](../../../mmo_docs/guide/data-inventory.html#session-ownership-record); the world consumes its current [SessionAuthority](../../../mmo_docs/guide/data-inventory.html#session-authority). | Trusted authentication/session boundary compare-and-claims one process/epoch; all later owners fence against that claim. | Credentials/claim records stay private; authenticated owner receives the current epoch through the permitted session/reconnect boundary. |
+| Movement and collision | Owning world process owns [MovementState](../../../mmo_docs/guide/data-inventory.html#movement-state) inside [CharacterState](../../../mmo_docs/guide/data-inventory.html#character-state). | [MovementIntent](../../../mmo_docs/guide/data-inventory.html#movement-intent) carries sequenced intent. World derives actor and spatial scope, normalizes input, simulates movement, validates collision, and acknowledges input sequence. | [EntitySnapshot](../../../mmo_docs/guide/data-inventory.html#entity-snapshot) contains authorized movement; local prediction reconciles and remote presentation interpolates. |
+| Health and combat resources | Owning world process owns CharacterState health and [ResourcePoolState](../../../mmo_docs/guide/data-inventory.html#resource-pool-state). | Validated ability/effect/recovery operations reserve, consume, or restore the one actual pool. Class/spec aliases reference that same pool; reserved/current/maximum invariants apply. | Health fraction may be public; resource pools and history are owner-private. |
+| Casts and cooldowns | Owning world process owns [CastState](../../../mmo_docs/guide/data-inventory.html#cast-state) and [CooldownState](../../../mmo_docs/guide/data-inventory.html#cooldown-state). | [ability_command_v2](../../../mmo_docs/guide/data-inventory.html#ability-command-v2) is intent. World validates ownership, build, target, life/control state and costs, then applies the declared commit policy. Animation events never release a cast. | Owner receives acceptance/rejection and permitted timing; other recipients receive only entitled cast/effect information. |
+| Statuses | Owning world process owns [StatusInstance](../../../mmo_docs/guide/data-inventory.html#status-instance), including its periodic schedule/absorb state. | Validated effects create/update/expire the canonical instance under StatusDefinition stacking and cleanup policy. Class histories refer to it, not a second timer or tick budget. | Public status details require an explicit allowlist and cannot reveal hidden sources; private restoration is owner-only. |
+| Summons and pet commands | Owner's world process owns [SummonCapacityState](../../../mmo_docs/guide/data-inventory.html#summon-capacity-state) and its [SummonState](../../../mmo_docs/guide/data-inventory.html#summon-state) instances. | World validates commands and eligible targets, and changes entities within one owner capacity and aggregate budget. Replacement removes the old object within the same operation. | Only authorized visible summon entities/effects; no discovery beyond the owner's permitted information. |
+| Delayed damage debt | Owning world process owns [DamageLedger](../../../mmo_docs/guide/data-inventory.html#damage-ledger). | World schedules already mitigated debt, ticks it once, or applies an explicit clearing action. It cannot re-mitigate or re-delay the same debt. | Internal entries stay private; owner debt display derives from the ledger. Public combat outcomes use a filtered result. |
+| Items and placement | Durable transactional boundary owns [ItemOwnershipRecord](../../../mmo_docs/guide/data-inventory.html#item-ownership-record), coordinating canonical ItemInstance revisions and container/slot references. | Authorized server operation checks ownership, reservations and expected revisions before atomic instance/owner/container/equipment changes. | Inventory/equipment/listing/delivery views reference the same instances. An authorized view cannot independently create or move an item. |
+| Currency | Durable transactional boundary owns [WalletRecord](../../../mmo_docs/guide/data-inventory.html#wallet-record). | Authorized operation changes balance, ledger, held reservations and related settlement atomically. A reservation locks existing funds; it is not another balance. | WalletState is an authorized projection, never an alternative spendable balance. |
+| Applied builds | Durable transactional boundary owns [TalentBuildRecord](../../../mmo_docs/guide/data-inventory.html#talent-build-record); world applies the accepted version to CharacterState. | [BuildApplicationRequest](../../../mmo_docs/guide/data-inventory.html#build-application-request) expresses proposed selections/expected versions. Server validates eligibility, graph, points and encounter conditions before one complete accepted build. | Private [BuildApplicationResponse](../../../mmo_docs/guide/data-inventory.html#build-application-response) returns the accepted build or findings; [BuildAcceptedEvent](../../../mmo_docs/guide/data-inventory.html#build-accepted-event) gives observers only relevant version/capability information. UI drafts have no authority. |
+| Progression | Durable transactional boundary owns [CharacterProgressRecord](../../../mmo_docs/guide/data-inventory.html#character-progress-record) and the applicable learned skill/recipe records. | Server reward/progression commands award once under authoritative eligibility. Earned talent points derive from level; there is no independent mutable point balance. | Authorized progression/selection views derive from the committed records; the world consumes those records for eligibility. |
+| Interpolation, animation, rendering and local audio | Client presentation owns only local visual/audio state, including prediction buffers. | Input produces intent; confirmed server state drives reconciliation and effects. Local camera/model/pixel transforms never alter authoritative position, aim, collision, rewards or economic state. | Local pixels, sound, UI and cosmetic state. Filtering happens on the server before private information reaches this owner. |
+
+Transport adapters decode/limit/route requests and serialize approved responses.
+They have no gameplay or economic commit authority. The world owns live
+simulation; the durable boundary owns persistent records. Applying a committed
+build or consuming a receipt does not transfer ownership of that durable record
+to the world. Likewise, storing a world checkpoint does not let storage advance
+live combat independently.
+
+## Creation and lifecycle responsibilities
+
+The owning world creates live CharacterState only after an authenticated claim
+and authoritative identity/build/progression loading. It initializes or restores
+each pool, cast, cooldown, status, summon and debt entry through its documented
+policy; a client snapshot cannot supply initial balances. Durable records are
+created by authorized creation/reward/build/settlement operations. Presentation
+is created from the current authorized snapshot and local assets.
+
+| Domain | Build change | Disconnect/reconnect | Transfer | Death and recovery/teardown |
+| --- | --- | --- | --- | --- |
+| Movement/collision | Recompute legal capabilities without accepting a client position. | Existing world retains the character during grace; reconnect attaches to that character and reconciles to server location. | Suspend source actions; destination restores the validated location after claim. | World stops actions and applies authoritative life/revival/location rules. Destroy old entity/prediction references on actual removal. |
+| Health/resources | Apply the preservation rule below; no refill or duplicate alias pool. | Continue authoritative recovery/combat under disconnect policy; reconnect displays current pools. | Preserve state through the authoritative handoff/recovery policy; never initialize full pools as a side effect of changing process. | World applies documented death/revival recovery. Only the owner restores pools; restart does not imply an invented full refill. |
+| Casts/cooldowns | Preserve cooldown families, charges and absolute expiries even when an ability is unequipped. | Disconnect does not reset cooldowns; stop new attacks. Reservations/active casts remain governed by cast/control policy. | Suspend actions and checkpoint cooldowns; do not restart charges or replay a cast from a UI animation. | World stops casts and resolves reservations under commit policy; long cooldowns restore from authoritative records. No fabricated exact replay after crash. |
+| Statuses | Harmful effects are not cleared; remove old auras/invalid build effects as documented. | Control cannot be cleared by disconnect. Apply logout cleanup only at authoritative logout after grace; reconnect uses surviving state. | Preserve only checkpoint-eligible surviving instances, with original expiry/next tick/budget. | Apply per-status death/logout cleanup before transfer policy; expire removed instances once. Recovery uses owner-token checkpoints. |
+| Summons | Remove old summons and auras atomically; do not allocate a second pool. | Stop new pet orders; end offensive auras/unattended summons after grace, preventing offline farming. | Move/reconstruct exactly one authoritative set/budget and retire the source set. | Invalidate commands and end controllable effects on death; recovery cannot resurrect a second set from a stale checkpoint. |
+| Debt | Preserve the existing scheduled ledger; respec is not a clearing action. | Logout/reconnect cannot erase debt. | Checkpoint and restore scheduled remaining debt under the new epoch. | World settles the ledger atomically with death. Crash policy uses its documented recovery point; never present it as perfect tick replay. |
+| Items/currency | Equipment changes use the same ownership transaction; changing build cannot duplicate items, refill balances or refresh consumables. | Committed operations survive; retry by the original operation identity/receipt. | Settle/reject pending economics before handoff; durable ownership remains in place. | Ordinary death drops/deletes no inventory. Applicable durability changes use the durable item path; normalized rated PvP has no durability loss. Recovery loads committed ownership/balances and receipts. |
+| Applied builds | Atomically accept one version or retain the previous build with explicit errors. | Reload the committed applied version, not an unsubmitted UI draft. | Checkpoint references the accepted build; destination applies that version. | Death/restart does not select a new build; recovery loads the committed record. |
+| Progression | Reuse earned progression to validate selections; no separate respec point award. | Restore durable awards/checkpoints; retries cannot award twice. | Progression and profession jobs remain durable references; no second reward at destination. | Server grants eligible rewards once. Encounter reset/recovery cannot mint the same kill reward twice. |
+| Client presentation | Refresh accepted capabilities, bars and visuals; no local reset of authoritative meters. | Discard stale callbacks/input context; rebuild owner-private and independently filtered public views after claim. | Tear down source-world views, then initialize destination views. | Render confirmed death/revival; destroy obsolete interpolation/effect/audio state on despawn or authority/visibility loss. Local teardown never deletes durable records. |
+
+### Build preservation and cast commit
+
+[Build changes](../../../mmo_docs/guide/progression.html#respecialization-and-loadouts)
+preserve health percentage without increasing absolute current health:
+`new_health = min(old_health, new_max_health * old_health / old_max_health)`.
+Preserve no more than the old percentage of mana/energy; newly introduced
+combat-generated resources start at zero. No build operation resets cooldowns,
+erases debt or harmful effects, or refreshes consumables. Remove old summons,
+auras and invalid action-bar entries atomically. Rejected/interrupted build
+application retains the previous build; this ticket implements none of it.
+
+The [cast lifecycle](../../../mmo_docs/guide/combat.html#cast-lifecycle) reserves
+cost and starts GCD at acceptance. A release-commit cast consumes reserved cost
+and starts its ability cooldown at release. Pre-release cancellation releases
+the reservation and retains GCD. Channels commit at start without refund;
+instant actions commit cost/cooldown together. Only the world advances these
+phases. Future transfer/disconnect handling must use this same policy rather
+than a transport-specific refund or a second cooldown store.
+
+### Session fencing, handoff and recovery
+
+The durable claim boundary enforces **exactly one active process/ownership epoch
+per character** using SessionOwnershipRecord. The world verifies current claim,
+authenticated actor and epoch before mutation; durable reward/settlement paths
+also reject stale authority. The optional command `character_id` must match the
+authenticated actor. `(session_epoch, command_sequence)` identifies a retry;
+duplicate commands return their prior result. Epochs/sequences never wrap or
+reuse, and an ID is never proof of permission.
+
+[Disconnect/recovery](../../../mmo_docs/guide/networking.html#disconnect-and-recovery)
+keeps the existing in-combat character under server defensive behavior for the
+configured grace interval. It grants no invulnerability and accepts no new
+attacks or pet orders. Clean logout uses out-of-combat/countdown rules. Reconnect
+authenticates a new session token, fences the old connection/epoch and claims
+the existing character rather than spawning a concurrent copy. The owner-only
+[ReconnectSnapshot](../../../mmo_docs/guide/data-inventory.html#reconnect-snapshot)
+restores presentation; its public visible entities are filtered independently.
+It is neither durable economic truth nor a server handoff checkpoint.
+
+[Transfer](../../../mmo_docs/guide/networking.html#zone-or-instance-transfer)
+requires this future sequence:
+
+1. Source world suspends new actions and settles or rejects pending economic operations.
+2. Source captures authoritative state under its claim. The durable boundary stores the server-only [TransferCheckpoint](../../../mmo_docs/guide/data-inventory.html#transfer-checkpoint), including build reference, cooldowns, statuses, summons, debt and profession-job references, using the canonical shapes without adding ad hoc fields.
+3. The trusted boundary issues the private one-use [TransferToken](../../../mmo_docs/guide/data-inventory.html#transfer-token), bound to character, checkpoint, source/destination epochs, destination process and configured expiry.
+4. Destination atomically consumes the proof and claims the newer epoch while fencing source authority. Expired, consumed, wrong-destination or stale proofs fail without creating an owner. There is no interval authorizing both processes to mutate or grant rewards.
+5. Destination restores the authoritative state according to its lifecycle policy, retires source simulation/summons and sends a full recipient-filtered destination snapshot. Failed transfer returns through one known authoritative recovery location; committed economic operations are not undone.
+
+Persisted [CooldownRecord](../../../mmo_docs/guide/data-inventory.html#cooldown-record)
+reuses CooldownState; status, summon and debt checkpoints are private owner-token
+snapshots. They preserve historical handoff/recovery truth, not a second running
+simulation. Long cooldowns keep absolute authoritative expiry. Status
+[cleanup flags](../../../mmo_docs/guide/data-inventory.html#status-persistence-policy)
+compose: death/logout cleanup takes precedence; surviving transferred statuses
+retain expiry, next tick and budget; noncheckpointed statuses end at transfer.
+
+At [death](../../../mmo_docs/guide/combat.html#death-recovery-and-battle-revival),
+world atomically stops casts/controllable effects, invalidates pet commands,
+settles damage ledgers and marks the life state dead. Revival resources and
+encounter revival charges follow that mechanic; reconnect creates no new charge.
+An unclean restart uses the documented recovery point and conservative encounter
+reset policy, restores durable inventory/receipts, and does not claim exact combat
+replay. Selecting a concrete storage/replay provider or crash-recovery algorithm
+is future implementation work.
+
+### Durable acknowledgement and economic identity
+
+The [durable operations boundary](../../../mmo_docs/guide/networking.html#durable-operations)
+acknowledges economic success only after durable commit. A transport ACK or
+[CommandResponse](../../../mmo_docs/guide/data-inventory.html#command-response)
+acceptance is insufficient. The
+[OperationReceipt](../../../mmo_docs/guide/data-inventory.html#operation-receipt)
+records one terminal result per authenticated operation key; retries return the
+same result. A
+[TransactionalOutboxRecord](../../../mmo_docs/guide/data-inventory.html#transactional-outbox-record)
+commits with settlement so delivery/notification retries cannot repeat asset,
+currency or skill changes.
+
+Items have one owner scope and placement. Personal account/character ownership
+and guild ownership are mutually exclusive; customer-bound escrow remains
+customer-owned. Bag, equipment, listing, escrow and delivery references cannot
+create copies. Wallet balance is nonnegative integer minor units; every debit
+honors held reservations. World rewards supply authoritative eligibility,
+including encounter/creature generation and eligible recipient, while the
+durable boundary enforces once-only grants. Movement and short combat ticks do
+not require individual database writes. Nothing here selects or provisions a
+database or invents a second local economic store.
+
+## Reviewed intent-to-presentation traces
+
+These are **design/source review traces**, not executed gameplay tests:
+
+1. Movement/ability intent enters a future bounded transport reader. Shape,
+   discriminator and field validation reject client-authored outcomes. Trusted
+   session context supplies actor, current epoch and world scope. World checks
+   ownership, sequence/replay, build/content, visibility, relation, floor, range,
+   collision/line of sight, life/control state, costs and cooldowns as applicable
+   before mutation. All three targeting keys in ability_command_v2 are present;
+   unused inputs are null and the resolved targeting policy chooses the input.
+2. World alone mutates live state and produces internal CombatResult. A future
+   pure projection creates
+   [PublicCombatResult](../../../mmo_docs/guide/data-inventory.html#shared-PublicCombatResult)
+   inside [CombatResultEvent](../../../mmo_docs/guide/data-inventory.html#combat-result-event)
+   for entitled recipients. Hidden source IDs become null, hidden-source
+   correlation IDs are recipient-scoped, and raw/mitigation/overkill/debt/resource
+   internals remain private. EntitySnapshot uses an explicit public allowlist;
+   loss of authorization removes/redacts the view before transmission.
+3. A reward, purchase or build request crosses the durable boundary when needed.
+   That owner verifies current authority, permissions, expected revisions and
+   idempotency, then commits the canonical records and receipt/outbox atomically.
+   Only the committed result updates authorized inventory/wallet/build views.
+   Client animation/audio consumes that result and cannot authorize a hit,
+   equip an item, award money, or acknowledge a durable transaction itself.
+
+## Narrow BW-002 boundaries still to implement
+
+| Future boundary | Responsibility and exclusions |
+| --- | --- |
+| T02 compatibility reader/serializer and fixture driver | Preserve canonical IDs, exact discriminators/enum strings, required/optional/null semantics and separate revision domains. Consume a reproducible selected registry/reference closure; no second editable definition registry or enum-ordinal protocol. |
+| T03 typed command reader and pure public-result projection | Decode intent against resolved targeting with explicit trusted session context, and filter existing results for a recipient. No RPC endpoint, authentication implementation, combat executor, or mutable CharacterState copy. Runtime range/visibility/collision checks remain world responsibilities. |
+| T04–T07 server content admission boundary | Proposed `content/content_admission.gd` (absent today) stages an isolated candidate and owns structural/reference/compatibility checks, supported runtime bindings, actual readiness evidence and the complete enabled economic graph gate. Reuse the preceding readers/policies. Missing values, unsupported/free-text behavior, or unsafe unlimited guaranteed loops keep affected content disabled. |
+| T08 bootstrap admission wiring | Existing ServerRoot will explicitly invoke the one admission owner before content readiness. Publish a complete immutable requested selection only after all checks pass; a rejected candidate changes none of the previous selection. Bootstrap readiness alone never enables gameplay. |
+
+This epic's admission boundary does not replace future world, session or durable
+owners. Fixture admission of an economic graph is not an implemented vendor or
+crafting route. [ResolvedAbilityDefinition](../../../mmo_docs/guide/data-inventory.html#resolved-ability-definition)
+requires independently established binding, data-test and runtime-test gates for
+the exact binding/build/content/rules context; authored expectations or free text
+cannot establish runtime readiness.
+
+## Revision ownership
+
+| Domain | Owner and current meaning |
+| --- | --- |
+| `build_revision` | Runner-derived full game Git commit with optional `-dirty` suffix for editor launches; packaged identity is embedded by the existing build path and read by Bootstrap. Neither ServerConfiguration nor a client request authors it. |
+| `rules_version` / `content_version` | External [ServerConfiguration](../../../mmo_docs/guide/data-inventory.html#server-configuration), validated and reported by the implemented loader. Future admission must check declared compatibility rather than treating nonempty strings as admission. |
+| Registry format / package revision | Canonical registry `version` describes its format; `content_version` identifies reviewed design content. [ContentPackageManifest](../../../mmo_docs/guide/data-inventory.html#content-package-manifest) has its existing package `version`; it is not a production envelope or storage schema. |
+| Optimistic record/build versions and ownership epochs | Canonical monotonic integer Version semantics, each in its own domain; these are not code commits or content-version strings. No epoch/sequence reuse. |
+| Database revision | Distinct future storage-compatibility domain owned by the future storage/migration boundary. Until it exists, compatibility fixtures supply explicit context. No database field is added to ServerConfiguration or ContentPackageManifest, and no schema/provider is chosen here. |
+
+## Review procedure and limits
+
+From `GAME_ROOT` (`briarwake/`), read this map beside the linked scripts and
+canonical contracts. Check every domain's owner, mutation entry, projection and
+creation/build/disconnect/transfer/death/recovery responsibility. Trace one live
+intent and one durable operation through the review above; check that no client,
+transport adapter, checkpoint or projection becomes a competing writer. Verify
+all relative paths and HTML fragments using the sibling documentation checkout.
+No launch/setup fixture or reset is needed: this ticket changes documentation
+only. Gameplay, multi-peer, transfer, persistence and browser execution are not
+performed or certified by this review.

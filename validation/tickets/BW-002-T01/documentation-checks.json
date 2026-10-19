@@ -1,0 +1,98 @@
+{
+  "ticket": "BW-002-T01",
+  "executed_at_utc": "2026-10-19T13:38:21.311462+00:00",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "scripts/build_development_roadmap.py"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "Built 127 roadmap pages.\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build_data_inventory.py",
+        "--review-roadmap"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "{\n  \"mode\": \"build\",\n  \"changed_files\": 1,\n  \"enums\": 81,\n  \"interfaces\": 168,\n  \"schemas\": 252,\n  \"unique_structures\": 501,\n  \"feature_pages_reviewed\": 49,\n  \"pages_reviewed\": 180,\n  \"pages_with_data\": 49,\n  \"existing\": 80,\n  \"proposed\": 421,\n  \"needs_review\": 0,\n  \"partially_defined\": 0,\n  \"open_review_items\": 0,\n  \"resolved_review_items\": 29,\n  \"fully_defined_enums\": 81,\n  \"fully_defined_interfaces\": 168,\n  \"fully_defined_schemas\": 252\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build_development_roadmap.py",
+        "--check"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "All 127 roadmap pages are current.\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build_data_inventory.py",
+        "--check"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "{\n  \"mode\": \"check\",\n  \"changed_files\": 0,\n  \"enums\": 81,\n  \"interfaces\": 168,\n  \"schemas\": 252,\n  \"unique_structures\": 501,\n  \"feature_pages_reviewed\": 49,\n  \"pages_reviewed\": 180,\n  \"pages_with_data\": 49,\n  \"existing\": 80,\n  \"proposed\": 421,\n  \"needs_review\": 0,\n  \"partially_defined\": 0,\n  \"open_review_items\": 0,\n  \"resolved_review_items\": 29,\n  \"fully_defined_enums\": 81,\n  \"fully_defined_interfaces\": 168,\n  \"fully_defined_schemas\": 252\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_development_roadmap.py"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "{\n  \"passed\": true,\n  \"phases\": 9,\n  \"epics\": 97,\n  \"tickets\": 15,\n  \"statuses\": {\n    \"Not Started\": 95,\n    \"In Progress\": 1,\n    \"Blocked\": 0,\n    \"Complete\": 1\n  },\n  \"completion_percentage\": 1.0,\n  \"errors\": []\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_data_inventory.py"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "{\n  \"passed\": true,\n  \"enums\": 81,\n  \"interfaces\": 168,\n  \"schemas\": 252,\n  \"unique_structures\": 501,\n  \"feature_pages_reviewed\": 49,\n  \"pages_reviewed\": 180,\n  \"pages_with_data\": 49,\n  \"existing\": 80,\n  \"proposed\": 421,\n  \"needs_review\": 0,\n  \"partially_defined\": 0,\n  \"open_review_items\": 0,\n  \"resolved_review_items\": 29,\n  \"fully_defined_enums\": 81,\n  \"fully_defined_interfaces\": 168,\n  \"fully_defined_schemas\": 252,\n  \"errors\": []\n}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "........................................................................\n----------------------------------------------------------------------\nRan 72 tests in 73.991s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/run_checks.py"
+      ],
+      "working_directory": "mmo_docs",
+      "exit_status": 0,
+      "result": "Passed",
+      "output": "{\n  \"checks_passed\": 242,\n  \"checks_failed\": 0,\n  \"level_allocation_cases\": 2940,\n  \"sample_capstone_allocations\": 98,\n  \"html_page_count\": 181\n}\n"
+    }
+  ],
+  "result": "Passed",
+  "scope": "Documentation builds, generated-output checks, validators and regression tests only; no game/runtime/browser execution",
+  "roadmap_source_sha256": "b8fe729e1641ad8b80480ebef3b971c936db8547eb922113ac64494b244e0ae4"
+}

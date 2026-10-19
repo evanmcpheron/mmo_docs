@@ -298,10 +298,20 @@
           "href": "guide/items.html#durability-salvage-and-demand"
         }
       ],
-      "status": "Not Started",
+      "status": "In Progress",
       "blockers": [],
       "ordering_rationale": "Broad ownership and identity contracts constrain later systems. Full future payloads need not be frozen before gameplay proves their needs.",
-      "verified_evidence": [],
+      "verified_evidence": [
+        {
+          "criteria": [
+            1
+          ],
+          "artifact": "validation/tickets/BW-002-T01/epic-review.json",
+          "revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b; authority document SHA-256 2626252d36eaa74b64b94e6fdedb7d10f1bd247ebe0a96fb06e77aab5b6f8bec",
+          "result": "Passed",
+          "summary": "BW-002-AC-1 passes the executed T01 owner/lifecycle review. Parent remains In Progress: AC2 staged package validation, AC3 unbound-behavior denial, AC4 executed compatibility fixtures and AC5 complete economic graph admission still require BW-002-T02–T08; those behaviors were not executed in this ticket. Review snapshot is unchanged at this committed game revision; supplementary manual launch/Quit evidence and platform/browser limitations are retained in manual-verification.json."
+        }
+      ],
       "phase": "phase-foundations"
     },
     {
@@ -5847,7 +5857,7 @@
       "id": "BW-002-T01",
       "parent_epic": "BW-002",
       "title": "Record authority owners and state lifecycles",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-1"
       ],
@@ -5868,7 +5878,7 @@
         "A review traces client intent through world validation, durable mutation where needed and filtered presentation; it records epoch fencing and preserved cooldown/resource/debt and economic ownership invariants without introducing competing mutable state."
       ],
       "manual_test": {
-        "not_applicable": "Documentation-only responsibility review. From GAME_ROOT (briarwake/), read docs/architecture/authority-boundaries.md beside the linked current scripts and canonical contracts; inspect each domain/lifecycle row and verify local links. There is no scene or runtime behavior to exercise in this ticket."
+        "not_applicable": "Documentation-only responsibility review; no scene/runtime setup or reset applies. Working directory: GAME_ROOT (briarwake/). Read docs/architecture/authority-boundaries.md beside its linked current scripts and sibling mmo_docs canonical contracts; verify every domain, lifecycle transition, intent/durable trace and implemented/future label. Run python3 ../mmo_docs/validation/tickets/BW-002-T01/check_links.py and expect result Passed, 54 links and no failures. The executed criterion review, exact document snapshot/digest and link-check output are retained in mmo_docs/validation/tickets/BW-002-T01/. Gameplay, multi-peer, transfer, persistence and browser checks are not executed by this documentation review."
       },
       "completion_evidence": "Reviewed responsibility/lifecycle map, link-check output and a review record identifying implemented versus future owners; no gameplay execution claim.",
       "related_docs": [
@@ -5881,28 +5891,104 @@
           "href": "guide/networking.html#practical-initial-architecture"
         },
         {
-          "label": "World-owned live state",
+          "label": "CharacterState — world-owned live state",
           "href": "guide/data-inventory.html#character-state"
         },
         {
-          "label": "Session fencing",
+          "label": "SessionOwnershipRecord — epoch fencing",
           "href": "guide/data-inventory.html#session-ownership-record"
         },
         {
-          "label": "Durable item ownership",
+          "label": "ItemOwnershipRecord — durable items",
           "href": "guide/data-inventory.html#item-ownership-record"
         },
         {
-          "label": "Durable currency",
+          "label": "WalletRecord — durable currency",
           "href": "guide/data-inventory.html#wallet-record"
         },
         {
-          "label": "Applied build",
+          "label": "TalentBuildRecord — applied build",
           "href": "guide/data-inventory.html#talent-build-record"
+        },
+        {
+          "label": "MovementState",
+          "href": "guide/data-inventory.html#movement-state"
+        },
+        {
+          "label": "ResourcePoolState",
+          "href": "guide/data-inventory.html#resource-pool-state"
+        },
+        {
+          "label": "CastState",
+          "href": "guide/data-inventory.html#cast-state"
+        },
+        {
+          "label": "CooldownState",
+          "href": "guide/data-inventory.html#cooldown-state"
+        },
+        {
+          "label": "StatusInstance",
+          "href": "guide/data-inventory.html#status-instance"
+        },
+        {
+          "label": "SummonCapacityState",
+          "href": "guide/data-inventory.html#summon-capacity-state"
+        },
+        {
+          "label": "DamageLedger",
+          "href": "guide/data-inventory.html#damage-ledger"
+        },
+        {
+          "label": "CharacterProgressRecord",
+          "href": "guide/data-inventory.html#character-progress-record"
+        },
+        {
+          "label": "ReconnectSnapshot",
+          "href": "guide/data-inventory.html#reconnect-snapshot"
+        },
+        {
+          "label": "TransferCheckpoint",
+          "href": "guide/data-inventory.html#transfer-checkpoint"
+        },
+        {
+          "label": "TransferToken",
+          "href": "guide/data-inventory.html#transfer-token"
+        },
+        {
+          "label": "ability_command_v2",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "CommandResponse",
+          "href": "guide/data-inventory.html#command-response"
+        },
+        {
+          "label": "CombatResultEvent",
+          "href": "guide/data-inventory.html#combat-result-event"
+        },
+        {
+          "label": "ServerConfiguration",
+          "href": "guide/data-inventory.html#server-configuration"
+        },
+        {
+          "label": "PublicCombatResult — recipient-filtered outcome",
+          "href": "guide/data-inventory.html#shared-PublicCombatResult"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T01/review.json",
+          "revision": "f4d5c84d42cafc4c014a059d46bcf321b446ff7b; authority document SHA-256 2626252d36eaa74b64b94e6fdedb7d10f1bd247ebe0a96fb06e77aab5b6f8bec",
+          "result": "Passed",
+          "summary": "Executed source/design responsibility review: all domain/lifecycle rows, actual bootstrap owners, future-owner labels, world/durable/client traces and canonical fencing/build/economic invariants reviewed. Exact map snapshot retained; 54 local file/HTML-fragment links pass. Documentation review only; no gameplay, networking, database or browser execution. Review snapshot is unchanged at this committed game revision; supplementary manual launch/Quit evidence and platform/browser limitations are retained in manual-verification.json."
+        }
+      ]
     },
     {
       "id": "BW-002-T02",
