@@ -431,10 +431,20 @@
           "href": "guide/networking.html"
         }
       ],
-      "status": "Not Started",
+      "status": "In Progress",
       "blockers": [],
       "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests; production dashboards and retention policy can wait.",
-      "verified_evidence": [],
+      "verified_evidence": [
+        {
+          "criteria": [
+            1
+          ],
+          "artifact": "validation/tickets/BW-003-T01/epic-review.json",
+          "revision": "BW-003-T01 actual Godot execution and source/input identities in the linked per-run reports; historical BW-001/BW-002 applicability reviewed.",
+          "result": "Passed",
+          "summary": "AC1 is verified by attributable content-validation execution with immutable authored expectations and separate actual assertions/results. Parent review leaves AC2 for T02/T03, AC3 for T04 and AC4 for T05. Prerequisites BW-001/BW-002 remain Complete; T02 is now ready. BW-003 and Foundations remain In Progress, and no downstream epic is newly dependency-ready."
+        }
+      ],
       "phase": "phase-foundations"
     },
     {
@@ -6892,7 +6902,7 @@
       "id": "BW-003-T01",
       "parent_epic": "BW-003",
       "title": "Record attributable fixture execution evidence",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-003-AC-1"
       ],
@@ -6917,19 +6927,19 @@
         "Each failure control exits nonzero and preserves its stage/log/provenance record. Import/startup failure and missing reports cannot appear as a completed passing fixture; the deliberate assertion failure proves an assertion actually ran. A subsequent clean run passes independently."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite evidence\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite evidence\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
-          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
-          "Use the ticket-supplied evidence corpus, bounded runtime runner and disposable failure controls. Reuse safe-static and invalid-content cases from fixtures/content_admission/ without modifying their source expectations."
+          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves and verifies that executable. Keep sibling mmo_docs canonical registry and scripts/data_model.py available. No provider, database or network service is required.",
+          "Use fixtures/runtime_fixtures/evidence.json, which pins and selects safe-static-only, negative-maximum and gain-rule-reference from fixtures/content_admission/structure.json. The checked-in authored specifications remain unexecuted. Each case evaluates expected-findings, candidate-availability and input-unchanged."
         ],
         "actions": [
-          "Run the launch block and open its reported run.json, immutable authored specifications, per-case actual evidence and captured engine logs.",
-          "Run the checker again with --suite evidence --control import-failure, then startup-failure, missing-report and assertion-failure, using a fresh default output directory for each. These options are deliverables of this ticket.",
-          "Run a final clean --suite evidence invocation and compare input hashes and canonical evidence fields with the source corpus."
+          "Run the launch block. Open the reported artifacts/runtime-evidence-<UTC>/run.json, executed-fixtures.json, actual-evidence.json and logs/. Compare authored specifications and actual canonical results; actual evidence names the runner and completion time.",
+          "Run python3 tools/check_runtime_fixtures.py --suite evidence --control import-failure; repeat with startup-failure, missing-report and assertion-failure. Use a fresh default output directory for every invocation. Each command must exit 1.",
+          "Run python3 tools/check_runtime_fixtures.py --suite evidence again. It must exit 0 independently. Compare source/input hashes, scenario revision 1, unique run identities and canonical evidence fields with the unchanged source corpus."
         ],
         "expected_results": [
-          "The clean run contains actual evaluated assertion results with attributable revisions and runner/time; authored specifications remain unchanged and unexecuted.",
-          "Each deliberate failure is observable, nonzero and correctly classified. A build/import/startup problem records assertions not executed; the assertion control records an executed failure. No stale output satisfies a fresh run."
+          "The clean run exits 0, records three actual cases and nine evaluated assertions, and validates ContentValidationResult/FixtureRunEvidence/TestCheck against the canonical snapshot. Correctly observed rejection findings pass; passing run evidence has no blocking findings. Authored evidence retains unexecuted/null runner/null completion/empty findings before and after.",
+          "Import/startup/missing-report controls exit 1 with stage logs and provenance, Not Executed/null assertion result, and no actual-evidence.json. The assertion control exits 1 with an actually failed expected-findings check and canonical failed execution evidence. Existing output directories and stale/mismatched report identities/times cannot pass."
         ],
         "reset": [
           "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
@@ -6976,7 +6986,20 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T01/verification.json",
+          "revision": "Godot 4.7.2.stable.official.ed1daf0bf; exact game build_revision, source_sha256 and executed_inputs_sha256 are retained in each referenced run.json (uncommitted task changes explicitly identified).",
+          "result": "Passed",
+          "summary": "Three actual content-validation cases and nine evaluated assertions pass; expected rejections retain actual findings. Authored expectations remain unexecuted and unchanged. Contract/provenance regressions pass. Four retained controls exit nonzero with correct Not Executed versus Executed/Failed classification, followed by an independent passing clean run. Full 64-test game suite and final 10-test focused suite pass. No gameplay or ability readiness is certified."
+        }
+      ]
     },
     {
       "id": "BW-003-T02",

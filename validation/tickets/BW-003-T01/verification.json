@@ -1,0 +1,137 @@
+{
+  "ticket": "BW-003-T01",
+  "result": "Passed",
+  "scope": "Actual Godot content-validation execution only. No gameplay, readiness, network, persistence or capacity claim.",
+  "environment": {
+    "os": "macOS 27.0 (26A428)",
+    "architecture": "arm64",
+    "python": "3.14.0",
+    "godot": "4.7.2.stable.official.ed1daf0bf"
+  },
+  "source_identity": "Per-run build_revision identifies the original game HEAD with uncommitted task changes; source_sha256 and executed_inputs_sha256 identify the exact executed source/input bytes. Later generated snapshot provenance refresh does not alter any extracted contract definition.",
+  "commands": [
+    {
+      "command": "python3 tools/verify_toolchain.py",
+      "result": "Passed"
+    },
+    {
+      "command": "python3 tools/extract_content_contracts.py --check",
+      "result": "Passed",
+      "note": "Initial check detected a stale generated registry fingerprint; refreshed the extraction and added canonical TestCheck. No canonical definition changed."
+    },
+    {
+      "command": "python3 -m unittest discover -s tools -p 'test_*.py'",
+      "result": "Passed",
+      "tests": 64,
+      "artifact": "game-tests.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tools -p test_runtime_fixtures.py -v",
+      "result": "Passed",
+      "tests": 10,
+      "artifact": "focused-tests.log",
+      "note": "Executed after the run identity/completion-window refinement."
+    }
+  ],
+  "controls": [
+    {
+      "control": "import-failure",
+      "expected_exit": 1,
+      "observed_result": "Failed",
+      "runtime": {
+        "execution_state": "Not Executed",
+        "assertion_result": null
+      },
+      "report": "import-failure/run.json"
+    },
+    {
+      "control": "startup-failure",
+      "expected_exit": 1,
+      "observed_result": "Failed",
+      "runtime": {
+        "execution_state": "Not Executed",
+        "assertion_result": null
+      },
+      "report": "startup-failure/run.json"
+    },
+    {
+      "control": "missing-report",
+      "expected_exit": 1,
+      "observed_result": "Failed",
+      "runtime": {
+        "execution_state": "Not Executed",
+        "assertion_result": null
+      },
+      "report": "missing-report/run.json"
+    },
+    {
+      "control": "assertion-failure",
+      "expected_exit": 1,
+      "observed_result": "Failed",
+      "runtime": {
+        "execution_state": "Executed",
+        "assertion_result": "Failed",
+        "canonical_evidence_valid": true
+      },
+      "report": "assertion-failure/run.json"
+    },
+    {
+      "control": "clean",
+      "expected_exit": 0,
+      "observed_result": "Passed",
+      "runtime": {
+        "execution_state": "Executed",
+        "assertion_result": "Passed",
+        "canonical_evidence_valid": true
+      },
+      "report": "clean/run.json"
+    }
+  ],
+  "criteria": {
+    "1": "Clean Godot runner evaluates 3 cases and 9 assertions. Expected bound/reference rejections pass with actual findings. The assertion control produces canonical failed evidence from an actually evaluated mismatch.",
+    "2": "Original selected specifications and source corpus are hash-pinned, checked before/after, and returned unchanged as unexecuted. Actual evidence is separate and names the runner, UTC time, fixture/scenario revisions and exact source/input identity.",
+    "3": "Regression tests reject unknown scenarios, missing/extra canonical fields, evidence nullability/date errors, revision conflicts, duplicate case/fixture/assertion identities, incomplete coverage, forged authored/actual pass claims and stale run identity/time. Invalid authored input exits nonzero before runtime.",
+    "4": "Retained controls all exit 1 with logs and provenance. Import/startup/missing-report controls produce no canonical completed evidence; assertion-failure is Executed/Failed. The subsequent clean execution exits 0."
+  },
+  "not_run": [
+    "Gameplay, multiplayer peers, production deployment and capacity tests are outside this ticket."
+  ],
+  "committed_clean_execution": {
+    "artifact": "clean-committed/run.json",
+    "game_revision": "6c4b652ed7a6ba75e1127138cf93518712d94c28",
+    "result": "Passed",
+    "assertions": 9
+  },
+  "observed_failures": [
+    {
+      "artifact": "game-tests-intermittent-failure.log",
+      "cause": "Unchanged test_check_baseline process-group cleanup intermittently raised macOS PermissionError from os.killpg after timeout. No cleanup policy/test was weakened.",
+      "follow_up": "Unchanged isolated 11-test baseline module and the full 64-test suite both pass on rerun; final suite ran against committed revision 6c4b652ed7a6ba75e1127138cf93518712d94c28."
+    },
+    {
+      "artifact": "docs-before-fixture-fix.log",
+      "cause": "Three existing synthetic roadmap tests inherited live completed-ticket progress or assumed BW-003 had never started.",
+      "fix": "Explicitly initialize those synthetic progress states; preserve all validators and assertions. All 31 roadmap regressions pass."
+    }
+  ],
+  "final_game_verification": {
+    "revision": "6c4b652ed7a6ba75e1127138cf93518712d94c28",
+    "result": "Passed",
+    "tests": 64,
+    "artifact": "game-tests-committed.log",
+    "toolchain": "toolchain.log",
+    "snapshot": "snapshot.log",
+    "clean_execution": "clean-committed/run.json"
+  },
+  "documentation_verification": {
+    "result": "Passed",
+    "commands": "docs-command-results.json",
+    "log": "docs-checks.log",
+    "regression_tests": 73,
+    "full_checks_passed": 242,
+    "full_checks_failed": 0,
+    "progress_inspection": "progress-review.json",
+    "review_checklist": "review-checklist.json",
+    "game_pr": "https://github.com/evanmcpheron/Briarwake/pull/10"
+  }
+}
