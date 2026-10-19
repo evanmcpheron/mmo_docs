@@ -42,7 +42,9 @@ bounds = ''.join(f'<tr><td>{escape(bound["id"])}</td><td>{escape(bound["bound"])
                  f'<td>{escape(bound["status"])}</td></tr>' for bound in review['proposed_bounds'])
 references = ''.join(f'<li><a href="{escape(ref["url"])}">'
                      f'{escape(ref.get("timestamp", ref.get("section", "Reference")))}</a> · '
-                     f'{escape(ref["observation"])} <strong>{escape(ref["review"])}</strong></li>'
+                     f'{escape(ref["observation"])} <strong>{escape(ref["review"])}</strong>'
+                     + (f' <a href="{escape(ref["capture"])}">Inspected frame</a>' if ref.get('capture') else '')
+                     + '</li>'
                      for ref in review['supplementary_references'])
 lighting = ''.join(f'<figure><img src="source-run/{light}-zoom-0-internal.png" '
                     f'width="384" height="216" alt="{light} lighting at native gameplay scale">'
@@ -78,7 +80,7 @@ code{{font-size:12px;overflow-wrap:anywhere}}.notice{{border-left:3px solid #dfb
 <h2>Provisional measurement budgets — approval required</h2><p>Proposal for this source probe on Apple M2 Max / Metal: {budget['target_fps']} FPS; CPU frame p95 ≤{budget['cpu_frame_p95_ms']:g} ms; GPU frame p95 ≤{budget['gpu_frame_p95_ms']:g} ms; peak process RSS ≤{budget['process_rss_peak_mib']:,} MiB; peak engine rendering allocations ≤{budget['rendering_allocations_peak_mib']:,} MiB. Use 384×216 internal and 960×640 logical output on actual Retina ×2. These are proposals, with no measured compliance claim. T10 must retain warmup, raw samples, percentiles and separate process/engine memory accounting; unavailable GPU timings cannot pass.</p>
 <h2>Proposed deviations</h2><ul>{deviations}</ul>
 <h2>Supplementary research</h2><ul>{references}</ul>
-<h2>Review decision</h2><div class="notice"><strong>Reviewer: {escape(str(review['reviewer']))} · approval: {escape(str(review['approved_at']))}</strong><ul>{findings}</ul><p>Confirm or revise the visual bounds, budgets and deviations; confirm or replace the proposed video timestamps after watching them. Human approval establishes a comparison baseline only. Later motion/effect/package tests remain required.</p></div>
+<h2>Review decision</h2><div class="notice"><strong>Reviewer: {escape(str(review['reviewer']))} · approval: {escape(str(review['approved_at']))}</strong><ul>{findings}</ul><p>Confirm or revise the visual bounds, budgets and deviations. Supplementary frames at 00:03 and 00:30 have been inspected separately; the original 00:00/04:40 proposals are superseded. Human approval establishes a comparison baseline only. Later motion/effect/package tests remain required.</p></div>
 <p>Source of review decisions: <a href="visual-review.json">visual-review.json</a>. Regenerate this sheet with <code>python3 validation/tickets/BW-097-T03/build_review.py</code> from mmo_docs/. The concept remains unchanged, comparison crops use SVG view boxes, and no reference art is imported into the game.</p><footer>BW-097-T03 retained comparison evidence · acceptance decisions remain in visual-review.json.</footer></main></html>'''
 relative = 'validation/tickets/BW-097-T03/review.html'
 html = navigation(html, relative)

@@ -110,8 +110,8 @@ presentation, independently scaled HUD/pointer, resize/minimum/zoom checks and
 invalid-setting controls have retained execution evidence. T03 is In Progress
 with an original detailed character/simpler-prop source case,
 paired gameplay/output captures and an annotated concept review sheet. Human
-approval of proposed bounds, CPU/GPU/memory budgets and deviations, plus actual
-supplementary video-clip review, remains required. T04–T10 remain Not Started and
+approval of proposed bounds, CPU/GPU/memory budgets and deviations remains
+required. Supplementary video frames at 00:03 and 00:30 have been inspected. T04–T10 remain Not Started and
 cover camera stability, outlines/toon lighting, pass composition, water, contact
 depth, combined motion and packaged measured feasibility. Human art approval,
 alternate physical displays/OS scaling and

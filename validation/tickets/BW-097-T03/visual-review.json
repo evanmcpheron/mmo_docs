@@ -1,5 +1,5 @@
 {
-  "version": "reference-review-v1",
+  "version": "reference-review-v2",
   "ticket": "BW-097-T03",
   "date": "2026-10-19",
   "status": "Awaiting human review",
@@ -118,8 +118,7 @@
   ],
   "approved_deviations": [],
   "blocking_findings": [
-    "Human visual bounds, prototype budget and deviation approval has not been received.",
-    "Supplementary t3ssel8r clip observations at the proposed timestamps require actual video review; web retrieval exposed no playable frames or transcript."
+    "Human visual bounds, prototype budget and deviation approval has not been received."
   ],
   "supplementary_references": [
     {
@@ -135,16 +134,18 @@
       "review": "Article text inspected 2026-10-19"
     },
     {
-      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=0s",
-      "timestamp": "00:00",
-      "observation": "Proposed opening-scene comparison: assess silhouette/prop hierarchy and palette; observation not yet verified from video frames.",
-      "review": "Unverified; reviewer must confirm or replace timestamp before AC1 passes"
+      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=3s",
+      "timestamp": "00:03",
+      "observation": "At 00:03 the Unity game-view scene separates pale stone stairs/columns and brown ground from green foliage with broad cast shadows. Adopt the readable large masses and restrained green/stone palette as a comparison observation; this is neither the principal appearance target nor Godot capability evidence.",
+      "review": "Actual decoded frame visually inspected by Codex on 2026-10-19; no human art approval.",
+      "capture": "supplementary-browser-run/frame-3.png"
     },
     {
-      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=280s",
-      "timestamp": "04:40",
-      "observation": "Proposed late-scene comparison: assess assembled environment detail and light separation; observation not yet verified from video frames.",
-      "review": "Unverified; reviewer must confirm or replace timestamp before AC1 passes"
+      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=30s",
+      "timestamp": "00:30",
+      "observation": "At 00:30 the Blender view shows plain squared columns with stepped bases and simple stair/terrain masses before detailed surface work. Adopt simple architectural prop silhouettes beneath character-level detail; no model, texture or authoring pipeline is copied. This modeling view cannot certify gameplay pixel readability.",
+      "review": "Actual decoded frame visually inspected by Codex on 2026-10-19; no human art approval.",
+      "capture": "supplementary-browser-run/frame-30.png"
     }
   ],
   "unverified": [
@@ -152,5 +153,18 @@
     "CPU/GPU frame percentiles, process RSS and engine allocation measurements",
     "Packaged scene and other platform/display paths"
   ],
-  "decision": null
+  "decision": null,
+  "resolved_findings": [
+    {
+      "finding": "Supplementary t3ssel8r clip observations at the proposed timestamps require actual video review; web retrieval exposed no playable frames or transcript.",
+      "resolution": "Decoded frames at 00:03 and 00:30 were captured and visually inspected in the installed Chrome using a new isolated profile. Media-time/readiness observations and source frames are retained. The initial 00:00/04:40 proposals are superseded; 04:40 was not decoded and carries no appearance claim."
+    }
+  ],
+  "supplementary_inspection": {
+    "result": "Passed",
+    "reviewer": "Codex, source-reference observation only",
+    "inspected_at_utc": "2026-10-19T22:27:44.151Z",
+    "artifact": "supplementary-browser-run/observations.json",
+    "method": "Actual decoded mediaTime via requestVideoFrameCallback, readyState 4 and paused video; screenshot clip from the installed isolated Chrome was visually inspected. No reference assets enter the game."
+  }
 }
