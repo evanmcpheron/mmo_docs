@@ -1,0 +1,268 @@
+{
+  "generated_by": "tools/extract_content_contracts.py; read-only extraction",
+  "source_registry": "mmo_docs/sources/data-inventory.json",
+  "source_registry_sha256": "5cf2a9f1964c3eb4b8647e2b10729fa86c00dfffadddca3694ae8f024caa6cac",
+  "registry_format_version": 2,
+  "content_version": "2.2.1-design",
+  "schema_dialect": "https://json-schema.org/draft/2020-12/schema",
+  "selected_definitions": [
+    "FixtureRunEvidence",
+    "ValidationFinding",
+    "TestCheck"
+  ],
+  "schema_sha256": "0e2d02209a7c542f3e37ff75a3563954472bc4f908bd4bc0a751d247c90476b5",
+  "sample_sources_sha256": {
+    "data/abilities.json": "7ad33b5b9ec6f49aac00b81d4d686ec649237ab8a13bfd99eba116e9c2af3f26",
+    "data/item_examples.json": "b7441cd099824a89c7fedb9ca9163ee2f75e1e2e7f3cca29cccb63ae189e98c1"
+  },
+  "samples": {
+    "ability": {
+      "id": "ability.warrior.iron_cut",
+      "name": "Iron Cut",
+      "target_mode": "enemy_melee",
+      "request_schema": "ability_command_v2",
+      "content_status": "prototype_profile_assigned_bespoke_binding_review"
+    },
+    "operation": "DAMAGE",
+    "item": {
+      "id": "item.blacksmithing.b1.metal_weapon",
+      "name": "Metal weapon — band 1",
+      "grade": "standard",
+      "definition_status": "representative_numerical_blueprint_not_playtested"
+    }
+  },
+  "$defs": {
+    "FixtureRunEvidence": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "unexecuted",
+            "passed",
+            "failed"
+          ],
+          "description": "Only an actual named runner may record passed/failed."
+        },
+        "runner_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id",
+              "description": "Actual runtime/test runner identity."
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Null for an unexecuted specification."
+        },
+        "completed_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Instant",
+              "description": "Execution completion time."
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Null for an unexecuted specification."
+        },
+        "content_version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Exact tested content revision."
+        },
+        "rules_version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Exact tested formula/handler revision."
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ValidationFinding",
+            "description": "Recorded actual finding."
+          },
+          "minItems": 0,
+          "description": "Actual execution findings, distinct from expected results."
+        }
+      },
+      "required": [
+        "status",
+        "runner_id",
+        "completed_at",
+        "content_version",
+        "rules_version",
+        "findings"
+      ],
+      "additionalProperties": false,
+      "description": "Future runtime execution evidence, deliberately separate from fixture expectations.",
+      "x-invariants": [
+        "unexecuted has null runner_id and completed_at and makes no pass claim. passed/failed requires a real runner/time matching the tested content/rules revision; passed requires no blocking findings. Documentation generation never changes unexecuted to passed."
+      ],
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "unexecuted",
+              "description": "Authored specification only."
+            },
+            "runner_id": {
+              "const": null,
+              "description": "No runner has executed this fixture."
+            },
+            "completed_at": {
+              "const": null,
+              "description": "No completion time."
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ValidationFinding",
+                "description": "Finding."
+              },
+              "maxItems": 0,
+              "description": "No invented execution findings."
+            }
+          },
+          "required": [
+            "status",
+            "runner_id",
+            "completed_at",
+            "findings"
+          ],
+          "additionalProperties": true,
+          "description": "Unexecuted evidence."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "passed",
+              "description": "Actual successful execution."
+            },
+            "runner_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Actual runner."
+            },
+            "completed_at": {
+              "$ref": "#/$defs/Instant",
+              "description": "Actual completion time."
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ValidationFinding",
+                "description": "Finding."
+              },
+              "maxItems": 0,
+              "description": "No blocking findings."
+            }
+          },
+          "required": [
+            "status",
+            "runner_id",
+            "completed_at",
+            "findings"
+          ],
+          "additionalProperties": true,
+          "description": "Passed evidence."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "failed",
+              "description": "Actual failed execution."
+            },
+            "runner_id": {
+              "$ref": "#/$defs/Id",
+              "description": "Actual runner."
+            },
+            "completed_at": {
+              "$ref": "#/$defs/Instant",
+              "description": "Actual completion time."
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ValidationFinding",
+                "description": "Actual failure."
+              },
+              "minItems": 1,
+              "description": "Recorded failure findings."
+            }
+          },
+          "required": [
+            "status",
+            "runner_id",
+            "completed_at",
+            "findings"
+          ],
+          "additionalProperties": true,
+          "description": "Failed evidence."
+        }
+      ]
+    },
+    "Id": {
+      "type": "string",
+      "description": "Opaque stable identity. Never infer authorization from possession of an ID.",
+      "minLength": 1
+    },
+    "Instant": {
+      "type": "string",
+      "description": "Absolute authoritative UTC instant encoded as RFC 3339 with Z or +00:00; fractional seconds are allowed. Durations use Seconds, never timestamps.",
+      "format": "date-time"
+    },
+    "TestCheck": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Text value."
+        },
+        "passed": {
+          "type": "boolean",
+          "description": "Binary condition."
+        },
+        "detail": {
+          "type": "string",
+          "description": "Text value."
+        }
+      },
+      "required": [
+        "name",
+        "passed",
+        "detail"
+      ],
+      "additionalProperties": false,
+      "description": "Named evidence check; passing does not prove gameplay readiness."
+    },
+    "ValidationFinding": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/Id",
+          "description": "Stable validation-rule identifier; rule catalog is extensible."
+        },
+        "path": {
+          "type": "string",
+          "description": "Property path or content ID affected."
+        },
+        "message": {
+          "type": "string",
+          "description": "Readable explanation."
+        }
+      },
+      "required": [
+        "code",
+        "path",
+        "message"
+      ],
+      "additionalProperties": false,
+      "description": "Specific actionable validation finding."
+    }
+  }
+}

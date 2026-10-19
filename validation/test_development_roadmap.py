@@ -258,6 +258,7 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('Duplicate stable IDs' in e for e in self.errors()))
 
     def test_recommended_predecessor_is_not_a_hard_gate(self):
+        self.reset_ticket_progress()
         epic = self.by_id['BW-018']
         self.by_id['BW-003']['status'] = 'Not Started'
         self.by_id['BW-003']['verified_evidence'] = []

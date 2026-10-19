@@ -507,7 +507,7 @@
         "Water feasibility records whether shaders, animation, geometry and particles satisfy the approved visual requirements before proposing physical fluid simulation. The chosen reflection/refraction method and fallback are exercised with off-screen and newly visible objects, moving outlined/transparent objects and synthetic authorized/excluded views; missing information, stale buffers, pass-order artifacts and unsupported renderer paths have tested mitigations or approved visual alternatives on the pinned build.",
         "Ambient-occlusion/contact-depth feasibility evaluates applicable baked, real-time or authored approaches on the pinned renderer and measures their cost and lower-cost fallback. A controllable prototype combines the candidate with water, lighting/shadows, outlines, foliage/transparency, animated actors and atmosphere during stationary, continuous slow and diagonal camera/actor motion; recorded pass composition, silhouette visibility and pixel stability meet the approved acceptance bounds before asset-volume production."
       ],
-      "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions.",
+      "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions. Review 2026-10-19: T01 establishes source-only Forward+/Metal capabilities on Apple M2 Max, with retained diagnostic captures and failure controls. Epic AC1 still requires the packaged same-scene proof in T10; AC2–9 require T02–T10 viewport, visual baseline, motion, outlines, composition, water/contact-depth and measured integrated review. No epic criterion is promoted from source-only checks. See validation/tickets/BW-097-T01/visual-review.json and parent-review.json.",
       "related_docs": [
         {
           "label": "Selected 3D pixel-art direction",
@@ -534,7 +534,7 @@
           "href": "guide/sources.html#s16"
         }
       ],
-      "status": "Not Started",
+      "status": "In Progress",
       "blockers": [],
       "ordering_rationale": "Probe renderer and camera risks alongside headless simulation. The reference describes a custom historical build, so neither a fork nor current engine support is assumed.",
       "verified_evidence": [],
@@ -7483,7 +7483,7 @@
       "id": "BW-097-T01",
       "parent_epic": "BW-097",
       "title": "Build the pinned graphical probe and renderer capability matrix",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-097-AC-1"
       ],
@@ -7509,22 +7509,25 @@
         "Unknown-case/invalid-settings/missing-report/deliberate-check-failure controls fail visibly, retain attributable diagnostics and cannot reuse stale output as success. A fresh clean launch succeeds independently."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case capabilities",
+        "launch": "Working directory: GAME_ROOT (briarwake/). No installation is required when the locked engine/templates and sibling mmo_docs are present.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case capabilities\npython3 tools/run_rendering_probe.py --case capabilities --interactive\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
-          "Use a desktop macOS ARM64 session and the installed engine/templates pinned in tools/toolchain.lock.json; keep sibling mmo_docs available for canonical extraction. The prototype requires working graphics. Other platforms remain untested until explicitly exercised.",
-          "This ticket supplies all probe geometry, shaders, swatches, controls and launcher inputs. Run the existing Python tool regressions after implementing the launcher."
+          "Use an active macOS ARM64 graphical desktop, pinned 4.7.2-stable engine/templates, Python 3.10+ and sibling mmo_docs. Forward+ is required. Other hardware/backends remain untested.",
+          "The launcher owns a fresh artifacts/rendering-<UTC>/ directory and a disposable scene-only project. No project setting, production route or engine pin changes. Optional --output must name a new directory."
         ],
         "actions": [
-          "Run the launch block; inspect the window identity panel and capture the raw/decoded depth, normal and screen-copy diagnostics. Switch between known planes, slopes and color swatches, then reset.",
-          "Use the documented launcher negative controls for unknown case, invalid settings, missing report and deliberate check failure in fresh disposable runs. Rerun capabilities cleanly and inspect logs, canonical evidence and the capability matrix."
+          "Inspect run.json actual engine/source/template/backend/device/settings, raw samples, ten TestChecks, canonical automated_evidence and capability_matrix. Compare 00-source.png through 09-rotated-world-normal.png with the known-plane/slope legends.",
+          "In interactive mode use the diagnostic-case selector, Rotate camera, Toggle magenta reader and Red ↔ cyan. Capture writes manual-NNN.png. Reset restores default source, camera and colors. Quit the window normally to finish.",
+          "Run each command in fresh output: python3 tools/run_rendering_probe.py --case unknown; --case capabilities --control invalid-settings; --case capabilities --control missing-report; --case capabilities --control check-failure; --case capabilities --renderer mobile. Repeat a clean --case capabilities run.",
+          "Try a disposable --settings copy with forged passed run_evidence or invalid/missing fields, and repeat an existing --output. Inspect the rejected run/report; preserve prior evidence."
         ],
         "expected_results": [
-          "The visible diagnostic surfaces agree with the known fixture; each buffer/pass claim names the actual tested path. Untested or unsupported paths and startup/import failures remain explicit.",
-          "Negative controls return nonzero with the correct failed/not-executed distinction; clean automated records validate canonically. No screenshot alone is labeled an automated visual pass."
+          "Known depth planes reconstruct within .015 normalized linear units; slope normal channels within .03; rotated world normal stays +Z. Eight-texel copy scan is exact. Opaque copy excludes the magenta reader and refreshes cyan after four rendered frames.",
+          "All five negative controls exit nonzero. Unknown/invalid/unsupported are Not Executed; missing-report started but has no complete canonical assertion evidence; deliberate failure has executed canonical failed findings. A fresh clean run passes independently.",
+          "Authored evidence remains unexecuted, canonical passed evidence has exact content/rules labels, actual runner/UTC time and empty findings. Separate visual review records no inferred human approval. Source-only results do not certify export, art, motion, DPI or other renderers."
         ],
         "reset": [
-          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
-          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+          "Use Reset, then quit. Start a fresh launcher invocation for a new run; no gameplay state persists.",
+          "Preserve reports, captures and prior failures. Output reuse is refused. Disposable project/process cleanup does not modify source or existing output."
         ]
       },
       "completion_evidence": "Retain source/settings hashes, toolchain/backend/hardware manifest, capability/pass matrix, annotated diagnostic captures, canonical automated evidence, failure-control reports and launcher regression results.",
@@ -7567,7 +7570,47 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-097-T01/source-run/run.json",
+          "revision": "a9742922788fd18084ce60503056e1ac98f90587-dirty; exact task source hashes in source-run/run.json",
+          "result": "Passed",
+          "summary": "Actual pinned native macOS ARM64 graphical execution on Forward+/Metal 4.0, Apple M2 Max; ten GPU readback/control checks passed, labeled captures retained, selected canonical evidence closure validated. Source-only capability result; export not executed."
+        },
+        {
+          "criteria": [
+            2
+          ],
+          "artifact": "validation/tickets/BW-097-T01/visual-review.json",
+          "revision": "a9742922788fd18084ce60503056e1ac98f90587-dirty; exact task source hashes in source-run/run.json",
+          "result": "Passed",
+          "summary": "Codex inspected annotated source/buffer/camera-rotation/reset captures against known geometry. This attributable diagnostic review is separate from automated checks and records no human art approval."
+        },
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "validation/tickets/BW-097-T01/failure-controls.json",
+          "revision": "a9742922788fd18084ce60503056e1ac98f90587-dirty; exact task source hashes in source-run/run.json",
+          "result": "Passed",
+          "summary": "Executed unknown case, invalid settings, unsupported renderer, missing-report and deliberate-check-failure controls rejected success; fresh recovery passed. Existing output refusal is covered by launcher regressions."
+        },
+        {
+          "criteria": [
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-097-T01/regressions.json",
+          "revision": "a9742922788fd18084ce60503056e1ac98f90587-dirty; exact task source hashes in source-run/run.json",
+          "result": "Passed",
+          "summary": "18 focused Python regressions executed: authored pass forgery, required/nullability/UTC/label checks, malformed/stale/partial reports, unsupported/headless paths, failed findings, canonical closure and stale-output preservation."
+        }
+      ]
     },
     {
       "id": "BW-097-T02",
