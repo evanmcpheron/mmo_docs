@@ -507,7 +507,7 @@
         "Water feasibility records whether shaders, animation, geometry and particles satisfy the approved visual requirements before proposing physical fluid simulation. The chosen reflection/refraction method and fallback are exercised with off-screen and newly visible objects, moving outlined/transparent objects and synthetic authorized/excluded views; missing information, stale buffers, pass-order artifacts and unsupported renderer paths have tested mitigations or approved visual alternatives on the pinned build.",
         "Ambient-occlusion/contact-depth feasibility evaluates applicable baked, real-time or authored approaches on the pinned renderer and measures their cost and lower-cost fallback. A controllable prototype combines the candidate with water, lighting/shadows, outlines, foliage/transparency, animated actors and atmosphere during stationary, continuous slow and diagonal camera/actor motion; recorded pass composition, silhouette visibility and pixel stability meet the approved acceptance bounds before asset-volume production."
       ],
-      "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions. Review 2026-10-19: T01 establishes source-only Forward+/Metal capabilities on Apple M2 Max, with retained diagnostic captures and failure controls. Epic AC1 still requires the packaged same-scene proof in T10; AC2–9 require T02–T10 viewport, visual baseline, motion, outlines, composition, water/contact-depth and measured integrated review. No epic criterion is promoted from source-only checks. See validation/tickets/BW-097-T01/visual-review.json and parent-review.json. Review 2026-10-19 (T02): epic AC2 has passing source viewport/Retina evidence in validation/tickets/BW-097-T02/source-run/run.json and visual-review.json. T02 is Complete; T03–T10 remain Not Started. Packaged AC1 and AC3–9 remain unfinished; see BW-097-T02/parent-review.json. Alternate physical display/OS scaling and human drag/click cases remain unverified.",
+      "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions. Review 2026-10-19: T01 establishes source-only Forward+/Metal capabilities on Apple M2 Max, with retained diagnostic captures and failure controls. Epic AC1 still requires the packaged same-scene proof in T10; AC2–9 require T02–T10 viewport, visual baseline, motion, outlines, composition, water/contact-depth and measured integrated review. No epic criterion is promoted from source-only checks. See validation/tickets/BW-097-T01/visual-review.json and parent-review.json. Review 2026-10-19 (T02): epic AC2 has passing source viewport/Retina evidence in validation/tickets/BW-097-T02/source-run/run.json and visual-review.json. T02 is Complete; T03–T10 remain Not Started. Packaged AC1 and AC3–9 remain unfinished; see BW-097-T02/parent-review.json. Alternate physical display/OS scaling and human drag/click cases remain unverified. Review 2026-10-19 (T03): source comparison implementation and annotated review are present; T03 is In Progress awaiting user visual/budget/deviation approval and supplementary clip review. Epic AC7 remains unaccepted, T04–T10 remain Not Started, and retained AC2 evidence still applies; see validation/tickets/BW-097-T03/parent-review.json.",
       "related_docs": [
         {
           "label": "Selected 3D pixel-art direction",
@@ -7760,7 +7760,7 @@
       "id": "BW-097-T03",
       "parent_epic": "BW-097",
       "title": "Approve the concept-based gameplay-scale visual comparison baseline",
-      "status": "Not Started",
+      "status": "In Progress",
       "epic_criteria": [
         "BW-097-AC-7"
       ],
@@ -7782,25 +7782,28 @@
         "All fixture assets have source/provenance and stable probe references. Preview presets, if used, retain exact SpriteDirection values; invalid tokens/ordinal substitutes are rejected and actor heading is not restricted to eight directions."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case reference",
+        "launch": "Working directory: GAME_ROOT (/Users/le-evanmcpheron/Documents/Godot/briarwake), with the pinned graphical macOS ARM64 engine and desktop.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case reference\nFor interactive review: python3 tools/run_rendering_probe.py --case reference --interactive\nReview sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisions: visual-review.json in the same directory.",
         "setup": [
-          "Use the T02 viewport settings and this ticket’s original character/prop/lighting comparison fixtures. Keep DOCS_ROOT/assets/graphics_concept.png available read-only for the comparison sheet.",
-          "Arrange the visual review with the user; approval must identify actual bounds and deviations. Still-reference approval does not certify later motion or engine effects."
+          "The checked-in reference.json fixture records original geometry/material provenance; reference_world.gd builds the character/props/corner/palette and reuses the T02 viewport policy. The concept remains read-only at DOCS_ROOT/assets/graphics_concept.png; it is not imported into the game.",
+          "Automatic verification runs day/warm/cool lighting at zoom x1/x2 and Reset, writing paired internal/output images, projected comparison regions and actual engine/backend/device identity in a new launcher-owned artifacts directory. Human visual approval is separate."
         ],
         "actions": [
-          "Run reference and capture its character, prop, palette, contact and lighting views at internal and output resolution. Annotate the concept crops and supplementary references next to those captures.",
-          "Review the observations, still/motion bounds and provisional performance budgets with the user; retain their decisions and unresolved findings. If heading presets are present, cycle all eight and try an invalid token in a disposable fixture."
+          "Open the retained review.html or regenerate it from DOCS_ROOT with python3 validation/tickets/BW-097-T03/build_review.py after retaining a new source-run. Inspect the four annotated source crops beside the camera-projected probe regions. Compare all three lighting states at native 384x216 gameplay scale; use zoom x2 only for detail diagnostics.",
+          "In the interactive probe select lighting and zoom, drag the continuous heading slider to fractional angles, use Capture, then Reset. Inspect manual-NNN-internal.png, manual-NNN-output.png and manual-NNN.json. No eight-direction presets are exposed, so SpriteDirection token/ordinal tests are not applicable.",
+          "Review and explicitly approve or revise proposed bounds, provisional CPU/GPU/memory budgets and deviations with the user. Watch the linked t3ssel8r clips and confirm or replace timestamps/observations. Record reviewer/date/decision without treating still approval as later motion/effect acceptance.",
+          "From GAME_ROOT run python3 -m unittest discover -s tools -p 'test_*probe.py'; run --case reference with --control invalid-settings, missing-report and check-failure, each into fresh output, followed by a fresh normal run. Negative controls must return nonzero with no false success."
         ],
         "expected_results": [
-          "Every appearance claim is tied to a comparison region, declared settings and review decision. The concept is not treated as engine or pixel-perfect evidence.",
-          "Unresolved blocking feedback or absent approval remains visible and prevents acceptance. Presets preserve their canonical encodings and continuous heading remains available."
+          "The original detailed character and simpler props, palette, corner/contact and lighting have attributable side-by-side source/probe evidence under the unchanged T02 viewport policy. Captures do not establish artistic acceptance or final effects.",
+          "Fractional visual heading survives; Reset restores day, zoom x1, fixture heading and first window preset without moving the actor foot anchor. Every asset has original-source provenance; no domain heading presets, appearance catalog or new gameplay schema are introduced.",
+          "Absent human approval or unreviewed supplementary clips keeps AC1–2 and epic AC7 unfinished. Later motion, outlines, contact-depth/water, packaged performance and other hardware remain unverified; numerical proposals are not measured passes."
         ],
         "reset": [
           "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
           "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
         ]
       },
-      "completion_evidence": "Retain the hashed principal reference, original fixture provenance, annotated gameplay-scale comparisons, supplementary timestamps and dated approved review sheet with explicit bounds, budgets, deviations and unresolved findings.",
+      "completion_evidence": "Retain the hashed principal reference, original fixture provenance, annotated gameplay-scale comparisons, supplementary timestamps and dated approved review sheet with explicit bounds, budgets, deviations and unresolved findings. Implementation/review preparation 2026-10-19: the source reference case, original CC0 comparison fixtures, paired gameplay/output captures and annotated concept review sheet are available in validation/tickets/BW-097-T03/. Automated capture/control checks do not approve appearance. User approval of proposed visual/motion bounds, budgets and deviations, plus actual supplementary clip review, remains required before AC1–2 and parent AC7 can pass.",
       "related_docs": [
         {
           "label": "Parent epic and exact criteria",
@@ -7837,10 +7840,32 @@
         {
           "label": "t3ssel8r research",
           "href": "guide/sources.html#s16"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
+        },
+        {
+          "label": "Annotated baseline review and proposed bounds",
+          "href": "validation/tickets/BW-097-T03/review.html"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-097-T03/committed-source-run/run.json",
+          "revision": "fcdb669dd7d5ecdd6768ce80710cf4ed0f258b25",
+          "result": "Passed",
+          "summary": "Actual pinned Forward+/Metal reference run captures original source fixtures and exact settings. Day/warm/cool x1/x2, continuous fractional heading and Reset passed. Fixture source/license provenance is checked against reference.json. No heading presets or parallel SpriteDirection definition exist. This is AC3 fixture/control evidence only; it does not approve appearance or budgets."
+        }
+      ]
     },
     {
       "id": "BW-097-T04",

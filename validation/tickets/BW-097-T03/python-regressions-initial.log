@@ -1,0 +1,175 @@
+..............Build stage: import
+.Baseline stage: failure
+..Baseline stage: timeout
+...............................................FFF.EFEE...........................EF..E....FF.FFE...........
+======================================================================
+ERROR: test_empty_zero_client_idle_and_reused_owner_reset_do_not_invent_observations (test_metrics_fixtures.MetricsFixtureTests.test_empty_zero_client_idle_and_reused_owner_reset_do_not_invent_observations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_metrics_fixtures.py", line 72, in test_empty_zero_client_idle_and_reused_owner_reset_do_not_invent_observations
+    cases = {case["id"]: case for case in self.reports["pass"][1]["runtime"]["report"]["cases"]}
+                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'report'
+
+======================================================================
+ERROR: test_invalid_workloads_have_findings_without_partial_measurements (test_metrics_fixtures.MetricsFixtureTests.test_invalid_workloads_have_findings_without_partial_measurements)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_metrics_fixtures.py", line 94, in test_invalid_workloads_have_findings_without_partial_measurements
+    cases = self.reports["pass"][1]["runtime"]["report"]["cases"]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'report'
+
+======================================================================
+ERROR: test_stale_missing_or_forged_measurements_and_unsupported_claims_fail_closed (test_metrics_fixtures.MetricsFixtureTests.test_stale_missing_or_forged_measurements_and_unsupported_claims_fail_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_metrics_fixtures.py", line 129, in test_stale_missing_or_forged_measurements_and_unsupported_claims_fail_closed
+    corpus = json.loads((self.directory / "pass/executed-fixtures.json").read_text())
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 792, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 776, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-metrics-tests-hd4zr36_/pass/executed-fixtures.json'
+
+======================================================================
+ERROR: test_changed_report_even_with_refreshed_file_hash_cannot_forge_execution (test_runtime_fixture_suites.RuntimeAggregateTests.test_changed_report_even_with_refreshed_file_hash_cannot_forge_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixture_suites.py", line 81, in test_changed_report_even_with_refreshed_file_hash_cannot_forge_execution
+    mutate(child)
+    ~~~~~~^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixture_suites.py", line 74, in <lambda>
+    lambda c: c["runtime"]["report"]["cases"].pop(),
+              ~~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'report'
+
+======================================================================
+ERROR: test_missing_raw_report_cannot_be_replaced_by_summary_pass (test_runtime_fixture_suites.RuntimeAggregateTests.test_missing_raw_report_cannot_be_replaced_by_summary_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixture_suites.py", line 92, in test_missing_raw_report_cannot_be_replaced_by_summary_pass
+    original = path.read_bytes()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 782, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 776, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-aggregate-tests-c5dp__fl/pass/first/evidence/logs/evidence.log'
+
+======================================================================
+ERROR: test_tampered_actual_evidence_and_assertion_coverage_fail_closed (test_runtime_fixtures.FixtureDriverTests.test_tampered_actual_evidence_and_assertion_coverage_fail_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixtures.py", line 145, in test_tampered_actual_evidence_and_assertion_coverage_fail_closed
+    corpus = json.loads((self.output_root / "pass/executed-fixtures.json").read_text())
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 792, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/pathlib/__init__.py", line 776, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/mg/w1n5vm595lb407zb7nq2f8nr0000gq/T/briarwake-evidence-tests-5ibavsb8/pass/executed-fixtures.json'
+
+======================================================================
+FAIL: test_fresh_execution_restores_effects_and_allocates_distinct_action_identity (test_diagnostics_fixtures.DiagnosticsFixtureTests.test_fresh_execution_restores_effects_and_allocates_distinct_action_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_diagnostics_fixtures.py", line 89, in test_fresh_execution_restores_effects_and_allocates_distinct_action_identity
+    self.assertEqual(status, 0, restored.get("failure"))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Diagnostics verification failed: ValueError
+
+======================================================================
+FAIL: test_no_execution_or_missing_report_cannot_fabricate_committed_evidence (test_diagnostics_fixtures.DiagnosticsFixtureTests.test_no_execution_or_missing_report_cannot_fabricate_committed_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_diagnostics_fixtures.py", line 79, in test_no_execution_or_missing_report_cannot_fabricate_committed_evidence
+    self.assertEqual(report["runtime"]["execution_state"], "Executed")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Not Executed' != 'Executed'
+- Not Executed
+? ----
++ Executed
+
+
+======================================================================
+FAIL: test_actual_ticks_queue_and_recipient_bytes_recompute (test_metrics_fixtures.MetricsFixtureTests.test_actual_ticks_queue_and_recipient_bytes_recompute)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_metrics_fixtures.py", line 37, in test_actual_ticks_queue_and_recipient_bytes_recompute
+    self.assertEqual(status, 0, report.get("failure"))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Stale or modified canonical snapshot; rerun the explicit local extraction.
+
+======================================================================
+FAIL: test_failure_controls_and_fresh_recovery_preserve_execution_attribution (test_metrics_fixtures.MetricsFixtureTests.test_failure_controls_and_fresh_recovery_preserve_execution_attribution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_metrics_fixtures.py", line 114, in test_failure_controls_and_fresh_recovery_preserve_execution_attribution
+    self.assertEqual(failed["runtime"]["execution_state"], "Executed")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Not Executed' != 'Executed'
+- Not Executed
+? ----
++ Executed
+
+
+======================================================================
+FAIL: test_complete_actual_children_and_reproducible_outcomes (test_runtime_fixture_suites.RuntimeAggregateTests.test_complete_actual_children_and_reproducible_outcomes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixture_suites.py", line 34, in test_complete_actual_children_and_reproducible_outcomes
+    self.assertEqual(self.exit_status, 0, self.report.get("failure"))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Stale or modified canonical snapshot; rerun the explicit local extraction.
+
+======================================================================
+FAIL: test_clean_execution_records_actual_positive_and_expected_rejections (test_runtime_fixtures.FixtureDriverTests.test_clean_execution_records_actual_positive_and_expected_rejections)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixtures.py", line 106, in test_clean_execution_records_actual_positive_and_expected_rejections
+    self.assertEqual(exit_status, 0, report.get("failure"))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Stale or modified canonical snapshot; rerun the explicit local extraction.
+
+======================================================================
+FAIL: test_deliberate_assertion_failure_has_actual_failed_canonical_evidence (test_runtime_fixtures.FixtureDriverTests.test_deliberate_assertion_failure_has_actual_failed_canonical_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixtures.py", line 135, in test_deliberate_assertion_failure_has_actual_failed_canonical_evidence
+    self.assertEqual(report["runtime"]["execution_state"], "Executed")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Not Executed' != 'Executed'
+- Not Executed
+? ----
++ Executed
+
+
+======================================================================
+FAIL: test_import_startup_missing_report_never_create_executed_evidence (test_runtime_fixtures.FixtureDriverTests.test_import_startup_missing_report_never_create_executed_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixtures.py", line 127, in test_import_startup_missing_report_never_create_executed_evidence
+    self.assertTrue(report["stages"])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_invalid_authored_input_fails_before_runtime_without_actual_pass (test_runtime_fixtures.FixtureDriverTests.test_invalid_authored_input_fails_before_runtime_without_actual_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Godot/briarwake/tools/test_runtime_fixtures.py", line 194, in test_invalid_authored_input_fails_before_runtime_without_actual_pass
+    self.assertIn("Invalid canonical specification", report["failure"])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Invalid canonical specification' not found in 'Stale or modified canonical snapshot; rerun the explicit local extraction.'
+
+----------------------------------------------------------------------
+Ran 125 tests in 128.833s
+
+FAILED (failures=9, errors=6)

@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T03">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                 >
@@ -250,45 +250,74 @@
                 test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.
+              <pre><code>Working directory: GAME_ROOT (/Users/le-evanmcpheron/Documents/Godot/briarwake), with the pinned graphical macOS ARM64 engine and desktop.
 python3 tools/verify_toolchain.py
-python3 tools/run_rendering_probe.py --case reference</code></pre>
+python3 tools/run_rendering_probe.py --case reference
+For interactive review: python3 tools/run_rendering_probe.py --case reference --interactive
+Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisions: visual-review.json in the same directory.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the T02 viewport settings and this ticket’s original character/prop/lighting
-                  comparison fixtures. Keep DOCS_ROOT/assets/graphics_concept.png available
-                  read-only for the comparison sheet.
+                  The checked-in reference.json fixture records original geometry/material
+                  provenance; reference_world.gd builds the character/props/corner/palette and
+                  reuses the T02 viewport policy. The concept remains read-only at
+                  DOCS_ROOT/assets/graphics_concept.png; it is not imported into the game.
                 </li>
                 <li>
-                  Arrange the visual review with the user; approval must identify actual bounds and
-                  deviations. Still-reference approval does not certify later motion or engine
-                  effects.
+                  Automatic verification runs day/warm/cool lighting at zoom x1/x2 and Reset,
+                  writing paired internal/output images, projected comparison regions and actual
+                  engine/backend/device identity in a new launcher-owned artifacts directory. Human
+                  visual approval is separate.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run reference and capture its character, prop, palette, contact and lighting views
-                  at internal and output resolution. Annotate the concept crops and supplementary
-                  references next to those captures.
+                  Open the retained review.html or regenerate it from DOCS_ROOT with python3
+                  validation/tickets/BW-097-T03/build_review.py after retaining a new source-run.
+                  Inspect the four annotated source crops beside the camera-projected probe regions.
+                  Compare all three lighting states at native 384x216 gameplay scale; use zoom x2
+                  only for detail diagnostics.
                 </li>
                 <li>
-                  Review the observations, still/motion bounds and provisional performance budgets
-                  with the user; retain their decisions and unresolved findings. If heading presets
-                  are present, cycle all eight and try an invalid token in a disposable fixture.
+                  In the interactive probe select lighting and zoom, drag the continuous heading
+                  slider to fractional angles, use Capture, then Reset. Inspect
+                  manual-NNN-internal.png, manual-NNN-output.png and manual-NNN.json. No
+                  eight-direction presets are exposed, so SpriteDirection token/ordinal tests are
+                  not applicable.
+                </li>
+                <li>
+                  Review and explicitly approve or revise proposed bounds, provisional
+                  CPU/GPU/memory budgets and deviations with the user. Watch the linked t3ssel8r
+                  clips and confirm or replace timestamps/observations. Record
+                  reviewer/date/decision without treating still approval as later motion/effect
+                  acceptance.
+                </li>
+                <li>
+                  From GAME_ROOT run python3 -m unittest discover -s tools -p
+                  &#x27;test_*probe.py&#x27;; run --case reference with --control invalid-settings,
+                  missing-report and check-failure, each into fresh output, followed by a fresh
+                  normal run. Negative controls must return nonzero with no false success.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Every appearance claim is tied to a comparison region, declared settings and
-                  review decision. The concept is not treated as engine or pixel-perfect evidence.
+                  The original detailed character and simpler props, palette, corner/contact and
+                  lighting have attributable side-by-side source/probe evidence under the unchanged
+                  T02 viewport policy. Captures do not establish artistic acceptance or final
+                  effects.
                 </li>
                 <li>
-                  Unresolved blocking feedback or absent approval remains visible and prevents
-                  acceptance. Presets preserve their canonical encodings and continuous heading
-                  remains available.
+                  Fractional visual heading survives; Reset restores day, zoom x1, fixture heading
+                  and first window preset without moving the actor foot anchor. Every asset has
+                  original-source provenance; no domain heading presets, appearance catalog or new
+                  gameplay schema are introduced.
+                </li>
+                <li>
+                  Absent human approval or unreviewed supplementary clips keeps AC1–2 and epic AC7
+                  unfinished. Later motion, outlines, contact-depth/water, packaged performance and
+                  other hardware remain unverified; numerical proposals are not measured passes.
                 </li>
               </ol>
               <h3>Reset</h3>
@@ -310,13 +339,26 @@ python3 tools/run_rendering_probe.py --case reference</code></pre>
                 <strong>Required evidence:</strong> Retain the hashed principal reference, original
                 fixture provenance, annotated gameplay-scale comparisons, supplementary timestamps
                 and dated approved review sheet with explicit bounds, budgets, deviations and
-                unresolved findings.
+                unresolved findings. Implementation/review preparation 2026-10-19: the source
+                reference case, original CC0 comparison fixtures, paired gameplay/output captures
+                and annotated concept review sheet are available in validation/tickets/BW-097-T03/.
+                Automated capture/control checks do not approve appearance. User approval of
+                proposed visual/motion bounds, budgets and deviations, plus actual supplementary
+                clip review, remains required before AC1–2 and parent AC7 can pass.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-097-T03/committed-source-run/run.json"
+                    >Actual pinned Forward+/Metal reference run captures original source fixtures
+                    and exact settings. Day/warm/cool x1/x2, continuous fractional heading and Reset
+                    passed. Fixture source/license provenance is checked against reference.json. No
+                    heading presets or parallel SpriteDirection definition exist. This is AC3
+                    fixture/control evidence only; it does not approve appearance or budgets.</a
+                  >
+                  — AC 3; Passed; revision fcdb669dd7d5ecdd6768ce80710cf4ed0f258b25
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and exact criteria</a>;
@@ -329,7 +371,13 @@ python3 tools/run_rendering_probe.py --case reference</code></pre>
                 <a href="../guide/data-inventory.html#sprite-direction">SpriteDirection</a>;
                 <a href="../guide/sources.html#s9">Holland reference</a>;
                 <a href="../guide/sources.html#s15">Roystan adaptation boundary</a>;
-                <a href="../guide/sources.html#s16">t3ssel8r research</a>
+                <a href="../guide/sources.html#s16">t3ssel8r research</a>;
+                <a href="../guide/data-inventory.html#shared-FixtureRunEvidence"
+                  >FixtureRunEvidence</a
+                >; <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>;
+                <a href="../validation/tickets/BW-097-T03/review.html"
+                  >Annotated baseline review and proposed bounds</a
+                >
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
