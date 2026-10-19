@@ -329,6 +329,16 @@
           "revision": "Exact tested game Git revision and per-source/input SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json",
           "result": "Passed",
           "summary": "Explicit parent review retains AC1 owner/lifecycle mapping and AC4 compatibility evidence, with executed T03 intent/projection behavior and a fresh compatibility regression. T01 authority/lifecycle requirements and existing bootstrap owners are preserved. BW-002 remains In Progress: AC2 atomic staged admission, AC3 binding/readiness refusal and AC5 complete economic graph validation require T04–T08. T04 is now ticket-dependency-ready; BW-002-dependent epics remain gated."
+        },
+        {
+          "criteria": [
+            1,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T04/epic-review.json",
+          "revision": "Exact tested revisions and source/input hashes retained in the T04 verification and suite reports.",
+          "result": "Passed",
+          "summary": "Parent review retains AC1 owner/lifecycle requirements and AC4 compatibility encodings/revision separation, with fresh compatibility and boundary regressions. T04 adds executed staging coverage toward AC2. BW-002 remains In Progress: AC2 real atomic startup admission, AC3 actual capability/readiness refusal and AC5 economic graph certification still require T05–T08. T05 and T06 now have complete ticket prerequisites; downstream epics remain gated on BW-002."
         }
       ],
       "phase": "phase-foundations"
@@ -6253,7 +6263,7 @@
       "id": "BW-002-T04",
       "parent_epic": "BW-002",
       "title": "Stage content and reject invalid references, targets and resources",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-2",
         "BW-002-AC-4"
@@ -6278,22 +6288,25 @@
         "A mixed candidate containing a valid record and an invalid record exposes neither as active; prior accepted state, if supplied by a fixture, remains unchanged."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite structure\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_content_admission.py --suite structure\npython3 tools/check_content_admission.py --suite compatibility\npython3 tools/check_content_admission.py --suite boundaries\npython3 -m unittest discover -s tools -p 'test_*.py' -v",
         "setup": [
-          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Provide a complete small candidate closure under fixtures/content_admission/, including safe static resources and structurally valid but disabled prototype/binding examples. Add one invalid input per stated failure rule and a mixed valid/invalid candidate."
+          "Use the pinned native macOS ARM64 Godot 4.7.2 executable and Python environment from tools/toolchain.lock.json. All named commands, scripts and fixture catalogs now exist in GAME_ROOT.",
+          "fixtures/content_admission/structure.json supplies canonical static collections, explicit compatibility context, trusted policy vocabulary, disabled prototype/binding examples and caller-authored resolved probes. No database, account, peer, scene control or build resolver is needed."
         ],
         "actions": [
-          "Run the structure suite; compare findings with expected fixture paths/codes and inspect the candidate versus active record lists.",
-          "Repeat with reversed input order and confirm invalid records cannot partially enter active state or be resolved accidentally through a different ID namespace."
+          "Run the structure suite and inspect the ContentValidationResult records in the new artifacts/structure-*/run.json report; use --output PATH for another new evidence directory.",
+          "Inspect the compatible static/prototype cases, one-mutation invalid cases, 21-mode/four-input matrix, mixed-valid-invalid and same-id-distinct-namespaces controls. Every case repeats with record arrays reversed and compares finding signatures.",
+          "Confirm all rejections return no candidate, prior valid candidate snapshots stay unchanged, valid input IDs/null maxima/aliases are preserved, and caller/snapshot mutations cannot affect staged records.",
+          "Exercise --control import-failure, startup-failure, missing-report, assertion-failure and unsupported-schema with --suite structure and separate new output directories; all must exit 1. Rerun the clean suite afterward."
         ],
         "expected_results": [
-          "Valid supported records stage; invalid candidates reject deterministically before activation and retain the prior state.",
-          "Structural success leaves behavior readiness and runtime test gates unchanged; all record-level findings remain observable."
+          "All 174 authored structure cases pass their expected acceptance/rejection assertions. Findings contain stable codes, record/property paths and actionable messages. Explicit zero/null and separate ID namespaces remain distinct; malformed fields, nonfinite/negative numbers and unsupported policies/references/operations reject.",
+          "Only complete supported candidates are returned. Staging owns no active selection and cannot enable behavior; authored readiness flags/fixture run_evidence remain unchanged. Runtime capability/readiness, economic gates and real startup/active-state integration remain T05–T08.",
+          "Compatibility/boundary suites and all 43 Python tool tests pass separately. Import/startup/absent-report failures remain unexecuted; an intentionally false expectation is Executed/Failed."
         ],
         "reset": [
-          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
-          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+          "Let each bounded runner exit; its disposable copied Godot project and in-memory candidate state are removed automatically. Leave canonical snapshots, tracked fixtures and bootstrap configuration unchanged.",
+          "Retain run.json and logs from the chosen new evidence directory. Repeating a clean suite needs no persistent-state reset."
         ]
       },
       "completion_evidence": "Executed staging/structural/reference matrix, unchanged-active-state assertions and actual canonical validation results with source/content/rules identities.",
@@ -6337,10 +6350,42 @@
         {
           "label": "Actual findings",
           "href": "guide/data-inventory.html#content-validation-result"
+        },
+        {
+          "label": "Resolved ability and explicit ResolvedResourceCost probes",
+          "href": "guide/data-inventory.html#resolved-ability-definition"
+        },
+        {
+          "label": "Class catalog namespace",
+          "href": "guide/data-inventory.html#class-definition"
+        },
+        {
+          "label": "Faction catalog namespace",
+          "href": "guide/data-inventory.html#faction-definition"
+        },
+        {
+          "label": "Cooldown family policy",
+          "href": "guide/data-inventory.html#cooldown-definition"
+        },
+        {
+          "label": "Presentation references",
+          "href": "guide/data-inventory.html#visual-presentation-definition"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T04/verification.json",
+          "revision": "Per-run game revision and source/input SHA-256 hashes retained in the verification report and engine run artifacts.",
+          "result": "Passed",
+          "summary": "174 executed staging cases cover compatible static/prototype content, namespace/reference/target/resource/timing/version failures, canonical validation outputs, reversed record order and retained-candidate/copy isolation. Compatibility/boundary regressions and 43 Python tool tests pass. Staging exposes no active selection; readiness, economic admission and startup publication remain later tickets."
+        }
+      ]
     },
     {
       "id": "BW-002-T05",
