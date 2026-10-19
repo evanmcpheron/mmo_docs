@@ -1,83 +1,585 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Bazaar &amp; economy · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a aria-current=page href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Economy</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div><h1>Bazaar &amp; economy</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<h2 id="bazaar-model">Bazaar model</h2><p>WalletReservationRecord is a lock on the existing wallet balance. Every debit checks spendable funds as balance minus all held lock amounts. Reservation, consumption or release increments the wallet revision atomically with its durable receipt; a release creates no currency credit and a repeated fill cannot consume the same lock twice.</p><p>Buyer requests reserve the full requested quantity times unit price in the canonical buyer wallet before becoming active. Each exact eligible fill atomically consumes the matching reservation, transfers ownership, credits the seller less fees and creates durable delivery. Cancellation/expiry releases only the unfilled amount; retries and fill/cancel races use one receipt and optimistic version. The request never owns a second wallet balance.</p>
-<p>Use searchable fixed-price listings with optional merchant-stall presentation and offline selling. The visual stall does not run its own inventory logic. Fixed-price sell orders and buyer requests are sufficient for the first release; timed auctions, securities, loans and speculative derivatives are outside scope.</p>
-<p>Each faction has a shared realm-local marketplace. Do not create many small regional markets before population supports them. Every listing records item identity or commodity definition, seller, remaining quantity, unit price, expiry, fee policy and version. Items enter escrow before the listing appears.</p>
-<p>Currency is an integer number of minor units. Unit price is explicit; bulk purchases cannot exploit a confusing total-versus-unit display. The UI shows quantity, total, fee, recipient and binding before confirmation.</p>
-<h2 id="fees-and-sinks">Fees and sinks</h2><p><strong>Reviewed prototype parameters:</strong> Minimum listing fee is one minor unit and the active-listing limit is twenty per character, alongside the existing 5% sale fee, 0.5% listing fee and 48-hour lifetime. Every value is explicit versioned configuration; these proposals are not measured balance. Listing fee is the greater of the minimum and the rounded-up listed-value percentage, charged once at acceptance. Sale fee rounds down per committed fill and cannot exceed its gross. Accepted quotes snapshot their fee policy; cancellation does not refund the listing fee.</p>
-<p>Initial defaults: a 5% fee on completed sales and a small nonrefundable listing fee equal to 0.5% of listed value, with a low starter-item minimum. Use 48-hour listings and ordinary per-character active-listing limits, increased through play-neutral merchant convenience rather than combat power. These are provisional economic parameters, not predictions of a stable economy.</p>
-<p>Currency sources include authorized creature rewards, activity rewards and finite economic contracts. Sinks include market fees, NPC repairs, training and cosmetic purchases. Player-to-player transfers are not currency sinks. Salvage removes items/material value, while repairs mainly remove currency; those are different economic mechanisms.</p>
-<h2 id="matching-and-settlement">Matching and settlement</h2>
-<p>A purchase locks the relevant listing and wallet rows, checks remaining stock and buyer balance, debits total, credits seller proceeds, removes the tax, transfers items to delivery and emits an outbox event in one transaction. Concurrent buyers cannot buy the last item twice. Partial commodity fills are allowed only when the buyer explicitly accepts partial fulfillment.</p>
-<p>Direct trade requires both parties to confirm the same immutable offer version. Any offer change invalidates both confirmations. Distance, faction, combat state, binding and item version are rechecked at commitment. Leaving range cancels an uncommitted trade without consuming anything.</p>
-<h2 id="faction-fairness">Faction fairness</h2>
-<p>The good and evil sides have the same blueprint availability rules, vendor fallback categories, fees and item budgets. A class-exclusive weapon configuration still has an ordinary supply path on its own side. No profession's essential ingredients require trade with the enemy faction. Do not confuse a faction with a separate racial stat definition.</p>
-<p>Exclusive classes may create different demand distributions. Measure resulting prices and supplier availability rather than requiring identical item-level prices across unrelated economies. Neutral trade is a future opt-in design decision, not a hidden dependency.</p>
-<h2 id="sustainable-demand-without-coercion">Sustainable demand without coercion</h2>
-<p>Use consumables, enhancement replacement, bags, profession tools, maintenance and new character progression to support repeat demand. Recrafting supplies targeted customization. Cap power consumable categories so a raid does not require ten simultaneous profession buffs.</p>
-<p>Low-level goods must remain accessible. Baseline vendor food, drink and tools ensure minimum functionality, while player goods offer efficiency or configuration. Vendor fallback should not permanently undercut legitimate crafters; its quality, price and availability must be calibrated. Starter assistance can use bound, non-salvageable supplies to prevent arbitrage.</p>
-<h2 id="monitoring">Monitoring</h2>
-<p>Track currency created/destroyed, material input/output, active listings, sell-through time, new-player affordability, recipe usage by character level, crafter margins, supplier concentration and suspicious transfer networks. Separate mean prices from medians and thin-market outliers. Do not automatically ban a player for a price spike; low liquidity and legitimate speculation can resemble manipulation.</p>
-<p>A profession is failing its leveling goal if its products are made only for skill XP and immediately vendored, or if most customers have already outleveled them. A mature-server profession is failing if only rare recipe holders can earn meaningful value while ordinary useful products have no customers.</p>
-<h2 id="security-and-recovery">Security and recovery</h2>
-<p>The server owns all currency, items and profession rewards. Client-submitted balances, item quantities and completion states are never authoritative. Rate limits, ownership checks, audit logs and reconciliation protect legitimate play; client anti-cheat alone cannot secure the economy.</p>
-<p>Maintain daily economy reconciliation and test backups. A rollback of combat state must not automatically roll back a completed trade. Distinguish account suspension, asset freezing and confirmed fraudulent-item reversal, with an appeal/audit workflow.</p>
-<!-- data-inventory:start -->
-<section class="data-inventory" aria-labelledby="data">
-<h2 id="data">Data</h2>
-<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
-<h3 id="data-enums">Enums</h3>
-<ul>
-<li data-inventory-id="account-restriction-kind"><code><a href="data-inventory.html#account-restriction-kind">AccountRestrictionKind</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="administrative-permission"><code><a href="data-inventory.html#administrative-permission">AdministrativePermission</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-binding-state"><code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-grade"><code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="market-order-kind"><code><a href="data-inventory.html#market-order-kind">MarketOrderKind</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-order-state"><code><a href="data-inventory.html#market-order-state">MarketOrderState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="moderation-action-kind"><code><a href="data-inventory.html#moderation-action-kind">ModerationActionKind</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="trade-state"><code><a href="data-inventory.html#trade-state">TradeState</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-interfaces">Interfaces</h3>
-<ul>
-<li data-inventory-id="inventory-container"><code><a href="data-inventory.html#inventory-container">InventoryContainer</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-instance"><code><a href="data-inventory.html#item-instance">ItemInstance</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-transfer-eligibility"><code><a href="data-inventory.html#item-transfer-eligibility">ItemTransferEligibility</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-browser-state"><code><a href="data-inventory.html#market-browser-state">MarketBrowserState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-purchase-quote"><code><a href="data-inventory.html#market-purchase-quote">MarketPurchaseQuote</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-search-query"><code><a href="data-inventory.html#market-search-query">MarketSearchQuery</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="merchant-stall-state"><code><a href="data-inventory.html#merchant-stall-state">MerchantStallState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="trade-offer"><code><a href="data-inventory.html#trade-offer">TradeOffer</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="wallet-state"><code><a href="data-inventory.html#wallet-state">WalletState</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-schemas">Schemas</h3>
-<ul>
-<li data-inventory-id="asset-freeze-record"><code><a href="data-inventory.html#asset-freeze-record">AssetFreezeRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="buyer-request-record"><code><a href="data-inventory.html#buyer-request-record">BuyerRequestRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="currency-ledger-record"><code><a href="data-inventory.html#currency-ledger-record">CurrencyLedgerRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="currency-reward-definition"><code><a href="data-inventory.html#currency-reward-definition">CurrencyRewardDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="delivery-claim-request"><code><a href="data-inventory.html#delivery-claim-request">DeliveryClaimRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="delivery-record"><code><a href="data-inventory.html#delivery-record">DeliveryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="direct-trade-confirmation"><code><a href="data-inventory.html#direct-trade-confirmation">DirectTradeConfirmation</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="direct-trade-record"><code><a href="data-inventory.html#direct-trade-record">DirectTradeRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="economy-metric-record"><code><a href="data-inventory.html#economy-metric-record">EconomyMetricRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="economy-reconciliation-report"><code><a href="data-inventory.html#economy-reconciliation-report">EconomyReconciliationReport</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="faction"><code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="fraud-reversal-record"><code><a href="data-inventory.html#fraud-reversal-record">FraudReversalRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-operation-request"><code><a href="data-inventory.html#inventory-operation-request">InventoryOperationRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-operation-result"><code><a href="data-inventory.html#inventory-operation-result">InventoryOperationResult</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-record"><code><a href="data-inventory.html#inventory-record">InventoryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-ownership-record"><code><a href="data-inventory.html#item-ownership-record">ItemOwnershipRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-fee-configuration"><code><a href="data-inventory.html#market-fee-configuration">MarketFeeConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-listing-record"><code><a href="data-inventory.html#market-listing-record">MarketListingRecord</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="market-purchase-request"><code><a href="data-inventory.html#market-purchase-request">MarketPurchaseRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-search-request"><code><a href="data-inventory.html#market-search-request">MarketSearchRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-search-response"><code><a href="data-inventory.html#market-search-response">MarketSearchResponse</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-settlement-record"><code><a href="data-inventory.html#market-settlement-record">MarketSettlementRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="reward-eligibility-record"><code><a href="data-inventory.html#reward-eligibility-record">RewardEligibilityRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="reward-grant-record"><code><a href="data-inventory.html#reward-grant-record">RewardGrantRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="transactional-outbox-record"><code><a href="data-inventory.html#transactional-outbox-record">TransactionalOutboxRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-offer-definition"><code><a href="data-inventory.html#vendor-offer-definition">VendorOfferDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-pricing-configuration"><code><a href="data-inventory.html#vendor-pricing-configuration">VendorPricingConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="wallet-record"><code><a href="data-inventory.html#wallet-record">WalletRecord</a></code> — Proposed · Fully Defined</li>
-</ul>
-</section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#bazaar-model">Bazaar model</a><a href="#fees-and-sinks">Fees and sinks</a><a href="#matching-and-settlement">Matching and settlement</a><a href="#faction-fairness">Faction fairness</a><a href="#sustainable-demand-without-coercion">Sustainable demand without coercion</a><a href="#monitoring">Monitoring</a><a href="#security-and-recovery">Security and recovery</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Bazaar &amp; economy · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a aria-current="page" href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Economy</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div>
+          <h1>Bazaar &amp; economy</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <h2 id="bazaar-model">Bazaar model</h2>
+            <p>
+              WalletReservationRecord is a lock on the existing wallet balance. Every debit checks
+              spendable funds as balance minus all held lock amounts. Reservation, consumption or
+              release increments the wallet revision atomically with its durable receipt; a release
+              creates no currency credit and a repeated fill cannot consume the same lock twice.
+            </p>
+            <p>
+              Buyer requests reserve the full requested quantity times unit price in the canonical
+              buyer wallet before becoming active. Each exact eligible fill atomically consumes the
+              matching reservation, transfers ownership, credits the seller less fees and creates
+              durable delivery. Cancellation/expiry releases only the unfilled amount; retries and
+              fill/cancel races use one receipt and optimistic version. The request never owns a
+              second wallet balance.
+            </p>
+            <p>
+              Use searchable fixed-price listings with optional merchant-stall presentation and
+              offline selling. The visual stall does not run its own inventory logic. Fixed-price
+              sell orders and buyer requests are sufficient for the first release; timed auctions,
+              securities, loans and speculative derivatives are outside scope.
+            </p>
+            <p>
+              Each faction has a shared realm-local marketplace. Do not create many small regional
+              markets before population supports them. Every listing records item identity or
+              commodity definition, seller, remaining quantity, unit price, expiry, fee policy and
+              version. Items enter escrow before the listing appears.
+            </p>
+            <p>
+              Currency is an integer number of minor units. Unit price is explicit; bulk purchases
+              cannot exploit a confusing total-versus-unit display. The UI shows quantity, total,
+              fee, recipient and binding before confirmation.
+            </p>
+            <h2 id="fees-and-sinks">Fees and sinks</h2>
+            <p>
+              <strong>Reviewed prototype parameters:</strong> Minimum listing fee is one minor unit
+              and the active-listing limit is twenty per character, alongside the existing 5% sale
+              fee, 0.5% listing fee and 48-hour lifetime. Every value is explicit versioned
+              configuration; these proposals are not measured balance. Listing fee is the greater of
+              the minimum and the rounded-up listed-value percentage, charged once at acceptance.
+              Sale fee rounds down per committed fill and cannot exceed its gross. Accepted quotes
+              snapshot their fee policy; cancellation does not refund the listing fee.
+            </p>
+            <p>
+              Initial defaults: a 5% fee on completed sales and a small nonrefundable listing fee
+              equal to 0.5% of listed value, with a low starter-item minimum. Use 48-hour listings
+              and ordinary per-character active-listing limits, increased through play-neutral
+              merchant convenience rather than combat power. These are provisional economic
+              parameters, not predictions of a stable economy.
+            </p>
+            <p>
+              Currency sources include authorized creature rewards, activity rewards and finite
+              economic contracts. Sinks include market fees, NPC repairs, training and cosmetic
+              purchases. Player-to-player transfers are not currency sinks. Salvage removes
+              items/material value, while repairs mainly remove currency; those are different
+              economic mechanisms.
+            </p>
+            <h2 id="matching-and-settlement">Matching and settlement</h2>
+            <p>
+              A purchase locks the relevant listing and wallet rows, checks remaining stock and
+              buyer balance, debits total, credits seller proceeds, removes the tax, transfers items
+              to delivery and emits an outbox event in one transaction. Concurrent buyers cannot buy
+              the last item twice. Partial commodity fills are allowed only when the buyer
+              explicitly accepts partial fulfillment.
+            </p>
+            <p>
+              Direct trade requires both parties to confirm the same immutable offer version. Any
+              offer change invalidates both confirmations. Distance, faction, combat state, binding
+              and item version are rechecked at commitment. Leaving range cancels an uncommitted
+              trade without consuming anything.
+            </p>
+            <h2 id="faction-fairness">Faction fairness</h2>
+            <p>
+              The good and evil sides have the same blueprint availability rules, vendor fallback
+              categories, fees and item budgets. A class-exclusive weapon configuration still has an
+              ordinary supply path on its own side. No profession's essential ingredients require
+              trade with the enemy faction. Do not confuse a faction with a separate racial stat
+              definition.
+            </p>
+            <p>
+              Exclusive classes may create different demand distributions. Measure resulting prices
+              and supplier availability rather than requiring identical item-level prices across
+              unrelated economies. Neutral trade is a future opt-in design decision, not a hidden
+              dependency.
+            </p>
+            <h2 id="sustainable-demand-without-coercion">Sustainable demand without coercion</h2>
+            <p>
+              Use consumables, enhancement replacement, bags, profession tools, maintenance and new
+              character progression to support repeat demand. Recrafting supplies targeted
+              customization. Cap power consumable categories so a raid does not require ten
+              simultaneous profession buffs.
+            </p>
+            <p>
+              Low-level goods must remain accessible. Baseline vendor food, drink and tools ensure
+              minimum functionality, while player goods offer efficiency or configuration. Vendor
+              fallback should not permanently undercut legitimate crafters; its quality, price and
+              availability must be calibrated. Starter assistance can use bound, non-salvageable
+              supplies to prevent arbitrage.
+            </p>
+            <h2 id="monitoring">Monitoring</h2>
+            <p>
+              Track currency created/destroyed, material input/output, active listings, sell-through
+              time, new-player affordability, recipe usage by character level, crafter margins,
+              supplier concentration and suspicious transfer networks. Separate mean prices from
+              medians and thin-market outliers. Do not automatically ban a player for a price spike;
+              low liquidity and legitimate speculation can resemble manipulation.
+            </p>
+            <p>
+              A profession is failing its leveling goal if its products are made only for skill XP
+              and immediately vendored, or if most customers have already outleveled them. A
+              mature-server profession is failing if only rare recipe holders can earn meaningful
+              value while ordinary useful products have no customers.
+            </p>
+            <h2 id="security-and-recovery">Security and recovery</h2>
+            <p>
+              The server owns all currency, items and profession rewards. Client-submitted balances,
+              item quantities and completion states are never authoritative. Rate limits, ownership
+              checks, audit logs and reconciliation protect legitimate play; client anti-cheat alone
+              cannot secure the economy.
+            </p>
+            <p>
+              Maintain daily economy reconciliation and test backups. A rollback of combat state
+              must not automatically roll back a completed trade. Distinguish account suspension,
+              asset freezing and confirmed fraudulent-item reversal, with an appeal/audit workflow.
+            </p>
+            <!-- data-inventory:start -->
+            <section class="data-inventory" aria-labelledby="data">
+              <h2 id="data">Data</h2>
+              <p>
+                Follow a type name to its canonical members, properties, constraints and review
+                decisions. Definitions are generated from one shared registry.
+              </p>
+              <h3 id="data-enums">Enums</h3>
+              <ul>
+                <li data-inventory-id="account-restriction-kind">
+                  <code
+                    ><a href="data-inventory.html#account-restriction-kind"
+                      >AccountRestrictionKind</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="administrative-permission">
+                  <code
+                    ><a href="data-inventory.html#administrative-permission"
+                      >AdministrativePermission</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-binding-state">
+                  <code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-grade">
+                  <code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="market-order-kind">
+                  <code><a href="data-inventory.html#market-order-kind">MarketOrderKind</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-order-state">
+                  <code><a href="data-inventory.html#market-order-state">MarketOrderState</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="moderation-action-kind">
+                  <code
+                    ><a href="data-inventory.html#moderation-action-kind"
+                      >ModerationActionKind</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="trade-state">
+                  <code><a href="data-inventory.html#trade-state">TradeState</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-interfaces">Interfaces</h3>
+              <ul>
+                <li data-inventory-id="inventory-container">
+                  <code
+                    ><a href="data-inventory.html#inventory-container">InventoryContainer</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-instance">
+                  <code><a href="data-inventory.html#item-instance">ItemInstance</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-transfer-eligibility">
+                  <code
+                    ><a href="data-inventory.html#item-transfer-eligibility"
+                      >ItemTransferEligibility</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-browser-state">
+                  <code
+                    ><a href="data-inventory.html#market-browser-state">MarketBrowserState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-purchase-quote">
+                  <code
+                    ><a href="data-inventory.html#market-purchase-quote"
+                      >MarketPurchaseQuote</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-search-query">
+                  <code
+                    ><a href="data-inventory.html#market-search-query">MarketSearchQuery</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="merchant-stall-state">
+                  <code
+                    ><a href="data-inventory.html#merchant-stall-state">MerchantStallState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="trade-offer">
+                  <code><a href="data-inventory.html#trade-offer">TradeOffer</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="wallet-state">
+                  <code><a href="data-inventory.html#wallet-state">WalletState</a></code> — Proposed
+                  · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-schemas">Schemas</h3>
+              <ul>
+                <li data-inventory-id="asset-freeze-record">
+                  <code
+                    ><a href="data-inventory.html#asset-freeze-record">AssetFreezeRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="buyer-request-record">
+                  <code
+                    ><a href="data-inventory.html#buyer-request-record">BuyerRequestRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="currency-ledger-record">
+                  <code
+                    ><a href="data-inventory.html#currency-ledger-record"
+                      >CurrencyLedgerRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="currency-reward-definition">
+                  <code
+                    ><a href="data-inventory.html#currency-reward-definition"
+                      >CurrencyRewardDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="delivery-claim-request">
+                  <code
+                    ><a href="data-inventory.html#delivery-claim-request"
+                      >DeliveryClaimRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="delivery-record">
+                  <code><a href="data-inventory.html#delivery-record">DeliveryRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="direct-trade-confirmation">
+                  <code
+                    ><a href="data-inventory.html#direct-trade-confirmation"
+                      >DirectTradeConfirmation</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="direct-trade-record">
+                  <code
+                    ><a href="data-inventory.html#direct-trade-record">DirectTradeRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="economy-metric-record">
+                  <code
+                    ><a href="data-inventory.html#economy-metric-record"
+                      >EconomyMetricRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="economy-reconciliation-report">
+                  <code
+                    ><a href="data-inventory.html#economy-reconciliation-report"
+                      >EconomyReconciliationReport</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="faction">
+                  <code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully
+                  Defined
+                </li>
+                <li data-inventory-id="fraud-reversal-record">
+                  <code
+                    ><a href="data-inventory.html#fraud-reversal-record"
+                      >FraudReversalRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-operation-request">
+                  <code
+                    ><a href="data-inventory.html#inventory-operation-request"
+                      >InventoryOperationRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-operation-result">
+                  <code
+                    ><a href="data-inventory.html#inventory-operation-result"
+                      >InventoryOperationResult</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-record">
+                  <code><a href="data-inventory.html#inventory-record">InventoryRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-ownership-record">
+                  <code
+                    ><a href="data-inventory.html#item-ownership-record"
+                      >ItemOwnershipRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-fee-configuration">
+                  <code
+                    ><a href="data-inventory.html#market-fee-configuration"
+                      >MarketFeeConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-listing-record">
+                  <code
+                    ><a href="data-inventory.html#market-listing-record"
+                      >MarketListingRecord</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="market-purchase-request">
+                  <code
+                    ><a href="data-inventory.html#market-purchase-request"
+                      >MarketPurchaseRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-search-request">
+                  <code
+                    ><a href="data-inventory.html#market-search-request"
+                      >MarketSearchRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-search-response">
+                  <code
+                    ><a href="data-inventory.html#market-search-response"
+                      >MarketSearchResponse</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-settlement-record">
+                  <code
+                    ><a href="data-inventory.html#market-settlement-record"
+                      >MarketSettlementRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="reward-eligibility-record">
+                  <code
+                    ><a href="data-inventory.html#reward-eligibility-record"
+                      >RewardEligibilityRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="reward-grant-record">
+                  <code
+                    ><a href="data-inventory.html#reward-grant-record">RewardGrantRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="transactional-outbox-record">
+                  <code
+                    ><a href="data-inventory.html#transactional-outbox-record"
+                      >TransactionalOutboxRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-offer-definition">
+                  <code
+                    ><a href="data-inventory.html#vendor-offer-definition"
+                      >VendorOfferDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-pricing-configuration">
+                  <code
+                    ><a href="data-inventory.html#vendor-pricing-configuration"
+                      >VendorPricingConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="wallet-record">
+                  <code><a href="data-inventory.html#wallet-record">WalletRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+              </ul>
+            </section>
+            <!-- data-inventory:end -->
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#bazaar-model">Bazaar model</a><a href="#fees-and-sinks">Fees and sinks</a
+          ><a href="#matching-and-settlement">Matching and settlement</a
+          ><a href="#faction-fairness">Faction fairness</a
+          ><a href="#sustainable-demand-without-coercion">Sustainable demand without coercion</a
+          ><a href="#monitoring">Monitoring</a
+          ><a href="#security-and-recovery">Security and recovery</a>
+          <a data-inventory-toc href="#data">Data</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

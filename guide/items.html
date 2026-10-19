@@ -1,172 +1,725 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Equipment &amp; itemization · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a aria-current=page href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Economy</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div><h1>Equipment &amp; itemization</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<h2 id="equipment-model">Equipment model</h2>
-<p>Use eight armor slots—head, shoulders, chest, wrists, hands, waist, legs and feet—plus back, neck, two rings, two trinkets, main hand and off hand. Bags and profession tools are separate utility slots and do not hide extra combat-stat budgets. A two-handed weapon occupies both hand slots.</p>
-<p>Armor families are Cloth, Leather, Mail and Plate. Mage, Necromancer and Warlock use Cloth; Bard, Rogue, Druid and Monk use Leather; Cleric, Ranger and Shaman use Mail; Warrior and Paladin use Plate. This resolves the ambiguous Cloth/Mail and Leather/Mail entries in v1. A class can equip lower armor for appearance or transitional leveling, but intended itemization uses its declared family. No additional percentage stat penalty is needed initially.</p>
-<p>Weapon proficiencies are data, not separate grinding skills. Warrior and Paladin use martial weapons; Rogue uses daggers and light blades; Ranger uses bows, crossbows and suitable light/pole weapons; Druid uses staves/polearms and form attacks; Monk uses staves/fist weapons; Bard uses one-handed weapons, ranged instruments and light ranged weapons; spellcasters use staves, wands and focuses. Shields are available to the appropriate Warrior/Paladin builds and Cleric/Shaman spellcasting builds. A shield alone never grants tank-role threat or health bonuses.</p>
-<h2 id="explicit-item-budgets">Explicit item budgets</h2><p>The baseline uses grade alone. ItemRarity is retained only as a compatibility alias of ItemGrade; new item records have no independent rarity field or budget multiplier. Any baseline presentation color derives from grade.</p>
-<p><code>base_item_budget = (6 + 2 × required_level) × slot_weight × grade_multiplier</code></p>
-<table>
-<thead>
-<tr>
-<th>Slot</th>
-<th style="text-align:right">Weight</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Chest</td>
-<td style="text-align:right">1.00</td>
-</tr>
-<tr>
-<td>Legs</td>
-<td style="text-align:right">0.90</td>
-</tr>
-<tr>
-<td>Head</td>
-<td style="text-align:right">0.75</td>
-</tr>
-<tr>
-<td>Shoulders, hands, waist, feet</td>
-<td style="text-align:right">0.60 each</td>
-</tr>
-<tr>
-<td>Wrists, back, neck</td>
-<td style="text-align:right">0.45 each</td>
-</tr>
-<tr>
-<td>Each ring</td>
-<td style="text-align:right">0.40</td>
-</tr>
-<tr>
-<td>Each trinket</td>
-<td style="text-align:right">0.55</td>
-</tr>
-<tr>
-<td>Two-handed weapon attribute package</td>
-<td style="text-align:right">1.00</td>
-</tr>
-<tr>
-<td>Main/off-hand attribute packages when dual wielding</td>
-<td style="text-align:right">0.50 each</td>
-</tr>
-</tbody>
-</table>
-<p>The normal allocation is 45% adaptive primary attribute, 35% Stamina and 20% secondary ratings. A recipe may redistribute within limits: primary 30–55%, Stamina 25–50%, and secondary 10–30%. Sum must remain 100%. Round down each line, then place rounding remainder in the selected primary line. Gems, enchantments, proc effects and set bonuses consume their reserved portions of this budget; they are not free additional lines.</p>
-<table>
-<thead>
-<tr>
-<th>Grade</th>
-<th style="text-align:right">Budget multiplier</th>
-<th>Intended acquisition</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Standard</td>
-<td style="text-align:right">1.00</td>
-<td>Vendors, routine rewards, basic crafting</td>
-</tr>
-<tr>
-<td>Refined</td>
-<td style="text-align:right">1.08</td>
-<td>Ordinary dungeon rewards and accessible specialist recipes</td>
-</tr>
-<tr>
-<td>Masterwork</td>
-<td style="text-align:right">1.12</td>
-<td>Difficult group activities and advanced crafted equipment</td>
-</tr>
-<tr>
-<td>Challenge</td>
-<td style="text-align:right">1.18</td>
-<td>Highest current challenge content, including commissions using earned bound components</td>
-</tr>
-</tbody>
-</table>
-<p>Rarity color describes acquisition and special behavior; it does not independently multiply the budget a second time. Legendary-style named equipment must remain within the same tier ceiling and pay for unique effects with budget. Do not increase the ceiling every content update automatically.</p>
-<p>Physical armor is separate from offensive allocation:</p>
-<p><code>armor = (20 + 8 × required_level) × armor_slot_weight × family_factor × grade_multiplier</code></p>
-<p>Family factors are Cloth 0.15, Leather 0.30, Mail 0.45 and Plate 0.60. A defensive shield adds a separate 0.40 family factor with weight 1.0, using the same level expression; its weapon damage budget is zero. Ward is an explicit defensive item line purchased from the ordinary secondary/defense allocation, not a free magical equivalent of all plate armor.</p>
-<p>Weapon DPS baseline is <code>0.35 × reference_power(required_level) × grade_multiplier</code>, where reference power is the ungeared, race-neutral primary-stat formula. Split this total for two one-handed offensive weapons. Faster weapons deliver smaller auto-attacks more often; on-hit procs use a rate budget or internal cooldown so fast weapons do not gain unlimited procs.</p>
-<h2 id="adaptive-primary-attributes">Adaptive primary attributes</h2>
-<p>Items may contain <code>adaptive_primary</code>, resolving to the valid specialization's primary attribute when equipped. Store it as adaptive data, not as three simultaneous attributes. A Paladin can move between martial and healing builds without the same chest piece granting Strength and Intellect together. Explicit specialist items may use a fixed attribute, but should be clearly marked before purchase or crafting.</p>
-<p>Druid form attacks use the equipped weapon's normalized budget even when the rendered form shows claws. Form changes never give a second weapon budget. Bard instruments and caster focuses use the same slot rules as comparable weapons; an instrument is not a seventeenth combat slot.</p>
-<h2 id="binding-and-acquisition">Binding and acquisition</h2>
-<p>Standard and Refined crafted items are normally tradable until equipped. Masterwork crafting may also be tradable when all components are tradable. Challenge commissions use a customer-owned bound component and produce a customer-bound result. The crafter never takes personal ownership of the bound component or finished item.</p>
-<p>Use binding states: unbound, bind-on-equip pending, character-bound and account-bound within permitted faction/ruleset. Appearance unlocks do not unbind an item. Mail, bazaar listing, direct trade, crafting escrow and bank movement must share the same eligibility service.</p>
-<p>Drops, crafted items and activity rewards should offer different configurations at comparable budgets. Crafting can target desired slots and secondary distributions; drops can offer distinctive effects. Do not reserve every competitive weapon and trinket exclusively for bosses or exclusively for a profession.</p>
-<h2 id="gems-enchants-and-set-effects">Gems, enchants and set effects</h2>
-<p>Reserve up to 8% of an eligible item's budget for enhancements. A socket is a distribution channel for that reserved budget; adding a socket removes an equivalent base-stat allocation. Replacing a gem destroys the old gem after confirmation. An enchant replaces the previous enchant in the same category. Removing an enhancement must not leave both the old stats and the refunded budget active.</p>
-<p>Set effects should change a bounded interaction, not unlock the specialization's essential spender or healing loop. Limit equipped major behavior-changing item effects to two. Talents own primary playstyle identity; equipment adjusts it without replacing the talent tree. Disable or normalize bespoke set/proc effects in rated PvP until individually certified.</p>
-<h2 id="upgrades-and-recrafting">Upgrades and recrafting</h2>
-<p>Allow one grade upgrade within the same level band when an explicit recipe exists. Raising an item into a new level band requires substantial new-band materials, a new minimum equip level and a new item version; it is not a free permanent heirloom. Preview exactly what changes, including sockets and binding.</p>
-<p>Recrafting keeps the item's stable identity and audit history but increments its version. Lock the item during the operation. Preserve valid enchantments only when the recipe declares compatibility; otherwise warn and reject without confirmation. Never duplicate the original item and create a second improved copy.</p>
-<h2 id="durability-salvage-and-demand">Durability, salvage and demand</h2>
-<p>Economic admission requires explicit material-to-item identity (<code>MaterialDefinition.item_definition_id</code>), <code>salvage_class</code> (<code>common</code>, <code>rare_core</code> or <code>progression_component</code>), and <code>ItemDefinition.starter_assistance</code>. These fields are optional for legacy catalogs, whose missing values cannot admit economic routes. Bindings must agree across a material and its inventory item; names never establish identity. Only unbound common materials qualify for salvage. Every enabled producer recipe must support the return limit per output item; an unknown original composition keeps salvage disabled. Starter assistance must be character/account bound, have zero sellback and no salvage output, and any crafting output must preserve its nonexportable restriction without a commission to another owner. No price or eligibility is inferred from descriptive text.</p><p>proportional_missing_durability_v1 quotes repair from explicit NPC purchase value: for positive damage, take the greater of the configured minimum and ceil(purchase_value × full_repair_fraction × missing_percentage_points / 100). Undamaged items cost zero. All price/coefficient values are required content; a missing value rejects the quote. This formula uses no player-market price oracle and does not supply a finished vendor price table.</p>
-<p>Equipment durability creates maintenance demand, not routine permanent gear destruction. At zero durability, equipment loses combat benefits but remains owned and repairable. Death reduces equipped durability by 5 percentage points in ordinary PvE; rated PvP has no durability loss. NPC repair is always available. Player-made maintenance kits can be convenient, but required kits must not let a monopoly make ordinary play impossible.</p>
-<p>Salvage destroys the item and returns at most 25% of its original eligible common materials; rare cores and bound progression components return zero. Salvage returns neither skill XP nor gold. Craft → salvage → craft must lose material and must not yield unbounded profession advancement from starter supplies.</p>
-<p>Vendor purchase/sellback values are explicit. A crafted item's vendor value must be lower than guaranteed NPC-purchased input cost. Market-price arbitrage between players is allowed; infinite vendor loops are not. Build a graph test over conversion recipes and vendor values before enabling a new material-conversion recipe.</p>
-<h2 id="inventory-correctness">Inventory correctness</h2><p><strong>Equipment placement:</strong> Equipped instances move into a personal equipment container and occupy no bag slots. ItemOwnershipRecord owns placement; EquipmentSet assigns slots to those same instances. Equip and unequip move one versioned instance at quantity one and require a slot, expected equipment revision and expected destination-container revision. Ownership, container membership, displaced items and both hand slots of a two-handed weapon update atomically. A full destination bag or invalid displaced-item destination rejects the entire operation. Displaced equipment returns to the incoming item source bag in stable slot order using its freed capacity; reserve space for every displaced instance before committing. There is no implicit mail or bank fallback.</p>
-<p>All item instances use globally unique IDs, item-definition IDs, quantities, owner/container references, binding, durability and version. Stacks merge only when definition, binding, quality and other relevant attributes match. Any ownership transfer locks the affected stack or instance and validates versions.</p>
-<p>When inventory is full, a committed purchased/crafted reward goes to a durable delivery container. It never disappears and never causes the transaction to replay. A delivery claim is itself idempotent. Equip changes, crafting, mail and market operations cannot consume the same item concurrently.</p>
-<h2 id="acceptance-gates">Acceptance gates</h2>
-<p>Validate item budgets, dual-wield totals, adaptive stats, zero-durability behavior, mixed binding, enhancement replacement, recraft conflicts and salvage loops. Compare complete gear sets, not a single chest piece. Verify race differences at level 60 across low, normal and challenge equipment sets and across every role.</p>
-<!-- data-inventory:start -->
-<section class="data-inventory" aria-labelledby="data">
-<h2 id="data">Data</h2>
-<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
-<h3 id="data-enums">Enums</h3>
-<ul>
-<li data-inventory-id="armor-family"><code><a href="data-inventory.html#armor-family">ArmorFamily</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="attribute-type"><code><a href="data-inventory.html#attribute-type">AttributeType</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="enhancement-category"><code><a href="data-inventory.html#enhancement-category">EnhancementCategory</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="equipment-slot"><code><a href="data-inventory.html#equipment-slot">EquipmentSlot</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="inventory-container-kind"><code><a href="data-inventory.html#inventory-container-kind">InventoryContainerKind</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-binding-state"><code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-effect-operation"><code><a href="data-inventory.html#item-effect-operation">ItemEffectOperation</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-grade"><code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-kind"><code><a href="data-inventory.html#item-kind">ItemKind</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-transfer-operation"><code><a href="data-inventory.html#item-transfer-operation">ItemTransferOperation</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="secondary-stat-type"><code><a href="data-inventory.html#secondary-stat-type">SecondaryStatType</a></code> — Existing · Fully Defined</li>
-</ul>
-<h3 id="data-interfaces">Interfaces</h3>
-<ul>
-<li data-inventory-id="attribute-set"><code><a href="data-inventory.html#attribute-set">AttributeSet</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="derived-combat-stats"><code><a href="data-inventory.html#derived-combat-stats">DerivedCombatStats</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="enhancement-instance"><code><a href="data-inventory.html#enhancement-instance">EnhancementInstance</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="equipment-set"><code><a href="data-inventory.html#equipment-set">EquipmentSet</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-container"><code><a href="data-inventory.html#inventory-container">InventoryContainer</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-budget"><code><a href="data-inventory.html#item-budget">ItemBudget</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-instance"><code><a href="data-inventory.html#item-instance">ItemInstance</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-transfer-eligibility"><code><a href="data-inventory.html#item-transfer-eligibility">ItemTransferEligibility</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-schemas">Schemas</h3>
-<ul>
-<li data-inventory-id="cosmetic-collection-record"><code><a href="data-inventory.html#cosmetic-collection-record">CosmeticCollectionRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="delivery-claim-request"><code><a href="data-inventory.html#delivery-claim-request">DeliveryClaimRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="delivery-record"><code><a href="data-inventory.html#delivery-record">DeliveryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="druid-form"><code><a href="data-inventory.html#druid-form">DruidForm</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="enhancement-definition"><code><a href="data-inventory.html#enhancement-definition">EnhancementDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="equipment-definition"><code><a href="data-inventory.html#equipment-definition">EquipmentDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="equipment-proficiency-definition"><code><a href="data-inventory.html#equipment-proficiency-definition">EquipmentProficiencyDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-operation-request"><code><a href="data-inventory.html#inventory-operation-request">InventoryOperationRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-operation-result"><code><a href="data-inventory.html#inventory-operation-result">InventoryOperationResult</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-record"><code><a href="data-inventory.html#inventory-record">InventoryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-budget-configuration"><code><a href="data-inventory.html#item-budget-configuration">ItemBudgetConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-definition"><code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-effect-definition"><code><a href="data-inventory.html#item-effect-definition">ItemEffectDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-lineage-record"><code><a href="data-inventory.html#item-lineage-record">ItemLineageRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-ownership-record"><code><a href="data-inventory.html#item-ownership-record">ItemOwnershipRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-rarity"><code><a href="data-inventory.html#item-rarity">ItemRarity</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-set-definition"><code><a href="data-inventory.html#item-set-definition">ItemSetDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="mail-delivery-record"><code><a href="data-inventory.html#mail-delivery-record">MailDeliveryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="recraft-request"><code><a href="data-inventory.html#recraft-request">RecraftRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="salvage-rule"><code><a href="data-inventory.html#salvage-rule">SalvageRule</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-offer-definition"><code><a href="data-inventory.html#vendor-offer-definition">VendorOfferDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-pricing-configuration"><code><a href="data-inventory.html#vendor-pricing-configuration">VendorPricingConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-transaction-request"><code><a href="data-inventory.html#vendor-transaction-request">VendorTransactionRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-transaction-response"><code><a href="data-inventory.html#vendor-transaction-response">VendorTransactionResponse</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="weapon-category"><code><a href="data-inventory.html#weapon-category">WeaponCategory</a></code> — Proposed · Fully Defined</li>
-</ul>
-</section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#equipment-model">Equipment model</a><a href="#explicit-item-budgets">Explicit item budgets</a><a href="#adaptive-primary-attributes">Adaptive primary attributes</a><a href="#binding-and-acquisition">Binding and acquisition</a><a href="#gems-enchants-and-set-effects">Gems, enchants and set effects</a><a href="#upgrades-and-recrafting">Upgrades and recrafting</a><a href="#durability-salvage-and-demand">Durability, salvage and demand</a><a href="#inventory-correctness">Inventory correctness</a><a href="#acceptance-gates">Acceptance gates</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Equipment &amp; itemization · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a aria-current="page" href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Economy</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div>
+          <h1>Equipment &amp; itemization</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <h2 id="equipment-model">Equipment model</h2>
+            <p>
+              Use eight armor slots—head, shoulders, chest, wrists, hands, waist, legs and feet—plus
+              back, neck, two rings, two trinkets, main hand and off hand. Bags and profession tools
+              are separate utility slots and do not hide extra combat-stat budgets. A two-handed
+              weapon occupies both hand slots.
+            </p>
+            <p>
+              Armor families are Cloth, Leather, Mail and Plate. Mage, Necromancer and Warlock use
+              Cloth; Bard, Rogue, Druid and Monk use Leather; Cleric, Ranger and Shaman use Mail;
+              Warrior and Paladin use Plate. This resolves the ambiguous Cloth/Mail and Leather/Mail
+              entries in v1. A class can equip lower armor for appearance or transitional leveling,
+              but intended itemization uses its declared family. No additional percentage stat
+              penalty is needed initially.
+            </p>
+            <p>
+              Weapon proficiencies are data, not separate grinding skills. Warrior and Paladin use
+              martial weapons; Rogue uses daggers and light blades; Ranger uses bows, crossbows and
+              suitable light/pole weapons; Druid uses staves/polearms and form attacks; Monk uses
+              staves/fist weapons; Bard uses one-handed weapons, ranged instruments and light ranged
+              weapons; spellcasters use staves, wands and focuses. Shields are available to the
+              appropriate Warrior/Paladin builds and Cleric/Shaman spellcasting builds. A shield
+              alone never grants tank-role threat or health bonuses.
+            </p>
+            <h2 id="explicit-item-budgets">Explicit item budgets</h2>
+            <p>
+              The baseline uses grade alone. ItemRarity is retained only as a compatibility alias of
+              ItemGrade; new item records have no independent rarity field or budget multiplier. Any
+              baseline presentation color derives from grade.
+            </p>
+            <p>
+              <code
+                >base_item_budget = (6 + 2 × required_level) × slot_weight × grade_multiplier</code
+              >
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Slot</th>
+                  <th style="text-align:right">Weight</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Chest</td>
+                  <td style="text-align:right">1.00</td>
+                </tr>
+                <tr>
+                  <td>Legs</td>
+                  <td style="text-align:right">0.90</td>
+                </tr>
+                <tr>
+                  <td>Head</td>
+                  <td style="text-align:right">0.75</td>
+                </tr>
+                <tr>
+                  <td>Shoulders, hands, waist, feet</td>
+                  <td style="text-align:right">0.60 each</td>
+                </tr>
+                <tr>
+                  <td>Wrists, back, neck</td>
+                  <td style="text-align:right">0.45 each</td>
+                </tr>
+                <tr>
+                  <td>Each ring</td>
+                  <td style="text-align:right">0.40</td>
+                </tr>
+                <tr>
+                  <td>Each trinket</td>
+                  <td style="text-align:right">0.55</td>
+                </tr>
+                <tr>
+                  <td>Two-handed weapon attribute package</td>
+                  <td style="text-align:right">1.00</td>
+                </tr>
+                <tr>
+                  <td>Main/off-hand attribute packages when dual wielding</td>
+                  <td style="text-align:right">0.50 each</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              The normal allocation is 45% adaptive primary attribute, 35% Stamina and 20% secondary
+              ratings. A recipe may redistribute within limits: primary 30–55%, Stamina 25–50%, and
+              secondary 10–30%. Sum must remain 100%. Round down each line, then place rounding
+              remainder in the selected primary line. Gems, enchantments, proc effects and set
+              bonuses consume their reserved portions of this budget; they are not free additional
+              lines.
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Grade</th>
+                  <th style="text-align:right">Budget multiplier</th>
+                  <th>Intended acquisition</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Standard</td>
+                  <td style="text-align:right">1.00</td>
+                  <td>Vendors, routine rewards, basic crafting</td>
+                </tr>
+                <tr>
+                  <td>Refined</td>
+                  <td style="text-align:right">1.08</td>
+                  <td>Ordinary dungeon rewards and accessible specialist recipes</td>
+                </tr>
+                <tr>
+                  <td>Masterwork</td>
+                  <td style="text-align:right">1.12</td>
+                  <td>Difficult group activities and advanced crafted equipment</td>
+                </tr>
+                <tr>
+                  <td>Challenge</td>
+                  <td style="text-align:right">1.18</td>
+                  <td>
+                    Highest current challenge content, including commissions using earned bound
+                    components
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Rarity color describes acquisition and special behavior; it does not independently
+              multiply the budget a second time. Legendary-style named equipment must remain within
+              the same tier ceiling and pay for unique effects with budget. Do not increase the
+              ceiling every content update automatically.
+            </p>
+            <p>Physical armor is separate from offensive allocation:</p>
+            <p>
+              <code
+                >armor = (20 + 8 × required_level) × armor_slot_weight × family_factor ×
+                grade_multiplier</code
+              >
+            </p>
+            <p>
+              Family factors are Cloth 0.15, Leather 0.30, Mail 0.45 and Plate 0.60. A defensive
+              shield adds a separate 0.40 family factor with weight 1.0, using the same level
+              expression; its weapon damage budget is zero. Ward is an explicit defensive item line
+              purchased from the ordinary secondary/defense allocation, not a free magical
+              equivalent of all plate armor.
+            </p>
+            <p>
+              Weapon DPS baseline is
+              <code>0.35 × reference_power(required_level) × grade_multiplier</code>, where
+              reference power is the ungeared, race-neutral primary-stat formula. Split this total
+              for two one-handed offensive weapons. Faster weapons deliver smaller auto-attacks more
+              often; on-hit procs use a rate budget or internal cooldown so fast weapons do not gain
+              unlimited procs.
+            </p>
+            <h2 id="adaptive-primary-attributes">Adaptive primary attributes</h2>
+            <p>
+              Items may contain <code>adaptive_primary</code>, resolving to the valid
+              specialization's primary attribute when equipped. Store it as adaptive data, not as
+              three simultaneous attributes. A Paladin can move between martial and healing builds
+              without the same chest piece granting Strength and Intellect together. Explicit
+              specialist items may use a fixed attribute, but should be clearly marked before
+              purchase or crafting.
+            </p>
+            <p>
+              Druid form attacks use the equipped weapon's normalized budget even when the rendered
+              form shows claws. Form changes never give a second weapon budget. Bard instruments and
+              caster focuses use the same slot rules as comparable weapons; an instrument is not a
+              seventeenth combat slot.
+            </p>
+            <h2 id="binding-and-acquisition">Binding and acquisition</h2>
+            <p>
+              Standard and Refined crafted items are normally tradable until equipped. Masterwork
+              crafting may also be tradable when all components are tradable. Challenge commissions
+              use a customer-owned bound component and produce a customer-bound result. The crafter
+              never takes personal ownership of the bound component or finished item.
+            </p>
+            <p>
+              Use binding states: unbound, bind-on-equip pending, character-bound and account-bound
+              within permitted faction/ruleset. Appearance unlocks do not unbind an item. Mail,
+              bazaar listing, direct trade, crafting escrow and bank movement must share the same
+              eligibility service.
+            </p>
+            <p>
+              Drops, crafted items and activity rewards should offer different configurations at
+              comparable budgets. Crafting can target desired slots and secondary distributions;
+              drops can offer distinctive effects. Do not reserve every competitive weapon and
+              trinket exclusively for bosses or exclusively for a profession.
+            </p>
+            <h2 id="gems-enchants-and-set-effects">Gems, enchants and set effects</h2>
+            <p>
+              Reserve up to 8% of an eligible item's budget for enhancements. A socket is a
+              distribution channel for that reserved budget; adding a socket removes an equivalent
+              base-stat allocation. Replacing a gem destroys the old gem after confirmation. An
+              enchant replaces the previous enchant in the same category. Removing an enhancement
+              must not leave both the old stats and the refunded budget active.
+            </p>
+            <p>
+              Set effects should change a bounded interaction, not unlock the specialization's
+              essential spender or healing loop. Limit equipped major behavior-changing item effects
+              to two. Talents own primary playstyle identity; equipment adjusts it without replacing
+              the talent tree. Disable or normalize bespoke set/proc effects in rated PvP until
+              individually certified.
+            </p>
+            <h2 id="upgrades-and-recrafting">Upgrades and recrafting</h2>
+            <p>
+              Allow one grade upgrade within the same level band when an explicit recipe exists.
+              Raising an item into a new level band requires substantial new-band materials, a new
+              minimum equip level and a new item version; it is not a free permanent heirloom.
+              Preview exactly what changes, including sockets and binding.
+            </p>
+            <p>
+              Recrafting keeps the item's stable identity and audit history but increments its
+              version. Lock the item during the operation. Preserve valid enchantments only when the
+              recipe declares compatibility; otherwise warn and reject without confirmation. Never
+              duplicate the original item and create a second improved copy.
+            </p>
+            <h2 id="durability-salvage-and-demand">Durability, salvage and demand</h2>
+            <p>
+              Economic admission requires explicit material-to-item identity
+              (<code>MaterialDefinition.item_definition_id</code>),
+              <code>salvage_class</code> (<code>common</code>, <code>rare_core</code> or
+              <code>progression_component</code>), and
+              <code>ItemDefinition.starter_assistance</code>. These fields are optional for legacy
+              catalogs, whose missing values cannot admit economic routes. Bindings must agree
+              across a material and its inventory item; names never establish identity. Only unbound
+              common materials qualify for salvage. Every enabled producer recipe must support the
+              return limit per output item; an unknown original composition keeps salvage disabled.
+              Starter assistance must be character/account bound, have zero sellback and no salvage
+              output, and any crafting output must preserve its nonexportable restriction without a
+              commission to another owner. No price or eligibility is inferred from descriptive
+              text.
+            </p>
+            <p>
+              proportional_missing_durability_v1 quotes repair from explicit NPC purchase value: for
+              positive damage, take the greater of the configured minimum and ceil(purchase_value ×
+              full_repair_fraction × missing_percentage_points / 100). Undamaged items cost zero.
+              All price/coefficient values are required content; a missing value rejects the quote.
+              This formula uses no player-market price oracle and does not supply a finished vendor
+              price table.
+            </p>
+            <p>
+              Equipment durability creates maintenance demand, not routine permanent gear
+              destruction. At zero durability, equipment loses combat benefits but remains owned and
+              repairable. Death reduces equipped durability by 5 percentage points in ordinary PvE;
+              rated PvP has no durability loss. NPC repair is always available. Player-made
+              maintenance kits can be convenient, but required kits must not let a monopoly make
+              ordinary play impossible.
+            </p>
+            <p>
+              Salvage destroys the item and returns at most 25% of its original eligible common
+              materials; rare cores and bound progression components return zero. Salvage returns
+              neither skill XP nor gold. Craft → salvage → craft must lose material and must not
+              yield unbounded profession advancement from starter supplies.
+            </p>
+            <p>
+              Vendor purchase/sellback values are explicit. A crafted item's vendor value must be
+              lower than guaranteed NPC-purchased input cost. Market-price arbitrage between players
+              is allowed; infinite vendor loops are not. Build a graph test over conversion recipes
+              and vendor values before enabling a new material-conversion recipe.
+            </p>
+            <h2 id="inventory-correctness">Inventory correctness</h2>
+            <p>
+              <strong>Equipment placement:</strong> Equipped instances move into a personal
+              equipment container and occupy no bag slots. ItemOwnershipRecord owns placement;
+              EquipmentSet assigns slots to those same instances. Equip and unequip move one
+              versioned instance at quantity one and require a slot, expected equipment revision and
+              expected destination-container revision. Ownership, container membership, displaced
+              items and both hand slots of a two-handed weapon update atomically. A full destination
+              bag or invalid displaced-item destination rejects the entire operation. Displaced
+              equipment returns to the incoming item source bag in stable slot order using its freed
+              capacity; reserve space for every displaced instance before committing. There is no
+              implicit mail or bank fallback.
+            </p>
+            <p>
+              All item instances use globally unique IDs, item-definition IDs, quantities,
+              owner/container references, binding, durability and version. Stacks merge only when
+              definition, binding, quality and other relevant attributes match. Any ownership
+              transfer locks the affected stack or instance and validates versions.
+            </p>
+            <p>
+              When inventory is full, a committed purchased/crafted reward goes to a durable
+              delivery container. It never disappears and never causes the transaction to replay. A
+              delivery claim is itself idempotent. Equip changes, crafting, mail and market
+              operations cannot consume the same item concurrently.
+            </p>
+            <h2 id="acceptance-gates">Acceptance gates</h2>
+            <p>
+              Validate item budgets, dual-wield totals, adaptive stats, zero-durability behavior,
+              mixed binding, enhancement replacement, recraft conflicts and salvage loops. Compare
+              complete gear sets, not a single chest piece. Verify race differences at level 60
+              across low, normal and challenge equipment sets and across every role.
+            </p>
+            <!-- data-inventory:start -->
+            <section class="data-inventory" aria-labelledby="data">
+              <h2 id="data">Data</h2>
+              <p>
+                Follow a type name to its canonical members, properties, constraints and review
+                decisions. Definitions are generated from one shared registry.
+              </p>
+              <h3 id="data-enums">Enums</h3>
+              <ul>
+                <li data-inventory-id="armor-family">
+                  <code><a href="data-inventory.html#armor-family">ArmorFamily</a></code> — Existing
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="attribute-type">
+                  <code><a href="data-inventory.html#attribute-type">AttributeType</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="enhancement-category">
+                  <code
+                    ><a href="data-inventory.html#enhancement-category"
+                      >EnhancementCategory</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-slot">
+                  <code><a href="data-inventory.html#equipment-slot">EquipmentSlot</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-container-kind">
+                  <code
+                    ><a href="data-inventory.html#inventory-container-kind"
+                      >InventoryContainerKind</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-binding-state">
+                  <code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-effect-operation">
+                  <code
+                    ><a href="data-inventory.html#item-effect-operation"
+                      >ItemEffectOperation</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-grade">
+                  <code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="item-kind">
+                  <code><a href="data-inventory.html#item-kind">ItemKind</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="item-transfer-operation">
+                  <code
+                    ><a href="data-inventory.html#item-transfer-operation"
+                      >ItemTransferOperation</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="secondary-stat-type">
+                  <code
+                    ><a href="data-inventory.html#secondary-stat-type">SecondaryStatType</a></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-interfaces">Interfaces</h3>
+              <ul>
+                <li data-inventory-id="attribute-set">
+                  <code><a href="data-inventory.html#attribute-set">AttributeSet</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="derived-combat-stats">
+                  <code
+                    ><a href="data-inventory.html#derived-combat-stats">DerivedCombatStats</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="enhancement-instance">
+                  <code
+                    ><a href="data-inventory.html#enhancement-instance"
+                      >EnhancementInstance</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-set">
+                  <code><a href="data-inventory.html#equipment-set">EquipmentSet</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-container">
+                  <code
+                    ><a href="data-inventory.html#inventory-container">InventoryContainer</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-budget">
+                  <code><a href="data-inventory.html#item-budget">ItemBudget</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="item-instance">
+                  <code><a href="data-inventory.html#item-instance">ItemInstance</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-transfer-eligibility">
+                  <code
+                    ><a href="data-inventory.html#item-transfer-eligibility"
+                      >ItemTransferEligibility</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-schemas">Schemas</h3>
+              <ul>
+                <li data-inventory-id="cosmetic-collection-record">
+                  <code
+                    ><a href="data-inventory.html#cosmetic-collection-record"
+                      >CosmeticCollectionRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="delivery-claim-request">
+                  <code
+                    ><a href="data-inventory.html#delivery-claim-request"
+                      >DeliveryClaimRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="delivery-record">
+                  <code><a href="data-inventory.html#delivery-record">DeliveryRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="druid-form">
+                  <code><a href="data-inventory.html#druid-form">DruidForm</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="enhancement-definition">
+                  <code
+                    ><a href="data-inventory.html#enhancement-definition"
+                      >EnhancementDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-definition">
+                  <code
+                    ><a href="data-inventory.html#equipment-definition"
+                      >EquipmentDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-proficiency-definition">
+                  <code
+                    ><a href="data-inventory.html#equipment-proficiency-definition"
+                      >EquipmentProficiencyDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-operation-request">
+                  <code
+                    ><a href="data-inventory.html#inventory-operation-request"
+                      >InventoryOperationRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-operation-result">
+                  <code
+                    ><a href="data-inventory.html#inventory-operation-result"
+                      >InventoryOperationResult</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-record">
+                  <code><a href="data-inventory.html#inventory-record">InventoryRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-budget-configuration">
+                  <code
+                    ><a href="data-inventory.html#item-budget-configuration"
+                      >ItemBudgetConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-definition">
+                  <code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-effect-definition">
+                  <code
+                    ><a href="data-inventory.html#item-effect-definition"
+                      >ItemEffectDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-lineage-record">
+                  <code
+                    ><a href="data-inventory.html#item-lineage-record">ItemLineageRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-ownership-record">
+                  <code
+                    ><a href="data-inventory.html#item-ownership-record"
+                      >ItemOwnershipRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-rarity">
+                  <code><a href="data-inventory.html#item-rarity">ItemRarity</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="item-set-definition">
+                  <code
+                    ><a href="data-inventory.html#item-set-definition">ItemSetDefinition</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="mail-delivery-record">
+                  <code
+                    ><a href="data-inventory.html#mail-delivery-record">MailDeliveryRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="recraft-request">
+                  <code><a href="data-inventory.html#recraft-request">RecraftRequest</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="salvage-rule">
+                  <code><a href="data-inventory.html#salvage-rule">SalvageRule</a></code> — Proposed
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-offer-definition">
+                  <code
+                    ><a href="data-inventory.html#vendor-offer-definition"
+                      >VendorOfferDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-pricing-configuration">
+                  <code
+                    ><a href="data-inventory.html#vendor-pricing-configuration"
+                      >VendorPricingConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-transaction-request">
+                  <code
+                    ><a href="data-inventory.html#vendor-transaction-request"
+                      >VendorTransactionRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-transaction-response">
+                  <code
+                    ><a href="data-inventory.html#vendor-transaction-response"
+                      >VendorTransactionResponse</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="weapon-category">
+                  <code><a href="data-inventory.html#weapon-category">WeaponCategory</a></code> —
+                  Proposed · Fully Defined
+                </li>
+              </ul>
+            </section>
+            <!-- data-inventory:end -->
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#equipment-model">Equipment model</a
+          ><a href="#explicit-item-budgets">Explicit item budgets</a
+          ><a href="#adaptive-primary-attributes">Adaptive primary attributes</a
+          ><a href="#binding-and-acquisition">Binding and acquisition</a
+          ><a href="#gems-enchants-and-set-effects">Gems, enchants and set effects</a
+          ><a href="#upgrades-and-recrafting">Upgrades and recrafting</a
+          ><a href="#durability-salvage-and-demand">Durability, salvage and demand</a
+          ><a href="#inventory-correctness">Inventory correctness</a
+          ><a href="#acceptance-gates">Acceptance gates</a>
+          <a data-inventory-toc href="#data">Data</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

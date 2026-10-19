@@ -12,6 +12,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from data_model import model_errors, schema_bundle, review_report, schema_children
+from html_format import format_html_documents
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PAGE = 'guide/data-inventory.html'
@@ -21,7 +22,7 @@ ROADMAP_EXCLUSION = ('Development planning, dependencies, acceptance criteria an
 CATEGORIES = {'Enum': 'Enums', 'Interface': 'Interfaces', 'Schema': 'Schemas'}
 DATA_START = '<!-- data-inventory:start -->'
 DATA_END = '<!-- data-inventory:end -->'
-DATA_BLOCK = re.compile(re.escape(DATA_START) + r'.*?' + re.escape(DATA_END), re.S)
+DATA_BLOCK = re.compile(r'[ \t]*' + re.escape(DATA_START) + r'.*?' + re.escape(DATA_END) + r'[ \t]*\n?', re.S)
 ENTRY_KEYS = {'id', 'name', 'category', 'status', 'definition_status', 'canonical_page',
               'feature_pages', 'evidence', 'review_status', 'review_issues', 'definition',
               'responsibility', 'authority', 'modeling_notes', 'references', 'definition_extent',
@@ -55,6 +56,7 @@ class Document(HTMLParser):
 
     def handle_endtag(self, tag):
         if self.heading and tag == self.heading[0]:
+            self.heading[2] = ' '.join(self.heading[2].split())
             self.headings.append(tuple(self.heading))
             self.heading = None
         if tag == 'main':
@@ -281,19 +283,20 @@ def data_section(page, entries):
 
 
 def navigation(source, page):
-    source = re.sub(r'<a data-inventory-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
+    # Remove indentation with each owned link so rebuilds do not accumulate blank lines.
+    source = re.sub(r'\s*<a\s+data-inventory-nav\b[^>]*>.*?</a\s*>', '', source, flags=re.S)
     current = ' aria-current="page"' if page == INVENTORY_PAGE else ''
     address = posixpath.relpath(INVENTORY_PAGE, posixpath.dirname(page) or '.')
     link = f'<a data-inventory-nav href="{address}"{current}>Data Inventory</a>'
     if source.count('<p>Catalogs</p>') != 1:
         raise ValueError(f'{page}: expected one Catalogs navigation group')
     source = source.replace('<p>Catalogs</p>', '<p>Catalogs</p>' + link)
-    source = re.sub(r'<a data-roadmap-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
+    source = re.sub(r'\s*<a\s+data-roadmap-nav\b[^>]*>.*?</a\s*>', '', source, flags=re.S)
     current = ' aria-current="page"' if page == ROADMAP_PAGE else (
         ' aria-current="location"' if page.startswith('guide/roadmap-') else '')
     address = posixpath.relpath(ROADMAP_PAGE, posixpath.dirname(page) or '.')
     link = f'<a data-roadmap-nav href="{address}"{current}>Development Roadmap</a>'
-    source, count = re.subn(r'(<a class="nav-home\b[^>]*>.*?</a>)', r'\1' + link, source, flags=re.S)
+    source, count = re.subn(r'(<a\s+class="nav-home\b[^>]*>.*?</a\s*>)', r'\1' + link, source, flags=re.S)
     if count != 1:
         raise ValueError(f'{page}: expected one Overview navigation link')
     return source
@@ -479,11 +482,11 @@ def inventory_body(registry):
 
 def inventory_page(registry, template):
     prefix = template.split('<main', 1)[0]
-    prefix = re.sub(r'<title>.*?</title>', '<title>Data Inventory · MMORPG Reference v2</title>', prefix)
-    prefix = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Canonical data definitions, reviewed decisions and future Briarwake implementation work.">', prefix)
+    prefix = re.sub(r'<title>.*?</title>', '<title>Data Inventory · MMORPG Reference v2</title>', prefix, flags=re.S)
+    prefix = re.sub(r'<meta\b[^>]*name="description"[^>]*>', '<meta name="description" content="Canonical data definitions, reviewed decisions and future Briarwake implementation work.">', prefix)
     prefix = re.sub(r' aria-current=(?:"page"|page)', '', prefix)
     prefix = prefix.replace('<span class="section-label">Engineering</span>', '<span class="section-label">Catalogs</span>')
-    footer = re.search(r'<footer class="page-footer">.*?</footer>', template, re.S).group()
+    footer = re.search(r'<footer\s+class="page-footer">.*?</footer>', template, re.S).group()
     toc = '<aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p>' + ''.join(f'<a href="#{anchor}">{title}</a>' for anchor, title in [('enums','Enums'), ('interfaces','Interfaces'), ('schemas','Schemas'), ('coverage','Coverage'), ('conventions','Conventions'), ('shared-definitions','Shared definitions'), ('needs-review','Decisions and future work')]) + '</aside>'
     main = '<main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Catalogs</div><h1>Data Inventory</h1><p class="page-description">Enums, interfaces and schemas; canonical definitions and review evidence.</p><div class="article-body">' + inventory_body(registry) + '</div>' + footer + '</main>'
     return navigation(prefix + main + toc + '</div></div></body></html>\n', INVENTORY_PAGE)
@@ -496,12 +499,13 @@ def expected_outputs(registry, root=ROOT):
         source = strip_data((root / page).read_text(encoding='utf-8'))
         entries = [e for e in registry['entries'] if page in e['feature_pages']]
         if entries:
-            if source.count('</div><footer class="page-footer">') != 1:
+            source, count = re.subn(r'</div>\s*(<footer\s+class="page-footer">)',
+                                    lambda match: data_section(page, entries) + '</div>' + match[1], source)
+            if count != 1:
                 raise ValueError(f'{page}: expected one article/footer boundary')
-            source = source.replace('</div><footer class="page-footer">', data_section(page, entries) + '</div><footer class="page-footer">')
-        source = re.sub(r'<a data-inventory-toc\b[^>]*>.*?</a>', '', source, flags=re.S)
+        source = re.sub(r'\s*<a\s+data-inventory-toc\b[^>]*>.*?</a\s*>', '', source, flags=re.S)
         if entries:
-            source, count = re.subn(r'(<aside class="page-toc".*?)(</aside>)', r'\1<a data-inventory-toc href="#data">Data</a>\2', source, flags=re.S)
+            source, count = re.subn(r'(<aside\s+class="page-toc".*?)(</aside>)', r'\1<a data-inventory-toc href="#data">Data</a>\2', source, flags=re.S)
             if count != 1:
                 raise ValueError(f'{page}: expected one page contents navigation')
         outputs[page] = navigation(source, page)
@@ -527,7 +531,7 @@ def expected_outputs(registry, root=ROOT):
     outputs['data/manifest.json'] = json.dumps(manifest, indent=2) + '\n'
     outputs['sources/data-model.schema.json'] = json.dumps(schema_bundle(registry), indent=2, ensure_ascii=False) + '\n'
     outputs['validation/data-model-review.txt'] = review_report(registry)
-    return outputs
+    return format_html_documents(outputs)
 
 
 def stale_outputs(outputs, root=ROOT):

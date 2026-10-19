@@ -59,7 +59,7 @@ class RoadmapTests(unittest.TestCase):
                 self.assertEqual(address(page, phase_page(phase), identifier), parsed.link_targets[identifier])
                 self.assertEqual([identifier], Anchors(outputs[page]).epic_ids)
                 for criterion in self.by_id[identifier]['acceptance_criteria']:
-                    self.assertIn(escape(criterion), outputs[page])
+                    self.assertIn(escape(criterion), ' '.join(outputs[page].split()))
 
     def test_acceptance_criteria_have_direct_links_for_future_tickets(self):
         outputs = generated_pages(self.data)
@@ -70,7 +70,7 @@ class RoadmapTests(unittest.TestCase):
                 anchor = f'{epic["id"]}-AC-{number}'
                 self.assertIn(anchor, parsed.ids)
                 self.assertIn('#' + anchor, parsed.references)
-                self.assertIn(escape(criterion), source)
+                self.assertIn(escape(criterion), ' '.join(source.split()))
 
     def test_appended_epic_criteria_preserve_anchors_and_require_completion_evidence(self):
         epic = self.by_id['BW-097']
@@ -82,7 +82,7 @@ class RoadmapTests(unittest.TestCase):
         anchors = [anchor for anchor in Anchors(source).ids if anchor.startswith(epic['id'] + '-AC-')]
         self.assertEqual([f'{epic["id"]}-AC-{n}' for n in range(1, len(original) + 2)], anchors)
         for criterion in original:
-            self.assertIn(escape(criterion), source)
+            self.assertIn(escape(criterion), ' '.join(source.split()))
         self.complete(epic['id'])
         epic['verified_evidence'][0]['criteria'].pop()
         self.assertTrue(any('passing evidence for every AC' in error for error in self.errors()))
