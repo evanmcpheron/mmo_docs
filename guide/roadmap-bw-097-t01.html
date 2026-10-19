@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-097." />
+    <title>
+      BW-097-T01 · Build the pinned graphical probe and renderer capability matrix · Briarwake
+      Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Godot & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-097.html#BW-097">BW-097</a><span>/</span>BW-097-T01
+          </div>
+          <h1>BW-097-T01 · Build the pinned graphical probe and renderer capability matrix</h1>
+          <p class="page-description">Implementation ticket for BW-097.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-097-T01">
+              <p>
+                <span class="badge">Not Started</span> · Parent epic:
+                <a href="roadmap-bw-097.html#BW-097"
+                  >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-097.html#BW-097-AC-1">BW-097-AC-1</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Create the standalone res://tests/rendering/rendering_probe.tscn, its explicitly
+                  wired scene script and minimal checked-in geometry/material fixtures under
+                  fixtures/rendering/. No Camera3D, SubViewport or rendering test scene currently
+                  exists; scenes/client/client_shell.tscn remains the baseline shell and is not the
+                  prototype owner.
+                </li>
+                <li>
+                  Add tools/run_rendering_probe.py --case capabilities, resolving the verified
+                  native engine through tools/verify_toolchain.py and tools/toolchain.lock.json.
+                  Start with the existing stock Godot 4.7.2-stable macOS ARM64 Forward Plus path;
+                  record the actual graphics backend/device rather than inferring it from the
+                  Windows D3D12 preference. Do not change the engine pin or production renderer
+                  merely to run a candidate.
+                </li>
+                <li>
+                  Provide camera, opaque normal/depth diagnostic geometry, screen-copy swatches,
+                  source-versus-decoded buffer views, case selector, capture and Reset controls.
+                  Demonstrate orthographic depth reconstruction, normal space, texel sampling and
+                  screen-copy timing on each candidate; store a pass/resource availability matrix
+                  with exact source, engine/template/export identities, backend, OS, hardware and
+                  settings. A source-only capability result is provisional until T10 packages the
+                  same scene.
+                </li>
+                <li>
+                  Reuse existing process isolation, output ownership and provenance helpers only
+                  where their meaning matches. Reuse FixtureRunEvidence, ValidationFinding and
+                  TestCheck for actual automated probe checks through the existing canonical
+                  extractor/validator and local $ref closure; keep graphical captures and human
+                  review in an attributable tool-local envelope. No canonical renderer schema
+                  applies to probe settings, captures or capability rows. Mark authored expectations
+                  unexecuted; headless diagnostics cannot certify visible output.
+                </li>
+                <li>
+                  Include unknown-case, invalid-settings, missing-report and
+                  deliberate-check-failure controls in the launcher and meaningful regressions in
+                  the existing tools/test_*.py harness. Document installation-free launch, desktop
+                  requirements, artifact ownership, controls and reset in tools/README.md.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  An engine fork, toolchain upgrade, production client routing, platform
+                  certification beyond tested hardware, gameplay/network/persistence systems, or
+                  adapting the content-admission fixture runner into a generic graphics framework.
+                </li>
+                <li>
+                  Assuming depth/normal availability or historical Unity/Godot shader behavior
+                  without a capture from the pinned path.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-001.html#BW-001">BW-001</a>,
+                <a href="roadmap-bw-003.html#BW-003">BW-003</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-097-T01-AC-1">
+                  <a href="#BW-097-T01-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    A fresh source checkout launches the standalone graphical case with the pinned
+                    executable and records actual engine/backend/device/settings identity.
+                    Unsupported candidates have an explicit diagnostic and no successful capability
+                    claim.
+                  </p>
+                </li>
+                <li id="BW-097-T01-AC-2">
+                  <a href="#BW-097-T01-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    Diagnostic captures demonstrate the sampled depth, normal and screen-copy
+                    contents and their timing for known surfaces; projection/normal-space mismatches
+                    and unavailable resources are recorded as actionable findings. The capability
+                    matrix distinguishes demonstrated, unsupported and untested paths.
+                  </p>
+                </li>
+                <li id="BW-097-T01-AC-3">
+                  <a href="#BW-097-T01-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Actual automated checks preserve FixtureRunEvidence required fields, UTC
+                    completion, exact content/rules labels, status/nullability and empty findings
+                    for passed records. Forged authored pass claims, invalid records and missing
+                    reports are rejected; human visual approval is recorded separately.
+                  </p>
+                </li>
+                <li id="BW-097-T01-AC-4">
+                  <a href="#BW-097-T01-AC-4" class="roadmap-criterion-link">AC 4</a>
+                  <p>
+                    Unknown-case/invalid-settings/missing-report/deliberate-check-failure controls
+                    fail visibly, retain attributable diagnostics and cannot reuse stale output as
+                    success. A fresh clean launch succeeds independently.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, scenes and fixtures
+                below are deliverables of this ticket and its prerequisites; these are unexecuted
+                test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.
+python3 tools/verify_toolchain.py
+python3 tools/run_rendering_probe.py --case capabilities</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use a desktop macOS ARM64 session and the installed engine/templates pinned in
+                  tools/toolchain.lock.json; keep sibling mmo_docs available for canonical
+                  extraction. The prototype requires working graphics. Other platforms remain
+                  untested until explicitly exercised.
+                </li>
+                <li>
+                  This ticket supplies all probe geometry, shaders, swatches, controls and launcher
+                  inputs. Run the existing Python tool regressions after implementing the launcher.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Run the launch block; inspect the window identity panel and capture the
+                  raw/decoded depth, normal and screen-copy diagnostics. Switch between known
+                  planes, slopes and color swatches, then reset.
+                </li>
+                <li>
+                  Use the documented launcher negative controls for unknown case, invalid settings,
+                  missing report and deliberate check failure in fresh disposable runs. Rerun
+                  capabilities cleanly and inspect logs, canonical evidence and the capability
+                  matrix.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  The visible diagnostic surfaces agree with the known fixture; each buffer/pass
+                  claim names the actual tested path. Untested or unsupported paths and
+                  startup/import failures remain explicit.
+                </li>
+                <li>
+                  Negative controls return nonzero with the correct failed/not-executed distinction;
+                  clean automated records validate canonically. No screenshot alone is labeled an
+                  automated visual pass.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Use the probe Reset control to restore the checked-in case settings, camera, actor
+                  path and effect toggles; quit the graphical process normally. No persistent
+                  gameplay state is created.
+                </li>
+                <li>
+                  Keep prior captures, failed results and reports intact. Repeat into a fresh
+                  launcher-owned artifacts directory; restore only deliberately modified disposable
+                  inputs, leaving source assets, canonical registries and existing user files
+                  intact.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Retain source/settings hashes,
+                toolchain/backend/hardware manifest, capability/pass matrix, annotated diagnostic
+                captures, canonical automated evidence, failure-control reports and launcher
+                regression results.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and exact criteria</a>;
+                <a href="../guide/decisions.html#art-direction">Selected art direction</a>;
+                <a href="../guide/interface.html#rendering-and-camera"
+                  >Rendering and camera boundaries</a
+                >;
+                <a href="../guide/testing.html#rendering-verification">Rendering verification</a>;
+                <a href="../guide/data-inventory.html#shared-FixtureRunEvidence"
+                  >FixtureRunEvidence</a
+                >;
+                <a href="../guide/data-inventory.html#shared-ValidationFinding">ValidationFinding</a
+                >; <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>;
+                <a href="../guide/sources.html#s10">Godot rendering research</a>;
+                <a href="../guide/sources.html#s11">Screen-reading guidance</a>
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-097-t02.html#BW-097-T02">Next: BW-097-T02</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

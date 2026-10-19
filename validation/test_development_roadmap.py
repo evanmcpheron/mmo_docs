@@ -77,6 +77,9 @@ class RoadmapTests(unittest.TestCase):
         original = list(epic['acceptance_criteria'])
         epic['acceptance_criteria'].append('An additional observable requirement has executed evidence.')
         self.assertGreater(len(epic['acceptance_criteria']), 6)
+        self.assertIn('BW-097: tickets must cover every epic acceptance criterion', self.errors())
+        ticket = next(t for t in self.data['tickets'] if t['parent_epic'] == epic['id'])
+        ticket['epic_criteria'].append(f'{epic["id"]}-AC-{len(epic["acceptance_criteria"])}')
         self.assertEqual([], self.errors())
         source = generated_pages(self.data)[epic_page(self.data, epic['id'])]
         anchors = [anchor for anchor in Anchors(source).ids if anchor.startswith(epic['id'] + '-AC-')]
@@ -97,6 +100,14 @@ class RoadmapTests(unittest.TestCase):
                 self.assertTrue(any('acceptance criteria' in error for error in self.errors()))
         epic['acceptance_criteria'] = ['One', 'Two', '']
         self.assertTrue(any('AC: expected nonempty text' in error for error in self.errors()))
+
+    def test_malformed_parent_criteria_preserve_independent_ticket_errors(self):
+        self.by_id['BW-097']['acceptance_criteria'] = None
+        ticket = next(t for t in self.data['tickets'] if t['parent_epic'] == 'BW-097')
+        ticket['dependencies'] = ['BW-999999']
+        errors = self.errors()
+        self.assertIn('BW-097: expected at least 3 acceptance criteria', errors)
+        self.assertIn(f'{ticket["id"]}: undefined dependency BW-999999', errors)
 
     def test_dependencies_and_dependents_link_in_both_directions(self):
         outputs = generated_pages(self.data)

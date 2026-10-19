@@ -7478,6 +7478,800 @@
           "summary": "Two independent all runs each verify eight fresh isolated projects and six deterministic comparisons. Assertion/missing-report/import/startup controls fail distinctly; clean recovery and output preservation pass. All seven admission suites, 87 Python regressions, native/exported smoke, client exclusion inspection and 20 test-control launch rejections pass. Parent review closes all four BW-003 criteria within the accepted local probe/payload scope."
         }
       ]
+    },
+    {
+      "id": "BW-097-T01",
+      "parent_epic": "BW-097",
+      "title": "Build the pinned graphical probe and renderer capability matrix",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-1"
+      ],
+      "dependencies": [
+        "BW-001",
+        "BW-003"
+      ],
+      "scope": [
+        "Create the standalone res://tests/rendering/rendering_probe.tscn, its explicitly wired scene script and minimal checked-in geometry/material fixtures under fixtures/rendering/. No Camera3D, SubViewport or rendering test scene currently exists; scenes/client/client_shell.tscn remains the baseline shell and is not the prototype owner.",
+        "Add tools/run_rendering_probe.py --case capabilities, resolving the verified native engine through tools/verify_toolchain.py and tools/toolchain.lock.json. Start with the existing stock Godot 4.7.2-stable macOS ARM64 Forward Plus path; record the actual graphics backend/device rather than inferring it from the Windows D3D12 preference. Do not change the engine pin or production renderer merely to run a candidate.",
+        "Provide camera, opaque normal/depth diagnostic geometry, screen-copy swatches, source-versus-decoded buffer views, case selector, capture and Reset controls. Demonstrate orthographic depth reconstruction, normal space, texel sampling and screen-copy timing on each candidate; store a pass/resource availability matrix with exact source, engine/template/export identities, backend, OS, hardware and settings. A source-only capability result is provisional until T10 packages the same scene.",
+        "Reuse existing process isolation, output ownership and provenance helpers only where their meaning matches. Reuse FixtureRunEvidence, ValidationFinding and TestCheck for actual automated probe checks through the existing canonical extractor/validator and local $ref closure; keep graphical captures and human review in an attributable tool-local envelope. No canonical renderer schema applies to probe settings, captures or capability rows. Mark authored expectations unexecuted; headless diagnostics cannot certify visible output.",
+        "Include unknown-case, invalid-settings, missing-report and deliberate-check-failure controls in the launcher and meaningful regressions in the existing tools/test_*.py harness. Document installation-free launch, desktop requirements, artifact ownership, controls and reset in tools/README.md."
+      ],
+      "out_of_scope": [
+        "An engine fork, toolchain upgrade, production client routing, platform certification beyond tested hardware, gameplay/network/persistence systems, or adapting the content-admission fixture runner into a generic graphics framework.",
+        "Assuming depth/normal availability or historical Unity/Godot shader behavior without a capture from the pinned path."
+      ],
+      "acceptance_criteria": [
+        "A fresh source checkout launches the standalone graphical case with the pinned executable and records actual engine/backend/device/settings identity. Unsupported candidates have an explicit diagnostic and no successful capability claim.",
+        "Diagnostic captures demonstrate the sampled depth, normal and screen-copy contents and their timing for known surfaces; projection/normal-space mismatches and unavailable resources are recorded as actionable findings. The capability matrix distinguishes demonstrated, unsupported and untested paths.",
+        "Actual automated checks preserve FixtureRunEvidence required fields, UTC completion, exact content/rules labels, status/nullability and empty findings for passed records. Forged authored pass claims, invalid records and missing reports are rejected; human visual approval is recorded separately.",
+        "Unknown-case/invalid-settings/missing-report/deliberate-check-failure controls fail visibly, retain attributable diagnostics and cannot reuse stale output as success. A fresh clean launch succeeds independently."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case capabilities",
+        "setup": [
+          "Use a desktop macOS ARM64 session and the installed engine/templates pinned in tools/toolchain.lock.json; keep sibling mmo_docs available for canonical extraction. The prototype requires working graphics. Other platforms remain untested until explicitly exercised.",
+          "This ticket supplies all probe geometry, shaders, swatches, controls and launcher inputs. Run the existing Python tool regressions after implementing the launcher."
+        ],
+        "actions": [
+          "Run the launch block; inspect the window identity panel and capture the raw/decoded depth, normal and screen-copy diagnostics. Switch between known planes, slopes and color swatches, then reset.",
+          "Use the documented launcher negative controls for unknown case, invalid settings, missing report and deliberate check failure in fresh disposable runs. Rerun capabilities cleanly and inspect logs, canonical evidence and the capability matrix."
+        ],
+        "expected_results": [
+          "The visible diagnostic surfaces agree with the known fixture; each buffer/pass claim names the actual tested path. Untested or unsupported paths and startup/import failures remain explicit.",
+          "Negative controls return nonzero with the correct failed/not-executed distinction; clean automated records validate canonically. No screenshot alone is labeled an automated visual pass."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain source/settings hashes, toolchain/backend/hardware manifest, capability/pass matrix, annotated diagnostic captures, canonical automated evidence, failure-control reports and launcher regression results.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        },
+        {
+          "label": "ValidationFinding",
+          "href": "guide/data-inventory.html#shared-ValidationFinding"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
+        },
+        {
+          "label": "Godot rendering research",
+          "href": "guide/sources.html#s10"
+        },
+        {
+          "label": "Screen-reading guidance",
+          "href": "guide/sources.html#s11"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T02",
+      "parent_epic": "BW-097",
+      "title": "Establish the orthographic world viewport and readable UI scaling",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-2"
+      ],
+      "dependencies": [
+        "BW-097-T01"
+      ],
+      "scope": [
+        "Extend the existing probe with --case viewport: an angled orthographic Camera3D, a fixed low-resolution world SubViewport, nearest presentation and a separate independently scalable HUD/pointer layer. Declare internal resolution, orthographic size/angle, world pixel scale, permitted zooms, integer/fractional output policy, aspect/letterbox behavior and minimum-window behavior in one versioned probe settings owner.",
+        "Supply a world pixel grid, numbered terrain squares, character-sized marker, HUD text/control samples, aspect/zoom controls, window presets and an output-content-rectangle overlay. Include explicit invalid/minimum-size cases instead of silently selecting a different pixel scale.",
+        "Preserve the continuous planar/floor coordinate boundary described by WorldPoint: finite Vector2 foot anchors in tile-width units plus zone/instance/floor scope. Use local fixture anchors and visual transforms only; no new runtime WorldPoint class, message fields or gameplay movement is required. Probe display settings have no canonical domain schema."
+      ],
+      "out_of_scope": [
+        "Production HUD, ability targeting/picking, server floor selection, character creation, a reusable settings subsystem or renderer defaults outside the isolated probe."
+      ],
+      "acceptance_criteria": [
+        "Captures and settings identify the exact resolution, orthographic framing, scale, filter, zoom and minimum/aspect policies. Known world pixels retain the declared dimensions and nearest appearance on every supported window preset.",
+        "Resize, odd dimensions, wide/tall aspect ratios, minimum-size transitions and actual high-DPI presentation preserve the declared world framing/content rectangle and readable separately scaled HUD/pointer. An unavailable display case remains unverified.",
+        "Window/zoom changes never alter fixture foot anchors or floor identity. Invalid resolution/scale/zoom settings are rejected visibly and cannot produce a passing viewport result."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case viewport",
+        "setup": [
+          "Use T01 graphics hardware and fixtures. This ticket supplies the pixel grid, HUD/pointer samples, presets, zoom controls and declared minimum-window policy.",
+          "Have a high-DPI display available; record logical and physical dimensions plus OS scaling. Test every declared supported preset and zoom, with a real resize in addition to preset selection."
+        ],
+        "actions": [
+          "Run viewport, capture native internal pixels and presented output, and inspect the grid at each permitted zoom. Resize through normal, minimum, odd-size, wide and tall cases.",
+          "Repeat at available high-DPI settings; compare HUD text/pointer with the world grid and content-rectangle overlay. Use disposable invalid settings and check the diagnostic. Compare fixture anchors before and after."
+        ],
+        "expected_results": [
+          "Recorded dimensions, nearest scaling, framing and letterbox/minimum behavior match the declared policy. UI remains readable independently of world resolution.",
+          "Invalid settings fail visibly; anchor coordinates/scopes remain unchanged. Missing physical display coverage is recorded as not run."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain versioned viewport settings, logical/physical dimension matrix, internal and presented captures, resize/high-DPI review, rejected-settings output and unchanged anchor comparisons.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "WorldPoint",
+          "href": "guide/data-inventory.html#shared-WorldPoint"
+        },
+        {
+          "label": "Camera reference",
+          "href": "guide/sources.html#s12"
+        },
+        {
+          "label": "Resolution reference",
+          "href": "guide/sources.html#s13"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T03",
+      "parent_epic": "BW-097",
+      "title": "Approve the concept-based gameplay-scale visual comparison baseline",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-7"
+      ],
+      "dependencies": [
+        "BW-097-T02"
+      ],
+      "scope": [
+        "Add --case reference to the same probe with a small original representative character, simpler terrain/prop shapes, a contact/depth corner and warm/cool lighting samples. Include enough character detail and environmental simplification to evaluate the principal reference; generic unadorned cubes alone cannot establish style acceptance. Record fixture source/license provenance without starting production asset volume.",
+        "Use DOCS_ROOT/assets/graphics_concept.png as the principal appearance reference and record its hash and annotated crops. Compare character-to-prop detail, relative proportions, palette/value separation, depth/contact cues and lighting at the declared gameplay scale. Link the selected Holland and Roystan material and annotated t3ssel8r clip timestamps; do not infer capability from any reference.",
+        "Create a versioned review sheet with observable still/motion acceptance bounds, reviewed comparison regions, test settings, reviewer/date, approved deviations and blocking findings. Establish visual and provisional CPU/GPU/memory budgets with the user before accepting downstream comparisons; unresolved acceptance choices are explicit review gates, never fabricated numeric requirements. Subsequent tickets fill their relevant motion/effect results against this baseline.",
+        "If heading presets are exposed, reuse SpriteDirection exactly as eight case-sensitive strings north, north_east, east, south_east, south, south_west, west and north_west; exercise them as preview presets while retaining continuous actor heading. No complete CharacterPreviewState/appearance catalog or new art gameplay schema is needed."
+      ],
+      "out_of_scope": [
+        "Pixel-perfect reproduction, production character/equipment/environment pipelines (BW-098), final environment art (BW-099), broad concept recreation or automatic visual approval."
+      ],
+      "acceptance_criteria": [
+        "Annotated side-by-side captures use the concept as principal appearance evidence at the declared gameplay scale and explicitly compare character detail against simpler props, palette, depth and lighting. Supplementary references identify the adopted observation and clip timestamp.",
+        "A real review records observable acceptance bounds, prototype measurement budgets, reviewer/date and permitted deviations for later still/motion tests. Any missing approval or blocking finding prevents this ticket and the epic from being accepted.",
+        "All fixture assets have source/provenance and stable probe references. Preview presets, if used, retain exact SpriteDirection values; invalid tokens/ordinal substitutes are rejected and actor heading is not restricted to eight directions."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case reference",
+        "setup": [
+          "Use the T02 viewport settings and this ticket’s original character/prop/lighting comparison fixtures. Keep DOCS_ROOT/assets/graphics_concept.png available read-only for the comparison sheet.",
+          "Arrange the visual review with the user; approval must identify actual bounds and deviations. Still-reference approval does not certify later motion or engine effects."
+        ],
+        "actions": [
+          "Run reference and capture its character, prop, palette, contact and lighting views at internal and output resolution. Annotate the concept crops and supplementary references next to those captures.",
+          "Review the observations, still/motion bounds and provisional performance budgets with the user; retain their decisions and unresolved findings. If heading presets are present, cycle all eight and try an invalid token in a disposable fixture."
+        ],
+        "expected_results": [
+          "Every appearance claim is tied to a comparison region, declared settings and review decision. The concept is not treated as engine or pixel-perfect evidence.",
+          "Unresolved blocking feedback or absent approval remains visible and prevents acceptance. Presets preserve their canonical encodings and continuous heading remains available."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain the hashed principal reference, original fixture provenance, annotated gameplay-scale comparisons, supplementary timestamps and dated approved review sheet with explicit bounds, budgets, deviations and unresolved findings.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Principal graphics concept",
+          "href": "assets/graphics_concept.png"
+        },
+        {
+          "label": "SpriteDirection",
+          "href": "guide/data-inventory.html#sprite-direction"
+        },
+        {
+          "label": "Holland reference",
+          "href": "guide/sources.html#s9"
+        },
+        {
+          "label": "Roystan adaptation boundary",
+          "href": "guide/sources.html#s15"
+        },
+        {
+          "label": "t3ssel8r research",
+          "href": "guide/sources.html#s16"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T04",
+      "parent_epic": "BW-097",
+      "title": "Verify pixel-stable camera tracking without snapping simulation",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-3"
+      ],
+      "dependencies": [
+        "BW-097-T03"
+      ],
+      "scope": [
+        "Add --case camera to the same viewport/camera owner, with visual camera-grid alignment plus residual screen correction or a measured equivalent. Keep unrounded fixture foot-anchor motion separate from presentation transforms; do not modify physics, collision, aim, WorldPoint scope or simulation state.",
+        "Supply repeatable stationary, slow axis-aligned, diagonal, pixel-boundary-crossing and moving-actor paths with restart, pause, single-frame stepping, unsnapped comparison and capture controls. Log source anchor samples, visual camera transform, correction and frame/time indices so a reviewer can attribute shimmer/jitter rather than inspecting a single still.",
+        "Review continuous frame sequences against T03 bounds at every approved zoom/window preset. Include actor-only motion, stationary scenery, tracking reversals and resize transitions; apply the same screen correction consistently to the world image. Pointer-to-world gameplay picking remains a later feature, with the mapping boundary documented for reuse."
+      ],
+      "out_of_scope": [
+        "Authoritative movement, network prediction/reconciliation, production camera control or ground-cast picking. No duplicate WorldPoint or eight-direction movement implementation."
+      ],
+      "acceptance_criteria": [
+        "Repeatable still and motion sequences show the chosen alignment/correction method preserves tracking continuity and accepted pixel stability for stationary, slow and diagonal cases at the declared settings.",
+        "Recorded finite continuous WorldPoint-compatible fixture anchors are identical with visual correction enabled/disabled; correction neither quantizes actor simulation nor changes floor/zone/instance identity.",
+        "Frame stepping and time-indexed diagnostics reproduce boundary crossings and reversals. Crawl, shimmer, jitter or resize discontinuities beyond T03 bounds remain blocking findings with retained failing sequences."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case camera",
+        "setup": [
+          "Use T03 approved comparison fixtures, viewport settings and still/motion bounds. This ticket supplies the deterministic paths, frame stepping, comparison and capture controls."
+        ],
+        "actions": [
+          "Run camera, record each path with correction off and on, and step through pixel crossings and tracking reversals. Repeat actor-only motion and a stationary camera.",
+          "Repeat at approved zooms/window presets and resize while tracking. Compare source anchor/time logs and the approved visual bounds; retain failing clips rather than only selected good frames."
+        ],
+        "expected_results": [
+          "Frame sequences satisfy the approved continuity/stability bounds and name their exact path/settings/frame range.",
+          "Underlying anchors/scopes do not change with camera correction; any visual failure is attributable and blocks acceptance until resolved or explicitly approved."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain the alignment/correction implementation settings, time-indexed anchor/camera logs, paired corrected/uncorrected clips, frame annotations and reviewed still/motion results.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "WorldPoint",
+          "href": "guide/data-inventory.html#shared-WorldPoint"
+        },
+        {
+          "label": "Camera projection reference",
+          "href": "guide/sources.html#s12"
+        },
+        {
+          "label": "Holland camera reference",
+          "href": "guide/sources.html#s9"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T05",
+      "parent_epic": "BW-097",
+      "title": "Prove one-pixel silhouettes, convex highlights and toon lighting",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-4"
+      ],
+      "dependencies": [
+        "BW-097-T04"
+      ],
+      "scope": [
+        "Extend the probe with --case outlines, using T01 measured buffers and T04 camera. Implement candidate silhouette detection, separately controlled convex-edge highlights and toon material/lighting on T03 character/terrain assets. Adapt depth conventions, normal space, orthographic reconstruction, integer texel sampling and alpha composition explicitly; Roystan’s Unity technique and SMAA choice are references, not untested defaults.",
+        "Supply near/far and clipping-boundary placements, grazing/sloped terrain, thin geometry, touching/overlapping characters, concave versus convex edges and bright/dark material swatches. Include raw depth/normal, silhouette-only, highlights-only, combined and antialiasing comparison controls plus one-internal-pixel measurement overlays.",
+        "Select lighting bands, value separation, outline/highlight colors and antialiasing through T03 review. Keep shader/material configuration local to the probe: no canonical gameplay type defines these visual parameters and no renderer change may alter domain authority."
+      ],
+      "out_of_scope": [
+        "Full art production, all character forms, final world lighting/environment presets or unproven engine modifications."
+      ],
+      "acceptance_criteria": [
+        "Measured silhouettes are one pixel wide at internal resolution across the representative distance/geometry matrix. Convex highlights are independently selected and controlled; ordinary normal discontinuities do not automatically become highlights.",
+        "Near/far clipping, grazing surfaces, thin geometry and overlapping actors show no filled surfaces or distracting false edges beyond approved bounds. Captures and motion sequences cover each case and selected antialiasing configuration.",
+        "Toon lighting preserves approved gameplay-scale silhouette and palette/value separation on the character and terrain. Rejected candidates and any approved deviation remain linked to the visual baseline and exact settings."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case outlines",
+        "setup": [
+          "Use the T01 capability path, T03 approved appearance bounds and T04 camera paths. This ticket supplies the geometry/clipping placements, diagnostic views, lighting and antialiasing comparisons."
+        ],
+        "actions": [
+          "Run outlines; capture raw buffers, silhouettes, highlights and the combined result for each near/far, slope, thin, concave/convex and overlap fixture.",
+          "Count silhouette width in internal pixels; toggle antialiasing and highlight controls, then run slow/diagonal camera and actor paths in bright/dark settings. Review the complete case matrix against T03 bounds."
+        ],
+        "expected_results": [
+          "One-pixel silhouettes and separate convex highlights remain stable and readable without filled surfaces or false edges.",
+          "Toon transitions and antialiasing choices have actual still/motion approval; unsupported or failing candidate paths are recorded explicitly."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain shader/settings identities, pixel-width annotations, raw-buffer diagnostics, geometry/distance/antialiasing matrix, still/motion captures and reviewed outline/highlight/toon choices.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Outline adaptation reference",
+          "href": "guide/sources.html#s15"
+        },
+        {
+          "label": "Spatial shader reference",
+          "href": "guide/sources.html#s14"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T06",
+      "parent_epic": "BW-097",
+      "title": "Expose transparency and screen-copy pass-order failures",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-5"
+      ],
+      "dependencies": [
+        "BW-097-T05"
+      ],
+      "scope": [
+        "Add --case composition to the same probe with opaque/outlined characters, alpha-cutout and blended foliage, overlapping transparent panes, a screen-reading swatch, a simple water surface and atmosphere/particle samples. Provide effect-isolation and reorder/comparison controls, moving objects and deliberately stale-buffer or omitted-outline comparison cases.",
+        "Record the actual pass/resource graph and capture stage inputs/results on the pinned path: what writes depth/normals, when screen copies occur, what transparent geometry participates, and how outlines/effects compose. Identify unsupported paths and supply an exercised lower-cost/alternate composition for each claimed supported path; water method/visibility details continue in T07.",
+        "Reuse EntitySnapshot’s server-filtered information boundary as a constraint, not a new renderer payload: synthetic authorized views feed all effect consumers and excluded fixtures are withheld. No live interest-management or snapshot implementation exists to reuse; supply the local allowlist/recipient-view fixture at the probe boundary and keep excluded records out of the render subtree/buffers, rather than merely hiding their final mesh."
+      ],
+      "out_of_scope": [
+        "Production AOI/network transport, final water/reflection design, final environmental effects or claims that this synthetic fixture certifies server security."
+      ],
+      "acceptance_criteria": [
+        "The opaque/transparent/screen-reading matrix exposes missing/stale outlines, depth and ordering problems with reproducible comparison controls and annotated stage captures.",
+        "The chosen pass ordering plus fallback preserve approved silhouettes, transparency and atmosphere during still/slow/diagonal motion. Each unsupported buffer/path has a tested mitigation or an explicit unresolved finding.",
+        "Synthetic excluded fixtures cannot contribute outlines, shadows, screen copies, particles or atmosphere cues. Authorized off-camera fixtures remain distinct from unauthorized ones; schema compatibility and public EntitySnapshot authority are unchanged."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case composition",
+        "setup": [
+          "Use T05 reviewed outlines/lighting and T04 paths. This ticket supplies every transparent/screen-reading/atmosphere fixture, deliberate artifact control and local authorized/excluded view input."
+        ],
+        "actions": [
+          "Run composition; isolate each effect and inspect stage captures before combining them. Move transparent/outlined objects across one another and across the screen-copy boundary; compare with deliberate stale/missing-outline controls.",
+          "Run stationary, slow and diagonal sequences with the selected ordering and fallback. Switch synthetic authorized/excluded views and inspect every enabled effect and diagnostic buffer."
+        ],
+        "expected_results": [
+          "Deliberate controls reveal the expected defect; selected ordering/fallback resolve it within approved bounds with an attributable pass graph.",
+          "Excluded view data is absent from every effect input/output. Buffer limitations and unresolved findings remain visible instead of becoming automatic acceptance."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain pass/resource graph, stage captures, deliberate artifact comparisons, synthetic view inputs/results, moving transparent overlap clips and reviewed composition/fallback findings.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "EntitySnapshot",
+          "href": "guide/data-inventory.html#entity-snapshot"
+        },
+        {
+          "label": "Hidden-information boundary",
+          "href": "guide/networking.html#area-of-interest-and-hidden-information"
+        },
+        {
+          "label": "Screen-reading reference",
+          "href": "guide/sources.html#s11"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T07",
+      "parent_epic": "BW-097",
+      "title": "Test water reflection/refraction methods and visibility-safe fallbacks",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-5",
+        "BW-097-AC-8"
+      ],
+      "dependencies": [
+        "BW-097-T06"
+      ],
+      "scope": [
+        "Add --case water to the existing composition probe with a bounded shoreline/pool fixture, underwater geometry, moving outlined/transparent actors, surface animation, foam/splash samples and toggles for candidate reflection/refraction and lower-cost methods. This proves feasibility; the river/lake/ocean/waterfall production matrix belongs to BW-099.",
+        "First evaluate whether shaders, animation, authored geometry and particles meet the T03-approved water cues. Record remaining unmet cues before any proposal for physical fluid simulation; implementing a fluid solver or adding swimming/weather gameplay is outside this ticket.",
+        "Exercise off-screen authorized objects entering the view, newly revealed/removed objects, camera turns/motion, water-surface crossings and intersecting transparent/outlined objects. Distinguish missing screen-space information from stale buffers and pass ordering; exercise the same cases on the chosen method and fallback rather than assuming any reflection technique handles them.",
+        "Extend T06 synthetic recipient-view fixtures so reflection/refraction, shadows and auxiliary cameras receive only authorized content. Keep excluded entities absent from effect passes even when their hypothetical position is off-camera, underwater or on another floor; do not widen EntitySnapshot data or create a second visibility policy."
+      ],
+      "out_of_scope": [
+        "Production water assets and exhaustive environment biomes (BW-099), physical fluid simulation, server water gameplay or a real AOI implementation."
+      ],
+      "acceptance_criteria": [
+        "The review records which required water cues shaders/animation/geometry/particles satisfy and any remaining visual gap; a physical-simulation proposal requires a demonstrated unmet approved requirement.",
+        "Chosen reflection/refraction and fallback have captured off-screen/newly-visible, moving outline/transparency and above/below-water cases. Missing information, stale samples and ordering artifacts have tested mitigations or approved visual alternatives on every claimed supported path.",
+        "Authorized views remain readable without stale silhouettes; excluded synthetic entities contribute no reflection/refraction/outline/shadow cue, including off-screen and cross-floor cases. Unsupported renderer paths and blocking visual findings prevent acceptance."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case water",
+        "setup": [
+          "Use T03 water comparison requirements and T06 pass/view fixtures. This ticket supplies pool/shore/underwater geometry, animation/foam/splash samples, off-screen paths and method/fallback controls."
+        ],
+        "actions": [
+          "Run water and compare shader/animation/geometry/particle candidates against the approved reference cues. Capture selected and fallback methods with water/effects isolated and combined.",
+          "Move authorized actors out of view and back, spawn/remove them, cross the water surface with outlined/transparent objects, then replay slow/diagonal camera paths. Repeat with excluded/cross-floor fixtures and inspect auxiliary inputs and final buffers."
+        ],
+        "expected_results": [
+          "Both selected and fallback paths meet approved water/readability cues, with missing screen-space content handled by a tested mitigation or approved alternative.",
+          "Excluded objects never appear indirectly and no removed object leaves stale output. Any unsupported path, artifact or unmet visual requirement has an explicit review outcome."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain water requirements/candidate assessment, method and fallback settings, pass/view matrix, off-screen/newly-visible and surface-crossing clips, synthetic exclusion checks and approved mitigation decisions.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "EntitySnapshot",
+          "href": "guide/data-inventory.html#entity-snapshot"
+        },
+        {
+          "label": "Visibility boundary",
+          "href": "guide/networking.html#area-of-interest-and-hidden-information"
+        },
+        {
+          "label": "Screen-reading reference",
+          "href": "guide/sources.html#s11"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T08",
+      "parent_epic": "BW-097",
+      "title": "Compare contact-depth approaches and their lower-cost fallback",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-9"
+      ],
+      "dependencies": [
+        "BW-097-T05"
+      ],
+      "scope": [
+        "Add --case contact to the existing probe with representative cobblestones, wall/roof corners, prop bases, foliage-ground contact and an animated character foot anchor. Provide raw lighting/no-contact, candidate-only, combined and fallback controls, with exact settings and reproducible paths.",
+        "Evaluate applicable baked, real-time and authored contact/ambient-occlusion approaches using T01 capability evidence. Record why a candidate is inapplicable instead of requiring unavailable renderer features. Measure incremental CPU/GPU frame costs and memory on the pinned hardware with repeatable sampling and an explicit lower-cost alternative.",
+        "Keep material/contact settings under the existing probe owner and visual-only. No canonical gameplay type applies; do not modify world coordinates, collision or visibility rules. Avoid duplicate darkening when combining baked and dynamic treatment, especially at character feet and thin/overlapping surfaces."
+      ],
+      "out_of_scope": [
+        "A production baking pipeline, a new renderer feature/fork, world-wide AO content or final environment integration (BW-099)."
+      ],
+      "acceptance_criteria": [
+        "The comparison records applicable baked/real-time/authored candidates, actual renderer support, selected treatment, fallback and attributable incremental costs at the approved internal resolutions.",
+        "Still and slow/diagonal camera/actor sequences preserve accepted contact/depth separation without dark halos, false outlines, flicker, duplicate darkening or lost silhouettes beyond T03 bounds.",
+        "The animated foot-anchor fixture remains continuously grounded without altering source anchor data; fallback retains approved depth/readability cues and has measured lower cost or an explicitly reviewed cost tradeoff."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case contact",
+        "setup": [
+          "Use T01 measured capability path, T03 acceptance/budget sheet and T05 lighting/outlines. This ticket supplies all contact fixtures and candidate/fallback controls; full effect composition is verified in T09."
+        ],
+        "actions": [
+          "Run contact; capture no-contact, each applicable candidate, combined and fallback at identical camera/lighting settings. Inspect prop corners, foliage ground contact and animated feet.",
+          "Run stationary, slow and diagonal paths, including moving actors. Record cost samples and compare visual failures/costs against the approved bounds; verify foot-anchor logs before and after."
+        ],
+        "expected_results": [
+          "A reviewed candidate/fallback comparison names capability, incremental costs and visual findings; unsupported paths are labeled explicitly.",
+          "Contact treatment remains stable/readable without darkening or anchor mutation; unmet bounds remain blocking findings."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain candidate applicability matrix, settings, matched captures/clips, raw incremental timing/memory samples, fallback cost comparison, foot-anchor invariance and approved contact-depth findings.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T09",
+      "parent_epic": "BW-097",
+      "title": "Verify combined effects during stationary and continuous motion",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-3",
+        "BW-097-AC-4",
+        "BW-097-AC-5",
+        "BW-097-AC-7",
+        "BW-097-AC-8",
+        "BW-097-AC-9"
+      ],
+      "dependencies": [
+        "BW-097-T07",
+        "BW-097-T08"
+      ],
+      "scope": [
+        "Add --case combined by assembling the already-owned fixtures in the same controllable scene: water, toon lighting/shadows, contact/AO, outlines/highlights, foliage/transparency, animated actors and atmosphere. Include effect toggles, selected/fallback presets, deterministic stationary/slow/diagonal camera and actor paths, frame stepping and Reset; do not construct a second scene-specific rule implementation.",
+        "Reuse the T03 comparison sheet, T04 unrounded anchors, T06 authorized-view boundary and T07/T08 methods. Record the actual combined pass order and per-stage samples; test all claimed supported paths, including fallback combinations, rather than inferring success from isolated effects.",
+        "Review annotated stills and continuous frame sequences for silhouette/detail/palette/depth/lighting, water visibility, false/missing outlines, contact halos, stale buffers, transparency ordering and excluded-view leakage. Retain failing cases and their fixes; a single attractive still or isolated-effect pass cannot close a combined motion finding."
+      ],
+      "out_of_scope": [
+        "A production playable zone, 30-player combat/telegraph workload, full accessibility/environment tiers, network security certification or BW-098/BW-099 asset volume."
+      ],
+      "acceptance_criteria": [
+        "One reproducible combined scene exercises every required candidate together through stationary, continuous slow and diagonal camera/actor motion on the selected and supported fallback configurations.",
+        "Pass-order captures and reviewed frame sequences meet T03-approved pixel stability, silhouette and visual comparison bounds; all blocking composition, transparency, outline, water and contact findings are resolved or have explicitly approved alternatives.",
+        "Synthetic excluded-view cases contribute no indirect effect output during motion and view changes. Underlying continuous anchors remain unchanged. The review identifies exact settings, frame ranges, reviewer/date and accepted deviations for each supported path."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case combined",
+        "setup": [
+          "Use all completed predecessor fixtures, methods and the current approved T03 sheet. This ticket supplies the combined preset, effect toggles and complete motion replay without requiring a game server."
+        ],
+        "actions": [
+          "Run combined; capture a stationary view then replay slow axis-aligned and diagonal camera/actor paths. Step artifact frames, isolate suspect passes, then restore all required effects.",
+          "Repeat selected and supported fallback combinations, water off-screen transitions, animated contact and transparent overlap. Switch synthetic view authorization and compare source anchors. Review complete clips and annotate every blocking/accepted finding."
+        ],
+        "expected_results": [
+          "All required effects coexist within the approved visual/stability bounds on every claimed path, with complete frame-indexed evidence and no unresolved blocking findings.",
+          "Isolation controls explain composition failures, excluded information remains absent and source anchors are invariant. Untested combinations remain explicitly unverified."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain combined scene/settings hashes, actual pass-order diagrams/stage captures, full still/motion matrix, synthetic exclusion and anchor checks, dated visual approval and resolved-finding history.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Principal graphics concept",
+          "href": "assets/graphics_concept.png"
+        },
+        {
+          "label": "WorldPoint",
+          "href": "guide/data-inventory.html#shared-WorldPoint"
+        },
+        {
+          "label": "EntitySnapshot",
+          "href": "guide/data-inventory.html#entity-snapshot"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T10",
+      "parent_epic": "BW-097",
+      "title": "Package the reproducible proof and approve measured renderer defaults",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-1",
+        "BW-097-AC-2",
+        "BW-097-AC-3",
+        "BW-097-AC-4",
+        "BW-097-AC-5",
+        "BW-097-AC-6",
+        "BW-097-AC-7",
+        "BW-097-AC-8",
+        "BW-097-AC-9"
+      ],
+      "dependencies": [
+        "BW-097-T09"
+      ],
+      "scope": [
+        "Add --case profile and a documented isolated prototype export/replay path to the existing rendering launcher. Reuse tools/build_baseline.py staging/provenance helpers where applicable, but supply a dedicated disposable prototype export preset/staging layout because normal exports intentionally exclude tests. Do not weaken normal client/server content or credential exclusions to package the probe.",
+        "Package the same source scene, fixtures, shaders and versioned settings with pinned export templates. Reproduce the accepted cases from a fresh source snapshot and the graphical package, recording source/asset/settings hashes, engine/export revision, actual renderer/backend, hardware/OS and commands. Preserve existing source client/headless smoke behavior and test-input exclusion.",
+        "Collect attributable raw CPU/GPU frame times and memory at declared resolutions/settings for stationary/motion and incremental outline, lighting, foliage/transparency, water, contact and combined workloads. Declare warm-up/sample counts, repeats, timing source/units and percentile method; record draw calls/overdraw when measurable. GPU timing unavailability is an evidence gap, never inferred from FPS or CPU samples.",
+        "Review results against T03-approved prototype budgets and the completed visual matrix. Record chosen defaults, tested fallback support, platform exclusions and all remaining findings. An unmet stock-engine requirement requires a documented implementation/maintenance decision with measured evidence before a fork is adopted; no engine patch or platform exclusion is silently assumed.",
+        "Perform explicit epic review mapping retained evidence to all nine exact criteria and hard prerequisites. FixtureRunEvidence/TestCheck remain automated execution records, not substitutes for human appearance approval. Keep canonical records compatible through the existing extraction; record reproducibility and measurement envelopes as tool-local data, without creating a new gameplay schema. Update relevant tracking/generated views only when real evidence supports their status."
+      ],
+      "out_of_scope": [
+        "A completed production renderer, full art roster/environment pipeline, connected-client/load/capacity certification, new platform support, automatic engine upgrades or automatic approval of visual deviations."
+      ],
+      "acceptance_criteria": [
+        "A fresh source snapshot and independently launched packaged prototype reproduce the accepted scene/settings and relevant still/motion/fallback matrix with matching attributable identities. Packaging does not expose server/test data through the ordinary client or break the existing headless baseline.",
+        "Raw CPU/GPU frame-time and memory reports identify settings/hardware, warm-up, sample count, repeats, units, percentile calculation and incremental/combined costs. Approved budgets are met or revised through explicit review; missing measurements or failed budgets cannot be labeled a pass.",
+        "The implementation decision records selected renderer/backend/camera/material/pass defaults, tested fallbacks, visual acceptance and platform limits, plus any justified custom-engine maintenance decision. Every blocking finding is resolved before epic acceptance.",
+        "The final review maps all nine epic criteria to actual package/capture/measurement/review artifacts, confirms BW-001/BW-003 evidence still applies, preserves historical failures and makes no gameplay or production-capacity claim."
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.\npython3 tools/verify_toolchain.py\npython3 tools/run_rendering_probe.py --case profile",
+        "setup": [
+          "Use pinned engine/templates, approved T03 budgets and all T09 accepted settings/captures. This ticket supplies prototype export/replay commands and staging assets; start from a fresh snapshot without relying on an existing import cache.",
+          "Use the same declared graphics hardware for comparable profiling and available engine/platform GPU profiling support. Record unavailable measurements as gaps requiring resolution, not successful verification."
+        ],
+        "actions": [
+          "Run profile through the documented warm-up/sample/repeat procedure for baseline, individual effects, combined motion and fallbacks. Inspect raw samples and independently recompute reported percentiles.",
+          "Follow the supplied isolated export instructions, launch the produced graphical package, and replay the accepted cases. Run the existing baseline/content/runtime and normal-client exclusion checks appropriate to any shared tooling changed; retain the commands/results.",
+          "Review package reproducibility, visual findings, budgets, platform/fork choices and each epic criterion with the user. Recheck prerequisite evidence applicability and regenerate tracking only for behavior actually accepted."
+        ],
+        "expected_results": [
+          "The package reproduces the approved source scene/settings; normal exports/headless behavior remain valid and their exclusions remain enforced.",
+          "Measured costs and approved decisions support each chosen default/fallback with no missing GPU/memory evidence or unresolved visual blockers. The explicit epic review alone determines readiness for BW-098, without claiming production rendering or gameplay completion."
+        ],
+        "reset": [
+          "Use the probe Reset control to restore the checked-in case settings, camera, actor path and effect toggles; quit the graphical process normally. No persistent gameplay state is created.",
+          "Keep prior captures, failed results and reports intact. Repeat into a fresh launcher-owned artifacts directory; restore only deliberately modified disposable inputs, leaving source assets, canonical registries and existing user files intact."
+        ]
+      },
+      "completion_evidence": "Retain reproducible source/export manifests and commands, package hashes, source-versus-package captures, raw CPU/GPU/memory samples and percentiles, fallback/capability matrix, prerequisite/regression evidence and dated defaults/visual/maintenance decisions with exact nine-criterion epic review.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Selected art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Rendering and camera boundaries",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Rendering verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
+        },
+        {
+          "label": "Verified prerequisite BW-001",
+          "href": "guide/roadmap-bw-001.html#BW-001"
+        },
+        {
+          "label": "Verified prerequisite BW-003",
+          "href": "guide/roadmap-bw-003.html#BW-003"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": []
     }
   ]
 }

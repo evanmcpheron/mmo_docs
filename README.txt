@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-186 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-20 individual ticket pages,
+196 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+30 individual ticket pages,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -103,7 +103,11 @@ Two independent complete runs, aggregate failure controls and clean recovery are
 retained with 87 Python regressions, content admission, native/exported server
 smoke, client exclusion inspection and test-control launch rejection evidence.
 BW-095 and BW-097 are now Dependency-ready; BW-012 still requires its other hard
-prerequisites. Foundations and milestones remain In Progress. This bounded probe
+prerequisites. BW-097 has ten Not Started tickets for the graphical probe, world
+viewport, concept-based acceptance baseline, camera stability, outlines/toon
+lighting, pass composition, water, contact depth, combined motion and a packaged
+measured feasibility decision. No rendering implementation or approval is claimed.
+Foundations and milestones remain In Progress. The completed BW-003 bounded probe
 certifies no connected-client, gameplay, durability, wire-network or capacity work.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages

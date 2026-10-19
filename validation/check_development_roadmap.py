@@ -110,6 +110,7 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
     epic_keys = {'id', 'phase', 'title', 'objective', 'scope', 'hard_dependencies', 'recommended_predecessors',
                  'acceptance_criteria', 'completion_evidence', 'related_docs', 'status', 'blockers',
                  'ordering_rationale', 'verified_evidence'}
+    criteria_by_epic = {identifier: [] for identifier in by_id}
     for epic in data['epics']:
         context = epic['id']
         if set(epic) != epic_keys:
@@ -127,6 +128,7 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
         if not isinstance(criteria, list) or len(criteria) < 3:
             errors.append(f'{context}: expected at least 3 acceptance criteria')
             criteria = []
+        criteria_by_epic[context] = criteria
         for criterion in criteria:
             text(criterion, context + ' AC')
         for field in ('hard_dependencies', 'recommended_predecessors'):
@@ -210,7 +212,7 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
             values = ticket[field]
             if not isinstance(values, list) or not values or any(not isinstance(v, str) or not v.strip() for v in values):
                 errors.append(f'{context}: {field} requires nonempty text entries')
-        valid_criteria = {f'{parent}-AC-{n}' for n in range(1, len(by_id[parent]['acceptance_criteria']) + 1)}
+        valid_criteria = {f'{parent}-AC-{n}' for n in range(1, len(criteria_by_epic[parent]) + 1)}
         criteria = ticket['epic_criteria']
         if isinstance(criteria, list) and all(isinstance(c, str) for c in criteria):
             if len(criteria) != len(set(criteria)) or set(criteria) - valid_criteria:
@@ -286,7 +288,7 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 errors.append(f'{context}: Complete requires complete dependencies')
         docs(ticket['related_docs'], context)
     for parent in {t['parent_epic'] for t in tickets if isinstance(t['parent_epic'], str) and t['parent_epic'] in by_id}:
-        expected = {f'{parent}-AC-{n}' for n in range(1, len(by_id[parent]['acceptance_criteria']) + 1)}
+        expected = {f'{parent}-AC-{n}' for n in range(1, len(criteria_by_epic[parent]) + 1)}
         if coverage.get(parent, set()) != expected:
             errors.append(f'{parent}: tickets must cover every epic acceptance criterion')
 
