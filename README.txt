@@ -95,8 +95,10 @@ probe diagnostics, bounded measurements and integrated verification.
 Its test-only action probe uses logical clients; serialized payload bytes are
 reported separately from wire traffic. BW-003-T01/T02 are Complete, with actual
 content evidence and a bounded seeded-context probe behind isolated test controls.
-BW-003 remains In Progress and Dependency-ready. T03/T04 are now eligible;
-redacted diagnostics, measurements and T05 integration remain unstarted.
+BW-003-T03 is Complete with 40 bounded diagnostic scenarios, safe action/retry
+correlation, negative startup/report controls and four constructed recipient
+projection checks. BW-003 remains In Progress and Dependency-ready. T04 is
+eligible; measured workloads and T05 integrated verification remain unstarted.
 Foundations and milestones remain In Progress with their other epics required.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages

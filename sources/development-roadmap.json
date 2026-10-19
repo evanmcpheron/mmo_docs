@@ -452,6 +452,15 @@
           "revision": "BW-003-T02 actual Godot run/source identities in linked reports; prior BW-001/BW-002/T01 evidence applicability reviewed.",
           "result": "Passed",
           "summary": "AC2 is verified within the selected disposable probe scope: same-context reproduction, consumed changed seed, restoration, bounded scheduling and no gameplay test-control endpoint. BW-003 remains In Progress: action-correlated redacted diagnostics (T03), measured workloads (T04) and integrated orchestration (T05) remain unstarted. T03/T04 prerequisites are now complete; Foundations and milestones remain In Progress, with no newly ready downstream epic."
+        },
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-003-T03/epic-review.json",
+          "revision": "1e480f0aed5d31e87590dacd98fb14459f3ee950; actual probe diagnostics and retained runtime/failure evidence; prior prerequisite applicability reviewed.",
+          "result": "Passed",
+          "summary": "AC3 is verified by attributed rejected/committed/repeated probe events, safe findings, secret-bearing malformed/failure controls and unchanged recipient projection. AC1/AC2 retained evidence remains applicable and regressions pass. BW-003 remains In Progress: AC4 measurements (T04) and T05 integration remain unstarted. T04 is eligible; T05 and downstream epics remain gated. Foundations and milestones stay In Progress."
         }
       ],
       "phase": "phase-foundations"
@@ -7116,7 +7125,7 @@
       "id": "BW-003-T03",
       "parent_epic": "BW-003",
       "title": "Correlate and redact bounded probe action diagnostics",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-003-AC-3"
       ],
@@ -7140,23 +7149,25 @@
         "Canonical identifier types, CommandContext ordering fields and existing command encodings remain compatible. Diagnostics remain internal test evidence; any public projection retains the existing recipient entitlement/redaction behavior."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite diagnostics\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: /Users/le-evanmcpheron/Documents/Godot/briarwake (GAME_ROOT); all res:// paths use that project root. No provider, database or network service is needed.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite diagnostics\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
-          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
-          "Use the T02 probe and supplied diagnostics corpus with two synthetic owners/epochs, legal/rejected/repeated inputs, private sentinels and any explicitly labeled constructed public-result sample."
+          "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json. The checker resolves/verifies the executable; use --engine /absolute/path/to/Godot for another verified installation. Keep sibling mmo_docs canonical sources available.",
+          "The implemented fixtures/runtime_fixtures/diagnostics.json supplies 40 bounded scenarios, two trusted synthetic owners/epochs and recognizable credential/token/private-result/hidden-owner sentinels. The same disposable context probe owns all mutations. Four explicitly constructed public-result samples reuse content/combat_result_projection.gd and the existing boundary corpus."
         ],
         "actions": [
-          "Run the launch block and follow one rejected command and one committed probe action through the emitted JSON events and final revision assertions.",
-          "Review suite repeated/stale/malformed/control-injection cases, then search all retained diagnostics/shareable samples for every supplied private sentinel.",
-          "Compare any public projection sample with the existing recipient-filtered boundary fixture; verify private probe owner/action linkage is not included in recipient output."
+          "Run the launch block. Open the printed fresh output directory and follow mixed-1/mixed-2 in run.json, logs/diagnostics.log, actual-evidence.json and shareable-sample.json. Join run/scenario/source identity, command ordering pair, safe owner alias/epoch and before/after revisions.",
+          "Verify committed/rejected/repeated transitions: mixed scenarios have revisions 1,1,1,1,2, and the repeat keeps the first action ID. Stale command epochs differ from the trusted owner epoch; malformed ordering pairs are null and remain attributable by scenario/attempt. Confirm at most eight bounded findings with the full finding count.",
+          "Run python3 tools/check_runtime_fixtures.py --suite diagnostics --control import-failure, then repeat with startup-failure, missing-report and assertion-failure. Each must exit nonzero. The first three create no actual-evidence.json or shareable-sample.json; assertion-failure retains a failed report and only actual probe effects. Run a fresh clean command to restore a passing execution.",
+          "Check redaction_verified in every run.json; it scans all retained output including nested raw logs against all supplied private sentinels. Secret-bearing execution inputs are hashed and discarded with the temporary project rather than retained as diagnostics.",
+          "Compare the constructed public projection samples: hidden source is null with recipient-specific action/event IDs, revoked entitlement and hidden targets yield no event, and public output contains no probe owner/action linkage or private result breakdown."
         ],
         "expected_results": [
-          "Actual commits and rejections have unambiguous correlation and state evidence, with no false combat or durable-success claim.",
-          "All secret/private sentinels are absent from retained diagnostics and shareable output; rejection details remain bounded and useful."
+          "The actual diagnostic suite passes all 40 scenarios and four constructed projection checks. Every commit follows an actual probe mutation, each rejection preserves revision, and a repeated command preserves correlation without another effect.",
+          "No synthetic password, bearer/recovery token, private result or unauthorized hidden identifier occurs in retained raw/shareable diagnostics, including unknown private field names and malformed startup input. Existing ability_command_v2/CommandContext encodings and recipient filtering remain compatible. This is internal probe evidence, not combat, durable receipts, connected clients or production capacity."
         ],
         "reset": [
-          "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
-          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution."
+          "Let bounded child processes finish; the checker terminates timed-out children and removes their disposable project. Counter/revision and diagnostics exist only in that process. No database, network or persistent character state needs reset.",
+          "Keep previous output directories intact. Rerun with a fresh default directory or an unused --output path. Do not alter canonical sources or authored corpus expectations; negative controls modify only a temporary project."
         ]
       },
       "completion_evidence": "Retain actual correlated rejected/committed/repeated probe traces, source/context hashes, state/revision assertions, redaction checks and a shareable sanitized sample. Record the probe-only boundary and any constructed public projection separately from real gameplay.",
@@ -7192,10 +7203,31 @@
         {
           "label": "ValidationFinding",
           "href": "guide/data-inventory.html#shared-ValidationFinding"
+        },
+        {
+          "label": "Id",
+          "href": "guide/data-inventory.html#shared-Id"
+        },
+        {
+          "label": "Version",
+          "href": "guide/data-inventory.html#shared-Version"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T03/verification.json",
+          "revision": "1e480f0aed5d31e87590dacd98fb14459f3ee950; clean native Godot diagnostic runs and 76 Python regressions; source/input hashes in retained reports.",
+          "result": "Passed",
+          "summary": "All four criteria pass: 40 bounded diagnostic scenarios across two trusted synthetic owners, stable retry correlation with unique effects, redacted raw/shareable logs on success and all failure controls, and four constructed recipient projection checks. No combat, durable receipt, connected-client or capacity claim."
+        }
+      ]
     },
     {
       "id": "BW-003-T04",
