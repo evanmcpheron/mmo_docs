@@ -243,6 +243,10 @@ class RoadmapTests(unittest.TestCase):
 
     def test_complete_requires_current_prerequisites(self):
         self.complete('BW-018')
+        for dependency in self.by_id['BW-018']['hard_dependencies']:
+            self.complete(dependency)
+        self.assertEqual([], self.errors())
+        self.by_id[self.by_id['BW-018']['hard_dependencies'][-1]]['status'] = 'In Progress'
         self.assertTrue(any('complete hard prerequisites' in e for e in self.errors()))
 
     def test_progress_changes_all_derived_views_without_duplicate_status(self):

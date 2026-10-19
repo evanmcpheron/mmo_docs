@@ -298,7 +298,7 @@
           "href": "guide/items.html#durability-salvage-and-demand"
         }
       ],
-      "status": "In Progress",
+      "status": "Complete",
       "blockers": [],
       "ordering_rationale": "Broad ownership and identity contracts constrain later systems. Full future payloads need not be frozen before gameplay proves their needs.",
       "verified_evidence": [
@@ -383,6 +383,19 @@
           "revision": "Exact suite revisions/source hashes and documentation-only delivery applicability are retained in the linked review and verification.json.",
           "result": "Passed",
           "summary": "T07 completes AC5 with exact complete-graph value conservation and strict crafted sellback, 26 executed graph cases, independent witness replay and fresh T06 constraints. AC1 ownership/lifecycle and AC3 readiness refusal remain applicable; fresh compatibility/boundary/structure/readiness regressions retain AC4. BW-002 remains In Progress solely for AC2: T08 real atomic startup publication/rejection. T08 now has all ticket prerequisites Complete; dependent epics remain gated on unfinished BW-002."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "artifact": "validation/tickets/BW-002-T08/epic-review.json",
+          "revision": "9b282e2e502b452003e8f227d2bc232e90c7325d",
+          "result": "Passed",
+          "summary": "Explicit parent review maps current evidence to all five epic criteria. T01 owner/lifecycle/intent bodies are unchanged; current map links pass. Fresh compatibility/boundary/structure/readiness/economic suites and real atomic startup close AC2 while preserving AC1/3/4/5. All eight tickets and prerequisites are Complete with no blockers. BW-003/BW-004/BW-005/BW-006/BW-018 become dependency-ready; BW-095 still needs BW-003. Foundations/milestones remain In Progress."
         }
       ],
       "phase": "phase-foundations"
@@ -6762,7 +6775,7 @@
       "id": "BW-002-T08",
       "parent_epic": "BW-002",
       "title": "Admit validated content atomically at the server boundary",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-1",
         "BW-002-AC-2",
@@ -6795,24 +6808,25 @@
         "The all-suite and existing Python tool regressions run with executed assertions and pinned-engine diagnostics; build/startup failures remain distinguishable from executed failures/passes. No game, network capacity or database evidence is inferred from this admission run."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite all\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT (briarwake/), with the pinned native macOS arm64 Godot editor.\npython3 tools/verify_toolchain.py\npython3 tools/check_content_admission.py --suite all\npython3 tools/check_content_admission.py --suite startup\npython3 -m unittest discover -s tools -p 'test_*.py'\npython3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke",
         "setup": [
-          "Use the pinned native macOS Godot editor and Python environment from tools/toolchain.lock.json. The checker and fixtures named below are implementation deliverables of this ticket or its dependencies, not existing commands today.",
-          "Implement --suite startup and --suite all in the checker with bounded real headless server launches through scenes/bootstrap.tscn, using existing external valid configuration plus disposable revision-matching fixture copies. Include all cases above and document the exact optional content-input flag in tools/README.md.",
-          "Use res://tests/content_admission/ for direct A/B retained-state assertions against the same admission object. Keep test-only controls in the local runner; no gameplay RPC or graphical/player scene is required."
+          "Use tools/toolchain.lock.json and tools/README.md#atomic-server-admission-bw-002-t08. The checker creates isolated temporary projects and preserves prior evidence; use --output with a new directory to retain reports.",
+          "For a regular CLI case, run python3 tools/content_startup_checks.py --case mixed-disabled-prototypes --output /tmp/briarwake-admission-demo using a new directory. This writes disposable server.json/package.json copies from existing canonical fixtures; it changes no ServerConfiguration contract.",
+          "Use res://tests/content_admission/startup_runner.gd through --suite startup for the direct A/B API checks. Local saved-editor-layout import failed in the original checkout during this invocation; the exact committed source passed in an isolated clean worktree. Preserve existing cache/settings and use a clean checkout/worktree if that engine editor-layout error recurs."
         ],
         "actions": [
-          "Run the all-suite and inspect startup logs for the valid selection, invalid requested packages and unchanged no-content bootstrap.",
-          "Inspect A-accepted/B-rejected/A-retained snapshots and the final active/disabled ID sets; rerun startup alone with python3 tools/check_content_admission.py --suite startup.",
-          "Run python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke and inspect the unchanged baseline result."
+          "Run the all and startup suites. Inspect all/run.json, per-suite source/input hashes, direct startup-report before/after selection hashes, and separate real server launch logs.",
+          "Run python3 tools/run_baseline.py --role server --headless --config /tmp/briarwake-admission-demo/server.json --content-fixture /tmp/briarwake-admission-demo/package.json --smoke. Repeat case generation into new directories with requested-unbound, forged-ready, mixed-valid-invalid, mixed-invalid-first, profitable-graph and safe-graph-missing-handler.",
+          "Run the no-content baseline smoke and python3 tools/check_baseline.py --case pass --output with a new absolute nonsymlink output directory. Check clean client/server export, client artifact inspection and exported runtime independently."
         ],
         "expected_results": [
-          "Only the fully validated requested selection becomes active. Rejected candidates do not replace or partially amend valid state; all unsupported runtime behaviors remain disabled.",
-          "Real server integration, direct atomicity assertions and baseline regressions have separate executed results. No scene/player, credential, canonical field or version-domain regression is introduced."
+          "Only requested supported static records appear in the immutable admitted selection; disabled prototypes/routes are absent. Publication precedes content-ready and server-ready; gameplay_enabled remains false.",
+          "Rejected candidates retain A including context/disabled IDs byte-for-byte; fresh invalid startup exits 2 before content-ready/server-ready. Canonical code/path/message findings explain the rejection; no client/player scene loads.",
+          "No-content startup emits no admission event and retains the three-heartbeat smoke. Import/startup failures without assertions remain Not Executed; deliberately false assertions are Executed/Failed. Passing admission does not certify gameplay, network capacity, database behavior or production content distribution."
         ],
         "reset": [
-          "Let each bounded checker process exit and discard its in-memory candidate/active registries. Use runner-owned temporary copies for negative mutations; leave tracked canonical snapshots, fixtures and bootstrap configuration unchanged.",
-          "Retain the attributable run report and logs in the chosen evidence location. A subsequent clean suite run must reproduce the original outcomes without a database, account, network peer or gameplay scene."
+          "Let bounded processes exit; each in-memory owner/selection is discarded. The checker removes only its owned temporary project.",
+          "Keep attributable reports/logs under the docs evidence directory. Discard disposable manual fixture copies when finished and use new output directories for reruns. Do not modify canonical snapshots or delete user editor state to manufacture a pass."
         ]
       },
       "completion_evidence": "Attributable actual headless admission/startup report, atomic A/B retained-state evidence, positive/negative full-suite output and existing bootstrap/tool regression logs; reviewed responsibility map remains required separately.",
@@ -6852,10 +6866,27 @@
         {
           "label": "Economic graph inputs",
           "href": "guide/data-inventory.html#vendor-pricing-configuration"
+        },
+        {
+          "label": "ValidationFinding diagnostics",
+          "href": "guide/data-inventory.html#shared-ValidationFinding"
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T08/verification.json",
+          "revision": "9b282e2e502b452003e8f227d2bc232e90c7325d",
+          "result": "Passed",
+          "summary": "Seven pinned-engine suites pass 620 direct cases and 30 real bootstrap launches; 54 Python regressions pass. Executed A/B retention, record-order invariance, copy isolation, exact admitted/disabled IDs, unsupported/forged readiness, invalid revisions/references/targets/resources, economic rejection and file-boundary checks precede readiness. Clean client/server exports and artifact inspection pass. Regular launcher passes in a clean identical-source worktree; original checkout editor-layout import failure is retained as an environment limitation, not suppressed."
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,110 @@
+{
+  "result": "Passed",
+  "game_revision": "9b282e2e502b452003e8f227d2bc232e90c7325d",
+  "tested_working_tree": "clean committed source",
+  "game_base_main": "a3be936e9c63c8302452583d14fcbc194ddd9b58",
+  "docs_base_main": "724500cd84047789dd559e362865950d41ff88a8",
+  "remote_main_rechecked": true,
+  "reviewed_at": "2026-10-19T17:58:06.199585+00:00",
+  "checks": [
+    {
+      "command": "python3 tools/check_content_admission.py --suite all --output /tmp/bw-002-t08-final-all",
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "exit_status": 0,
+      "result": "Passed",
+      "artifact": "all/run.json",
+      "summary": "620 direct cases across all seven suites; 30 real bootstrap launches; source/input hashes and pinned native engine diagnostics per suite."
+    },
+    {
+      "command": "python3 -m unittest discover -s tools -p 'test_*.py'",
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "exit_status": 0,
+      "result": "Passed",
+      "artifact": "python-tools.log",
+      "summary": "54 tests in 91.454s; includes startup integration, false expectations, import/missing-report classification and server/editor-only input checks."
+    },
+    {
+      "command": "python3 tools/check_baseline.py --case pass --output /private/tmp/bw-002-t08-final-baseline",
+      "cwd": "/Users/le-evanmcpheron/Documents/Godot/briarwake",
+      "exit_status": 0,
+      "result": "Passed",
+      "artifact": "baseline/run.json",
+      "summary": "Pinned engine/templates verification, clean client/server import/export, client artifact/credential inspection and exported server smoke pass. Binary bundles are not copied into documentation; their identities and hashes are retained."
+    },
+    {
+      "command": "python3 tools/run_baseline.py --role server --headless --config /tmp/bw-002-t08-manual-demo/server.json --content-fixture /tmp/bw-002-t08-manual-demo/package.json --smoke",
+      "cwd": "/tmp/bw-002-t08-clean-source",
+      "exit_status": 0,
+      "result": "Passed",
+      "artifact": "clean-fixture-launch.log",
+      "summary": "Exact committed source in a detached clean worktree, preserving the existing checkout/editor state; mixed-disabled-prototype package selected only fixture.rage."
+    },
+    {
+      "command": "python3 tools/run_baseline.py --role server --headless --config /Users/le-evanmcpheron/Documents/Godot/briarwake/fixtures/config/server.valid.json --smoke",
+      "cwd": "/tmp/bw-002-t08-clean-source",
+      "exit_status": 0,
+      "result": "Passed",
+      "artifact": "clean-no-content-launch.log",
+      "summary": "Unchanged no-content bootstrap passes through the regular launcher with no content admission event."
+    }
+  ],
+  "source_sha256": {
+    "content/ability_command_reader.gd": "24189902423e8cd7e09cee7a94972440ce21d2fca359b3fae71301a9a1e6c426",
+    "content/content_admission.gd": "d7e240bd0a8a71e141a8e84e54515be7b5cba7e7db05a032c56e4e420dc0ff53",
+    "content/economic_inputs.gd": "ada94cc2d1989a48e7ee69b4e23bfa8ee193eabb45a53d959a70e63a44c7f177",
+    "content/combat_result_projection.gd": "13b06f5513c3d17475fc8528705bc0da1bfed5b4c2fcc1abc474129867f67217",
+    "content/content_fixture.gd": "d243343c16f9e6ee9d73bad8384ae92d214cca1e77a92ccea29c66bc89271ffe",
+    "content/content_compatibility.gd": "efe4a93d92c215d9cf2064050de9656fcda4535b44856cef5f95bcd8a67e751b",
+    "content/economic_loops.gd": "b24319a89cc3e2e9ec1c3809f511e37ce0b6af820043281c6a44690d4e59c1fb",
+    "scenes/bootstrap.gd": "08d9de655a3c117ee414eca2e2b9927fdf1cfe74e4bd058682000801e343aea9",
+    "scenes/server/server_configuration.gd": "f8047ec97d86e695ffe282e30a191b7ba493969e22daf00bdc2cd7cb4ed1c1e0",
+    "scenes/server/server_root.gd": "bab167ca63f035fc204cf4d0592332dee7bce3b81d78a6946d6ed6d5e1e54846",
+    "scenes/client/client_shell.gd": "16204ce0f5bc1a9a06169bc2765a979960fba90358f0df12877b5463b14657e5",
+    "tests/content_admission/economy_data_runner.gd": "44701f3d186dabf701d4ed853e665af0d93d61068f86e012e6f522128ddb0753",
+    "tests/content_admission/startup_runner.gd": "63dd3203e7a09b9befb4637510b0eb1c45fc107664c8e9fbcb592b536e1006f5",
+    "tests/content_admission/compatibility_runner.gd": "ec7b542280140e86c4d82bc2cf3a2c62a7ebbc330e733274ea4ffc854962e8cb",
+    "tests/content_admission/readiness_runner.gd": "0fb170ad28ffb3cc5bb372736d2321b36cf67c7c66dacdecfea67f27b0ea39e1",
+    "tests/content_admission/boundary_runner.gd": "f8a7b38e04ef75a313906f3aa6d53cf59c0f5b5b3da379b06c2f4283e9d760fc",
+    "tests/content_admission/structure_runner.gd": "50fcb57e5048c0e211e22b3d5e3e59e5d2b2746d63175cf18863b8b8294da26e",
+    "tools/run_baseline.py": "6b7ccdfaeb6a7af1d5dda284a3828d7c8eef4572b7803c2a238683185af9d731",
+    "tools/build_baseline.py": "3e8fcfebbbdc973dbe478eca5d3c844013f1b404898570be2b0178274d38ba9a",
+    "tools/test_client_artifact.py": "ba979e1c77170969ba4296d52d8cae8e80d0aef68b67fbe9de7632da6eb54dba",
+    "tools/test_check_baseline.py": "cfab8ec29747e9f3624bb3fb3f9c03b746e66745e781cd75ea35fa2ba0fe8d3c",
+    "tools/check_client_artifact.py": "6bc6efc13e0cfefa364047207e39fcec01f326f05d38c2d50a48d20c976cdb8d",
+    "tools/test_content_admission.py": "d66b0dfec2c63fb2efcf926e4928721dc70d1cf26f4cb04c96cb50ba192b3f97",
+    "tools/check_content_admission.py": "9ce6568cf67ee8fb14b77a656b7e12eb07c86748b26de1c111157e041f35909c",
+    "tools/check_configuration.py": "52b3369e58eae5c45137633ceb09daaff885b03a6fea842a78e18597f1aa5b55",
+    "tools/test_content_startup.py": "5ab10daeb683845ae42ae6ea1c5d9354db38c920a04563fd236c9df73f07e60d",
+    "tools/content_startup_checks.py": "621e025df8ffdcf758bafdec560e824ecccb79cfa0bfa2e08fa0b2cf723cef33",
+    "tools/extract_content_contracts.py": "1d60bc2fc3e921382fc4150419db7f23f0977565026e7890d4b95850ea0a0752",
+    "tools/check_baseline.py": "9c303cd704ce199d198baf4df4899cd650c5778e44548b2442414b010119d77c",
+    "tools/test_build_baseline.py": "319c76d6fa4790bd94f8483de77909d7b2f0afc932a5f4f95106519d92adc67f",
+    "tools/verify_toolchain.py": "a19efff6a77f334a6a5a92016fbf996e1834a8819a9a38e51f7d26e38564e31a"
+  },
+  "local_environment_failures": [
+    {
+      "result": "Failed",
+      "exit_status": 1,
+      "artifact": "local-editor-import-failed.log",
+      "summary": "Regular launcher import in original checkout hits Godot scene/gui/text_edit.cpp get_line_wrap_count p_line=-1 during saved editor layout restoration. No role launched. Reproduced once without modifying cache; clean identical source launcher and clean exports pass. This local editor-state issue is preserved and is not a content-gate failure."
+    },
+    {
+      "result": "Failed",
+      "exit_status": 1,
+      "artifact": "local-editor-import-retry-failed.log",
+      "summary": "Regular launcher import in original checkout hits Godot scene/gui/text_edit.cpp get_line_wrap_count p_line=-1 during saved editor layout restoration. No role launched. Reproduced once without modifying cache; clean identical source launcher and clean exports pass. This local editor-state issue is preserved and is not a content-gate failure."
+    }
+  ],
+  "limitations": [
+    "No gameplay handlers, peer/network sessions, capacity, persistence/database or production package distribution/signing tested.",
+    "Fixture input intentionally requires native editor/headless server; exports exclude test inputs.",
+    "Original checkout editor-layout import issue remains; clean worktree tests preserve user cache/settings.",
+    "No current GUI/browser or Linux/Windows/Intel rendering run; unchanged T01 responsibility evidence remains applicable and authority map links were executed separately."
+  ],
+  "negative_controls": {
+    "result": "Passed",
+    "artifact": "controls/report.json",
+    "summary": "Retained actual import/startup/missing-report/unsupported-schema controls stay Not Executed; deliberately false expectations are Executed/Failed. Every control exits 1 and passes its expected-outcome assertion."
+  },
+  "final_delivery": "final-delivery.json"
+}

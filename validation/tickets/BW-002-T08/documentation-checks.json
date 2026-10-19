@@ -1,0 +1,70 @@
+{
+  "result": "Passed",
+  "cwd": "/Users/le-evanmcpheron/Documents/Godot/mmo_docs",
+  "tested_source": "724500cd84047789dd559e362865950d41ff88a8 plus task changes; source hashes below identify the tested uncommitted documentation state.",
+  "commands": [
+    {
+      "command": "python3 scripts/build_development_roadmap.py",
+      "exit_status": 0,
+      "result": "Passed"
+    },
+    {
+      "command": "python3 scripts/build_data_inventory.py --review-roadmap",
+      "exit_status": 0,
+      "result": "Passed"
+    },
+    {
+      "command": "python3 scripts/build_development_roadmap.py --check",
+      "exit_status": 0,
+      "result": "Passed"
+    },
+    {
+      "command": "python3 scripts/build_data_inventory.py --check",
+      "exit_status": 0,
+      "result": "Passed"
+    },
+    {
+      "command": "python3 validation/check_development_roadmap.py",
+      "exit_status": 0,
+      "result": "Passed"
+    },
+    {
+      "command": "python3 validation/check_data_inventory.py",
+      "exit_status": 0,
+      "result": "Passed"
+    },
+    {
+      "command": "python3 -m unittest discover -s validation -p 'test_*.py'",
+      "exit_status": 0,
+      "result": "Passed"
+    },
+    {
+      "command": "python3 validation/run_checks.py",
+      "exit_status": 0,
+      "result": "Passed"
+    }
+  ],
+  "documentation_unit_tests": {
+    "count": 73,
+    "seconds": 79.45,
+    "result": "Passed"
+  },
+  "full_validation": {
+    "checks_passed": 242,
+    "checks_failed": 0,
+    "artifact": "documentation-full-report.json"
+  },
+  "generated_view_inspection": "generated-view-inspection.json",
+  "source_sha256": {
+    "sources/development-roadmap.json": "3d280a203faa2f7144ae30ff88bd2c4103805298eff1a0b1f3b12596799fe976",
+    "sources/data-inventory.json": "cf5a24f3530e6296fbcd3737f6a9660fe045d6d1fe06ed8f9dd8c56a2fb45e09",
+    "validation/test_development_roadmap.py": "3ca80129532f9af90752a41db556a218ab198cd08336c0deb516698dc1351821",
+    "scripts/build_development_roadmap.py": "f6d2bf05d8ecdd307f6b0990a91812f2c26e1707080cd58e8316542edccf4b2c",
+    "scripts/build_data_inventory.py": "3536cbfb3e9e7545a4177cb7e3d6341cc82b5325d3fcaf9a53df8ce076a340ce"
+  },
+  "initial_regression_failure": {
+    "result": "Failed",
+    "summary": "The prior synthetic test completed BW-018 without setting an incomplete prerequisite, assuming the live roadmap still had one. Completion of BW-002 made that assumption false. The test now explicitly proves a fully satisfied case first, then marks a synthetic prerequisite In Progress and keeps the original prerequisite rejection assertion. No validator rule or test exclusion changed."
+  },
+  "browser": "Not run; static generated HTML/search/metadata checks executed."
+}
