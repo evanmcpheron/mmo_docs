@@ -93,15 +93,15 @@ current statuses and executed evidence live in the registry. BW-003 has five
 tickets for attributable fixture evidence, deterministic test context, redacted
 probe diagnostics, bounded measurements and integrated verification.
 Its test-only action probe uses logical clients; serialized payload bytes are
-reported separately from wire traffic. BW-003-T01/T02 are Complete, with actual
-content evidence and a bounded seeded-context probe behind isolated test controls.
-BW-003-T03 is Complete with 40 bounded diagnostic scenarios, safe action/retry
-correlation, negative startup/report controls and four constructed recipient
-projection checks. BW-003 remains In Progress and Dependency-ready. T04 is
-Complete with 41 bounded metric workloads/controls, actual tick/queue samples and
-independently verified per-logical-recipient serialized UTF-8 bytes. T05 is now
-eligible; integrated orchestration and verification remain unstarted.
-Foundations and milestones remain In Progress with their other epics required.
+reported separately from wire traffic. BW-003 and all five tickets are Complete.
+The --suite all command joins content evidence, deterministic context, redacted
+diagnostics and raw measurements twice in eight fresh isolated Godot projects.
+Two independent complete runs, aggregate failure controls and clean recovery are
+retained with 87 Python regressions, content admission, native/exported server
+smoke, client exclusion inspection and test-control launch rejection evidence.
+BW-095 and BW-097 are now Dependency-ready; BW-012 still requires its other hard
+prerequisites. Foundations and milestones remain In Progress. This bounded probe
+certifies no connected-client, gameplay, durability, wire-network or capacity work.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages
 cover milestones, architectural decisions, feature coverage and progress upkeep.

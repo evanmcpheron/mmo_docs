@@ -36,6 +36,12 @@ class RoadmapTests(unittest.TestCase):
             ticket['verified_evidence'] = []
             ticket['blockers'] = []
 
+    def reset_epic_progress(self):
+        for epic in self.data['epics']:
+            epic['status'] = 'Not Started'
+            epic['verified_evidence'] = []
+            epic['blockers'] = []
+
     def test_published_registry_and_static_page_are_current(self):
         self.assertEqual([], self.errors(generated=True))
 
@@ -139,11 +145,8 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('evidence result must be Passed or Failed' in e for e in self.errors()))
 
     def test_ticket_planning_and_status_do_not_promote_epic_progress(self):
-        self.by_id['BW-001']['status'] = 'Not Started'
-        for ticket in self.data['tickets']:
-            ticket['status'] = 'Not Started'
-            ticket['verified_evidence'] = []
-            ticket['blockers'] = []
+        self.reset_epic_progress()
+        self.reset_ticket_progress()
         before = progress(self.data['epics'])
         self.data['tickets'][0]['status'] = 'In Progress'
         self.assertEqual(before, progress(self.data['epics']))
@@ -229,6 +232,7 @@ class RoadmapTests(unittest.TestCase):
         self.assertEqual([], self.errors())
 
     def test_status_and_blocker_rules(self):
+        self.reset_epic_progress()
         self.reset_ticket_progress()
         self.data['epics'][0]['status'] = 'Done'
         self.assertTrue(any('invalid status' in e for e in self.errors()))
@@ -259,11 +263,8 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('complete hard prerequisites' in e for e in self.errors()))
 
     def test_progress_changes_all_derived_views_without_duplicate_status(self):
+        self.reset_epic_progress()
         self.reset_ticket_progress()
-        for epic in self.data['epics']:
-            epic['status'] = 'Not Started'
-            epic['verified_evidence'] = []
-            epic['blockers'] = []
         self.complete('BW-001')
         self.assertEqual([], self.errors())
         overall = progress(self.data['epics'])

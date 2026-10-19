@@ -1,0 +1,7020 @@
+{
+  "suite": "metrics",
+  "source_context": "fixtures/runtime_fixtures/context.json",
+  "source_sha256": "175e2459d75a22f1b636ea475560a8f8378a727282bc3ef5ab97f85b75fbe6ee",
+  "run_evidence": {
+    "status": "unexecuted"
+  },
+  "cases": [
+    {
+      "id": "idle",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": false,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "6b6fa75179e275f55491439284fec600db7c683efe3456061bd8c921a225908b",
+      "scenario_sha256": "a07a86eec8bd1ffd1b8780283b776ad48ff7ca8acf845a5fc063c0ba2773b146"
+    },
+    {
+      "id": "active",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0.1,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 0.3,
+          "command_sequence": 3
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 3,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0.1,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0.3,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 3,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "4304c17d3a76ac50ebdcf5f9b3e04a0c823f0189c2c9927938b38d3dc11099e4",
+      "scenario_sha256": "bc544b58dc53c43642560e1db6623b37f1eba2ba120ba482eb10066d643aa666"
+    },
+    {
+      "id": "queued-burst",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 3
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 4
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 5
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 6
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 6,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 4,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 5,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 6,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 6,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "deccaf5a3d59cb0b6354de64c99d0c2b5ca9094cfb6c48868713a1fb59eaab76",
+      "scenario_sha256": "eba9780d01c8fe71a1b959184c962c8f4cf2dc9abad65464cc6a2611cad9c44a"
+    },
+    {
+      "id": "idle-reset",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": false,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "6b6fa75179e275f55491439284fec600db7c683efe3456061bd8c921a225908b",
+      "scenario_sha256": "8d2fbe11b8c59fadcf3ab17521ff1741d10f84331fadf5cf0a8203d992dd8b7f"
+    },
+    {
+      "id": "unequal-recipients",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 3
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 4
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 5
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 6
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 6,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 4,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 5,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 6,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 6,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "277286004a5c9c0ed30ac40cf85800e9047ef53efd25b84d8f1f313b048d3cf2",
+      "scenario_sha256": "aa014d8a501647ef6338f7d56428cfe3914f2628f6142d35b8a03ed08decba1b"
+    },
+    {
+      "id": "zero-client",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": []
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 3
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 3,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 3,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "f84308b0c80d28247a8ca49d56eefec022233661b9db88ac04a468dccbbac0d1",
+      "scenario_sha256": "95911b503ba07f909b5dd0f7899adb7a224c0139f3ed9bf37e7e783679130807"
+    },
+    {
+      "id": "empty-window",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 0,
+        "measurement_ticks": 0,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": false,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "91ecd603b98643f02bde3b3db4ae68c6f0cd4ff6c1171e0a388e30ab8f841b3e",
+      "scenario_sha256": "711332f8cdeec824ee94ecc904a238da7e8e246c2ce38e1f3f0b94c10ef0aab2"
+    },
+    {
+      "id": "warmup-only",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 0,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": false,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "31f57c5443d493fb06029aa8e071d20d24be9c36aaf18b8305ba0178d87716ac",
+      "scenario_sha256": "a508fe16a15186cf522a3f2b54a02498436d07f9c37711d97f61df04723d0f64"
+    },
+    {
+      "id": "repeated-command",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0.1,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 2,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 1,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0.1,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 2,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "4f080c5399fb0acec39f21f99ae4a8569a8eb21afb7ca053ed19d985e71944fc",
+      "scenario_sha256": "9831ba6fb72d7abf1104ad93dacfca63019b69591dd78837a1ca20ed59c031e0"
+    },
+    {
+      "id": "partially-drained",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 2,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 3
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 4
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 2,
+        "queue_depth": 2,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 4,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 2,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "a91f4a7b7b52cfdfae0b2a0a319cdefbd7f771ae60b98e46a5144ba7e9ce3a21",
+      "scenario_sha256": "f8a9c9172013033a2ba94e06e34aa84d84614b0fd0a84135e78302a6e746c986"
+    },
+    {
+      "id": "future-arrivals",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 2,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0.5,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 1,
+        "queue_depth": 0,
+        "pending_arrivals": 1
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 1,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "4c10df6e8f9ab74ce876ab5c3345c445f1d6077368d41f66929ae50a7fca7253",
+      "scenario_sha256": "af41a1ddadb54718ae9e46be88ff1ff2076fa20e54ddd170853b66dfde9353b7"
+    },
+    {
+      "id": "maximum-bounds",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 0,
+        "measurement_ticks": 16,
+        "tick_interval_seconds": 0.5,
+        "commands_per_tick": 16,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0.0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0.5,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 1.0,
+          "command_sequence": 3
+        },
+        {
+          "at_seconds": 1.5,
+          "command_sequence": 4
+        },
+        {
+          "at_seconds": 2.0,
+          "command_sequence": 5
+        },
+        {
+          "at_seconds": 2.5,
+          "command_sequence": 6
+        },
+        {
+          "at_seconds": 3.0,
+          "command_sequence": 7
+        },
+        {
+          "at_seconds": 3.5,
+          "command_sequence": 8
+        },
+        {
+          "at_seconds": 4.0,
+          "command_sequence": 9
+        },
+        {
+          "at_seconds": 4.5,
+          "command_sequence": 10
+        },
+        {
+          "at_seconds": 5.0,
+          "command_sequence": 11
+        },
+        {
+          "at_seconds": 5.5,
+          "command_sequence": 12
+        },
+        {
+          "at_seconds": 6.0,
+          "command_sequence": 13
+        },
+        {
+          "at_seconds": 6.5,
+          "command_sequence": 14
+        },
+        {
+          "at_seconds": 7.0,
+          "command_sequence": 15
+        },
+        {
+          "at_seconds": 7.5,
+          "command_sequence": 16
+        }
+      ],
+      "mutations": [
+        {
+          "operation": "set",
+          "path": [
+            "world",
+            "probe_entities"
+          ],
+          "value": [
+            "probe-a",
+            "probe-b",
+            "probe-c",
+            "probe-d",
+            "probe-e",
+            "probe-f",
+            "probe-g",
+            "probe-h"
+          ]
+        }
+      ],
+      "expected": {
+        "rejection": null,
+        "counter": 16,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 1.0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 1.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 4,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 2.0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 5,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 2.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 6,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 3.0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 7,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 3.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 8,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 4.0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 9,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 4.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 10,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 5.0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 11,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 5.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 12,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 6.0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 13,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 6.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 14,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 7.0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 15,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 7.5,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 16,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 16,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e",
+          "probe-f",
+          "probe-g",
+          "probe-h"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "c2e38f714355e52967f3bfa118993664ffde6c2528c47a1d9c6c28f37ba7425c",
+      "scenario_sha256": "af21081cef862cb889b0e80484d17e28a924faef0f0553e615aec1f13697911e"
+    },
+    {
+      "id": "too-many-ticks",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 16,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "901dfb751137db5cc6a01aabbd39602d66f5c86320aa27d6663e8741cd28fa4e",
+      "scenario_sha256": "fe4009e8dedd48847e0bde4b43db9d61316c083e9085f016e3fb4ec56d546e57"
+    },
+    {
+      "id": "negative-ticks",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": -1,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "defad1a2df123c35b148480f15774320735ecbe894663bba43cbf110997c44eb",
+      "scenario_sha256": "02724f3217a9e39fcbb77f19b7d92d0ca6ee29c367bf184d35e4df42c493e0b7"
+    },
+    {
+      "id": "fractional-ticks",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 1.5,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "6231ecfe3d58a7c0c00c0d0d7b394bd0c850441fb422bae3a36f78c93c85964d",
+      "scenario_sha256": "d3e36a4a3956f61050e00ba73bca79480c17e51dbeb626d33ae65ac8797c5932"
+    },
+    {
+      "id": "wrong-tick-type",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": true,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_number",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "31930b6bec20c1443b1330fa090d3d60a7dc202cef3b78fee29f7d290c91aa7b",
+      "scenario_sha256": "50865f5da99e7759edfb542c0d0f892a6e67330429c5b984589dccf1398a119e"
+    },
+    {
+      "id": "zero-drain-bound",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 0,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "11318f42439f6d08df699a539ba2ff19b1e7f23720ff99fa4ed574934bf722bf",
+      "scenario_sha256": "0c8fd8eb230bf69612e87a826b25c7b59207728bd2df9137d8604b14c7676e4a"
+    },
+    {
+      "id": "zero-interval",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "19cc0c5484613e2f4abe920cb671c0bfca0d1b3d253b099488232bdff779b673",
+      "scenario_sha256": "4e0673408ded777108fb7e7278174d322730f5dcb57fbe4d10bc66339eced633"
+    },
+    {
+      "id": "excessive-interval",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "0b02dcbf1eb43184d67d01f557374269c24c0ccfa6a28f385be23c81979ce81b",
+      "scenario_sha256": "7a53ec4873f5ef1b55703337a7160d9f2546b9fdc84592f76f2348de1cc90471"
+    },
+    {
+      "id": "wrong-submit-type",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": 1,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_type",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "64cd7161438186fc221ebddb624ca12d0c01ca051e6d8b6eae4552e35ea3a240",
+      "scenario_sha256": "b61a2432ecd4f3b20aac02d42a3684c03db2ed1b2f098e5779a10a1f96d1f6e2"
+    },
+    {
+      "id": "unknown-field",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ],
+        "database_latency_ms": 0
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_fields",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "43e1bb7cb1e1d9988f7a86d5d4d78e200910d619aa6a8425aa087bc99a21ae1f",
+      "scenario_sha256": "affcfd70fe7c81a5a01846bb6d9a1e9506aa197baa3515f4cc611c427219e466"
+    },
+    {
+      "id": "missing-field",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [
+        {
+          "operation": "erase",
+          "path": [
+            "workload",
+            "measurement_ticks"
+          ]
+        }
+      ],
+      "expected": {
+        "rejection": "measurement_fields",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "c83be886d0a8f66072cfd739d1b35e15a2125766e6269b945c1dffcd4ac42c43",
+      "scenario_sha256": "17ba31ae04ff5ad992ebae7b678f2e58341a368d7d8b119896957c7aa48f10ea"
+    },
+    {
+      "id": "too-many-recipients",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-c",
+            "probe_entities": []
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "02f2169abcfa1148df961dd72ad27a3f03bc14e450abe6c3421e90a50ea8129a",
+      "scenario_sha256": "7ed5b666795dde197f3c003211463bdbdb367edc9ba5a047f4895dd14a142458"
+    },
+    {
+      "id": "duplicate-recipient",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_recipient",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "4ef22fb4c8bc3bdb1d55adf00cb5e4888bfa29c4f41519b316be4fb282e0bfce",
+      "scenario_sha256": "bd198eccaac4a634ed2a6e20bb36d795e754aafd7bd2a0cf13917d8e21a3dfa2"
+    },
+    {
+      "id": "unknown-entity",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "unknown"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_recipient",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "3099c0bdc2df58dc8a1836a426c9f4ba161105efb43258ade397d4ba134f4755",
+      "scenario_sha256": "6f98eec9f9f5da02a5fccc6ed8ff42a355844d9c00bcb1f8fc91e17c475d35d4"
+    },
+    {
+      "id": "duplicate-entity",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-a"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_recipient",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "d8eec7677ef3dc8fc89e4235724b12c6bb4adc86710301c9c7ab397cfb7a4808",
+      "scenario_sha256": "3a6027e09591ea07c417ba347fa704ddbc6f3c47aeb60ea08a2c13d1b02b6503"
+    },
+    {
+      "id": "malformed-recipient",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          null
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_recipient",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "00947d4cd5486b36ecda67b8b55c6a438bf75028cf71787405bce9efecc6c034",
+      "scenario_sha256": "8ea1105237e45e3e4d3d19b2fdff66f646ef295075c4bc003837880917359a3d"
+    },
+    {
+      "id": "long-recipient-id",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "βββββββββββββββββββββββββββββββββ",
+            "probe_entities": []
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_recipient",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "23c502b177a8506c71526c3d49121fa7664bdd6e0f6e9ac0eb2e9dee5f19099d",
+      "scenario_sha256": "98e3289a0f1c0a64e521bedb4d15e3b505daa9de043bb250694e4845e8df8d50"
+    },
+    {
+      "id": "empty-entities",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [
+        {
+          "operation": "set",
+          "path": [
+            "world",
+            "probe_entities"
+          ],
+          "value": []
+        }
+      ],
+      "expected": {
+        "rejection": "bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "58e5a3161d31ddc3627b66b3e776995c4f2bb1352dc0322ed1e602b6ff1292ca",
+      "scenario_sha256": "0ae92bd2f7cdb901b34b87c8e422a894651bcac25984f95c746d2062093be5e5"
+    },
+    {
+      "id": "too-many-entities",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [
+        {
+          "operation": "set",
+          "path": [
+            "world",
+            "probe_entities"
+          ],
+          "value": [
+            "probe-a",
+            "probe-b",
+            "probe-c",
+            "probe-d",
+            "probe-e",
+            "probe-f",
+            "probe-g",
+            "probe-h",
+            "probe-i"
+          ]
+        }
+      ],
+      "expected": {
+        "rejection": "bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e",
+          "probe-f",
+          "probe-g",
+          "probe-h",
+          "probe-i"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "086c14c09b57c411d6705465f662db5e202c97e9064eaae1e508b9eee440082d",
+      "scenario_sha256": "2438e4a6b8b6a488e51609672acab7bfe5e3d834f80be5dba30ca7abe64f8cb4"
+    },
+    {
+      "id": "too-many-steps",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 3
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 4
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 5
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 6
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 7
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 8
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 9
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 10
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 11
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 12
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 13
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 14
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 15
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 16
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 17
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": "bounds",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 4,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 5,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 6,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 7,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 8,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 9,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 10,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 11,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 12,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 13,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 14,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 15,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 16,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 17,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "475a451a1a09ca624583755ca869ed81ef18840a574323b2c284eb5edb7082bc",
+      "scenario_sha256": "0adda31cfc853a80599df610537830ae3466389ef57725b05747aa03ceeba69d"
+    },
+    {
+      "id": "malformed-step",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [
+        {
+          "operation": "erase",
+          "path": [
+            "input",
+            "steps",
+            0,
+            "payload"
+          ]
+        }
+      ],
+      "expected": {
+        "rejection": "oneOf",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "a1d4e26c7c2a9961dbd47c4ae6786d058d3407d00882daed179a309fdb41bdc9",
+      "scenario_sha256": "cece5f3834cfdee85ff4b8d6642a00188100b92c38c8540a276c402546c39bb7"
+    },
+    {
+      "id": "nonfinite-tick-interval-seconds-inf",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_number",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "nonfinite": {
+        "field": "tick_interval_seconds",
+        "value": "inf"
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "1f36d60ca4e9fd594b0470d5623c98315bc3f6a2d5211da4cd25e097bedd2118",
+      "scenario_sha256": "698467f01ddd8025561d363948591d626e15123a9360116c0aba8f062a964210"
+    },
+    {
+      "id": "nonfinite-tick-interval-seconds-nan",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_number",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "nonfinite": {
+        "field": "tick_interval_seconds",
+        "value": "nan"
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "086230190280a56f2a8068af401bccf063920dbf9ec0330af3a7bcb9d71382c0",
+      "scenario_sha256": "3085bfd42429de7390a3d4897d5f8fe0fe66fc7221200eaeb670ecb6765af5ae"
+    },
+    {
+      "id": "nonfinite-measurement-ticks-inf",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_number",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "nonfinite": {
+        "field": "measurement_ticks",
+        "value": "inf"
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "a928d5131b0d935e213527f40af8276b181aaff39cd97a4efd6fab9a806671c8",
+      "scenario_sha256": "a16c5fbb9bbd4b0683aaab5d1c6585c082beab141c648fade58e9692388de702"
+    },
+    {
+      "id": "nonfinite-measurement-ticks-nan",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": "measurement_number",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "nonfinite": {
+        "field": "measurement_ticks",
+        "value": "nan"
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "6669022e137c997751277c7a81c27d0eae39f41f4ec89538207fc87f9c067b68",
+      "scenario_sha256": "daf386f19ba0efc33cbf2d16d2ec02295e6386b95e5f4fad33e72c8d81a3c176"
+    },
+    {
+      "id": "nonfinite-at-seconds-inf",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": "oneOf",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "nonfinite": {
+        "field": "at_seconds",
+        "value": "inf"
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "b1c77d4fe56e523ca00ea545d2efebb13c1b9e8982132383df6978f3f665975f",
+      "scenario_sha256": "fbaf8cb456f23237cc8df38d8be801eb6d362e5d788e2650e90dedc0c6228840"
+    },
+    {
+      "id": "nonfinite-at-seconds-nan",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0,
+          "command_sequence": 2
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": "oneOf",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "nonfinite": {
+        "field": "at_seconds",
+        "value": "nan"
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "e894fa60b83ce1adfc273edfef847e83f32eaa48a4e2c3bcf492aff357d42679",
+      "scenario_sha256": "fa9590004decc21f6544d06163c53f02a24b4f7e2194e221b4a8057488dae7ce"
+    },
+    {
+      "id": "duplicate-world-entity",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [
+        {
+          "operation": "set",
+          "path": [
+            "world",
+            "probe_entities"
+          ],
+          "value": [
+            "probe-a",
+            "probe-a"
+          ]
+        }
+      ],
+      "expected": {
+        "rejection": "duplicate_entity",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-a"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "0c9a3ce58a4d60887641365b76612162c0ab2746778b2ca1ec8e3ce97f9033de",
+      "scenario_sha256": "c6a0da05fd7833fcffb85f9fdc1513370c475a647d073df34701f202772ff28f"
+    },
+    {
+      "id": "invalid-world-entity",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": [
+              "probe-a",
+              "probe-b",
+              "probe-c",
+              "probe-d",
+              "probe-e"
+            ]
+          }
+        ]
+      },
+      "commands": [],
+      "mutations": [
+        {
+          "operation": "set",
+          "path": [
+            "world",
+            "probe_entities"
+          ],
+          "value": [
+            ""
+          ]
+        }
+      ],
+      "expected": {
+        "rejection": "minLength",
+        "counter": 0,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 0,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          ""
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "5c7cccc6968f9ef4efc700a6d201e0cb2dda6a3578e0a53b46f07d45810a6a1d",
+      "scenario_sha256": "2540acf340f59c6c044fdd522547fbb59753bb8332700ccbfea4c7b1a8593646"
+    },
+    {
+      "id": "no-subscribed-entities",
+      "scenario_revision": "1",
+      "workload": {
+        "warmup_ticks": 1,
+        "measurement_ticks": 6,
+        "tick_interval_seconds": 0.1,
+        "commands_per_tick": 1,
+        "submit_initial_command": true,
+        "recipients": [
+          {
+            "id": "logical-a",
+            "probe_entities": []
+          },
+          {
+            "id": "logical-β",
+            "probe_entities": []
+          }
+        ]
+      },
+      "commands": [
+        {
+          "at_seconds": 0,
+          "command_sequence": 1
+        },
+        {
+          "at_seconds": 0.1,
+          "command_sequence": 2
+        },
+        {
+          "at_seconds": 0.3,
+          "command_sequence": 3
+        }
+      ],
+      "mutations": [],
+      "expected": {
+        "rejection": null,
+        "counter": 3,
+        "queue_depth": 0,
+        "pending_arrivals": 0
+      },
+      "input": {
+        "world_context": {
+          "server_tick": 40,
+          "server_time": "2026-10-19T12:00:00.125Z",
+          "owner_epoch": 7,
+          "world_configuration_id": "probe-same-floor-v1",
+          "random_seed": "opaque/seed/α:original",
+          "visible_entities": [],
+          "npc_states": [],
+          "parties": []
+        },
+        "initial_command": {
+          "schema": "ability_command_v2",
+          "session_epoch": 7,
+          "command_sequence": 1,
+          "ability_id": "probe-only-action",
+          "build_version": 1,
+          "content_version": "2.2.1-design",
+          "target_entity_id": null,
+          "aim_point": null,
+          "aim_direction": null
+        },
+        "steps": [
+          {
+            "kind": "ability_command",
+            "at_seconds": 0.1,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 2,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          },
+          {
+            "kind": "ability_command",
+            "at_seconds": 0.3,
+            "payload": {
+              "schema": "ability_command_v2",
+              "session_epoch": 7,
+              "command_sequence": 3,
+              "ability_id": "probe-only-action",
+              "build_version": 1,
+              "content_version": "2.2.1-design",
+              "target_entity_id": null,
+              "aim_point": null,
+              "aim_direction": null
+            }
+          }
+        ],
+        "assertions": [
+          {
+            "kind": "scope",
+            "expected_epoch": 7,
+            "expected_location": {
+              "zone_id": "probe-zone",
+              "instance_id": "probe-instance",
+              "floor_id": "probe-floor",
+              "position": {
+                "x": 1,
+                "y": 1
+              }
+            }
+          },
+          {
+            "kind": "idempotency",
+            "expected_effect_count": 3,
+            "expected_receipt_id": null
+          }
+        ]
+      },
+      "world": {
+        "id": "probe-same-floor-v1",
+        "owner_location": {
+          "zone_id": "probe-zone",
+          "instance_id": "probe-instance",
+          "floor_id": "probe-floor",
+          "position": {
+            "x": 1,
+            "y": 1
+          }
+        },
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ],
+        "collision": {
+          "tile_width_units": 1,
+          "walkable_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "blocked_cells": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      "input_sha256": "5e998705997fba0234a37ca45290072c6302ad8a55a6a64a2d16a9b487c74c14",
+      "scenario_sha256": "24fbac211be9334d4347c573b0bd427ac346b360ef962dfc9c358989789ebf39"
+    }
+  ],
+  "workload": {
+    "warmup_ticks": 1,
+    "measurement_ticks": 6,
+    "tick_interval_seconds": 0.1,
+    "commands_per_tick": 1,
+    "submit_initial_command": true,
+    "recipients": [
+      {
+        "id": "logical-a",
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ]
+      },
+      {
+        "id": "logical-β",
+        "probe_entities": [
+          "probe-a",
+          "probe-b",
+          "probe-c",
+          "probe-d",
+          "probe-e"
+        ]
+      }
+    ]
+  },
+  "world": {
+    "id": "probe-same-floor-v1",
+    "owner_location": {
+      "zone_id": "probe-zone",
+      "instance_id": "probe-instance",
+      "floor_id": "probe-floor",
+      "position": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    "probe_entities": [
+      "probe-a",
+      "probe-b",
+      "probe-c",
+      "probe-d",
+      "probe-e"
+    ],
+    "collision": {
+      "tile_width_units": 1,
+      "walkable_cells": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "blocked_cells": [
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    }
+  },
+  "binding": {
+    "session": {
+      "character_id": "probe-owner",
+      "session_epoch": 7,
+      "zone_id": "probe-zone",
+      "instance_id": "probe-instance",
+      "floor_id": "probe-floor"
+    },
+    "ability_id": "probe-only-action",
+    "content_version": "2.2.1-design",
+    "policy": {
+      "mode": "self",
+      "relation": "self",
+      "range_units": 0,
+      "radius_units": 0,
+      "target_cap": 1,
+      "floor_policy_id": "probe-same-floor",
+      "line_of_sight_policy_id": "probe-collision",
+      "revalidate": [],
+      "input_kind": "none"
+    }
+  },
+  "context": {
+    "content_version": "2.2.1-design",
+    "rules_version": "probe-rules-v1"
+  },
+  "world_sha256": "f5845f80abff04386077d940427bc44aedcbb1c524f1c2bd84ff37b24334f47e",
+  "context_sha256": "00e080d946861585c109c173ebba82418872e9608d8a25384c2380ad0dea0272",
+  "policy": {
+    "probe_only": true,
+    "entity_scope": "seeded disposable probe entities, not production entities",
+    "client_scope": "logical recipients; no connected clients or network transport",
+    "byte_measurement": "exact serialized UTF-8 payload bytes; not wire traffic or protocol overhead",
+    "direction": "probe to logical recipient",
+    "byte_units": "bytes per declared measurement window",
+    "aggregation": "sum captures separately per recipient, then sum totals; no client average or rate",
+    "serialization": "sorted-key compact JSON, literal UTF-8, integer fields, no trailing newline",
+    "clock": "Time.get_ticks_usec monotonic wall clock; microsecond resolution can quantize an actual tick to zero",
+    "tick_units": "milliseconds of monotonic elapsed processing, not CPU time or scheduling interval",
+    "tick_scope": "enqueue, drain, command processing and recipient serialization; excludes sample recording, report and preflight",
+    "schedule": "logical offsets; executed without sleeping, not a real-time simulation rate",
+    "window": "measurement_ticks after warmup_ticks idle ticks; all raw ticks retained; warmup excluded from summaries",
+    "percentiles": "nearest rank: sorted[ceil(p*n)-1], p=0.50/0.95/0.99; empty is null",
+    "queue": "actual FIFO consumed by probe; depth sampled before enqueue, before drain and after drain",
+    "unsupported": [
+      "wire traffic",
+      "RTT",
+      "database latency",
+      "subscriptions",
+      "settlement retries",
+      "production simulation ticks",
+      "bootstrap heartbeat timing",
+      "player capacity"
+    ]
+  },
+  "run_id": "91d74912e1ca426785b831ce88393448",
+  "execution_started_at": "2026-10-19T19:42:04.706425+00:00",
+  "environment": {
+    "operating_system": "Darwin",
+    "os_version": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "cpu_architecture": "arm64",
+    "logical_cpu_count": 12,
+    "hardware": {
+      "model": {
+        "status": "observed",
+        "value": "Mac14,6"
+      },
+      "physical_memory_bytes": {
+        "status": "observed",
+        "value": "34359738368"
+      }
+    }
+  }
+}

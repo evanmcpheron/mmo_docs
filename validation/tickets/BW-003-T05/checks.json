@@ -1,0 +1,65 @@
+[
+  {
+    "name": "toolchain",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/verify_toolchain.py"
+    ],
+    "exit_status": 0,
+    "result": "Passed",
+    "log": "toolchain.log"
+  },
+  {
+    "name": "snapshot",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/extract_content_contracts.py",
+      "--check"
+    ],
+    "exit_status": 0,
+    "result": "Passed",
+    "log": "snapshot.log"
+  },
+  {
+    "name": "admission",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_content_admission.py",
+      "--suite",
+      "all",
+      "--output",
+      "artifacts/t05-validation/admission"
+    ],
+    "exit_status": 0,
+    "result": "Passed",
+    "log": "admission.log"
+  },
+  {
+    "name": "server-smoke",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_baseline.py",
+      "--role",
+      "server",
+      "--headless",
+      "--config",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/fixtures/config/server.valid.json",
+      "--smoke"
+    ],
+    "exit_status": 0,
+    "result": "Passed",
+    "log": "server-smoke.log"
+  },
+  {
+    "name": "isolation",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_baseline.py",
+      "--output",
+      "artifacts/t05-validation/isolation"
+    ],
+    "exit_status": 0,
+    "result": "Passed",
+    "log": "isolation.log"
+  }
+]

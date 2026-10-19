@@ -431,7 +431,7 @@
           "href": "guide/networking.html"
         }
       ],
-      "status": "In Progress",
+      "status": "Complete",
       "blockers": [],
       "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests; production dashboards and retention policy can wait.",
       "verified_evidence": [
@@ -470,6 +470,18 @@
           "revision": "89ba873c7ff0e64539f5b312e2ab376abb0c751f; actual workload records and prior evidence applicability review.",
           "result": "Passed",
           "summary": "AC4 is verified within the accepted bounded probe/payload scope; AC1/2/3 evidence remains applicable with passing context/diagnostic/admission regressions. T04 is Complete and T05 is now dependency-eligible. BW-003 stays In Progress pending T05 integrated orchestration/verification. Downstream epics, Foundations and milestones retain their unfinished status."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T05/epic-review.json",
+          "revision": "d8062a199a60ee4072dfe8ae5d018d67521028cd; integrated run identities and final provenance applicability retained in verification.json.",
+          "result": "Passed",
+          "summary": "Explicit final review verifies all four epic criteria with actual integrated content evidence, deterministic context, redacted action diagnostics and bounded tick/entity/payload/queue measurements. All five tickets and BW-001/BW-002 are Complete; no blockers remain. BW-095 and BW-097 become dependency-ready. BW-012 still needs BW-011/BW-013/BW-028; Foundations and milestones remain In Progress. Scope excludes connected clients, gameplay, wire traffic, durability and production capacity."
         }
       ],
       "phase": "phase-foundations"
@@ -7350,7 +7362,7 @@
       "id": "BW-003-T05",
       "parent_epic": "BW-003",
       "title": "Verify the complete fixture evidence path in one repeatable run",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-003-AC-1",
         "BW-003-AC-2",
@@ -7378,15 +7390,15 @@
         "Existing content-admission, Python regressions and isolated server smoke pass with no accidental gameplay/test-control enablement. The parent review covers all four BW-003 criteria within the explicitly selected probe scope and records all remaining limitations before any status promotion."
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root. The runtime-fixture checker and suite below are implementation deliverables, not existing commands.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite all\npython3 -m unittest discover -s tools -p 'test_*.py'",
+        "launch": "Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.\npython3 tools/verify_toolchain.py\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_runtime_fixtures.py --suite all\npython3 -m unittest discover -s tools -p 'test_*.py'",
         "setup": [
           "Use Python 3.10+ and the native macOS ARM64 Godot executable pinned in tools/toolchain.lock.json; the checker resolves that executable rather than assuming godot is on PATH. Keep sibling mmo_docs canonical sources available. No provider, database or network service is required.",
           "Complete T01-T04 and use their committed fixtures/runners. Keep existing server.valid.json and content-admission corpora unchanged; choose fresh evidence directories for all runs and controls."
         ],
         "actions": [
           "Run the launch block twice and inspect aggregate manifest links, exact input/source hashes, same-context comparison, diagnostic sample and raw measurement reports.",
-          "Run --suite all --control assertion-failure and --suite all --control missing-report in fresh outputs, then a clean --suite all. These aggregate controls are deliverables of this ticket.",
-          "Run python3 tools/check_content_admission.py --suite all and python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke; review logs and the applicable client-export isolation checks.",
+          "Run --suite all --control assertion-failure, --suite all --control missing-report, --suite all --control import-failure and --suite all --control startup-failure in fresh outputs, then a clean --suite all. Controls affect only first/evidence; inspect its execution_state, assertion_result, verification_stage and raw logs. All four controls must return nonzero; clean recovery returns zero.",
+          "Run python3 tools/check_content_admission.py --suite all and python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke; review logs and the applicable client-export isolation checks. Run python3 tools/check_baseline.py --output artifacts/t05-isolation to build isolated exports, inspect client exclusions and smoke the packaged server. Choose a new output name if that path already exists.",
           "Review the four epic-criterion mappings and prerequisite applicability, then rebuild/check roadmap and inventory views using DOCS_ROOT/README.txt. Keep actual test evidence separate from documentation-validation results."
         ],
         "expected_results": [
@@ -7395,7 +7407,8 @@
         ],
         "reset": [
           "Let bounded child processes finish; the checker must stop any timed-out child and discard its disposable project. Probe state exists only in that process.",
-          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution."
+          "Keep prior evidence directories intact and rerun with a fresh default output directory. Restore any deliberately modified fixture only in its disposable copy; do not edit canonical sources or reuse prior results as a new execution.",
+          "Each aggregate invocation owns two rounds of four fresh child projects. The output directory must be new; existing evidence is preserved and rejected. No canonical fixture or baseline scene is modified by aggregate controls."
         ]
       },
       "completion_evidence": "Retain two fresh aggregate runs, negative controls, a sanitized diagnostic/measurement sample, Python/admission/bootstrap/isolation regression results and an explicit BW-003 criterion-by-criterion review. Record tested source revision/hashes and scope limitations; reconcile and regenerate every affected current status/readiness view.",
@@ -7442,7 +7455,20 @@
         }
       ],
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T05/verification.json",
+          "revision": "d8062a199a60ee4072dfe8ae5d018d67521028cd; actual complete aggregate runs, source/input hashes and final provenance applicability in the linked verification report.",
+          "result": "Passed",
+          "summary": "Two independent all runs each verify eight fresh isolated projects and six deterministic comparisons. Assertion/missing-report/import/startup controls fail distinctly; clean recovery and output preservation pass. All seven admission suites, 87 Python regressions, native/exported smoke, client exclusion inspection and 20 test-control launch rejections pass. Parent review closes all four BW-003 criteria within the accepted local probe/payload scope."
+        }
+      ]
     }
   ]
 }

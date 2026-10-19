@@ -1,0 +1,764 @@
+{
+  "description": "Bounded content-admission execution only; no gameplay or readiness certification. Source expectations remain immutable.",
+  "source_corpus": "fixtures/content_admission/structure.json",
+  "source_sha256": "389f3ac5b60e3b847648d5f2a2ccb6205948a3af3369e28a88ea0eff57c07ff7",
+  "context": {
+    "content_version": "2.2.0-design",
+    "rules_version": "fixture-rules-1",
+    "database_revision": "fixture-database-1"
+  },
+  "cases": [
+    {
+      "id": "safe-static-only",
+      "source_case": "safe-static-only",
+      "scenario_revision": "1",
+      "specification": {
+        "fixture_id": "structure.safe-static-only",
+        "definition_id": "fixture.bound",
+        "expected_findings": [],
+        "scenario": "validation",
+        "content_version": "2.2.0-design",
+        "rules_version": "fixture-rules-1",
+        "run_evidence": {
+          "status": "unexecuted",
+          "runner_id": null,
+          "completed_at": null,
+          "content_version": "2.2.0-design",
+          "rules_version": "fixture-rules-1",
+          "findings": []
+        }
+      },
+      "assertions": [
+        "expected-findings",
+        "candidate-availability",
+        "input-unchanged"
+      ],
+      "input": {
+        "records": {
+          "ResourceDefinition": [
+            {
+              "id": "fixture.rage",
+              "name": "Synthetic pool",
+              "maximum": null,
+              "gain_rule_ids": [
+                "fixture.gain"
+              ],
+              "shared_resource_id": null
+            }
+          ],
+          "ResourceGainRule": [
+            {
+              "id": "fixture.gain",
+              "resource_id": "fixture.rage",
+              "eligible_source_tags": [],
+              "gain_amount": 1,
+              "internal_cooldown_seconds": 0
+            }
+          ]
+        },
+        "context": {
+          "content_version": "2.2.0-design",
+          "rules_version": "fixture-rules-1",
+          "database_revision": "fixture-database-1"
+        },
+        "resolved": []
+      },
+      "fixture_sha256": "aede090400765983fb3816e6e0862be6a0a355152753e58a5a199b56c4cf842c",
+      "input_sha256": "3fcf63e50b459bedbc8f79d7d71314cf300df2383f3c1fbe59de1593885f3db8",
+      "scenario_sha256": "88e7cbf0d64f38c0260ad33f468f2ef766b4fe6f056b25022aea7c1e30af01ad"
+    },
+    {
+      "id": "gain-rule-reference",
+      "source_case": "gain-rule-reference",
+      "scenario_revision": "1",
+      "specification": {
+        "fixture_id": "structure.gain-rule-reference",
+        "definition_id": "fixture.bound",
+        "expected_findings": [
+          {
+            "code": "reference",
+            "path": "ResourceDefinition.fixture.rage.gain_rule_ids[0]",
+            "message": "Reject the invalid gain-rule-reference input without activation."
+          }
+        ],
+        "scenario": "validation",
+        "content_version": "2.2.0-design",
+        "rules_version": "fixture-rules-1",
+        "run_evidence": {
+          "status": "unexecuted",
+          "runner_id": null,
+          "completed_at": null,
+          "content_version": "2.2.0-design",
+          "rules_version": "fixture-rules-1",
+          "findings": []
+        }
+      },
+      "assertions": [
+        "expected-findings",
+        "candidate-availability",
+        "input-unchanged"
+      ],
+      "input": {
+        "records": {
+          "AbilityDefinition": [
+            {
+              "id": "ability.warrior.iron_cut",
+              "owner_id": "warrior",
+              "owner_kind": "class",
+              "level": 1,
+              "name": "Iron Cut",
+              "target_mode": "enemy_melee",
+              "effect": "Strike in melee and generate Rage on a successful connection.",
+              "previous_level": 1,
+              "profile_id": "M",
+              "execution": {
+                "name": "Martial generator",
+                "cast_seconds": 0,
+                "cooldown_seconds": 0,
+                "mana_cost_percent": 0,
+                "duration_seconds": 0,
+                "global_cooldown": true,
+                "effects": [
+                  {
+                    "operation": "DAMAGE",
+                    "power_coefficient": 0.55,
+                    "weapon_coefficient": 0.65
+                  }
+                ]
+              },
+              "base_range": 1.5,
+              "radius": 0,
+              "target_cap": 1,
+              "class_id": "warrior",
+              "factions": [
+                "good",
+                "evil"
+              ],
+              "timing_policy": "release_commit",
+              "target_revalidation": [
+                "relation",
+                "alive_or_revivable",
+                "same_floor",
+                "range_at_release",
+                "line_of_sight_at_release"
+              ],
+              "request_schema": "ability_command_v2",
+              "cost_policy": {
+                "mana_user_percent": 0,
+                "nonmana_user_units": 0,
+                "martial_energy_cost": 25
+              },
+              "content_status": "prototype_profile_assigned_bespoke_binding_review",
+              "review_note": "The numerical profile is explicit. The named secondary behavior and signature-resource hooks must be bound and verified before enabling this entry in a game server. Intent text does not execute."
+            },
+            {
+              "id": "fixture.bound",
+              "owner_id": "warrior",
+              "owner_kind": "class",
+              "level": 1,
+              "name": "Synthetic structural binding",
+              "target_mode": "enemy_melee",
+              "effect": "Strike in melee and generate Rage on a successful connection.",
+              "previous_level": 1,
+              "profile_id": "M",
+              "execution": {
+                "name": "Martial generator",
+                "cast_seconds": 0,
+                "cooldown_seconds": 0,
+                "mana_cost_percent": 0,
+                "duration_seconds": 0,
+                "global_cooldown": true,
+                "effects": [
+                  {
+                    "operation": "DAMAGE",
+                    "power_coefficient": 0.55,
+                    "weapon_coefficient": 0.65
+                  }
+                ]
+              },
+              "base_range": 1.5,
+              "radius": 0,
+              "target_cap": 1,
+              "class_id": "warrior",
+              "factions": [
+                "good",
+                "evil"
+              ],
+              "timing_policy": "release_commit",
+              "target_revalidation": [
+                "relation",
+                "alive_or_revivable",
+                "same_floor",
+                "range_at_release",
+                "line_of_sight_at_release"
+              ],
+              "request_schema": "ability_command_v2",
+              "cost_policy": {
+                "mana_user_percent": 0,
+                "nonmana_user_units": 0,
+                "martial_energy_cost": 25
+              },
+              "content_status": "prototype_profile_assigned_bespoke_binding_review",
+              "review_note": "The numerical profile is explicit. The named secondary behavior and signature-resource hooks must be bound and verified before enabling this entry in a game server. Intent text does not execute.",
+              "runtime_binding": {
+                "id": "fixture.binding",
+                "rules_version": "fixture-rules-1",
+                "targeting": {
+                  "mode": "enemy_melee",
+                  "relation": "enemy",
+                  "range_units": 1.5,
+                  "radius_units": 0,
+                  "target_cap": 1,
+                  "floor_policy_id": "same_floor",
+                  "line_of_sight_policy_id": "line_of_sight_at_release",
+                  "revalidate": [
+                    "relation",
+                    "alive_or_revivable",
+                    "same_floor",
+                    "range_at_release",
+                    "line_of_sight_at_release"
+                  ],
+                  "input_kind": "entity"
+                },
+                "timing": {
+                  "cast_seconds": 0,
+                  "channel_seconds": 0,
+                  "global_cooldown": true,
+                  "cooldown_family_id": "fixture.cooldown",
+                  "charges": 0,
+                  "recharge_seconds": 0,
+                  "commit_policy": "release_commit",
+                  "movement_allowed": true,
+                  "haste_scaled": false
+                },
+                "signature_rules": [
+                  "fixture.gain"
+                ],
+                "operations": [
+                  {
+                    "operation": "DAMAGE",
+                    "power_coefficient": 0.55,
+                    "weapon_coefficient": 0.65
+                  }
+                ],
+                "presentation_id": "fixture.presentation",
+                "allowed_talent_ids": [],
+                "cleanup_policy": {
+                  "cleanup_on_death": true,
+                  "cleanup_on_logout": true,
+                  "checkpoint_for_transfer": false
+                }
+              }
+            }
+          ],
+          "ResourceDefinition": [
+            {
+              "id": "fixture.rage",
+              "name": "Synthetic pool",
+              "maximum": null,
+              "gain_rule_ids": [
+                "missing"
+              ],
+              "shared_resource_id": null
+            },
+            {
+              "id": "fixture.alias",
+              "name": "Synthetic alias",
+              "maximum": null,
+              "gain_rule_ids": [
+                "fixture.gain"
+              ],
+              "shared_resource_id": "fixture.rage"
+            }
+          ],
+          "ResourceGainRule": [
+            {
+              "id": "fixture.gain",
+              "resource_id": "fixture.rage",
+              "eligible_source_tags": [],
+              "gain_amount": 1,
+              "internal_cooldown_seconds": 0
+            }
+          ],
+          "ClassDefinition": [
+            {
+              "id": "warrior",
+              "name": "Warrior fixture",
+              "ability_ids": [
+                "ability.warrior.iron_cut",
+                "fixture.bound"
+              ],
+              "armor": "Plate",
+              "baseline": "Synthetic structural context",
+              "factions": [
+                "good",
+                "evil"
+              ],
+              "resource": "Display only; never used for lookup",
+              "starting_primary_attribute": "strength",
+              "talent_ids": [],
+              "weakness": "No gameplay certification"
+            }
+          ],
+          "FactionDefinition": [
+            {
+              "id": "good",
+              "label": "good",
+              "classes": [
+                "warrior"
+              ],
+              "races": []
+            },
+            {
+              "id": "evil",
+              "label": "evil",
+              "classes": [
+                "warrior"
+              ],
+              "races": []
+            }
+          ],
+          "CooldownDefinition": [
+            {
+              "id": "fixture.cooldown",
+              "cooldown_seconds": 0,
+              "charges": 0,
+              "recharge_seconds": 0,
+              "haste_scaled": false
+            }
+          ],
+          "VisualPresentationDefinition": [
+            {
+              "id": "fixture.presentation",
+              "animation_event_key": "fixture.animation",
+              "telegraph_id": null,
+              "audio_effect_key": "fixture.audio",
+              "visual_facing_policy_id": "event_facing"
+            }
+          ]
+        },
+        "context": {
+          "content_version": "2.2.0-design",
+          "rules_version": "fixture-rules-1",
+          "database_revision": "fixture-database-1"
+        },
+        "resolved": [
+          {
+            "ability_id": "fixture.bound",
+            "content_version": "2.2.0-design",
+            "build_version": 1,
+            "targeting": {
+              "mode": "enemy_melee",
+              "relation": "enemy",
+              "range_units": 1.5,
+              "radius_units": 0,
+              "target_cap": 1,
+              "floor_policy_id": "same_floor",
+              "line_of_sight_policy_id": "line_of_sight_at_release",
+              "revalidate": [
+                "relation",
+                "alive_or_revivable",
+                "same_floor",
+                "range_at_release",
+                "line_of_sight_at_release"
+              ],
+              "input_kind": "entity"
+            },
+            "timing": {
+              "cast_seconds": 0,
+              "channel_seconds": 0,
+              "global_cooldown": true,
+              "cooldown_family_id": "fixture.cooldown",
+              "charges": 0,
+              "recharge_seconds": 0,
+              "commit_policy": "release_commit",
+              "movement_allowed": true,
+              "haste_scaled": false
+            },
+            "costs": [
+              {
+                "resource_id": "fixture.alias",
+                "amount": 0,
+                "reserve_until_release": true
+              }
+            ],
+            "effects": [
+              {
+                "operation": "DAMAGE",
+                "power_coefficient": 0.55,
+                "weapon_coefficient": 0.65
+              }
+            ],
+            "bindings_resolved": false,
+            "data_tests_passed": false,
+            "runtime_tests_passed": false,
+            "binding_id": "fixture.binding"
+          }
+        ]
+      },
+      "fixture_sha256": "ef7af35204dc22fef486ed7ba472c9471323a9255def0f4526b72e73be6e372c",
+      "input_sha256": "8328a1fdd1f04916f03f7309f947ce19ee10f760541b356892be695ea7d3df19",
+      "scenario_sha256": "43d7e378f1c85bb37b312aa55a96c7ce5ff9747caa0ef2cf1d65604f3d02cb3b"
+    },
+    {
+      "id": "negative-maximum",
+      "source_case": "negative-maximum",
+      "scenario_revision": "1",
+      "specification": {
+        "fixture_id": "structure.negative-maximum",
+        "definition_id": "fixture.bound",
+        "expected_findings": [
+          {
+            "code": "anyOf",
+            "path": "ResourceDefinition.fixture.rage.maximum",
+            "message": "Reject the invalid negative-maximum input without activation."
+          }
+        ],
+        "scenario": "validation",
+        "content_version": "2.2.0-design",
+        "rules_version": "fixture-rules-1",
+        "run_evidence": {
+          "status": "unexecuted",
+          "runner_id": null,
+          "completed_at": null,
+          "content_version": "2.2.0-design",
+          "rules_version": "fixture-rules-1",
+          "findings": []
+        }
+      },
+      "assertions": [
+        "expected-findings",
+        "candidate-availability",
+        "input-unchanged"
+      ],
+      "input": {
+        "records": {
+          "AbilityDefinition": [
+            {
+              "id": "ability.warrior.iron_cut",
+              "owner_id": "warrior",
+              "owner_kind": "class",
+              "level": 1,
+              "name": "Iron Cut",
+              "target_mode": "enemy_melee",
+              "effect": "Strike in melee and generate Rage on a successful connection.",
+              "previous_level": 1,
+              "profile_id": "M",
+              "execution": {
+                "name": "Martial generator",
+                "cast_seconds": 0,
+                "cooldown_seconds": 0,
+                "mana_cost_percent": 0,
+                "duration_seconds": 0,
+                "global_cooldown": true,
+                "effects": [
+                  {
+                    "operation": "DAMAGE",
+                    "power_coefficient": 0.55,
+                    "weapon_coefficient": 0.65
+                  }
+                ]
+              },
+              "base_range": 1.5,
+              "radius": 0,
+              "target_cap": 1,
+              "class_id": "warrior",
+              "factions": [
+                "good",
+                "evil"
+              ],
+              "timing_policy": "release_commit",
+              "target_revalidation": [
+                "relation",
+                "alive_or_revivable",
+                "same_floor",
+                "range_at_release",
+                "line_of_sight_at_release"
+              ],
+              "request_schema": "ability_command_v2",
+              "cost_policy": {
+                "mana_user_percent": 0,
+                "nonmana_user_units": 0,
+                "martial_energy_cost": 25
+              },
+              "content_status": "prototype_profile_assigned_bespoke_binding_review",
+              "review_note": "The numerical profile is explicit. The named secondary behavior and signature-resource hooks must be bound and verified before enabling this entry in a game server. Intent text does not execute."
+            },
+            {
+              "id": "fixture.bound",
+              "owner_id": "warrior",
+              "owner_kind": "class",
+              "level": 1,
+              "name": "Synthetic structural binding",
+              "target_mode": "enemy_melee",
+              "effect": "Strike in melee and generate Rage on a successful connection.",
+              "previous_level": 1,
+              "profile_id": "M",
+              "execution": {
+                "name": "Martial generator",
+                "cast_seconds": 0,
+                "cooldown_seconds": 0,
+                "mana_cost_percent": 0,
+                "duration_seconds": 0,
+                "global_cooldown": true,
+                "effects": [
+                  {
+                    "operation": "DAMAGE",
+                    "power_coefficient": 0.55,
+                    "weapon_coefficient": 0.65
+                  }
+                ]
+              },
+              "base_range": 1.5,
+              "radius": 0,
+              "target_cap": 1,
+              "class_id": "warrior",
+              "factions": [
+                "good",
+                "evil"
+              ],
+              "timing_policy": "release_commit",
+              "target_revalidation": [
+                "relation",
+                "alive_or_revivable",
+                "same_floor",
+                "range_at_release",
+                "line_of_sight_at_release"
+              ],
+              "request_schema": "ability_command_v2",
+              "cost_policy": {
+                "mana_user_percent": 0,
+                "nonmana_user_units": 0,
+                "martial_energy_cost": 25
+              },
+              "content_status": "prototype_profile_assigned_bespoke_binding_review",
+              "review_note": "The numerical profile is explicit. The named secondary behavior and signature-resource hooks must be bound and verified before enabling this entry in a game server. Intent text does not execute.",
+              "runtime_binding": {
+                "id": "fixture.binding",
+                "rules_version": "fixture-rules-1",
+                "targeting": {
+                  "mode": "enemy_melee",
+                  "relation": "enemy",
+                  "range_units": 1.5,
+                  "radius_units": 0,
+                  "target_cap": 1,
+                  "floor_policy_id": "same_floor",
+                  "line_of_sight_policy_id": "line_of_sight_at_release",
+                  "revalidate": [
+                    "relation",
+                    "alive_or_revivable",
+                    "same_floor",
+                    "range_at_release",
+                    "line_of_sight_at_release"
+                  ],
+                  "input_kind": "entity"
+                },
+                "timing": {
+                  "cast_seconds": 0,
+                  "channel_seconds": 0,
+                  "global_cooldown": true,
+                  "cooldown_family_id": "fixture.cooldown",
+                  "charges": 0,
+                  "recharge_seconds": 0,
+                  "commit_policy": "release_commit",
+                  "movement_allowed": true,
+                  "haste_scaled": false
+                },
+                "signature_rules": [
+                  "fixture.gain"
+                ],
+                "operations": [
+                  {
+                    "operation": "DAMAGE",
+                    "power_coefficient": 0.55,
+                    "weapon_coefficient": 0.65
+                  }
+                ],
+                "presentation_id": "fixture.presentation",
+                "allowed_talent_ids": [],
+                "cleanup_policy": {
+                  "cleanup_on_death": true,
+                  "cleanup_on_logout": true,
+                  "checkpoint_for_transfer": false
+                }
+              }
+            }
+          ],
+          "ResourceDefinition": [
+            {
+              "id": "fixture.rage",
+              "name": "Synthetic pool",
+              "maximum": -1,
+              "gain_rule_ids": [
+                "fixture.gain"
+              ],
+              "shared_resource_id": null
+            },
+            {
+              "id": "fixture.alias",
+              "name": "Synthetic alias",
+              "maximum": null,
+              "gain_rule_ids": [
+                "fixture.gain"
+              ],
+              "shared_resource_id": "fixture.rage"
+            }
+          ],
+          "ResourceGainRule": [
+            {
+              "id": "fixture.gain",
+              "resource_id": "fixture.rage",
+              "eligible_source_tags": [],
+              "gain_amount": 1,
+              "internal_cooldown_seconds": 0
+            }
+          ],
+          "ClassDefinition": [
+            {
+              "id": "warrior",
+              "name": "Warrior fixture",
+              "ability_ids": [
+                "ability.warrior.iron_cut",
+                "fixture.bound"
+              ],
+              "armor": "Plate",
+              "baseline": "Synthetic structural context",
+              "factions": [
+                "good",
+                "evil"
+              ],
+              "resource": "Display only; never used for lookup",
+              "starting_primary_attribute": "strength",
+              "talent_ids": [],
+              "weakness": "No gameplay certification"
+            }
+          ],
+          "FactionDefinition": [
+            {
+              "id": "good",
+              "label": "good",
+              "classes": [
+                "warrior"
+              ],
+              "races": []
+            },
+            {
+              "id": "evil",
+              "label": "evil",
+              "classes": [
+                "warrior"
+              ],
+              "races": []
+            }
+          ],
+          "CooldownDefinition": [
+            {
+              "id": "fixture.cooldown",
+              "cooldown_seconds": 0,
+              "charges": 0,
+              "recharge_seconds": 0,
+              "haste_scaled": false
+            }
+          ],
+          "VisualPresentationDefinition": [
+            {
+              "id": "fixture.presentation",
+              "animation_event_key": "fixture.animation",
+              "telegraph_id": null,
+              "audio_effect_key": "fixture.audio",
+              "visual_facing_policy_id": "event_facing"
+            }
+          ]
+        },
+        "context": {
+          "content_version": "2.2.0-design",
+          "rules_version": "fixture-rules-1",
+          "database_revision": "fixture-database-1"
+        },
+        "resolved": [
+          {
+            "ability_id": "fixture.bound",
+            "content_version": "2.2.0-design",
+            "build_version": 1,
+            "targeting": {
+              "mode": "enemy_melee",
+              "relation": "enemy",
+              "range_units": 1.5,
+              "radius_units": 0,
+              "target_cap": 1,
+              "floor_policy_id": "same_floor",
+              "line_of_sight_policy_id": "line_of_sight_at_release",
+              "revalidate": [
+                "relation",
+                "alive_or_revivable",
+                "same_floor",
+                "range_at_release",
+                "line_of_sight_at_release"
+              ],
+              "input_kind": "entity"
+            },
+            "timing": {
+              "cast_seconds": 0,
+              "channel_seconds": 0,
+              "global_cooldown": true,
+              "cooldown_family_id": "fixture.cooldown",
+              "charges": 0,
+              "recharge_seconds": 0,
+              "commit_policy": "release_commit",
+              "movement_allowed": true,
+              "haste_scaled": false
+            },
+            "costs": [
+              {
+                "resource_id": "fixture.alias",
+                "amount": 0,
+                "reserve_until_release": true
+              }
+            ],
+            "effects": [
+              {
+                "operation": "DAMAGE",
+                "power_coefficient": 0.55,
+                "weapon_coefficient": 0.65
+              }
+            ],
+            "bindings_resolved": false,
+            "data_tests_passed": false,
+            "runtime_tests_passed": false,
+            "binding_id": "fixture.binding"
+          }
+        ]
+      },
+      "fixture_sha256": "d337c553b7da36df953467a203cc911932bd4b09f19bd0bf957c93cfb4936f5b",
+      "input_sha256": "ae09e9bd5e4167db901378de5b34ca58a4a864c9bddbfdd915681eaa3791dbd3",
+      "scenario_sha256": "2b92fb6b79bc538d8f9c60eed8083a29dd15b685cdbc4ad689d0fe631dbdcd8b"
+    }
+  ],
+  "compatible": [
+    {
+      "content_version": "2.2.0-design",
+      "rules_version": "fixture-rules-1",
+      "database_revision": "fixture-database-1"
+    }
+  ],
+  "policies": {
+    "floor_ids": [
+      "same_floor"
+    ],
+    "line_of_sight_ids": [
+      "line_of_sight_at_release"
+    ],
+    "revalidation_ids": [
+      "relation",
+      "alive_or_revivable",
+      "same_floor",
+      "range_at_release",
+      "line_of_sight_at_release"
+    ],
+    "facing_ids": [
+      "event_facing"
+    ]
+  },
+  "run_id": "2899ef3c12d943f485ff96f4ad1cc8d1",
+  "execution_started_at": "2026-10-19T19:42:43.709031+00:00"
+}
