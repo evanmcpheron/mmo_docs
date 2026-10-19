@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-19",
+  "game_base": "6fbd62efdf638177f91d4647b0257c9dad12e4c3",
+  "docs_base": "8db0ffa44ab25488e102933d95959cd5c0704688",
+  "checks": [
+    {
+      "command": "python3 tools/check_content_admission.py --suite boundaries",
+      "result": "Passed",
+      "artifact": "boundaries/run.json",
+      "cases": 137
+    },
+    {
+      "command": "python3 tools/check_content_admission.py --suite compatibility",
+      "result": "Passed",
+      "artifact": "compatibility/run.json"
+    },
+    {
+      "command": "python3 -m unittest discover -s tools -p 'test_*.py'",
+      "result": "Passed",
+      "tests": 41,
+      "artifact": "python-tests-committed.log"
+    },
+    {
+      "command": "python3 tools/run_baseline.py --role server --headless --config \"$PWD/fixtures/config/server.valid.json\" --smoke",
+      "result": "Passed",
+      "artifact": "server-smoke.log"
+    },
+    {
+      "command": "python3 tools/verify_toolchain.py",
+      "result": "Passed",
+      "artifact": "toolchain.log"
+    },
+    {
+      "command": "python3 tools/extract_content_contracts.py --check",
+      "result": "Passed",
+      "schema_sha256": "1a281cb1d0f42a3c38a77b0ae26257c4c60a8b6778bb8d2dd8c680f5dcedbcc2"
+    },
+    {
+      "command": "Five boundaries --control runs; each expected rejection checked separately",
+      "result": "Passed",
+      "artifact": "failure-controls.json"
+    },
+    {
+      "command": "Task Markdown local links and HTML anchors",
+      "result": "Passed",
+      "artifact": "link-checks.json"
+    },
+    {
+      "command": "Clean boundaries rerun after all five failure controls",
+      "result": "Passed",
+      "artifact": "boundaries-after-controls/run.json",
+      "cases": 137
+    },
+    {
+      "command": "Required generated-output checks, roadmap/inventory validators, documentation unittest suite and full validation",
+      "result": "Passed",
+      "artifact": "documentation-checks.log",
+      "regression_tests": 72,
+      "full_checks_passed": 242,
+      "full_checks_failed": 0
+    },
+    {
+      "command": "Generated dashboard, foundation, epic, T03/T04, milestones, search and inventory planning metadata inspection",
+      "result": "Passed",
+      "artifact": "generated-view-review.json"
+    }
+  ],
+  "not_run": [
+    "Authenticated transport and multi-peer gameplay: outside T03, no RPC or authentication implementation.",
+    "Combat execution, resource availability, replay/idempotency storage and durable acknowledgements: outside this pure boundary.",
+    "Full EntitySnapshot production, interest-management integration and browser interaction: outside T03."
+  ],
+  "limitations": [
+    "Trusted caller supplies resolved ability/policy, session and current recipient entitlement/visibility.",
+    "Production correlation key generation/rotation and session wiring remain future work.",
+    "Structural charge-spend intent is retained; declared spender, build/content compatibility and available resource checks remain future world-owner gates."
+  ],
+  "review_checklist": {
+    "scope_and_correctness": "Passed: all three ticket criteria mapped to executed fixture behavior; existing wire contracts preserved.",
+    "ownership": "Passed: one command reader, one pure projection, canonical targeting matrix reused; no mutable world/result store or network endpoint.",
+    "gdscript": "Passed: typed functions, fields and elements where supported; Variant restricted to checked primitive/nullable boundaries; no warning suppression, reflection or casts.",
+    "networking_security": "Passed for this pure boundary: trusted context is separate from payload; entitlement and visibility are re-evaluated; explicit rejection and opaque hidden-source correlation. Transport/replay/multi-peer integration is N/A: not implemented here.",
+    "scenes_lifecycle": "N/A: no scene, mutable Resource, signal, await or physics ownership change. Server bootstrap smoke passes.",
+    "standards_and_scope": "Passed: no protected engineering standard changes; mmo_docs evidence/tracking authorized by execute-ticket.",
+    "human_review": "Rule owners are the linked reader/projection; fixtures call the same functions, and source review traces callers and missing world checks. No unreviewed abstraction or duplicated mutable authority."
+  },
+  "tested_game_revision": "922e0e9624981ac873e57647aa454240f3869f5b",
+  "baseline_applicability": "Smoke log was executed before the game commit. Bootstrap, ServerRoot, configuration loader and baseline runner files match remote main; T03 changes no scene or bootstrap behavior.",
+  "development_history": "development/ retains passing precommit runs and attributable summaries of resolved fixture-runner failures. documentation-checks-before-reports.log records an early validation attempt while its new evidence file was still being written; final documentation-checks.log passes. No current failing evidence remains."
+}
