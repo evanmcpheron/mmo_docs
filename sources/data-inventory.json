@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "content_version": "2.2.0-design",
+  "content_version": "2.2.1-design",
   "title": "Data Inventory",
   "pages": [
     {
@@ -501,7 +501,7 @@
       "title": "Equipment & itemization",
       "kind": "Feature",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "cf776ab06f300e86de3a147658e0822e915953447b60fcd04063343765e44f3a",
+      "reviewed_content_sha256": "2888f583a105c4acd3275c2e9d378858cd124b714614a102854d35db8e3c0461",
       "reviewed_sections": [
         "equipment-model",
         "explicit-item-budgets",
@@ -878,7 +878,7 @@
       "exclusion_reason": "Development planning, dependencies, acceptance criteria and implementation progress; existing feature chapters retain canonical gameplay contracts.",
       "title": "BW-002-T06 · Require complete economic inputs before route admission",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "b3496f2e2680865488ac94489391ec12f596d72ed071bb08f6ac66d5356aacdd",
+      "reviewed_content_sha256": "2a03c7dafd91d2acb078c6bb88b2588d3abbfe721c78a3fbccbb7a508a1887db",
       "reviewed_sections": [
         "scope",
         "dependencies",
@@ -926,7 +926,7 @@
       "exclusion_reason": "Development planning, dependencies, acceptance criteria and implementation progress; existing feature chapters retain canonical gameplay contracts.",
       "title": "BW-002 · Authority boundaries and content admission",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "8ee68d4936815be58c773c16d5918d7292a9a935b690001bb1b68f748ec8eefd",
+      "reviewed_content_sha256": "d4f6fd2d68289e8a8b957a19e06f8395adf70b1b2f07c620b4537cbe50b647e7",
       "reviewed_sections": [
         "objective",
         "dependencies",
@@ -41267,6 +41267,10 @@
               "stack_limit": {
                 "type": "integer",
                 "description": "Existing stack limit."
+              },
+              "starter_assistance": {
+                "type": "boolean",
+                "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
               }
             },
             "required": [
@@ -41331,6 +41335,10 @@
               "stack_limit": {
                 "type": "integer",
                 "description": "Existing stack limit."
+              },
+              "starter_assistance": {
+                "type": "boolean",
+                "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
               }
             },
             "required": [
@@ -41392,6 +41400,10 @@
               "stack_limit": {
                 "type": "integer",
                 "description": "Existing stack limit."
+              },
+              "starter_assistance": {
+                "type": "boolean",
+                "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
               }
             },
             "required": [
@@ -41452,6 +41464,10 @@
               "stack_limit": {
                 "type": "integer",
                 "description": "Existing stack limit."
+              },
+              "starter_assistance": {
+                "type": "boolean",
+                "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
               }
             },
             "required": [
@@ -41470,7 +41486,9 @@
           }
         ],
         "description": "Existing ItemDefinition record format, preserving every field in the shipped corpus.",
-        "x-invariants": []
+        "x-invariants": [
+          "Economic admission requires starter_assistance on every economically referenced item. Starter assistance is bound/nonexportable, cannot return currency or salvage materials, and may only feed equally restricted crafting outputs. Missing provenance is not false. Starter inputs cannot feed commissions to another owner."
+        ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
@@ -44454,6 +44472,23 @@
           "stack_limit": {
             "type": "integer",
             "description": "Existing stack limit."
+          },
+          "item_definition_id": {
+            "$ref": "#/$defs/Id",
+            "x-reference": {
+              "target": "ItemDefinition",
+              "kind": "content"
+            },
+            "description": "Explicit inventory-item representation of this material. Optional for legacy catalogs; economic admission requires it and matching binding. No display-name mapping."
+          },
+          "salvage_class": {
+            "type": "string",
+            "enum": [
+              "common",
+              "rare_core",
+              "progression_component"
+            ],
+            "description": "Explicit common-material eligibility or excluded core classification. Optional for legacy catalogs; economic admission requires it. Bound materials never qualify for returns."
           }
         },
         "required": [
@@ -44466,7 +44501,10 @@
           "stack_limit"
         ],
         "additionalProperties": false,
-        "description": "Existing MaterialDefinition record format, preserving every field in the shipped corpus."
+        "description": "Existing MaterialDefinition record format, preserving every field in the shipped corpus.",
+        "x-invariants": [
+          "Economic admission requires an explicit item_definition_id and salvage_class. Material/item binding must agree; only unbound common materials can be returned. Item identity maps to at most one material in an enabled set."
+        ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
@@ -44476,7 +44514,9 @@
         "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
       ],
       "references": [
+        "Id",
         "ItemBindingState",
+        "ItemDefinition",
         "MaterialFamily",
         "ProfessionBand"
       ],
