@@ -1,0 +1,1443 @@
+{
+  "ticket": "BW-097-T05",
+  "recorded_at_utc": "2026-10-20T20:32:24.965179+00:00",
+  "status": "Corrected T05 candidate for visual review; T05 remains In Progress with an open T04 PBR stability regression",
+  "source_revision": "63149ca712b40bd0fc5cf234a62b951d3147c482",
+  "baseline_revision": "c3468ed9477c0c9adc10d585f279f1bd826065cf",
+  "fetched_main": {
+    "game": "f40ad29d971a7bad511b3604e3abea82b42556d9",
+    "docs": "dedbcba18f93519cf3a8e289f2b234c4e5540dca"
+  },
+  "image_identity": "request-context.json identifies the retained pre/post pair. No separate pre/post attachment identity is invented. Before is a fresh execution of the current original shader at c3468ed; the historical pair shown in chat was cf0b6bed.",
+  "root_causes": [
+    {
+      "finding": "Repeated albedo in direct diffuse light",
+      "confidence": "Confirmed by isolated pinned graphical test and pinned renderer source",
+      "evidence": "investigation/albedo-test.zip",
+      "detail": "The renderer applies albedo after custom diffuse accumulation. Gray source RGB8 51/127/204 became 4/60/163 under the old unity-band light; removing the extra factor restores 51/127/204. Ambient-only rows were unchanged."
+    },
+    {
+      "finding": "Source material inputs were dropped",
+      "confidence": "Confirmed inventory of 34 material surfaces (including the hidden comparison actor) and isolated comparisons",
+      "evidence": "before/identity.json",
+      "detail": "All 34 use linear mipmaps; 32 carry normal maps; 13 use UV offsets; four are double sided; all are opaque. Old conversion forced nearest sampling/double-sided/scissor, lost normal lighting, UV offsets, roughness and specular. One black source wood material needs reflection for its visible form."
+    },
+    {
+      "finding": "Dark source reflection was still absent in the first correction",
+      "confidence": "Confirmed; caught during recursive review, corrected before final suite",
+      "evidence": "investigation/reflection-preview.zip",
+      "detail": "The intermediate b646 diffuse-only candidate left connected black regions of 486/286/185/147/97 pixels that were visible in PBR. Source roughness/specular restoration removes that collapse in all five inspected regions. A nonzero-source black-material sky test and lost-reflection negative control guard it."
+    },
+    {
+      "finding": "Edge classification/composition overemphasized minor geometry",
+      "confidence": "Confirmed from raw depth/normal and masks; not every detailed source feature is an outline",
+      "evidence": "isolation/identity.json",
+      "detail": "Flat paving has no silhouette mask. Its repeated detail comes primarily from existing albedo/normal lighting. Roof and foliage include real geometric overlaps. Both surface planes now distinguish gaps from connected convex bends; shallower gaps blend with reduced contrast. Exterior cardinal-texel ownership is unchanged."
+    },
+    {
+      "finding": "Highlight key-light vector differed from actual reference sun",
+      "confidence": "Confirmed integration defect",
+      "evidence": "final-run/run.json",
+      "detail": "The T05 hard-coded vector had the wrong world X orientation. A read-only T03 owner getter supplies the actual sun direction without changing the approved light or scene."
+    },
+    {
+      "finding": "Stationary color changes follow the local-light path",
+      "confidence": "Confirmed localization; exact engine precision/culling cause remains a hypothesis",
+      "evidence": "investigation/stationary-lights.zip",
+      "detail": "Unshaded, ambient-only, sun-only and fill-only were stable. Lantern-only varied up to 55 pixels/3 RGB8 levels. Disabling shadows or reapplying CPU state did not eliminate changes. Of tested 0/64/32/16 local attenuation steps, only 16 passed all six zoom/light stationary cases. No final RGB quantization or tolerance exception is applied."
+    }
+  ],
+  "changes": [
+    {
+      "files": [
+        "fixtures/rendering/toon.gdshader",
+        "tests/rendering/outline_materials.gd"
+      ],
+      "behavior": "Single albedo factor; source color/UV/sampling/culling/alpha/normal lighting/roughness/specular preserved; original materials restored by toggle. Texture normals affect lighting while geometric normals remain available for edge selection."
+    },
+    {
+      "files": [
+        "fixtures/rendering/outlines.gdshader",
+        "fixtures/rendering/outlines.json",
+        "tests/rendering/reference_world.gd"
+      ],
+      "behavior": "Two-plane gap classification, contextual gap contrast, 0.75 outline/0.2 highlight strengths, actual sun direction; bands 0.25/0.65/1 at thresholds 0.2/0.65, transition 0.04; local attenuation rounded to 16 steps/unit."
+    },
+    {
+      "files": [
+        "tests/rendering/outlines_probe.gd",
+        "tools/outline_probe.py",
+        "tools/run_rendering_probe.py"
+      ],
+      "behavior": "Seven matched effect combinations, explicit same-state manifests, material diagnostic stage, large nearest previews and matching crops in offline reader."
+    },
+    {
+      "files": [
+        "tests/rendering/toon_lighting_check.gd",
+        "tests/rendering/toon_lighting_check.tscn",
+        "tools/test_outline_probe.py",
+        "tools/README.md"
+      ],
+      "behavior": "34 graphical material checks, old-albedo/lost-reflection negative controls, incomplete isolation/state rejection tests and reproduction instructions."
+    }
+  ],
+  "visual_review": {
+    "reviewer": "Codex technical/visual inspection; project owner has not approved corrected appearance",
+    "readability": "At actual gameplay scale, corrected hair/skin, torso/arms, legs/boots and blue/purple clothing remain distinguishable. Warm barrel hoops and brown wood regain midtones; stair faces regain reflected form. Head/ears are a few pixels and facial detail is inherently limited. The corrected combined image is substantially easier to read than original T05; superiority over source PBR remains an owner decision.",
+    "hierarchy": "Outline contrast is reduced most at shallow gaps. Paving is no longer globally darkened by repeated albedo; its repeating source normal/texture pattern still competes with the small character. Leaf/roof intersections remain busy where actual geometry overlaps. These residual details are disclosed, not hidden by resolution changes or blur.",
+    "target_achievable": [
+      "Preserved material colors/midtones",
+      "More restrained silhouette contrast",
+      "Selective convex geometry accents",
+      "Readable character against ground",
+      "Stable pixel widths and separately reviewable lighting"
+    ],
+    "target_outside_T05": [
+      "New vegetation/flowers",
+      "Repainted texture art",
+      "Building or market-layout changes",
+      "AO/contact-depth systems (T08)",
+      "Final atmosphere/integration (T09/T10)",
+      "Water/reflection/refraction feature work (T07)"
+    ],
+    "band_choice": "Final-source hard [0.22,0.55,1], balanced [0.25,0.65,1] and lifted [0.4,0.8,1] captures cover both zooms and day/warm/cool plus swatches. Balanced is provisional: hard loses shadow separation; lifted flattens shade. It still needs owner approval.",
+    "material_approximations": "Direct specular lobes, metallic energy redistribution and transmission are intentionally omitted by the local toon material. Existing environment reflections preserve dark form; this does not implement T07 reflection features. The edge buffer and indirect lighting/reflections use geometric normals; texture normals affect custom direct diffuse lighting. This keeps texture microdetail out of geometric edge selection and is a disclosed difference from source PBR.",
+    "pixel_policy": "384x216 plus existing 1px T04 guard, no AA selected, nearest presentation. 3840x2160 gameplay images are a GPU-rendered 10x nearest presentation. Native 4K toon material image uses 4x MSAA with outlines/highlights off and is supplemental detail only, never pixel/stability proof.",
+    "motion_limit": "32 consecutive 30Hz samples per path; loop wrap restarts. One screen-space sample cannot reveal hidden geometry. No final packaging, other hardware or performance-budget acceptance is claimed."
+  },
+  "verification": {
+    "suite": "suite.json",
+    "result": "Passed",
+    "checks": [
+      {
+        "detail": "13 geometry cases and three model cases \u00d7 both zooms \u00d7 disabled/FXAA; models in day/warm/cool.",
+        "name": "geometry-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Selected no-AA contours equal one cardinal-texel exterior coverage ring; overlap/clipped side edges measured separately.",
+        "name": "one-pixel-silhouettes",
+        "passed": true
+      },
+      {
+        "detail": "Flat normal seam, concave fold, frontal plane and grazing slope have no convex highlights.",
+        "name": "planar-rejection",
+        "passed": true
+      },
+      {
+        "detail": "Convex fold has nonzero selectively lit highlights at both zooms; diagnostic and silhouette controls separate them.",
+        "name": "convex-selection",
+        "passed": true
+      },
+      {
+        "detail": "Every near/far, clipping, grazing, thin and overlapping fixture retains visible coverage and contours.",
+        "name": "clip-and-thin-coverage",
+        "passed": true
+      },
+      {
+        "detail": "All six zoom/light pairs and both AA candidates retain PBR/source/toon comparisons; appearance approval is separate.",
+        "name": "lighting-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Seven named PBR/toon/silhouette/highlight combinations preserve camera, actor pose and logical frame.",
+        "name": "effect-isolation",
+        "passed": true
+      },
+      {
+        "detail": "Local source materials restore via the toon toggle; alpha cutoff/albedo/UV are transferred without source mutation.",
+        "name": "material-toggle",
+        "passed": true
+      },
+      {
+        "detail": "Disabled and FXAA candidates captured; selected no-AA preserves binary one-pixel masks. No SMAA support assumed.",
+        "name": "antialiasing",
+        "passed": true
+      },
+      {
+        "detail": "All four silhouette/highlight toggle combinations produce distinct retained combined images.",
+        "name": "edge-controls",
+        "passed": true
+      },
+      {
+        "detail": "All geometry diagonal paths and courtyard stationary/slow/diagonal/actor paths, both zooms, three lighting states, 32 consecutive 30Hz samples.",
+        "name": "motion-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Exact stationary silhouette/highlight mask identity; no T04 PBR-color exception inherited.",
+        "name": "stationary-masks",
+        "passed": true
+      },
+      {
+        "detail": "Stationary combined-color differences satisfy the explicit T05 bound; initial policy requires exact identity.",
+        "name": "stationary-colors",
+        "passed": true
+      },
+      {
+        "detail": "Reset restores courtyard/day/normal zoom/toon/both edges/no AA and frame zero.",
+        "name": "reset",
+        "passed": true
+      }
+    ],
+    "observations": 88,
+    "sequences": 74,
+    "frames_per_sequence": 32,
+    "capture_count": 1197,
+    "stationary": [
+      {
+        "zoom": 0,
+        "lighting": 0,
+        "stationary_colors_identical": true,
+        "stationary_masks_identical": true,
+        "stationary_max_changed_pixels": 0,
+        "stationary_max_rgb_delta": 0
+      },
+      {
+        "zoom": 0,
+        "lighting": 1,
+        "stationary_colors_identical": true,
+        "stationary_masks_identical": true,
+        "stationary_max_changed_pixels": 0,
+        "stationary_max_rgb_delta": 0
+      },
+      {
+        "zoom": 0,
+        "lighting": 2,
+        "stationary_colors_identical": true,
+        "stationary_masks_identical": true,
+        "stationary_max_changed_pixels": 0,
+        "stationary_max_rgb_delta": 0
+      },
+      {
+        "zoom": 1,
+        "lighting": 0,
+        "stationary_colors_identical": true,
+        "stationary_masks_identical": true,
+        "stationary_max_changed_pixels": 0,
+        "stationary_max_rgb_delta": 0
+      },
+      {
+        "zoom": 1,
+        "lighting": 1,
+        "stationary_colors_identical": true,
+        "stationary_masks_identical": true,
+        "stationary_max_changed_pixels": 0,
+        "stationary_max_rgb_delta": 0
+      },
+      {
+        "zoom": 1,
+        "lighting": 2,
+        "stationary_colors_identical": true,
+        "stationary_masks_identical": true,
+        "stationary_max_changed_pixels": 0,
+        "stationary_max_rgb_delta": 0
+      }
+    ],
+    "graphics_identity": {
+      "camera_far": 80.0,
+      "camera_near": 0.100000001490116,
+      "device": "Apple M2 Max (Apple8)",
+      "display_scale": 2.0,
+      "display_server": "macOS",
+      "driver": "metal",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "msaa": 0,
+      "rendering_method": "forward_plus",
+      "taa": false,
+      "viewport_size": [
+        386,
+        218
+      ]
+    },
+    "toolchain": {
+      "engine": "/Applications/Godot.app/Contents/MacOS/Godot",
+      "engine_sha256": "c7cccbf8fb143e34e02fd6521e09be2c2b974f0d5db080b19071c9c570718ccf",
+      "native_architecture": "arm64",
+      "version_command": [
+        "/usr/bin/arch",
+        "-arm64",
+        "/Applications/Godot.app/Contents/MacOS/Godot",
+        "--headless",
+        "--version"
+      ],
+      "verified_version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    "regressions": "61/61 probe regressions, including actual pinned graphical current/old-albedo/lost-reflection controls; execution-logs/probe-regressions-v3.log",
+    "raw_material_report": {
+      "captures": [
+        "toon-lighting-direct.png",
+        "toon-lighting-ambient.png",
+        "toon-lighting-mixed.png",
+        "toon-lighting-reflection.png"
+      ],
+      "checks": [
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-dark",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-medium",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-bright",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-warm",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-cool",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-uv-transform",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-opaque-alpha",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 128/128",
+          "name": "direct-alpha-scissor",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 0/0",
+          "name": "direct-back-cull",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "direct-double-sided",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 1, coverage 256/256",
+          "name": "direct-normal-response",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-dark",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-medium",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-bright",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-warm",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-cool",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-uv-transform",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-opaque-alpha",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 128/128",
+          "name": "ambient-alpha-scissor",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 0/0",
+          "name": "ambient-back-cull",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-double-sided",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "ambient-normal-response",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-dark",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-medium",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-bright",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-warm",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-cool",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-uv-transform",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-opaque-alpha",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 128/128",
+          "name": "mixed-alpha-scissor",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 0/0",
+          "name": "mixed-back-cull",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 0, coverage 256/256",
+          "name": "mixed-double-sided",
+          "passed": true
+        },
+        {
+          "detail": "Matched source/toon 16x16 region; max RGB8 delta 1, coverage 256/256",
+          "name": "mixed-normal-response",
+          "passed": true
+        },
+        {
+          "detail": "Zero-albedo material under uniform sky: source 373737ff, toon 373737ff; max RGB8 delta 0",
+          "name": "reflection-black-material",
+          "passed": true
+        }
+      ],
+      "device": "Apple M2 Max (Apple8)",
+      "driver": "metal",
+      "event": "toon-lighting-report",
+      "passed": true,
+      "rendering_method": "forward_plus",
+      "rows": [
+        "Standard Lambert",
+        "T05 adapter/shader"
+      ]
+    },
+    "camera_regression": [
+      {
+        "detail": "Every requested window/zoom/path has paired consecutive 30 Hz samples; no selected frames omitted.",
+        "name": "sequence-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Enabled/disabled correction retains identical continuous scoped source anchors at every sample.",
+        "name": "continuous-source",
+        "passed": true
+      },
+      {
+        "detail": "Every native framebuffer world pixel equals the guarded nearest-scaled and shifted internal image.",
+        "name": "guarded-presentation",
+        "passed": true
+      },
+      {
+        "detail": "Actual projected rigid origin and visual actor translate by whole internal pixels; source stays continuous.",
+        "name": "camera-grid",
+        "passed": true
+      },
+      {
+        "detail": "Exact stationary identity outside the approved T04-only PBR regions; both first-frame and adjacent deltas: {\"approval\":\"mmo_docs/validation/tickets/BW-097-T04/deviation-approval.json\",\"max_changed_pixels\":32.0,\"max_rgb_delta\":2.0,\"regions\":[[115.0,128.0,13.0,9.0],[225.0,115.0,13.0,12.0]],\"zoom_index\":0.0}",
+        "name": "stationary-bound",
+        "passed": false
+      },
+      {
+        "detail": "Seeking reproduces exact frame/time, anchors, camera and residual.",
+        "name": "seek-repeat",
+        "passed": true
+      },
+      {
+        "detail": "The Step control pauses and advances exactly one sample.",
+        "name": "single-step",
+        "passed": true
+      },
+      {
+        "detail": "Reset restores checked-in settings without writing any gameplay state.",
+        "name": "reset",
+        "passed": true
+      }
+    ],
+    "main_camera_baseline": {
+      "revision": "f40ad29d971a7bad511b3604e3abea82b42556d9",
+      "result": "Failed",
+      "checks": [
+        {
+          "detail": "Every requested window/zoom/path has paired consecutive 30 Hz samples; no selected frames omitted.",
+          "name": "sequence-matrix",
+          "passed": true
+        },
+        {
+          "detail": "Enabled/disabled correction retains identical continuous scoped source anchors at every sample.",
+          "name": "continuous-source",
+          "passed": true
+        },
+        {
+          "detail": "Every native framebuffer world pixel equals the guarded nearest-scaled and shifted internal image.",
+          "name": "guarded-presentation",
+          "passed": true
+        },
+        {
+          "detail": "Actual projected rigid origin and visual actor translate by whole internal pixels; source stays continuous.",
+          "name": "camera-grid",
+          "passed": true
+        },
+        {
+          "detail": "Exact stationary identity outside the approved T04-only PBR regions; both first-frame and adjacent deltas: {\"approval\":\"mmo_docs/validation/tickets/BW-097-T04/deviation-approval.json\",\"max_changed_pixels\":32.0,\"max_rgb_delta\":2.0,\"regions\":[[115.0,128.0,13.0,9.0],[225.0,115.0,13.0,12.0]],\"zoom_index\":0.0}",
+          "name": "stationary-bound",
+          "passed": false
+        },
+        {
+          "detail": "Seeking reproduces exact frame/time, anchors, camera and residual.",
+          "name": "seek-repeat",
+          "passed": true
+        },
+        {
+          "detail": "The Step control pauses and advances exactly one sample.",
+          "name": "single-step",
+          "passed": true
+        },
+        {
+          "detail": "Reset restores checked-in settings without writing any gameplay state.",
+          "name": "reset",
+          "passed": true
+        }
+      ]
+    },
+    "dark_material_inspection": [
+      {
+        "zoom": 0,
+        "lighting": 0,
+        "source_visible_to_near_black_pixels": 0,
+        "test": "Source max RGB8 >12 and toon max RGB8 <=2, all pixels. A diagnostic for unexplained collapse, not visual acceptance or a replacement for masks."
+      },
+      {
+        "zoom": 0,
+        "lighting": 1,
+        "source_visible_to_near_black_pixels": 0,
+        "test": "Source max RGB8 >12 and toon max RGB8 <=2, all pixels. A diagnostic for unexplained collapse, not visual acceptance or a replacement for masks."
+      },
+      {
+        "zoom": 0,
+        "lighting": 2,
+        "source_visible_to_near_black_pixels": 0,
+        "test": "Source max RGB8 >12 and toon max RGB8 <=2, all pixels. A diagnostic for unexplained collapse, not visual acceptance or a replacement for masks."
+      },
+      {
+        "zoom": 1,
+        "lighting": 0,
+        "source_visible_to_near_black_pixels": 0,
+        "test": "Source max RGB8 >12 and toon max RGB8 <=2, all pixels. A diagnostic for unexplained collapse, not visual acceptance or a replacement for masks."
+      },
+      {
+        "zoom": 1,
+        "lighting": 1,
+        "source_visible_to_near_black_pixels": 0,
+        "test": "Source max RGB8 >12 and toon max RGB8 <=2, all pixels. A diagnostic for unexplained collapse, not visual acceptance or a replacement for masks."
+      },
+      {
+        "zoom": 1,
+        "lighting": 2,
+        "source_visible_to_near_black_pixels": 0,
+        "test": "Source max RGB8 >12 and toon max RGB8 <=2, all pixels. A diagnostic for unexplained collapse, not visual acceptance or a replacement for masks."
+      }
+    ],
+    "window_observation": "window-observation.json: one deliberate-control capture stall resumed after activating only the owned test window. Logical frame clocks and complete reports remain validated; this is not a measured shader deadlock."
+  },
+  "geometry_review": {
+    "rows": [
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "distance-near",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 192,
+          "convex_pixels": 0,
+          "covered_pixels": 2304,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 1.0,
+          "fixture": "distance-near",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 0.600000023841858,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 0.8
+        },
+        "prefix": "distance-near-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "distance-middle",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 192,
+          "convex_pixels": 0,
+          "covered_pixels": 2304,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "distance-middle",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.7999992370605,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "distance-middle-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "distance-far",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 192,
+          "convex_pixels": 0,
+          "covered_pixels": 2304,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 78.1999969482422,
+          "fixture": "distance-far",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 77.8000030517578,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 78.0
+        },
+        "prefix": "distance-far-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "near-clip",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 216,
+          "convex_pixels": 0,
+          "covered_pixels": 1728,
+          "extra_exterior_pixels": 48,
+          "foreground_contour_pixels": 48,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": true,
+          "far": 80.0,
+          "farthest_distance": 0.987406849861145,
+          "fixture": "near-clip",
+          "intersects_far": false,
+          "intersects_near": true,
+          "near": 0.100000001490116,
+          "nearest_distance": -0.487406849861145,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 0.25
+        },
+        "prefix": "near-clip-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "far-clip",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 156,
+          "convex_pixels": 48,
+          "covered_pixels": 1440,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": true,
+          "far": 80.0,
+          "farthest_distance": 80.7374114990234,
+          "fixture": "far-clip",
+          "intersects_far": true,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 79.2625885009766,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 80.0
+        },
+        "prefix": "far-clip-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "grazing",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 168,
+          "convex_pixels": 0,
+          "covered_pixels": 864,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 19.4772109985352,
+          "fixture": "grazing",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 16.5227890014648,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "grazing-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "thin",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 100,
+          "convex_pixels": 0,
+          "covered_pixels": 96,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.1499996185303,
+          "fixture": "thin",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.8500003814697,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "thin-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "convex",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 192,
+          "convex_pixels": 48,
+          "covered_pixels": 2304,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.0,
+          "fixture": "convex",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.3999996185303,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "convex-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "concave",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 192,
+          "convex_pixels": 0,
+          "covered_pixels": 2304,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.6000003814697,
+          "fixture": "concave",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 18.0,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "concave-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "flat-normal-seam",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 192,
+          "convex_pixels": 0,
+          "covered_pixels": 2304,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.0,
+          "fixture": "flat-normal-seam",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.9999904632568,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "flat-normal-seam-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "touching",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 192,
+          "convex_pixels": 0,
+          "covered_pixels": 2304,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "touching",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.7999992370605,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "touching-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "overlap",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 220,
+          "convex_pixels": 0,
+          "covered_pixels": 1824,
+          "extra_exterior_pixels": 48,
+          "foreground_contour_pixels": 48,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "overlap",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.1999988555908,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "overlap-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "swatches",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 432,
+          "convex_pixels": 0,
+          "covered_pixels": 3456,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "swatches",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.7999992370605,
+          "units_per_pixel": 0.0416666666666667,
+          "view_distance": 18.0
+        },
+        "prefix": "swatches-z0-aa0-l0",
+        "units_per_pixel": 0.0416666666666667,
+        "zoom": 0
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "distance-near",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 384,
+          "convex_pixels": 0,
+          "covered_pixels": 9216,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 1.0,
+          "fixture": "distance-near",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 0.600000023841858,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 0.8
+        },
+        "prefix": "distance-near-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "distance-middle",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 384,
+          "convex_pixels": 0,
+          "covered_pixels": 9216,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "distance-middle",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.7999992370605,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "distance-middle-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "distance-far",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 384,
+          "convex_pixels": 0,
+          "covered_pixels": 9216,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 78.1999969482422,
+          "fixture": "distance-far",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 77.8000030517578,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 78.0
+        },
+        "prefix": "distance-far-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "near-clip",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 432,
+          "convex_pixels": 0,
+          "covered_pixels": 6912,
+          "extra_exterior_pixels": 96,
+          "foreground_contour_pixels": 96,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": true,
+          "far": 80.0,
+          "farthest_distance": 0.987406849861145,
+          "fixture": "near-clip",
+          "intersects_far": false,
+          "intersects_near": true,
+          "near": 0.100000001490116,
+          "nearest_distance": -0.487406849861145,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 0.25
+        },
+        "prefix": "near-clip-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "far-clip",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 316,
+          "convex_pixels": 96,
+          "covered_pixels": 5952,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": true,
+          "far": 80.0,
+          "farthest_distance": 80.7374114990234,
+          "fixture": "far-clip",
+          "intersects_far": true,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 79.2625885009766,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 80.0
+        },
+        "prefix": "far-clip-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "grazing",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 340,
+          "convex_pixels": 0,
+          "covered_pixels": 3744,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 19.4772109985352,
+          "fixture": "grazing",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 16.5227890014648,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "grazing-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "thin",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 196,
+          "convex_pixels": 0,
+          "covered_pixels": 192,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.1499996185303,
+          "fixture": "thin",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.8500003814697,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "thin-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "convex",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 384,
+          "convex_pixels": 96,
+          "covered_pixels": 9216,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.0,
+          "fixture": "convex",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.3999996185303,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "convex-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "concave",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 384,
+          "convex_pixels": 0,
+          "covered_pixels": 9216,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.6000003814697,
+          "fixture": "concave",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 18.0,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "concave-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "flat-normal-seam",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 384,
+          "convex_pixels": 0,
+          "covered_pixels": 9216,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.0,
+          "fixture": "flat-normal-seam",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.9999904632568,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "flat-normal-seam-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "touching",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 384,
+          "convex_pixels": 0,
+          "covered_pixels": 9216,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "touching",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.7999992370605,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "touching-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "overlap",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 442,
+          "convex_pixels": 0,
+          "covered_pixels": 7392,
+          "extra_exterior_pixels": 96,
+          "foreground_contour_pixels": 96,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "overlap",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.1999988555908,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "overlap-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      },
+      {
+        "antialiasing": 0,
+        "camera_far": 80.0,
+        "camera_near": 0.100000001490116,
+        "fixture": "swatches",
+        "lighting": 0,
+        "measurements": {
+          "contour_pixels": 864,
+          "convex_pixels": 0,
+          "covered_pixels": 13824,
+          "extra_exterior_pixels": 0,
+          "foreground_contour_pixels": 0,
+          "missing_exterior_pixels": 0,
+          "soft_mask_pixels": 0
+        },
+        "placement": {
+          "clip_intersection": false,
+          "far": 80.0,
+          "farthest_distance": 18.2000007629395,
+          "fixture": "swatches",
+          "intersects_far": false,
+          "intersects_near": false,
+          "near": 0.100000001490116,
+          "nearest_distance": 17.7999992370605,
+          "units_per_pixel": 0.0208333333333333,
+          "view_distance": 18.0
+        },
+        "prefix": "swatches-z1-aa0-l0",
+        "units_per_pixel": 0.0208333333333333,
+        "zoom": 1
+      }
+    ],
+    "annotation": "Exterior silhouettes match the one-cardinal-texel coverage ring. Near-clip and overlap each additionally contain a real one-column internal occlusion: 48 pixels at normal, 96 at close. Raw extra_exterior/foreground counts retain those values; they are not silently zeroed or treated as filled areas. Their appearance remains part of owner review. Far-clip exposes a convex side edge (48/96 highlights)."
+  },
+  "acceptance": [
+    {
+      "criterion": 1,
+      "technical_evidence": "final-run/run.json: one-pixel exterior coverage, convex selection, planar rejection, clip/thin coverage and independent controls",
+      "state": "Technical checks passed; geometry/motion appearance review remains explicit"
+    },
+    {
+      "criterion": 2,
+      "technical_evidence": "88 still settings, 74 x 32-frame sequences, geometry distance/clip/grazing/thin/concave/convex/seam/actors/swatches, disabled/FXAA, strict stationary colors/masks",
+      "state": "Executed technical matrix; project-owner still/motion verdict pending"
+    },
+    {
+      "criterion": 3,
+      "technical_evidence": "isolation, bands, swatches, 34 material checks and direct source/original/corrected/target review",
+      "state": "Pending project-owner visual acceptance; no inherited T03 approval of new shader choices"
+    }
+  ],
+  "owner_decision": {
+    "reviewer": "Project owner",
+    "decided_at": null,
+    "silhouette_appearance": null,
+    "convex_highlights": null,
+    "character_ground_readability": null,
+    "palette_and_bands": null,
+    "motion_and_local_attenuation": null,
+    "antialiasing": null,
+    "approved_deviations": [],
+    "decision": "Changes requested",
+    "feedback": "Based on what you have for the awaiting review image I think there's a ton of missing details. Especially compared to the target image.",
+    "feedback_artifact": "owner-feedback.json"
+  },
+  "scope": "Only T05 and one demonstrated read-only T03 key-light integration fix. No canonical gameplay definitions, source assets, world/camera/physics policy, Godot/backend, T06-T10, BW098 or BW099 implementation changes.",
+  "engine_sources": [
+    "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html",
+    "https://raw.githubusercontent.com/godotengine/godot/ed1daf0bf001b61586d9930840f2f1394092c079/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl",
+    "https://raw.githubusercontent.com/godotengine/godot/ed1daf0bf001b61586d9930840f2f1394092c079/servers/rendering/renderer_rd/shaders/scene_forward_lights_inc.glsl"
+  ],
+  "reproduce": "Use game revision above; retain pinned engine and exact local Titan exports. python3 tools/verify_toolchain.py; python3 tools/run_rendering_probe.py --case outlines; python3 -m unittest discover -s tools -p \"test_*probe.py\" -v. Run controls/recovery and T01-T04 with commands recorded in suite.json. Archives retain original reports/logs/captures. Unzip into a separate directory, never overwrite another run. Final custom diagnostics retain run.py, the executed script under its original mode filename, required band configuration and reproduce.json with the exact mode. Exploratory dirty snapshots retain hashes and shader text where available, not a guarantee of full historical reconstruction; use the committed baseline/final revision for reproducibility."
+}

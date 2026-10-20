@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T04">
               <p>
-                <span class="badge">Complete</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                 >
@@ -320,7 +320,14 @@ python3 tools/run_rendering_probe.py --case camera --camera-profile smoke --inte
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Complete source camera feasibility proof: 140
+                <strong>Required evidence:</strong> Reopened during the 2026-10-20 T05 correction
+                regression: all 140 sequences / 8,960 samples execute, but stationary-bound fails in
+                corrected minimum-window close view (19 pixels / 3 RGB8 levels outside the
+                normal-only approved allowance). Seven other checks pass. Camera/PBR source behavior
+                is unchanged; no accepted bound is modified. See
+                validation/tickets/BW-097-T05/correction/review.html#t04-regression and
+                camera-regression.json, with an independent main baseline. Historical approval and
+                evidence remain preserved: Complete source camera feasibility proof: 140
                 corrected/unsnapped 64-frame sequences at 30 Hz, actual native output readbacks and
                 lossless frame atlases, exact anchor/camera/residual/projection/time logs, offline
                 playback and bounded-policy rejection tests. The initial strict stationary failure
@@ -333,27 +340,21 @@ python3 tools/run_rendering_probe.py --case camera --camera-profile smoke --inte
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <ul>
                 <li>
-                  <a href="../validation/tickets/BW-097-T04/approved-full-run/run.json"
-                    >Fresh post-control full execution passed eight checks across 140 paired
-                    sequences / 8,960 samples on pinned Godot 4.7.2, Forward+/Metal, Apple M2 Max,
-                    actual Retina 2x. Exact framebuffer presentation, finite unchanged scoped source
-                    anchors, grid alignment, seek/step/reset and approved stationary bounds pass.
-                    Runtime differences peak at 1 RGB8 level / 25 scenery pixels; no differences
-                    outside approved regions. Initial strict failures remain historical.</a
+                  <a href="../validation/tickets/BW-097-T05/correction/camera-regression.json"
+                    >All finite continuous scoped source anchors remain identical with correction
+                    enabled/disabled across 8,960 samples; coordinate/simulation identity is
+                    preserved.</a
                   >
-                  — AC 1, 2, 3; Passed; revision 689ef75103f298fddd10be32093fd87ad89d5aca-dirty;
-                  exact captured runtime/source hashes in approved-full-run/run.json
+                  — AC 2; Passed; revision 63149ca712b40bd0fc5cf234a62b951d3147c482
                 </li>
                 <li>
-                  <a href="../validation/tickets/BW-097-T04/visual-review.json"
-                    >Complete sequence and measured projection review retains all seven paths at
-                    every T02 window/zoom. Maximum world correction error is 0.499777 physical
-                    pixels. Explicit owner approval allows only the recorded T04 stationary
-                    PBR-color exception; source anchors, silhouettes, continuity, other regions and
-                    close zoom retain their bounds.</a
+                  <a href="../validation/tickets/BW-097-T05/correction/camera-regression.json"
+                    >Fresh full PBR regression fails stationary stability in corrected
+                    minimum-window close view: up to 19 pixels / 3 RGB8 levels where exact identity
+                    is required. Seven other checks pass; no tolerance or source policy was
+                    changed.</a
                   >
-                  — AC 1, 3; Passed; revision 689ef75103f298fddd10be32093fd87ad89d5aca-dirty; exact
-                  captured runtime/source hashes in approved-full-run/run.json
+                  — AC 1, 3; Failed; revision 63149ca712b40bd0fc5cf234a62b951d3147c482
                 </li>
               </ul>
               <h2 id="documentation">Related documentation</h2>
@@ -369,6 +370,9 @@ python3 tools/run_rendering_probe.py --case camera --camera-profile smoke --inte
                 <a href="../guide/sources.html#s9">Holland camera reference</a>;
                 <a href="../validation/tickets/BW-097-T04/deviation-approval.json"
                   >Approved T04-only stationary PBR-color deviation</a
+                >;
+                <a href="../validation/tickets/BW-097-T05/correction/review.html#t04-regression"
+                  >Reopened PBR stationary regression during T05 correction</a
                 >
               </p>
             </article>

@@ -1,0 +1,509 @@
+[
+  {
+    "name": "outlines-invalid-settings",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "outlines",
+      "--control",
+      "invalid-settings",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/t05-correction-final-suite/outlines-invalid-settings"
+    ],
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expectation_met": true,
+    "actual_result": "Failed",
+    "report": "outlines-invalid-settings/run.json",
+    "checks": [],
+    "failure": "Invalid settings: use the checked-in bounded outlines settings.",
+    "retained_scope": "Complete original output",
+    "archive": "outlines-invalid-settings.zip",
+    "bytes": 8155,
+    "sha256": "dc06c557dd151e30070d6c0ef5522064930a0b7c1dd2b07b9d2c7bc0c2384fbe"
+  },
+  {
+    "name": "outlines-missing-report",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "outlines",
+      "--control",
+      "missing-report",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/t05-correction-final-suite/outlines-missing-report"
+    ],
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expectation_met": true,
+    "actual_result": "Failed",
+    "report": "outlines-missing-report/run.json",
+    "checks": [],
+    "failure": "Missing or duplicate runtime start/report; no complete assertion evidence.",
+    "retained_scope": "Complete original output",
+    "archive": "outlines-missing-report.zip",
+    "bytes": 84303157,
+    "sha256": "1fda032b05189fd8eaa1eb8700af961f9756764b63f702ce68a0a5362a73c5d6"
+  },
+  {
+    "name": "outlines-check-failure",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "outlines",
+      "--control",
+      "check-failure",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/t05-correction-final-suite/outlines-check-failure"
+    ],
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expectation_met": true,
+    "actual_result": "Failed",
+    "report": "outlines-check-failure/run.json",
+    "checks": [
+      {
+        "detail": "13 geometry cases and three model cases \u00d7 both zooms \u00d7 disabled/FXAA; models in day/warm/cool.",
+        "name": "geometry-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Selected no-AA contours equal one cardinal-texel exterior coverage ring; overlap/clipped side edges measured separately.",
+        "name": "one-pixel-silhouettes",
+        "passed": true
+      },
+      {
+        "detail": "Flat normal seam, concave fold, frontal plane and grazing slope have no convex highlights.",
+        "name": "planar-rejection",
+        "passed": true
+      },
+      {
+        "detail": "Convex fold has nonzero selectively lit highlights at both zooms; diagnostic and silhouette controls separate them.",
+        "name": "convex-selection",
+        "passed": true
+      },
+      {
+        "detail": "Every near/far, clipping, grazing, thin and overlapping fixture retains visible coverage and contours.",
+        "name": "clip-and-thin-coverage",
+        "passed": true
+      },
+      {
+        "detail": "All six zoom/light pairs and both AA candidates retain PBR/source/toon comparisons; appearance approval is separate.",
+        "name": "lighting-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Seven named PBR/toon/silhouette/highlight combinations preserve camera, actor pose and logical frame.",
+        "name": "effect-isolation",
+        "passed": true
+      },
+      {
+        "detail": "Local source materials restore via the toon toggle; alpha cutoff/albedo/UV are transferred without source mutation.",
+        "name": "material-toggle",
+        "passed": true
+      },
+      {
+        "detail": "Disabled and FXAA candidates captured; selected no-AA preserves binary one-pixel masks. No SMAA support assumed.",
+        "name": "antialiasing",
+        "passed": true
+      },
+      {
+        "detail": "All four silhouette/highlight toggle combinations produce distinct retained combined images.",
+        "name": "edge-controls",
+        "passed": true
+      },
+      {
+        "detail": "All geometry diagonal paths and courtyard stationary/slow/diagonal/actor paths, both zooms, three lighting states, 32 consecutive 30Hz samples.",
+        "name": "motion-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Exact stationary silhouette/highlight mask identity; no T04 PBR-color exception inherited.",
+        "name": "stationary-masks",
+        "passed": true
+      },
+      {
+        "detail": "Stationary combined-color differences satisfy the explicit T05 bound; initial policy requires exact identity.",
+        "name": "stationary-colors",
+        "passed": true
+      },
+      {
+        "detail": "Reset restores courtyard/day/normal zoom/toon/both edges/no AA and frame zero.",
+        "name": "reset",
+        "passed": true
+      },
+      {
+        "detail": "Requested failure control executed.",
+        "name": "deliberate-failure",
+        "passed": false
+      }
+    ],
+    "failure": "Executed graphical checks failed; retain findings and captures.",
+    "retained_scope": "Complete original output",
+    "archive": "outlines-check-failure.zip",
+    "bytes": 84919573,
+    "sha256": "79bb05b9dd11d8941f5c61d487db67374e9f7b7c97a0269330aecacb2afc7c16"
+  },
+  {
+    "name": "capabilities-regression",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "capabilities",
+      "--control",
+      "pass",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/t05-correction-final-suite/capabilities-regression"
+    ],
+    "exit_status": 0,
+    "expected_exit_status": 0,
+    "expectation_met": true,
+    "actual_result": "Passed",
+    "report": "capabilities-regression/run.json",
+    "checks": [
+      {
+        "detail": "Magenta reader appears in final composition over green.",
+        "name": "screen-reader-visible",
+        "passed": true
+      },
+      {
+        "detail": "Opaque copy contains green, excludes the later magenta screen reader.",
+        "name": "screen-copy-timing",
+        "passed": true
+      },
+      {
+        "detail": "Three known z planes agree within .015 normalized linear units.",
+        "name": "raw-depth",
+        "passed": true
+      },
+      {
+        "detail": "Three known z planes agree within .015 normalized linear units.",
+        "name": "orthographic-depth",
+        "passed": true
+      },
+      {
+        "detail": "Known 30 degree slope encodes normal (0.5, 0, .866).",
+        "name": "view-normal",
+        "passed": true
+      },
+      {
+        "detail": "Known 30 degree slope encodes normal (0.5, 0, .866).",
+        "name": "world-normal",
+        "passed": true
+      },
+      {
+        "detail": "80 readback pixels including both edges equal the opaque copy shifted by 8 texels.",
+        "name": "nearest-texel-sampling",
+        "passed": true
+      },
+      {
+        "detail": "Changing opaque red to cyan updates the screen copy after four rendered frames.",
+        "name": "screen-copy-fresh",
+        "passed": true
+      },
+      {
+        "detail": "Camera yaw changes view normal; inverse-view decoding retains world +Z.",
+        "name": "normal-space-rotation",
+        "passed": true
+      },
+      {
+        "detail": "Wired swatch, rotation, Reset and Capture controls executed; defaults restored.",
+        "name": "controls-reset",
+        "passed": true
+      }
+    ],
+    "failure": null,
+    "retained_scope": "Complete original output",
+    "archive": "capabilities-regression.zip",
+    "bytes": 682979,
+    "sha256": "d72a9203bbb5626a9b9eade4d68c74b938a2da245b002303f7ea110ae7b82230"
+  },
+  {
+    "name": "viewport-regression",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "viewport",
+      "--control",
+      "pass",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/t05-correction-final-suite/viewport-regression"
+    ],
+    "exit_status": 0,
+    "expected_exit_status": 0,
+    "expectation_met": true,
+    "actual_result": "Passed",
+    "report": "viewport-regression/run.json",
+    "checks": [
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-0-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-0-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-1-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-1-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-2-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-2-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-3-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-3-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-4-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Exact native window size, integer checker blocks, projected unit scale; anchors unchanged.",
+        "name": "preset-4-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "HUD/pointer scale independently at native output resolution; world remains nearest.",
+        "name": "ui-0",
+        "passed": true
+      },
+      {
+        "detail": "HUD/pointer scale independently at native output resolution; world remains nearest.",
+        "name": "ui-1",
+        "passed": true
+      },
+      {
+        "detail": "HUD/pointer scale independently at native output resolution; world remains nearest.",
+        "name": "ui-2",
+        "passed": true
+      },
+      {
+        "detail": "Odd physical dimensions retain uniform pixel blocks and centered remainder borders.",
+        "name": "odd-physical",
+        "passed": true
+      },
+      {
+        "detail": "Below minimum hides world visibly; at/above minimum restores declared pixels.",
+        "name": "minimum-639",
+        "passed": true
+      },
+      {
+        "detail": "Below minimum hides world visibly; at/above minimum restores declared pixels.",
+        "name": "minimum-640",
+        "passed": true
+      },
+      {
+        "detail": "Below minimum hides world visibly; at/above minimum restores declared pixels.",
+        "name": "minimum-641",
+        "passed": true
+      },
+      {
+        "detail": "Sixteen successive native one-physical-pixel resizes retain exact blocks and fixture identity.",
+        "name": "native-resize-sequence",
+        "passed": true
+      },
+      {
+        "detail": "Largest supported UI fits the minimum window and remains above world content.",
+        "name": "minimum-large-ui",
+        "passed": true
+      },
+      {
+        "detail": "Undersized output never fabricates a different world scale.",
+        "name": "no-fractional-fallback",
+        "passed": true
+      },
+      {
+        "detail": "Reset restores controls/framing and preserves non-grid foot anchors and floor identity.",
+        "name": "anchors-and-reset",
+        "passed": true
+      }
+    ],
+    "failure": null,
+    "retained_scope": "Complete original output",
+    "archive": "viewport-regression.zip",
+    "bytes": 2132891,
+    "sha256": "f8952c00df22352b5c300f769dd6e16a91309c998f75469d5328538dc8e44551"
+  },
+  {
+    "name": "reference-regression",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "reference",
+      "--control",
+      "pass",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/t05-correction-final-suite/reference-regression"
+    ],
+    "exit_status": 0,
+    "expected_exit_status": 0,
+    "expectation_met": true,
+    "actual_result": "Passed",
+    "report": "reference-regression/run.json",
+    "checks": [
+      {
+        "detail": "Human-scale adventurer and courtyard rendered; overview and closer regions retained.",
+        "name": "day-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Human-scale adventurer and courtyard rendered; overview and closer regions retained.",
+        "name": "day-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "Human-scale adventurer and courtyard rendered; overview and closer regions retained.",
+        "name": "warm-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Human-scale adventurer and courtyard rendered; overview and closer regions retained.",
+        "name": "warm-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "Human-scale adventurer and courtyard rendered; overview and closer regions retained.",
+        "name": "cool-zoom-0",
+        "passed": true
+      },
+      {
+        "detail": "Human-scale adventurer and courtyard rendered; overview and closer regions retained.",
+        "name": "cool-zoom-1",
+        "passed": true
+      },
+      {
+        "detail": "Whole courtyard native/pixel comparison preserves camera, pose and original pixels.",
+        "name": "overview-native-comparison",
+        "passed": true
+      },
+      {
+        "detail": "Day/warm/cool changes produce different actual readbacks; style approval is separate.",
+        "name": "lighting-distinct",
+        "passed": true
+      },
+      {
+        "detail": "Fractional visual heading is retained; no heading presets or gameplay state exist.",
+        "name": "continuous-heading",
+        "passed": true
+      },
+      {
+        "detail": "Reset restores lighting/zoom/heading without moving the visual foot anchor.",
+        "name": "reference-reset",
+        "passed": true
+      },
+      {
+        "detail": "Native PBR and nearest-upscaled pixels share framing; original viewport/pixels restored.",
+        "name": "native-comparison",
+        "passed": true
+      }
+    ],
+    "failure": null,
+    "retained_scope": "Complete original output",
+    "archive": "reference-regression.zip",
+    "bytes": 6990917,
+    "sha256": "58530547298fe7742dacb8613ae9063e77acbc23a7b9129aecd164ed1dc494a6"
+  },
+  {
+    "name": "camera-regression",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "camera",
+      "--control",
+      "pass",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Godot/briarwake/artifacts/t05-correction-final-suite/camera-regression"
+    ],
+    "exit_status": 1,
+    "expected_exit_status": 0,
+    "expectation_met": false,
+    "actual_result": "Failed",
+    "report": "camera-regression/run.json",
+    "checks": [
+      {
+        "detail": "Every requested window/zoom/path has paired consecutive 30 Hz samples; no selected frames omitted.",
+        "name": "sequence-matrix",
+        "passed": true
+      },
+      {
+        "detail": "Enabled/disabled correction retains identical continuous scoped source anchors at every sample.",
+        "name": "continuous-source",
+        "passed": true
+      },
+      {
+        "detail": "Every native framebuffer world pixel equals the guarded nearest-scaled and shifted internal image.",
+        "name": "guarded-presentation",
+        "passed": true
+      },
+      {
+        "detail": "Actual projected rigid origin and visual actor translate by whole internal pixels; source stays continuous.",
+        "name": "camera-grid",
+        "passed": true
+      },
+      {
+        "detail": "Exact stationary identity outside the approved T04-only PBR regions; both first-frame and adjacent deltas: {\"approval\":\"mmo_docs/validation/tickets/BW-097-T04/deviation-approval.json\",\"max_changed_pixels\":32.0,\"max_rgb_delta\":2.0,\"regions\":[[115.0,128.0,13.0,9.0],[225.0,115.0,13.0,12.0]],\"zoom_index\":0.0}",
+        "name": "stationary-bound",
+        "passed": false
+      },
+      {
+        "detail": "Seeking reproduces exact frame/time, anchors, camera and residual.",
+        "name": "seek-repeat",
+        "passed": true
+      },
+      {
+        "detail": "The Step control pauses and advances exactly one sample.",
+        "name": "single-step",
+        "passed": true
+      },
+      {
+        "detail": "Reset restores checked-in settings without writing any gameplay state.",
+        "name": "reset",
+        "passed": true
+      }
+    ],
+    "failure": "Executed graphical checks failed; retain findings and captures.",
+    "retained_scope": "All metadata/logs plus all stationary PNG sequences; other camera motion PNGs remain in the original local game artifact directory",
+    "archive": "camera-regression.zip",
+    "bytes": 8491318,
+    "sha256": "a76af609941d336b517c51d05626ad0369ea121debfe002c0841c8c5cc7ff7b7"
+  },
+  {
+    "name": "main-camera-baseline",
+    "actual_result": "Failed",
+    "source_revision": "f40ad29d971a7bad511b3604e3abea82b42556d9",
+    "archive": "main-camera-baseline.zip",
+    "bytes": 8490837,
+    "sha256": "1930ed8c02a8f45b02cd626d1b937d1367cc4056cd8dd01061bfda8f2d0510b9",
+    "retained_scope": "All metadata/logs and stationary PNGs; full original output remains in the local game artifacts directory"
+  }
+]

@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BW-097-T05 rendering correction · large visual review</title>
+  <style>
+    body{background:#17212b;color:#eff1f3;font:17px/1.5 system-ui;margin:24px}a{color:#a9dbff}h1,h2,h3{line-height:1.2}p,li{max-width:1100px}select,button{font:inherit;margin:6px;padding:6px}table{border-collapse:collapse;max-width:1500px}td,th{border:1px solid #617181;padding:10px;vertical-align:top}th{text-align:left}canvas{image-rendering:pixelated;background:#111}.panels{display:flex;flex-wrap:wrap;gap:24px}.panel{overflow:auto;max-width:100%}.hint{color:#c8d7df}.pending{padding:16px;background:#5b4621;max-width:1100px}.target{max-width:100%;height:auto}pre{white-space:pre-wrap}figure{margin:16px 0}
+  </style>
+  <nav aria-label="Reference navigation">
+    <a class="nav-home" href="../../../../index.html">Overview</a
+    ><a data-roadmap-nav href="../../../../guide/development-roadmap.html">Development Roadmap</a> ·
+    <a href="../../../../guide/roadmap-bw-097-t05.html#BW-097-T05">T05 ticket</a>
+    <p>Catalogs</p>
+    <a data-inventory-nav href="../../../../guide/data-inventory.html">Data Inventory</a>
+  </nav>
+  <main id="main">
+    <h1>BW-097-T05 · rendering correction</h1>
+    <p class="pending">
+      Corrected shader candidate for project-owner review. T05 remains <strong>In Progress</strong>:
+      appearance is unapproved and the fresh T04 PBR stationary regression remains open. No
+      tolerance is widened.
+    </p>
+    <p>
+      Tested source <code>63149ca712b40bd0fc5cf234a62b951d3147c482</code>. The native gameplay image
+      stays 384×216 with the existing T04 guard. Large previews use nearest presentation, so each
+      source pixel remains visible. The native 4K material diagnostic is separately labeled.
+    </p>
+    <p>
+      <a href="large/full-t05-gameplay-3840x2160.png"
+        >Open 3840×2160 full T05 gameplay presentation</a
+      >
+      · <a href="large/pbr-gameplay-3840x2160.png">3840×2160 PBR gameplay presentation</a> ·
+      <a href="large/toon-material-detail-native-3840x2160.png"
+        >Native 4K toon material detail (4× MSAA, edges off)</a
+      >
+      ·
+      <a href="source-pbr-4k/courtyard-pbr-4k.png"
+        >Original native 4K source PBR, custom shaders off</a
+      >
+    </p>
+    <p>
+      <a href="final-run/review.html"
+        >Complete geometry, seven modes, raw buffers, pixel grid, AA and motion reader</a
+      >
+      · <a href="review.json">Root causes, review and pending decision</a> ·
+      <a href="final-run/run.json">Executed final report and hashes</a> ·
+      <a href="suite.json">Controls and T01–T04 suite</a> ·
+      <a href="investigation-manifest.json">Historical failures and investigations</a> ·
+      <a href="request-context.json">Image identity and original request</a>
+    </p>
+    <h2 id="comparison">Matched source / original T05 / corrected T05</h2>
+    <p>
+      Same logical frame zero, camera, character pose, transforms, approved lighting preset and
+      source asset identities. Original T05 is reproduced at <code>c3468ed</code>; the historical
+      pair previously shown in chat came from <code>cf0b6bed</code>. The fresh baseline reproduced
+      its 12/13 strict failure before correction. PBR output has observed color-stability
+      differences, including the open T04 close-view finding below; no bitwise PBR cross-run
+      identity is claimed.
+    </p>
+    <label
+      >Lighting
+      <select id="light">
+        <option>Day</option>
+        <option>Warm</option>
+        <option>Cool</option>
+      </select></label
+    >
+    <label
+      >Zoom
+      <select id="zoom">
+        <option>Normal gameplay</option>
+        <option>Close</option>
+      </select></label
+    >
+    <label
+      >Region
+      <select id="region">
+        <option value="scene">Full scene</option>
+        <option value="character">Character</option>
+        <option value="props">Barrels</option>
+        <option value="contact">Furniture</option>
+        <option value="palette">Foliage</option>
+      </select></label
+    >
+    <label
+      >Enlargement
+      <select id="scale">
+        <option value="1">Actual pixels ×1</option>
+        <option value="4" selected>×4</option>
+        <option value="8">×8</option>
+        <option value="12">×12</option>
+      </select></label
+    >
+    <label
+      >Effects
+      <select id="mode">
+        <option value="combined">Full T05</option>
+        <option value="toon">Toon only</option>
+        <option value="silhouettes-only">Silhouettes on PBR</option>
+        <option value="highlights-only">Highlights on PBR</option>
+        <option value="toon-silhouettes">Toon + silhouettes</option>
+        <option value="toon-highlights">Toon + highlights</option>
+        <option value="masks">Silhouette / highlight masks</option>
+        <option value="view-normal">Geometric normals</option>
+        <option value="view-depth">Reconstructed depth</option>
+        <option value="raw-depth">Raw depth</option>
+      </select></label
+    >
+    <p class="hint">
+      Choose actual pixels ×1 for full-scene side-by-side, or Character ×8 for large side-by-side
+      detail. Full scene ×4 preserves a large view in each panel.
+    </p>
+    <p id="state" class="hint"></p>
+    <div class="panels">
+      <div class="panel">
+        <h3>Source PBR · pre-T05 behavior</h3>
+        <canvas id="source"></canvas>
+      </div>
+      <div class="panel">
+        <h3>Original T05 · rejected</h3>
+        <canvas id="original"></canvas>
+      </div>
+      <div class="panel">
+        <h3>Corrected T05 · awaiting review</h3>
+        <canvas id="corrected"></canvas>
+      </div>
+    </div>
+    <h2 id="target">Enhanced artistic target</h2>
+    <p>
+      The owner-supplied target guides restrained outlines, material color and readability. Its new
+      foliage, texture art, contact shading and atmospheric treatment are not verified T05 output
+      and remain with their existing later owners.
+    </p>
+    <a href="artistic-target.png"
+      ><img
+        class="target"
+        src="artistic-target.png"
+        width="1672"
+        height="941"
+        alt="Owner supplied golden-hour courtyard artistic target"
+    /></a>
+    <h2 id="visual-findings">Visual findings and limits</h2>
+    <p>
+      At actual gameplay scale, corrected hair/skin, torso/arms, legs/boots and blue/purple clothing
+      remain distinguishable. Warm barrel hoops and brown wood regain midtones; stair faces regain
+      reflected form. Head/ears are a few pixels and facial detail is inherently limited. The
+      corrected combined image is substantially easier to read than original T05; superiority over
+      source PBR remains an owner decision.
+    </p>
+    <p>
+      Outline contrast is reduced most at shallow gaps. Paving is no longer globally darkened by
+      repeated albedo; its repeating source normal/texture pattern still competes with the small
+      character. Leaf/roof intersections remain busy where actual geometry overlaps. These residual
+      details are disclosed, not hidden by resolution changes or blur.
+    </p>
+    <p>
+      Final-source hard [0.22,0.55,1], balanced [0.25,0.65,1] and lifted [0.4,0.8,1] captures cover
+      both zooms and day/warm/cool plus swatches. Balanced is provisional: hard loses shadow
+      separation; lifted flattens shade. It still needs owner approval.
+    </p>
+    <p>
+      Direct specular lobes, metallic energy redistribution and transmission are intentionally
+      omitted by the local toon material. Existing environment reflections preserve dark form; this
+      does not implement T07 reflection features. The edge buffer and indirect lighting/reflections
+      use geometric normals; texture normals affect custom direct diffuse lighting. This keeps
+      texture microdetail out of geometric edge selection and is a disclosed difference from source
+      PBR.
+    </p>
+    <p>
+      384x216 plus existing 1px T04 guard, no AA selected, nearest presentation. 3840x2160 gameplay
+      images are a GPU-rendered 10x nearest presentation. Native 4K toon material image uses 4x MSAA
+      with outlines/highlights off and is supplemental detail only, never pixel/stability proof.
+    </p>
+    <p>
+      32 consecutive 30Hz samples per path; loop wrap restarts. One screen-space sample cannot
+      reveal hidden geometry. No final packaging, other hardware or performance-budget acceptance is
+      claimed.
+    </p>
+    <h2 id="causes">Confirmed causes and remaining hypothesis</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Cause</th>
+          <th>Confidence</th>
+          <th>Observation / correction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Repeated albedo in direct diffuse light</td>
+          <td>Confirmed by isolated pinned graphical test and pinned renderer source</td>
+          <td>
+            The renderer applies albedo after custom diffuse accumulation. Gray source RGB8
+            51/127/204 became 4/60/163 under the old unity-band light; removing the extra factor
+            restores 51/127/204. Ambient-only rows were unchanged.
+            <a href="investigation/albedo-test.zip">Evidence</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Source material inputs were dropped</td>
+          <td>
+            Confirmed inventory of 34 material surfaces (including the hidden comparison actor) and
+            isolated comparisons
+          </td>
+          <td>
+            All 34 use linear mipmaps; 32 carry normal maps; 13 use UV offsets; four are double
+            sided; all are opaque. Old conversion forced nearest sampling/double-sided/scissor, lost
+            normal lighting, UV offsets, roughness and specular. One black source wood material
+            needs reflection for its visible form. <a href="before/identity.json">Evidence</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Dark source reflection was still absent in the first correction</td>
+          <td>Confirmed; caught during recursive review, corrected before final suite</td>
+          <td>
+            The intermediate b646 diffuse-only candidate left connected black regions of
+            486/286/185/147/97 pixels that were visible in PBR. Source roughness/specular
+            restoration removes that collapse in all five inspected regions. A nonzero-source
+            black-material sky test and lost-reflection negative control guard it.
+            <a href="investigation/reflection-preview.zip">Evidence</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Edge classification/composition overemphasized minor geometry</td>
+          <td>
+            Confirmed from raw depth/normal and masks; not every detailed source feature is an
+            outline
+          </td>
+          <td>
+            Flat paving has no silhouette mask. Its repeated detail comes primarily from existing
+            albedo/normal lighting. Roof and foliage include real geometric overlaps. Both surface
+            planes now distinguish gaps from connected convex bends; shallower gaps blend with
+            reduced contrast. Exterior cardinal-texel ownership is unchanged.
+            <a href="isolation/identity.json">Evidence</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Highlight key-light vector differed from actual reference sun</td>
+          <td>Confirmed integration defect</td>
+          <td>
+            The T05 hard-coded vector had the wrong world X orientation. A read-only T03 owner
+            getter supplies the actual sun direction without changing the approved light or scene.
+            <a href="final-run/run.json">Evidence</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Stationary color changes follow the local-light path</td>
+          <td>Confirmed localization; exact engine precision/culling cause remains a hypothesis</td>
+          <td>
+            Unshaded, ambient-only, sun-only and fill-only were stable. Lantern-only varied up to 55
+            pixels/3 RGB8 levels. Disabling shadows or reapplying CPU state did not eliminate
+            changes. Of tested 0/64/32/16 local attenuation steps, only 16 passed all six zoom/light
+            stationary cases. No final RGB quantization or tolerance exception is applied.
+            <a href="investigation/stationary-lights.zip">Evidence</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Engine interpretation is grounded in the
+      <a
+        href="https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
+        >official spatial shader reference</a
+      >
+      and the pinned
+      <a
+        href="https://raw.githubusercontent.com/godotengine/godot/ed1daf0bf001b61586d9930840f2f1394092c079/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl"
+        >Forward+ material implementation</a
+      >
+      and
+      <a
+        href="https://raw.githubusercontent.com/godotengine/godot/ed1daf0bf001b61586d9930840f2f1394092c079/servers/rendering/renderer_rd/shaders/scene_forward_lights_inc.glsl"
+        >light implementation</a
+      >, plus the actual graphical diagnostics above.
+    </p>
+    <h2 id="bands">Provisional band choice and rejected candidates</h2>
+    <p>
+      Balanced is the provisional final-source candidate, pending owner approval. The hard variant
+      loses shadow separation; the lifted variant flattens shade. Use the main comparisons for
+      source/original/current and the links below for all tested light/zoom combinations.
+    </p>
+    <div class="panels">
+      <figure>
+        <figcaption>hard</figcaption>
+        <img
+          style="width:1158px;image-rendering:pixelated;max-width:100%"
+          src="bands/hard-z0-l0-combined.png"
+          alt="hard band comparison"
+        />
+      </figure>
+      <figure>
+        <figcaption>balanced</figcaption>
+        <img
+          style="width:1158px;image-rendering:pixelated;max-width:100%"
+          src="bands/balanced-z0-l0-combined.png"
+          alt="balanced band comparison"
+        />
+      </figure>
+      <figure>
+        <figcaption>lifted</figcaption>
+        <img
+          style="width:1158px;image-rendering:pixelated;max-width:100%"
+          src="bands/lifted-z0-l0-combined.png"
+          alt="lifted band comparison"
+        />
+      </figure>
+    </div>
+    <p>
+      <a href="bands/identity.json">36 final-source band images and exact settings/hashes</a> ·
+      <a href="swatches/identity.json">Material swatch candidates</a> ·
+      <a href="investigation/attenuation-steps.zip">0/64/32/16-step stationary experiment</a>
+    </p>
+    <h2 id="geometry">Pixel-width and geometry annotations</h2>
+    <p>
+      Exterior silhouettes match the one-cardinal-texel coverage ring. Near-clip and overlap each
+      additionally contain a real one-column internal occlusion: 48 pixels at normal, 96 at close.
+      Raw extra_exterior/foreground counts retain those values; they are not silently zeroed or
+      treated as filled areas. Their appearance remains part of owner review. Far-clip exposes a
+      convex side edge (48/96 highlights).
+    </p>
+    <p>
+      The complete reader supplies the one-internal-pixel grid, matching source/coverage,
+      reconstructed depth and normals. Red selects silhouettes; green selects convex highlights.
+      Missing exterior pixels and soft masks are zero for the selected no-AA fixtures.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Fixture</th>
+          <th>Zoom</th>
+          <th>Missing exterior</th>
+          <th>Extra versus exterior ring</th>
+          <th>Inside covered surface</th>
+          <th>Convex pixels</th>
+          <th>Raw mask</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>distance-near</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/distance-near-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>distance-middle</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/distance-middle-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>distance-far</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/distance-far-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>near-clip</td>
+          <td>1</td>
+          <td>0</td>
+          <td>48</td>
+          <td>48</td>
+          <td>0</td>
+          <td><a href="final-run/near-clip-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>far-clip</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>48</td>
+          <td><a href="final-run/far-clip-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>grazing</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/grazing-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>thin</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/thin-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>convex</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>48</td>
+          <td><a href="final-run/convex-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>concave</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/concave-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>flat-normal-seam</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/flat-normal-seam-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>touching</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/touching-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>overlap</td>
+          <td>1</td>
+          <td>0</td>
+          <td>48</td>
+          <td>48</td>
+          <td>0</td>
+          <td><a href="final-run/overlap-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>swatches</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/swatches-z0-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>distance-near</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/distance-near-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>distance-middle</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/distance-middle-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>distance-far</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/distance-far-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>near-clip</td>
+          <td>2</td>
+          <td>0</td>
+          <td>96</td>
+          <td>96</td>
+          <td>0</td>
+          <td><a href="final-run/near-clip-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>far-clip</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>96</td>
+          <td><a href="final-run/far-clip-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>grazing</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/grazing-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>thin</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/thin-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>convex</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>96</td>
+          <td><a href="final-run/convex-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>concave</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/concave-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>flat-normal-seam</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/flat-normal-seam-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>touching</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/touching-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>overlap</td>
+          <td>2</td>
+          <td>0</td>
+          <td>96</td>
+          <td>96</td>
+          <td>0</td>
+          <td><a href="final-run/overlap-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+        <tr>
+          <td>swatches</td>
+          <td>2</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+          <td><a href="final-run/swatches-z1-aa0-l0-masks.png">Mask</a></td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="verification">Executed verification</h2>
+    <p>
+      14/14 final checks; 88 still settings; 74 ×32-frame sequences; 61/61 probe regressions. The
+      graphical material stage checks 34 cases, including black-material reflection.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th>Result</th>
+          <th>Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>geometry-matrix</td>
+          <td>Passed</td>
+          <td>
+            13 geometry cases and three model cases × both zooms × disabled/FXAA; models in
+            day/warm/cool.
+          </td>
+        </tr>
+        <tr>
+          <td>one-pixel-silhouettes</td>
+          <td>Passed</td>
+          <td>
+            Selected no-AA contours equal one cardinal-texel exterior coverage ring; overlap/clipped
+            side edges measured separately.
+          </td>
+        </tr>
+        <tr>
+          <td>planar-rejection</td>
+          <td>Passed</td>
+          <td>
+            Flat normal seam, concave fold, frontal plane and grazing slope have no convex
+            highlights.
+          </td>
+        </tr>
+        <tr>
+          <td>convex-selection</td>
+          <td>Passed</td>
+          <td>
+            Convex fold has nonzero selectively lit highlights at both zooms; diagnostic and
+            silhouette controls separate them.
+          </td>
+        </tr>
+        <tr>
+          <td>clip-and-thin-coverage</td>
+          <td>Passed</td>
+          <td>
+            Every near/far, clipping, grazing, thin and overlapping fixture retains visible coverage
+            and contours.
+          </td>
+        </tr>
+        <tr>
+          <td>lighting-matrix</td>
+          <td>Passed</td>
+          <td>
+            All six zoom/light pairs and both AA candidates retain PBR/source/toon comparisons;
+            appearance approval is separate.
+          </td>
+        </tr>
+        <tr>
+          <td>effect-isolation</td>
+          <td>Passed</td>
+          <td>
+            Seven named PBR/toon/silhouette/highlight combinations preserve camera, actor pose and
+            logical frame.
+          </td>
+        </tr>
+        <tr>
+          <td>material-toggle</td>
+          <td>Passed</td>
+          <td>
+            Local source materials restore via the toon toggle; alpha cutoff/albedo/UV are
+            transferred without source mutation.
+          </td>
+        </tr>
+        <tr>
+          <td>antialiasing</td>
+          <td>Passed</td>
+          <td>
+            Disabled and FXAA candidates captured; selected no-AA preserves binary one-pixel masks.
+            No SMAA support assumed.
+          </td>
+        </tr>
+        <tr>
+          <td>edge-controls</td>
+          <td>Passed</td>
+          <td>
+            All four silhouette/highlight toggle combinations produce distinct retained combined
+            images.
+          </td>
+        </tr>
+        <tr>
+          <td>motion-matrix</td>
+          <td>Passed</td>
+          <td>
+            All geometry diagonal paths and courtyard stationary/slow/diagonal/actor paths, both
+            zooms, three lighting states, 32 consecutive 30Hz samples.
+          </td>
+        </tr>
+        <tr>
+          <td>stationary-masks</td>
+          <td>Passed</td>
+          <td>
+            Exact stationary silhouette/highlight mask identity; no T04 PBR-color exception
+            inherited.
+          </td>
+        </tr>
+        <tr>
+          <td>stationary-colors</td>
+          <td>Passed</td>
+          <td>
+            Stationary combined-color differences satisfy the explicit T05 bound; initial policy
+            requires exact identity.
+          </td>
+        </tr>
+        <tr>
+          <td>reset</td>
+          <td>Passed</td>
+          <td>Reset restores courtyard/day/normal zoom/toon/both edges/no AA and frame zero.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Godot 4.7.2 (pinned source ed1daf0bf001b61586d9930840f2f1394092c079), Forward+ / Metal 4.0 /
+      Apple M2 Max / macOS 27 / Retina 2×. Engine SHA-256
+      c7cccbf8fb143e34e02fd6521e09be2c2b974f0d5db080b19071c9c570718ccf. No engine or backend
+      changes.
+    </p>
+    <p>
+      Strict stationary RGB and masks require exact identity at both zooms in day/warm/cool. No T04
+      color allowance is imported. Invalid settings, missing reports and deliberate failed checks
+      fail as expected; fresh recovery then T01–T04 run on the exact source above.
+      <a href="control-and-regression-manifest.json"
+        >Raw outcomes, ZIP hashes and reproduction commands</a
+      >. Unzip archives into a separate folder to inspect full original reports/logs/captures; do
+      not overwrite another run. Historical partial/invalid diagnostic attempts remain identified in
+      their reports, including superseded b646 and the first zero-source reflection fixture.
+    </p>
+    <h2 id="t04-regression">Open T04 PBR regression</h2>
+    <p>
+      Final-source T04 execution completes all 140 sequences / 8,960 samples and passes 7 of 8
+      checks. The corrected minimum-window close stationary case changes up to 19 scenery pixels / 3
+      RGB8 levels; close zoom requires exact identity. No T05 shader is active in that case. Camera
+      implementation and policy are unchanged; the ReferenceWorld change is a read-only sun getter
+      used by T05. An independent remote-main baseline result is recorded below. Existing T04
+      approval and original evidence remain historical; current T04 and parent AC3 are reopened, and
+      T05 cannot claim prerequisite completion.
+    </p>
+    <pre>
+{
+  &quot;revision&quot;: &quot;f40ad29d971a7bad511b3604e3abea82b42556d9&quot;,
+  &quot;result&quot;: &quot;Failed&quot;,
+  &quot;checks&quot;: [
+    {
+      &quot;detail&quot;: &quot;Every requested window/zoom/path has paired consecutive 30 Hz samples; no selected frames omitted.&quot;,
+      &quot;name&quot;: &quot;sequence-matrix&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;detail&quot;: &quot;Enabled/disabled correction retains identical continuous scoped source anchors at every sample.&quot;,
+      &quot;name&quot;: &quot;continuous-source&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;detail&quot;: &quot;Every native framebuffer world pixel equals the guarded nearest-scaled and shifted internal image.&quot;,
+      &quot;name&quot;: &quot;guarded-presentation&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;detail&quot;: &quot;Actual projected rigid origin and visual actor translate by whole internal pixels; source stays continuous.&quot;,
+      &quot;name&quot;: &quot;camera-grid&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;detail&quot;: &quot;Exact stationary identity outside the approved T04-only PBR regions; both first-frame and adjacent deltas: {\&quot;approval\&quot;:\&quot;mmo_docs/validation/tickets/BW-097-T04/deviation-approval.json\&quot;,\&quot;max_changed_pixels\&quot;:32.0,\&quot;max_rgb_delta\&quot;:2.0,\&quot;regions\&quot;:[[115.0,128.0,13.0,9.0],[225.0,115.0,13.0,12.0]],\&quot;zoom_index\&quot;:0.0}&quot;,
+      &quot;name&quot;: &quot;stationary-bound&quot;,
+      &quot;passed&quot;: false
+    },
+    {
+      &quot;detail&quot;: &quot;Seeking reproduces exact frame/time, anchors, camera and residual.&quot;,
+      &quot;name&quot;: &quot;seek-repeat&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;detail&quot;: &quot;The Step control pauses and advances exactly one sample.&quot;,
+      &quot;name&quot;: &quot;single-step&quot;,
+      &quot;passed&quot;: true
+    },
+    {
+      &quot;detail&quot;: &quot;Reset restores checked-in settings without writing any gameplay state.&quot;,
+      &quot;name&quot;: &quot;reset&quot;,
+      &quot;passed&quot;: true
+    }
+  ]
+}</pre>
+    <p>
+      <a href="camera-regression.json"
+        >Final-source failure, full checks and per-frame measurements</a
+      >
+      · <a href="main-camera-baseline.json">Independent main baseline</a> ·
+      <a href="control-and-regression-manifest.json">Archive contents and hashes</a>. Camera
+      archives retain all stationary PNGs and full metadata/logs; their other motion PNGs remain in
+      the original local game artifact directories, explicitly listed in the manifest. T05 raw
+      still/motion evidence is complete.
+    </p>
+    <h2 id="acceptance">Acceptance and owner decision</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Criterion</th>
+          <th>Evidence</th>
+          <th>Review status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AC 1</td>
+          <td>
+            final-run/run.json: one-pixel exterior coverage, convex selection, planar rejection,
+            clip/thin coverage and independent controls
+          </td>
+          <td>Technical checks passed; geometry/motion appearance review remains explicit</td>
+        </tr>
+        <tr>
+          <td>AC 2</td>
+          <td>
+            88 still settings, 74 x 32-frame sequences, geometry
+            distance/clip/grazing/thin/concave/convex/seam/actors/swatches, disabled/FXAA, strict
+            stationary colors/masks
+          </td>
+          <td>Executed technical matrix; project-owner still/motion verdict pending</td>
+        </tr>
+        <tr>
+          <td>AC 3</td>
+          <td>
+            isolation, bands, swatches, 34 material checks and direct
+            source/original/corrected/target review
+          </td>
+          <td>
+            Pending project-owner visual acceptance; no inherited T03 approval of new shader choices
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Project-owner reviewer, date, silhouette, highlight, character/ground, palette/bands,
+      motion/attenuation and AA decisions remain null in <a href="review.json">review.json</a>. No
+      deviation is approved. <a href="parent-review.json">BW-097</a> retains completed AC2/7; AC3 is
+      reopened after the current T04 failure, AC4 awaits T05/prerequisite review, and AC1/5/6/8/9
+      remain with later tickets. T06/T08 and BW098/BW099 are not promoted.
+    </p>
+    <p>
+      <a href="https://github.com/evanmcpheron/Briarwake/pull/17">Implementation PR #17</a> ·
+      <a href="https://github.com/evanmcpheron/mmo_docs/pull/23">Evidence PR #23</a>. Neither PR is
+      merged. Source-only feasibility evidence does not certify packaging, other devices, production
+      performance or later rendering effects.
+    </p>
+    <footer>
+      Rendering-only correction evidence. Owner appearance review and the reopened T04 PBR stability
+      finding remain unresolved.
+    </footer>
+  </main>
+  <script id="observations" type="application/json">
+    [{"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l0-pbr.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "pbr", "silhouettes": false, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l0-toon.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "toon", "silhouettes": false, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l0-silhouettes-only.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "silhouettes-only", "silhouettes": true, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l0-highlights-only.png", "frame": 0, "lighting": 0, "mode": {"highlights": true, "id": "highlights-only", "silhouettes": false, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l0-toon-silhouettes.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "toon-silhouettes", "silhouettes": true, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l0-toon-highlights.png", "frame": 0, "lighting": 0, "mode": {"highlights": true, "id": "toon-highlights", "silhouettes": false, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l0-combined.png", "frame": 0, "lighting": 0, "mode": {"highlights": true, "id": "combined", "silhouettes": true, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l1-pbr.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "pbr", "silhouettes": false, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l1-toon.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "toon", "silhouettes": false, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l1-silhouettes-only.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "silhouettes-only", "silhouettes": true, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l1-highlights-only.png", "frame": 0, "lighting": 1, "mode": {"highlights": true, "id": "highlights-only", "silhouettes": false, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l1-toon-silhouettes.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "toon-silhouettes", "silhouettes": true, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l1-toon-highlights.png", "frame": 0, "lighting": 1, "mode": {"highlights": true, "id": "toon-highlights", "silhouettes": false, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l1-combined.png", "frame": 0, "lighting": 1, "mode": {"highlights": true, "id": "combined", "silhouettes": true, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l2-pbr.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "pbr", "silhouettes": false, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l2-toon.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "toon", "silhouettes": false, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l2-silhouettes-only.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "silhouettes-only", "silhouettes": true, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l2-highlights-only.png", "frame": 0, "lighting": 2, "mode": {"highlights": true, "id": "highlights-only", "silhouettes": false, "toon": false}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l2-toon-silhouettes.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "toon-silhouettes", "silhouettes": true, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l2-toon-highlights.png", "frame": 0, "lighting": 2, "mode": {"highlights": true, "id": "toon-highlights", "silhouettes": false, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.420352935791, 11.3359937667847, 10.420352935791], "correction_physical": [0.0, -1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -5.0], "residual_pixels": [0.0, -0.340354442596436], "units_per_pixel": 0.0416666666666667}, "filename": "courtyard-z0-l2-combined.png", "frame": 0, "lighting": 2, "mode": {"highlights": true, "id": "combined", "silhouettes": true, "toon": true}, "regions": {"character": [158, 66, 62, 71], "contact": [41, 89, 93, 67], "palette": [30, 36, 99, 160], "props": [217, 97, 30, 36]}, "zoom": 0}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l0-pbr.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "pbr", "silhouettes": false, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l0-toon.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "toon", "silhouettes": false, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l0-silhouettes-only.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "silhouettes-only", "silhouettes": true, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l0-highlights-only.png", "frame": 0, "lighting": 0, "mode": {"highlights": true, "id": "highlights-only", "silhouettes": false, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l0-toon-silhouettes.png", "frame": 0, "lighting": 0, "mode": {"highlights": false, "id": "toon-silhouettes", "silhouettes": true, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l0-toon-highlights.png", "frame": 0, "lighting": 0, "mode": {"highlights": true, "id": "toon-highlights", "silhouettes": false, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l0-combined.png", "frame": 0, "lighting": 0, "mode": {"highlights": true, "id": "combined", "silhouettes": true, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l1-pbr.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "pbr", "silhouettes": false, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l1-toon.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "toon", "silhouettes": false, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l1-silhouettes-only.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "silhouettes-only", "silhouettes": true, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l1-highlights-only.png", "frame": 0, "lighting": 1, "mode": {"highlights": true, "id": "highlights-only", "silhouettes": false, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l1-toon-silhouettes.png", "frame": 0, "lighting": 1, "mode": {"highlights": false, "id": "toon-silhouettes", "silhouettes": true, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l1-toon-highlights.png", "frame": 0, "lighting": 1, "mode": {"highlights": true, "id": "toon-highlights", "silhouettes": false, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l1-combined.png", "frame": 0, "lighting": 1, "mode": {"highlights": true, "id": "combined", "silhouettes": true, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l2-pbr.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "pbr", "silhouettes": false, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l2-toon.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "toon", "silhouettes": false, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l2-silhouettes-only.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "silhouettes-only", "silhouettes": true, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l2-highlights-only.png", "frame": 0, "lighting": 2, "mode": {"highlights": true, "id": "highlights-only", "silhouettes": false, "toon": false}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l2-toon-silhouettes.png", "frame": 0, "lighting": 2, "mode": {"highlights": false, "id": "toon-silhouettes", "silhouettes": true, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l2-toon-highlights.png", "frame": 0, "lighting": 2, "mode": {"highlights": true, "id": "toon-highlights", "silhouettes": false, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}, {"camera": {"basis": [0.70710676908493, 0.0, 0.70710676908493, 0.405579805374146, 0.819152057170868, -0.405579805374146, -0.579227983951569, 0.5735764503479, 0.579227983951569], "camera": [-10.4288024902344, 11.3189277648926, 10.4288024902344], "correction_physical": [0.0, 1.0], "desired_camera": [-10.4261035919189, 11.3243761062622, 10.4261035919189], "preview_position": [-4.0, -3.0], "residual_pixels": [0.0, 0.319290161132812], "units_per_pixel": 0.0208333333333333}, "filename": "courtyard-z1-l2-combined.png", "frame": 0, "lighting": 2, "mode": {"highlights": true, "id": "combined", "silhouettes": true, "toon": true}, "regions": {"character": [124, 23, 122, 141], "contact": [-110, 69, 185, 132], "palette": [-133, -38, 198, 319], "props": [241, 85, 60, 71]}, "zoom": 1}]
+  </script>
+  <script>
+    const observations=JSON.parse(document.getElementById('observations').textContent),get=id=>document.getElementById(id),cache=new Map();let version=0;
+    async function load(file){if(!cache.has(file))cache.set(file,new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(file));image.src=file}));return cache.get(file)}
+    async function draw(){const request=++version,zoom=get('zoom').selectedIndex,light=get('light').selectedIndex,mode=get('mode').value,region=get('region').value,scale=Number(get('scale').value),prefix=`courtyard-z${zoom}-l${light}-`,row=observations.find(r=>r.zoom===zoom&&r.lighting===light);
+    const images=await Promise.all([load('isolation/'+prefix+'pbr.png'),load('before/'+prefix+mode+'.png'),load('isolation/'+prefix+mode+'.png')]);if(request!==version)return;
+    const raw=region==='scene'?[0,0,386,218]:row.regions[region],x=Math.max(0,raw[0]),y=Math.max(0,raw[1]),w=Math.min(386,raw[0]+raw[2])-x,h=Math.min(218,raw[1]+raw[3])-y;
+    ['source','original','corrected'].forEach((id,index)=>{const canvas=get(id),context=canvas.getContext('2d');canvas.width=w*scale;canvas.height=h*scale;context.imageSmoothingEnabled=false;context.drawImage(images[index],x,y,w,h,0,0,canvas.width,canvas.height)});
+    get('state').textContent=`${get('light').selectedOptions[0].text} · zoom ${zoom+1} · frame 0 · ${mode} · crop [${x},${y},${w},${h}] · nearest ×${scale}`;}
+    for(const id of ['light','zoom','region','scale','mode'])get(id).onchange=draw;draw();
+  </script>
+</html>

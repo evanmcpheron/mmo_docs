@@ -1,0 +1,648 @@
+# Codex Task — BW-097-T05 Rendering Correction and Visual Fidelity
+
+## 1. Assignment
+
+Correct the current **BW-097-T05 outline, convex-highlight, and toon-lighting implementation** so that Briarwake moves substantially closer to the approved visual direction.
+
+**This is a corrective implementation task, not a new feature or a roadmap redesign.**
+
+The current T05 output is visually unacceptable. It introduces excessive dark edges, loses material and character detail, and produces much harsher lighting than the desired reference.
+
+Your responsibility is to investigate the actual causes, fix the T05-owned rendering problems, and generate reproducible evidence demonstrating the improvements.
+
+### Repositories
+
+Game: https://github.com/evanmcpheron/Briarwake
+
+Requirements: https://github.com/evanmcpheron/mmo_docs
+
+Ticket: https://evanmcpheron.github.io/mmo_docs/guide/roadmap-bw-097-t05.html#BW-097-T05
+
+Existing implementation: https://github.com/evanmcpheron/Briarwake/pull/17
+
+Existing evidence: https://github.com/evanmcpheron/mmo_docs/pull/23
+
+### Required visual inputs
+
+Three images are attached to this task:
+
+1. **Pre-T05:** The original low-resolution Godot scene without the new stylized rendering.
+2. **Post-T05:** The same scene using the currently implemented T05 shader.
+3. **Target:** An artistically enhanced version of that same scene showing the desired Briarwake visual direction.
+
+The broader art reference remains:
+
+`mmo_docs/assets/graphics_concept.png`
+
+The target image is an artistic rendering reference, not a verified shader output. It demonstrates visual goals, but its additional vegetation, material detail, and environmental treatment must not be confused with T05 requirements.
+
+Do not substitute the broad market-square concept for the more directly comparable three-image reference set.
+
+## 2. Mandatory investigation
+
+Before making changes:
+
+1. Read `AGENTS.md` in both repositories.
+2. Read the complete BW-097-T05 ticket and parent epic.
+3. Read the verified implementation and acceptance evidence for T01–T04.
+4. Read T06–T10 to establish strict scope boundaries.
+5. Inspect the open T05 implementation and documentation pull requests.
+6. Inspect the current local working tree and any uncommitted T05 work.
+7. Identify the exact source revision that produced the attached post-T05 screenshot.
+8. Review the complete shader implementation, its controls, test fixtures, and captured evidence.
+9. Review the approved T03 visual bounds and existing T04 pixel-stability evidence.
+
+Do not start from `main` and inadvertently discard the unmerged T05 implementation.
+
+Follow the repository's Git instructions for continuing task-scoped work, incorporating current `main`, preserving user changes, and updating the appropriate pull requests.
+
+### Existing implementation to investigate
+
+The current T05 work includes:
+
+- `fixtures/rendering/outlines.gdshader`
+- `fixtures/rendering/toon.gdshader`
+- `fixtures/rendering/outlines.json`
+- `tests/rendering/outlines_probe.gd`
+- `tests/rendering/outline_materials.gd`
+- `tests/rendering/outline_fixtures.gd`
+- `tools/outline_probe.py`
+- `tools/run_rendering_probe.py`
+
+Review relevant tests and supporting files.
+
+The implementation in PR #17 currently specifies, among other settings:
+
+- Outline color `#0e131a`
+- Highlight color `#f2d194`
+- `gap_pixels = 2.5`
+- `normal_threshold = 0.12`
+- Toon thresholds `[0.2, 0.65]`
+- Toon band values `[0.22, 0.55, 1.0]`
+
+These are **investigation starting points, not proven root causes**. Confirm the active source configuration before modifying them.
+
+## 3. Absolute scope restrictions
+
+**ONLY BW-097-T05 and earlier rendering work may be modified.**
+
+T05 owns:
+
+- Silhouette detection and rendering
+- One-internal-pixel outline verification
+- Selective convex-edge highlights
+- Toon material and lighting behavior
+- Relevant antialiasing comparisons
+- T05 shader composition
+- T05 diagnostic captures
+- T05 visual and motion verification
+
+Earlier T01–T04 implementations may be corrected only when a demonstrated regression or integration defect prevents T05 from working correctly.
+
+Do not silently modify their accepted contracts, approved settings, source evidence, or established behaviors.
+
+Explicitly exclude:
+
+- T06: Transparency and full rendering-pass composition
+- T07: Water, reflection, and refraction implementation
+- T08: Ambient occlusion and contact-depth systems
+- T09: Combined environment-effect integration
+- T10: Final renderer packaging and certification
+- BW-098: Production asset pipeline
+- BW-099: Final environment and effects production
+
+Do not change the Godot version, renderer backend, canonical gameplay definitions, character physics, authoritative coordinates, asset provenance, or established camera policy.
+
+Do not add new vegetation, reconstruct buildings, repaint textures, modify the market layout, or introduce an unrelated art pipeline to imitate the target image.
+
+The actual renderer must improve.
+
+## 4. Desired visual result
+
+Use the enhanced target image to guide the following achievable T05 characteristics.
+
+### A. Clear but restrained outlines
+
+The target emphasizes characters and major object boundaries without outlining every internal texture feature.
+
+Desired:
+
+- Readable character silhouettes
+- Clear boundaries around barrels, crates, and important architecture
+- Controlled edge contrast
+- Approximately one internal pixel for qualifying silhouette edges
+- No dense black pattern across every cobblestone
+- No visually distracting outlines across foliage and roof textures
+
+Do not remove legitimate object outlines merely to reduce edge counts.
+
+### B. Rich, readable toon shading
+
+The target contains recognizable material colors and a meaningful range of light and shadow.
+
+Desired:
+
+- Dark shadows that retain readable form
+- Visible midtones
+- Controlled bright highlights
+- Meaningful warm/cool separation
+- Recognizable stone, wood, fabric, vegetation, and skin colors
+- No large regions crushed to uniform black by the toon shader
+
+Maintain the stylized appearance without destroying the original albedo information.
+
+### C. Character readability
+
+At normal gameplay zoom, the character must remain visibly recognizable.
+
+Preserve:
+
+- Head and hair
+- Face/ear silhouette where represented by the available pixels
+- Torso and arms
+- Separate legs and boots
+- Clothing and equipment boundaries
+- Distinction from the ground and nearby props
+
+The character should be easier to interpret with T05 enabled than with T05 disabled, or any remaining readability compromise must be explicitly reviewed.
+
+### D. Visual hierarchy
+
+Characters and major objects must remain distinguishable from decorative surface detail.
+
+The current cobblestones produce excessive competing contrast.
+
+The target has environmental detail, but the strongest edge and lighting distinctions serve the larger forms.
+
+T05 should control how the renderer emphasizes geometry. It must not turn every normal discontinuity into a high-contrast feature.
+
+### E. Pixel-art presentation
+
+Preserve the existing 384×216 internal rendering policy, nearest-neighbor presentation, and stable camera behavior.
+
+Do not increase resolution or introduce image blurring to conceal defects.
+
+The output should have deliberate low-resolution edges, stable pixel widths, and coherent shading.
+
+## 5. Diagnose the current implementation before tuning
+
+Do not start by arbitrarily changing shader uniforms until the screenshot looks subjectively better.
+
+Identify the actual cause of each visual regression.
+
+### 5.1 Outline algorithm
+
+Inspect `outlines.gdshader`.
+
+Investigate:
+
+- Reversed-Z depth assumptions
+- Inverse orthographic projection
+- View-space reconstruction
+- Depth-buffer sample positions
+- Normal-buffer decoding
+- Neighbor comparison orientation
+- Farther-pixel contour ownership
+- Silhouette classification
+- Interior edge detection
+- Convex/concave classification
+- Alpha composition
+- The effect of `gap_pixels`
+- The effect of `normal_threshold`
+
+Determine which rendered pixels are actual silhouettes and which are interior geometric or material details.
+
+Specifically investigate whether adjacent cobblestones, foliage surfaces, roof elements, and thin props are being classified as silhouette boundaries too frequently.
+
+Capture the actual depth-only and normal-only diagnostic evidence.
+
+If the defect arises from geometry classification, fix that classification instead of compensating with a global color adjustment.
+
+### 5.2 Toon shader
+
+Inspect `toon.gdshader`.
+
+Determine why the post-T05 result is much darker and visually harsher than the pre-T05 image.
+
+Inspect the relationship between:
+
+- `ALBEDO`
+- `DIFFUSE_LIGHT`
+- Direct illumination
+- Ambient illumination
+- Shadow attenuation
+- Band thresholds
+- Band values
+- Godot's shader lighting semantics
+- Output color space
+
+The current custom `light()` function explicitly uses `ALBEDO` while accumulating diffuse light.
+
+Verify whether this is mathematically appropriate in the pinned Godot renderer, including whether material albedo is subsequently applied again.
+
+Do not assume either outcome without an isolated material test.
+
+Check whether the shader is applying excessively dark bands or losing ambient contribution.
+
+Compare several sensible band configurations against actual material swatches and character surfaces.
+
+Avoid selecting new band values solely from one screenshot.
+
+### 5.3 Material preservation
+
+Inspect `outline_materials.gd`.
+
+The current toon conversion constructs ShaderMaterials from imported StandardMaterial3D instances.
+
+Verify exactly which material inputs survive that conversion.
+
+In particular, determine the visual consequences of preserving albedo while changing or discarding:
+
+- Normal-map response
+- Metallic response
+- Roughness
+- Specular behavior
+- Transparency or alpha-scissor settings
+- Double-sided/culling behavior
+- UV scaling and texture sampling
+
+Not every source-PBR property must remain physically accurate under toon lighting.
+
+However, removing a material property must be intentional and supported by visual evidence.
+
+Do not discard information unnecessarily if it materially improves shape recognition.
+
+Any local adaptation must remain reversible and T05-scoped.
+
+### 5.4 Compositing and edge contrast
+
+The current outline shader mixes a dark outline color into the sampled screen image.
+
+Investigate whether unconditional, fully opaque replacement with a nearly black color creates unnecessary contrast and apparent filled regions.
+
+Evaluate appropriate outline color, strength, and composition behavior.
+
+Do not reduce outline opacity indiscriminately if doing so makes important silhouettes disappear.
+
+Test controlled alternatives, including context-aware contrast if technically justified within T05.
+
+The result must still satisfy the ticket's one-pixel silhouette criteria.
+
+### 5.5 Pixel-resolution artifacts
+
+Determine whether any observed fragmentation comes from:
+
+- Excessive geometric detail at low resolution
+- Texture filtering
+- Misclassified edges
+- Lighting thresholds
+- Antialiasing configuration
+- Outline width or sampling
+- Incorrect camera correction
+
+Preserve the approved T02/T04 behavior unless a regression is demonstrated.
+
+Document inherent low-resolution limitations rather than inventing corrections for effects outside T05.
+
+## 6. Required diagnostic isolation
+
+Create or reuse identical-state captures for the following modes:
+
+| Mode | Purpose |
+|---|---|
+| Source low-resolution PBR | Approved comparison baseline |
+| Toon only | Isolate lighting/material loss |
+| Silhouette outlines only | Identify false and missing contours |
+| Convex highlights only | Identify incorrect highlight selection |
+| Toon + silhouettes | Evaluate readability and contrast |
+| Toon + highlights | Evaluate lighting and geometry emphasis |
+| Full T05 | Verify all required T05 effects together |
+
+Additionally retain useful raw buffer, silhouette mask, highlight mask, and lighting diagnostics.
+
+All comparisons must use identical:
+
+- Camera framing
+- Viewport resolution
+- Character pose
+- Object transforms
+- Source material identity
+- Lighting preset
+- Animation/frame time
+
+Only explicitly identified rendering settings may differ.
+
+Every comparison must identify its active effect combination.
+
+Do not manipulate captured PNGs to simulate improvements.
+
+## 7. Correct the renderer incrementally
+
+Use the diagnostic evidence to implement targeted corrections.
+
+### Pass A — Restore lighting readability
+
+Correct identified problems in the toon shader.
+
+The resulting toon-only image should maintain the large-scale forms, recognizable colors, and character detail of the source image while displaying intentionally stylized light transitions.
+
+Avoid washed-out lighting and crushed shadow regions.
+
+Keep bright, medium, and dark surfaces distinguishable.
+
+### Pass B — Correct silhouette emphasis
+
+Fix excessive false positives and overly harsh edge composition.
+
+Prioritize character silhouettes, major object boundaries, and meaningful overlapping shapes.
+
+Suppress unnecessary interior outlines where the detection method incorrectly promotes minor detail.
+
+Maintain actual one-internal-pixel contour measurements.
+
+### Pass C — Correct convex highlights
+
+Ensure highlights are selected from appropriate convex geometry rather than generic normal changes.
+
+Check bright and dark surfaces, architectural corners, characters, and thin objects.
+
+Highlights must not produce uniform bright noise across detailed surfaces.
+
+### Pass D — Combine and verify
+
+Combine the corrected effects.
+
+Check that lighting does not mask outlines and that highlights do not create undesirable false edges.
+
+Evaluate character readability, material separation, and visual hierarchy.
+
+Keep the configuration simple and maintainable.
+
+Do not build a new renderer architecture when the existing shader pipeline can be corrected.
+
+## 8. Comparison with the visual target
+
+The target image should be used as a concrete artistic reference.
+
+Produce a structured visual review that distinguishes the following categories.
+
+**T05-achievable:**
+
+- Outline color and contrast
+- Silhouette selection
+- Highlight selection
+- Toon-lighting bands
+- Material color preservation
+- Character/ground readability
+- Stable pixel-art edge treatment
+
+**Not T05-owned:**
+
+- New flowers, grass, and foliage
+- Improved source texture artwork
+- Additional building geometry
+- Ambient-occlusion/contact shading
+- Final atmospheric treatment
+- Advanced water rendering
+- New environmental composition
+
+The enhanced image may demonstrate both groups.
+
+Do not claim failure merely because non-T05 environment details remain different.
+
+However, do not use that distinction as an excuse to retain visibly broken T05 shaders.
+
+Produce a T05-specific comparison showing exactly which achievable characteristics improved.
+
+## 9. Required acceptance criteria
+
+Preserve the published acceptance criteria exactly.
+
+### AC 1 — One-pixel silhouettes and convex highlights
+
+Verify that:
+
+- Silhouettes are one internal pixel wide where required.
+- Depth and normal sampling are correctly interpreted.
+- Interior surface details are not automatically treated as important silhouettes.
+- Convex highlights are independently controlled.
+- Normal discontinuities alone do not automatically create highlights.
+
+Retain annotated pixel-width and geometry diagnostics.
+
+### AC 2 — Edge behavior and stability
+
+Test the existing required geometry matrix:
+
+- Near and far distances
+- Clipping boundaries
+- Grazing slopes
+- Thin geometry
+- Concave and convex edges
+- Coplanar normal seams
+- Touching actors
+- Overlapping actors
+- Bright and dark material swatches
+
+Run stationary, slow-axis, diagonal, and relevant actor-motion tests.
+
+Do not approve filled surfaces, objectionable false edges, unstable widths, or disappearing silhouettes.
+
+### AC 3 — Toon-lighting visual acceptance
+
+Demonstrate that the corrected toon shader preserves approved character and terrain readability.
+
+Include:
+
+- Day, warm, and cool lighting
+- Character and prop comparison regions
+- Source-PBR versus toon-only captures
+- Combined rendering results
+- Accepted and rejected band configurations
+- Explicit reviewer decision fields
+
+Technical mask correctness does not substitute for visual approval.
+
+## 10. Existing T05 verification failure
+
+The existing T05 pull request reports:
+
+- 12 of 13 checks passed in its strict run.
+- Normal-view stationary scenery exhibited up to 48 changed pixels at a maximum difference of 2 RGB8 levels.
+- Masks and close-zoom stationary checks were exact.
+- The source candidate remains awaiting user visual approval and a fresh final matrix.
+
+Investigate this separately from the major artistic defects.
+
+Determine whether the stationary differences arise from nondeterministic material output, buffer sampling, rendering timing, or another identifiable cause.
+
+Do not silently import the T04-specific stationary-color exception.
+
+Do not relax the T05 tolerance merely to make the test pass.
+
+If an irreducible deviation remains, retain the actual measurements and request explicit project-owner approval before applying it.
+
+Preserve the historical failing evidence.
+
+A corrected shader must pass a fresh relevant motion and stationary matrix rather than relying on historical results from an earlier candidate.
+
+## 11. Manual testing
+
+Follow the ticket's existing Launch, Setup, Actions, Expected Results, and Reset structure.
+
+### Launch
+
+Use the established rendering probe:
+
+```bash
+python3 tools/verify_toolchain.py
+python3 tools/run_rendering_probe.py --case outlines
+python3 tools/run_rendering_probe.py --case outlines --interactive
+python3 -m unittest discover -s tools -p 'test_*probe.py' -v
+```
+
+Use the actual installed pinned graphical Godot runtime.
+
+Do not treat headless checks as visual evidence.
+
+### Setup
+
+Use the approved T03 Project Titan reference assets, T04 camera implementation, and T02 viewport policy.
+
+Preserve exact source asset identities and the authorized local conversion workflow.
+
+Capture a fresh failing baseline before modifying the shaders.
+
+### Actions
+
+1. Reproduce the current T05 output.
+2. Capture the complete diagnostic isolation matrix.
+3. Identify the exact outline and lighting defects.
+4. Make bounded shader corrections.
+5. Capture matched before/after images.
+6. Review the target and source comparisons at normal gameplay scale.
+7. Run the complete required geometry matrix.
+8. Run stationary and continuous camera/actor motion tests.
+9. Compare antialiasing candidates.
+10. Verify T01–T04 regressions.
+11. Run invalid-settings, missing-report, and deliberate-check-failure controls.
+12. Run a fresh successful normal case after negative controls.
+13. Review any remaining T05-owned blocking findings.
+14. Regenerate the relevant source evidence and approved generated documentation through existing workflows.
+
+### Expected results
+
+The final output must demonstrate:
+
+- No excessive high-contrast paving outlines
+- No large shader-induced areas of unexplained black shading
+- Readable character anatomy at normal gameplay scale
+- Selective, independently controlled convex highlights
+- Consistent one-internal-pixel silhouette treatment
+- Preserved material and palette separation
+- Stable output during required movement tests
+- Correct original viewport and camera behavior
+- Reproducible visual evidence
+- No new gameplay or rendering architecture outside the ticket
+
+### Reset
+
+Reset restores the approved camera, lighting, shader configuration, animation frame, and fixture state.
+
+Do not alter persistent gameplay state or source assets.
+
+Preserve historical captures and failed runs.
+
+## 12. Recursive correction and regression review
+
+After the first corrective pass:
+
+1. Compare all required isolated outputs.
+2. Identify remaining T05-owned problems.
+3. Trace each problem to its responsible rendering stage.
+4. Correct it with the smallest justified change.
+5. Repeat affected diagnostic and motion tests.
+6. Check that previous improvements remain intact.
+7. Re-evaluate character readability and material preservation.
+8. Review the complete combined T05 output.
+
+Repeat until the in-scope result is stable and there are no unresolved technical regressions that can be corrected within T05.
+
+Do not perform indefinite cosmetic tuning.
+
+Do not manufacture a positive visual verdict.
+
+If a remaining issue requires T06 or later work, preserve the finding and map it to its existing owner.
+
+## 13. Required final output
+
+Provide a concise but complete implementation report containing:
+
+### Root-cause findings
+
+Identify which implementation details produced excessive outlines, lost material detail, harsh shading, and any stationary instability.
+
+Distinguish confirmed causes from remaining hypotheses.
+
+### Changes made
+
+Identify the exact files changed and explain the behavior corrected.
+
+### Visual review
+
+Present direct comparisons of:
+
+- Before T05
+- Original T05
+- Corrected T05
+- Enhanced artistic target
+
+Also include the isolated lighting, silhouette, and highlight captures.
+
+Assess readability and visual hierarchy at actual gameplay scale, not only enlarged diagnostic crops.
+
+### Verification
+
+List actual executed tests, their results, the measured graphics backend, the exact source revision, and unresolved limitations.
+
+Do not describe planned tests as passed tests.
+
+### Ticket compliance
+
+Map evidence to AC 1, AC 2, and AC 3.
+
+Identify any outstanding human approvals.
+
+Do not mark the ticket Complete without satisfying its acceptance and review requirements.
+
+### Repository delivery
+
+Follow the existing Git and pull-request workflow.
+
+Prefer continuing the relevant T05 work rather than creating duplicate implementations or unrelated pull requests.
+
+Keep the implementation and documentation PRs consistent.
+
+Do not merge them without authorization.
+
+## 14. Definition of done
+
+This corrective task is ready for review when:
+
+1. The actual shader implementation has been improved.
+2. Incorrect or excessive interior edge detection has been addressed.
+3. Toon lighting no longer destroys important material and character information.
+4. Convex highlights remain selective and independently controlled.
+5. One-pixel silhouette requirements remain verifiable.
+6. The corrected scene is visibly more readable than the supplied post-T05 result.
+7. The required geometry, camera, and motion checks have been executed.
+8. Existing T01–T04 guarantees remain intact.
+9. Known failures and deviations are reported accurately.
+10. A reproducible, side-by-side visual comparison is available for project-owner review.
+11. No T06–T10 features or unrelated gameplay changes have been implemented.
+
+**Do not accept a technically passing shader that visibly damages the game compared with the pre-T05 rendering.**
+
+The objective is not simply to add more stylization. It is to achieve the specific, controlled pixel-art rendering qualities shown in the visual target while respecting the established T05 scope.
+
+If the corrected output is not yet visually acceptable, report the remaining issues explicitly and leave the ticket awaiting review rather than claiming completion.

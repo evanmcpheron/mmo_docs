@@ -252,6 +252,13 @@
                   lossless 32-frame sequences at 30Hz. Internal 384x216 plus T04 guard; normal/close
                   zooms; day/warm/cool; no-AA/FXAA.
                 </li>
+                <li>
+                  The local material diagnostic executes 34 source/toon checks before the main
+                  scene. Compare seven named effect combinations with identical state. Corrective
+                  evidence and the enhanced owner target are retained under
+                  validation/tickets/BW-097-T05/correction/ in mmo_docs; the target is artistic
+                  reference, not verified shader output.
+                </li>
               </ol>
               <h3>Actions</h3>
               <ol>
@@ -262,10 +269,12 @@
                   touching/overlap and bright/dark swatches.
                 </li>
                 <li>
-                  Use review.html to select geometry, zoom, light and antialiasing. Enable the
-                  one-internal-pixel grid/character bounds. Compare PBR/source with selected
-                  diagnostic/combined. Examine disabled/FXAA variants; no SMAA capability is
-                  claimed.
+                  Use review.html to select geometry, zoom, light, AA and one of seven effect
+                  combinations. Select matching character/prop crops and integer enlargement (or
+                  actual pixels x1). Inspect the one-pixel grid, depth/normal buffers and
+                  disabled/FXAA variants. The separate correction/review.html compares source PBR,
+                  original T05, corrected T05 and the artistic target; native-4K material detail is
+                  supplemental only.
                 </li>
                 <li>
                   Play and step all selected-AA sequences: geometry diagonal paths at both zooms,
@@ -281,10 +290,12 @@
                   colors/bands/no-AA and any deviation against T03 approved bounds.
                 </li>
                 <li>
-                  Run python3 -m unittest discover -s tools -p &#x27;test_*probe.py&#x27; -v. Run
-                  --control invalid-settings and confirm rejection before graphical launch.
-                  Missing-report and deliberate-failure controls must fail without fabricated pass
-                  evidence.
+                  Run python3 -m unittest discover -s tools -p &quot;test_*probe.py&quot; -v. Run
+                  --case outlines with --control invalid-settings, missing-report and check-failure
+                  into separate fresh output directories; all must fail honestly. Run a fresh normal
+                  --case outlines recovery afterward, followed by --case capabilities, viewport,
+                  reference and camera regressions. Commands and exact outcomes are retained in
+                  correction/suite.json.
                 </li>
               </ol>
               <h3>Expected results</h3>
@@ -296,10 +307,12 @@
                   slopes and remain independently controllable.
                 </li>
                 <li>
-                  Every matrix combination and consecutive frame is retained and attributable.
-                  Stationary masks are exactly identical. Toon preserves gameplay-scale
-                  character/terrain readability subject to explicit project-owner review; automated
-                  checks and T03 approval do not approve new visual choices.
+                  Every matrix setting and consecutive frame is retained and attributable.
+                  Stationary RGB and silhouette/highlight masks are exactly identical at both zooms
+                  and all three lighting states; no T04 color exception is inherited.
+                  Toon/readability, selected bands, local attenuation, edge contrast and motion
+                  appearance require explicit owner review; technical checks and earlier T03
+                  approval do not approve these new visual choices.
                 </li>
                 <li>
                   Invalid evidence/settings, missing reports, incomplete matrices and explicit
@@ -321,23 +334,39 @@
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Implemented source probe and 60 passing probe
-                regressions. Strict full execution at game cf0b6bed057ad713fac4a6a9cea297d766435089
-                retains 88 still settings and 74 × 32-frame color/mask sequences; 12/13 checks pass,
-                with exact stationary color identity failed. Normal day/warm/cool maxima are
-                22/36/48 changed pixels and 1/2/2 RGB8 levels, all in two scenery regions; close
-                zoom and all edge masks are exact. Original actor-pair spacing was too wide and has
-                fresh corrected still/diagonal previews with explicit offsets. Current corrected
-                full matrix and project-owner appearance/color-deviation decision remain pending. No
-                T04 exception is inherited. See validation/tickets/BW-097-T05/candidate-review.html,
-                strict-full-run/run.json and corrected-pairs-preview/identity.json. Rejected
-                palettes, geometry/harness failures and investigative logs remain retained.
+                <strong>Required evidence:</strong> Corrective implementation at
+                63149ca712b40bd0fc5cf234a62b951d3147c482 fixes repeated direct-light albedo, dropped
+                material inputs/reflections, overly harsh edge composition and the reference sun
+                integration. A fresh pre-edit c3468ed baseline reproduced the historical 12/13
+                strict failure. The final correction passes 14/14 checks across 88 still settings
+                and 74 x32-frame motion sequences, including exact stationary RGB and masks at both
+                zooms in day/warm/cool; no T04 exception or relaxed tolerance. Seven identical-state
+                effect combinations, raw buffers, original/corrected/source/target review, rejected
+                bands and all investigated failures are retained. 34 graphical material checks, 61
+                probe regressions, negative controls and recovery pass. T01-T03 regressions pass;
+                T04 completes 140 sequences / 8,960 samples but fails its PBR stationary bound (7/8
+                checks), with 19 pixels / 3 RGB8 levels in minimum-window close view where exact
+                identity is required. T04 is reopened without changing bounds; independent
+                main-baseline evidence is retained. Large 3840x2160 nearest gameplay images and
+                separately labeled native-4K material detail support inspection. Project-owner
+                silhouette/highlight, palette/bands, character/ground, local-attenuation motion and
+                AA decisions and the reopened T04 prerequisite remain pending, so T05 and epic AC4
+                remain unfinished. See validation/tickets/BW-097-T05/correction/review.html,
+                review.json, final-run/run.json and suite.json; historical strict-full-run remains
+                preserved.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-097-T05/correction/final-run/run.json"
+                    >Actual pinned Forward+/Metal execution verifies one-cardinal-pixel exterior
+                    coverage across the geometry matrix, selective convex highlights, planar/concave
+                    rejection and independent controls. The complete strict technical matrix passes;
+                    still/motion appearance and AC3 remain pending project-owner review.</a
+                  >
+                  — AC 1; Passed; revision 63149ca712b40bd0fc5cf234a62b951d3147c482
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and exact criteria</a>;
@@ -355,7 +384,10 @@
                 <a href="../guide/data-inventory.html#shared-ValidationFinding">ValidationFinding</a
                 >; <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>;
                 <a href="../validation/tickets/BW-097-T05/candidate-review.html"
-                  >T05 candidate visual review and pending decision</a
+                  >Historical rejected T05 candidate and failure evidence</a
+                >;
+                <a href="../validation/tickets/BW-097-T05/correction/review.html"
+                  >Corrected T05 large visual comparison and pending owner review</a
                 >
               </p>
             </article>
