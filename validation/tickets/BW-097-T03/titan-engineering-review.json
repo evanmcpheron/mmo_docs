@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-20",
+  "scope": "Project Titan courtyard follow-up for BW-097-T03",
+  "checklist": "Applied workspace docs/ai/REVIEW_CHECKLIST.md; protected standards unchanged.",
+  "ownership": "Existing reference world owns local import/pose/placement and original ground receiver. titan-layout.json owns all fourteen instance heights/positions/supports; reference.json owns two camera sizes/focus heights. Existing shared export backend handles two actual library recipes; no new production abstraction.",
+  "scene": "Complete 1.8m Adventurer, normal small containers/produce/stool/barrels, 2.8m canopy, 4.8m house and 5.2m birch. Original Titan cobblestone material tiles a flat ground receiver. Geometry is uniformly scaled after posed-bounds measurement.",
+  "failure_corrections": [
+    "Initial source character graphs exported black, the first bench had a checkerboard, and the initial house footprint intruded. Native captures and failed launcher reports are retained in titan-development-findings.",
+    "Direct virtual texture readbacks then produced uniform white character maps and a black stool. Unsaved simple PBR materials and conventional texture duplicates transfer original authored maps per slot. Duplication preserves original virtual samplers used by other assets.",
+    "Placement guards caught canopy/character overlap; layout spacing was corrected. The original 20-pixel region-width guard is retained on final source. Required maps now reject black, uniform white and missing/invalid observations; placeholder materials are rejected."
+  ],
+  "validation": {
+    "focused": "46 rendering/viewport/reference tests plus 5 asset/export safety tests passed.",
+    "full_game_tools": "138 tests passed in 190.468s. No tests/exclusions/warnings were disabled. Final stricter GDScript region guard was then verified in an actual pinned graphical run; final source hashes are retained.",
+    "graphical": "Final source passed eleven actual checks, with eighteen hashed images, fourteen measured placements and eleven imported asset observations. All eighteen hashes match the review-sheet captures. Actual check-failure/missing-report/invalid-settings controls reject, and fresh recovery passes.",
+    "browser": "Actual offline Chrome exited 0; review-preview-v6.png visually inspected. Native courtyard/close images, pixel comparisons and links render correctly. The retained headless log contains macOS diagnostics; no empty-console claim.",
+    "source_preservation": "Export checked 122 selected source/dependency hashes against the original library. No Content/BriarwakeReferenceExport packages were saved; original project never launched or saved. Source and converted GLBs remain ignored locally. Both original and clone input package files were rehashed after export: all 122 remain exact. Material overrides on cloned mesh objects are transient; input files remain unchanged.",
+    "canonical": "Registry gameplay definitions unchanged. Game extraction changes only whole-registry provenance SHA after page-review metadata updates; 119 definitions and schema SHA remain unchanged."
+  },
+  "boundaries": "Local visual fixture only; no RPC, persistence, gameplay authority, movement, navigation or collision system. Bounds/support checks do not certify arbitrary detailed mesh-to-mesh collision or stair traversal.",
+  "review_applicability": "titan-courtyard-delivery-run supplies the reviewed pixels. titan-courtyard-verified-run proves final source after restoring the stricter region guard; all 18 image hashes are identical. Full source hashes are checked before commit.",
+  "not_verified": [
+    "Human artistic/readability/budget/deviation acceptance",
+    "Later motion, final toon/outline/water/contact-depth and packaged/performance work",
+    "Other platforms and physical displays"
+  ],
+  "git_safety": "Explicit task authorization to commit/push directly to main applies. No standards, original source assets or unrelated files changed. User mmo_docs .DS_Store remains unstaged."
+}

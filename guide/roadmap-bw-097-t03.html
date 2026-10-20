@@ -170,12 +170,14 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Use --case reference with a bounded selection from the user-provided Moore RPG
-                  Template Unreal library: a modular armored knight, small peasant hut, tree and
-                  barrel, preserving source materials and a sampled idle pose. This explicit asset
-                  request supersedes the initial original primitive fixtures. Record
-                  source/dependency and converted hashes, a local export recipe and provenance
-                  without importing production asset volume or porting Unreal gameplay logic.
+                  Use --case reference with a bounded selection from the user-provided ProjectTitan
+                  Unreal sample: a complete Adventurer in a compatible source idle, house, birch,
+                  market canopy/table, barrels, pottery/containers, produce crates, stool and
+                  authored cobblestone paving maps. This follow-up replaces the Moore RPG comparison
+                  after the user still found it hard to see. Build a coherent courtyard with natural
+                  relative heights, measured bases/supports and a clear character footprint. Record
+                  local export recipes, source/dependency and converted hashes; do not import
+                  production asset volume or port Unreal gameplay.
                 </li>
                 <li>
                   Use DOCS_ROOT/assets/graphics_concept.png as the principal appearance reference
@@ -250,117 +252,108 @@
                 test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT (/Users/le-evanmcpheron/Documents/Godot/briarwake), with installed Unreal 5.8, the user-provided ~/Documents/Unreal Projects/MooresRPGTemplate library, the pinned graphical macOS ARM64 Godot engine and desktop.
-python3 tools/export_moores_reference.py
+              <pre><code>Working directory: GAME_ROOT (/Users/le-evanmcpheron/Documents/Godot/briarwake), with installed Unreal 5.8, the user-provided ~/Documents/Unreal Projects/ProjectTitan library and pinned graphical macOS ARM64 Godot.
+python3 tools/export_titan_reference.py
 python3 tools/verify_toolchain.py
 python3 tools/run_rendering_probe.py --case reference
-Interactive review: python3 tools/run_rendering_probe.py --case reference --interactive
-Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisions: visual-review.json.</code></pre>
+Interactive: python3 tools/run_rendering_probe.py --case reference --interactive
+Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; decisions: visual-review.json.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  moores-assets.json selects four local exports and the knight idle animation.
-                  export_moores_reference.py uses an isolated copy-on-write Content clone, enabled
-                  Python/GLTF/ChaosClothAsset plugins and 512px material baking. The source Unreal
-                  project is never saved. Converted GLBs stay ignored under
-                  artifacts/moores-export-work/exports; the manifest records recipe,
-                  source/dependency and GLB hashes. Missing/changed/incomplete exports fail before
-                  graphics; another matching local directory can be supplied with --assets. The
-                  concept remains comparison-only in DOCS_ROOT. The current readability revision
-                  uses Anim_Idle_Straight, knight display scale 1.8 and focus height 1.3m with
-                  frontal fill. Export-only torso/cape materials connect the authored PBR textures
-                  directly because the original graphs baked black; runtime albedo observations
-                  reject blank transfers.
+                  titan-assets.json selects eleven exports; titan-layout.json owns fourteen instance
+                  positions, heights, yaw and supports. A copy-on-write clone includes Characters,
+                  Environment and Textures, excluding the map/external-actor population. Original
+                  Unreal files are never saved. GLBs remain ignored in
+                  artifacts/titan-export-work/exports. Unsaved PBR materials and conventional
+                  texture duplicates preserve original authored color/normal/packed maps while
+                  avoiding black/white virtual-texture export failures and preserving original
+                  samplers. Missing, changed, incomplete, black, uniform transferred or checkerboard
+                  assets are rejected.
                 </li>
                 <li>
-                  Automatic verification runs day/warm/cool lighting at zoom x1/x2 and Reset,
-                  writing paired internal/output images, projected comparison regions and actual
-                  engine/backend/device identity in a new launcher-owned artifacts directory. Human
-                  visual approval is separate.
+                  The complete Adventurer is 1.8m tall. Barrels are 0.85–0.9m, small props
+                  0.25–0.5m, canopy 2.8m, house 4.8m and birch 5.2m. Pose precedes measurement;
+                  scaling is uniform. Bases align to ground or the actual top of their support. A
+                  flat original receiver uses Titan cobblestone textures; the paving export supplies
+                  only its material.
                 </li>
                 <li>
-                  Every automatic reference run also retains comparison-native.png and
-                  comparison-pixelated.png at identical physical world-content dimensions. The
-                  former renders standard PBR directly at native resolution; the latter enlarges
-                  384×216 with nearest sampling. No custom toon/outline shader is active. Camera,
-                  materials, pose and lighting match; the original viewport and exact pixels must be
-                  restored after capture.
+                  Automatic captures cover day/warm/cool and two views, plus Reset. Reference-only
+                  orthographic heights are 12m overview and initial 4.5m close view, with 3m/1m
+                  focus heights. T02 pixel/window presentation and angles remain unchanged.
+                  overview-native/pixelated.png and comparison-native/pixelated.png retain matching
+                  resolution-on/off pairs, unchanged framing and exact viewport/pixel restoration.
+                  No custom toon/outline shader is active.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Open retained review.html or regenerate it from DOCS_ROOT with python3
-                  validation/tickets/BW-097-T03/build_review.py. The current visual-review.json
-                  names moores-readable-source-run; older source-run evidence is historical. Inspect
-                  four annotated concept crops beside the projected imported-asset regions at native
-                  384x216, all three lighting states and diagnostic zoom x2.
+                  Open review.html or rebuild from DOCS_ROOT with python3
+                  validation/tickets/BW-097-T03/build_review.py. Inspect the full courtyard
+                  overview, closer native/pixelated pair, four concept regions and day/warm/cool
+                  gameplay pixels. Select images to view full resolution. Historical Moore RPG
+                  captures remain retained.
                 </li>
                 <li>
-                  Compare the Before / After images in review.html and open each full-resolution
-                  image. The Reset day/zoom ×1 state is identical; inspect the knight, hut, tree and
-                  barrel with pixel presentation off and on. The native image is a fresh engine
-                  render, not an enlargement of the pixelated image.
+                  Inspect titan-placement-review.json for every measured world height, scale, base
+                  and support. Verify pottery sits on the table, small props remain below the
+                  character, the house/tree are larger, and the character silhouette/footprint stays
+                  clear.
                 </li>
                 <li>
-                  In the interactive probe select lighting and zoom, drag the continuous heading
-                  slider to fractional angles, use Capture, then Reset. Inspect
-                  manual-NNN-internal.png, manual-NNN-output.png and manual-NNN.json. No
-                  eight-direction presets are exposed, so SpriteDirection token/ordinal tests are
-                  not applicable.
+                  In the interactive probe select Overview or Character, lighting and fractional
+                  continuous heading; use Capture, then Reset. Inspect manual-NNN-internal.png,
+                  manual-NNN-output.png and manual-NNN.json. Reset restores the initial
+                  close/day/heading/window state; no SpriteDirection presets exist.
                 </li>
                 <li>
-                  Review and explicitly approve or revise proposed bounds, provisional
-                  CPU/GPU/memory budgets and deviations with the user. Supplementary clip
-                  observations at 00:03 and 00:30 have actual decoded-frame evidence; inspect their
-                  links/captures if reviewing the source observations. Record reviewer/date/decision
-                  without treating still approval as later motion/effect acceptance.
+                  Run python3 -m unittest discover -s tools -p &quot;test_*probe.py&quot; and
+                  test_reference_assets.py. Run reference controls invalid-settings, missing-report
+                  and check-failure into fresh output, then a normal recovery. Negative controls
+                  must return nonzero without false success.
                 </li>
                 <li>
-                  From GAME_ROOT run python3 -m unittest discover -s tools -p
-                  &#x27;test_*probe.py&#x27;; run --case reference with --control invalid-settings,
-                  missing-report and check-failure, each into fresh output, followed by a fresh
-                  normal run. Negative controls must return nonzero with no false success.
+                  Review and explicitly approve or revise readability, visual/motion bounds,
+                  proposed budgets and deviations. Source selection authorization does not establish
+                  art acceptance. Supplementary decoded clip observations remain linked; later
+                  effects/motion tests are separate.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  The imported knight, hut, tree and barrel have attributable comparison evidence,
-                  original PBR materials and a sampled source idle pose under the unchanged T02
-                  viewport policy. The simpler barrel remains a prop-detail comparison;
-                  source-export material limitations and display scales are explicit. These captures
-                  do not establish final toon/outline/contact-depth effects or art acceptance. The
-                  knight must read as a human figure at normal zoom x1; enlarged diagnostics cannot
-                  establish this acceptance. Human review of the revised candidate remains required.
+                  A complete, textured character stands in an actual small courtyard with source
+                  scenery at sensible relative heights, grounded bases and supported tabletop items.
+                  Actual bounds checks reject wrong height/position, floating/sunken bases, table
+                  overhang and prop intrusion into the character footprint. Original authored source
+                  textures remain recognizable; virtual-texture export fallbacks do not count as
+                  valid source appearance.
                 </li>
                 <li>
-                  Fractional visual heading survives; Reset restores day, zoom x1, fixture heading
-                  and first window preset without moving the actor foot anchor. Source/dependency
-                  hashes, recipe and actual loaded-asset hashes establish provenance. No domain
-                  heading presets, appearance catalog or new gameplay schema are introduced.
-                  Reproduction requires an authorized local copy of the source asset library.
+                  Both native/pixel pairs match camera, pose, materials and lights. Native images
+                  are fresh full-resolution renders; pixelated images enlarge actual 384×216 pixels
+                  with nearest sampling. Original viewport pixels are restored exactly. The wider
+                  overview includes larger surroundings; the initial close view establishes the
+                  proposed character-readability review.
                 </li>
                 <li>
-                  Absent human approval keeps AC2 and epic AC7 unfinished. Actual annotated
-                  comparisons and decoded supplementary frame observations support AC1; no engine
-                  capability is inferred from external references. Later motion, outlines,
-                  contact-depth/water, packaged performance and other hardware remain unverified;
-                  numerical proposals are not measured passes.
+                  Current comparisons and stable provenance support AC1/AC3 technically. AC2 and
+                  parent AC7 remain pending real human acceptance; no motion, final
+                  outline/toon/contact-depth/water, measured budget compliance, packaged scene or
+                  other-platform pass is claimed.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Use the probe Reset control to restore the checked-in case settings, camera, actor
-                  path and effect toggles; quit the graphical process normally. No persistent
-                  gameplay state is created.
+                  Use Reset for the declared initial close/day/heading/window state, then quit
+                  normally. No persistent gameplay state exists.
                 </li>
                 <li>
-                  Keep prior captures, failed results and reports intact. Repeat into a fresh
-                  launcher-owned artifacts directory; restore only deliberately modified disposable
-                  inputs, leaving source assets, canonical registries and existing user files
-                  intact.
+                  Preserve prior captures/results and use a fresh launcher output directory. Leave
+                  source assets, canonical registries and unrelated user edits intact.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -391,14 +384,23 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisi
                 native-resolution PBR and 384×216 nearest-upscaled images are retained in
                 moores-native-comparison-run/ and shown in review.html. Ten actual graphical checks
                 include unchanged framing and exact pixel/viewport restoration. This isolates pixel
-                presentation; no custom toon/outline shader or visual acceptance is claimed.
+                presentation; no custom toon/outline shader or visual acceptance is claimed. Project
+                Titan follow-up 2026-10-20 (v6): the user still found the Moore RPG scene hard to
+                see. Current comparison is a complete 1.8m Adventurer in a courtyard with a
+                house/tree, market furniture and small props. Measured height/base/support/footprint
+                checks and native/pixelated overview/close captures replace the prior asset lineup.
+                Unsaved texture duplicates and per-slot PBR transfers correct virtual-texture
+                conversion failures without altering originals. See titan-courtyard-delivery-run,
+                titan-placement-review.json and visual-review.json. Human acceptance remains
+                pending.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <ul>
                 <li>
-                  <a href="../validation/tickets/BW-097-T03/visual-review.json"
-                    >Current v4 side-by-side captures compare the larger upright Moore RPG knight,
-                    props, palette, contact and lighting. User rejection of v3 person readability is
+                  <a href="../validation/tickets/BW-097-T03/visual-review-v4.json"
+                    >Historical v4 comparison, superseded by the current Titan scene. Current v4
+                    side-by-side captures compare the larger upright Moore RPG knight, props,
+                    palette, contact and lighting. User rejection of v3 person readability is
                     explicit; revised source torso/cape texture transfer and framing are shown at
                     native zoom x1. This is comparison evidence, with human
                     readability/bounds/budget/deviation acceptance still pending. Supplementary
@@ -430,6 +432,29 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisi
                   >
                   — AC 1, 3; Passed; revision d84020497f560ce2c6e419bac995329d88d86fba plus
                   comparison working tree; exact source hashes retained in run.json
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-097-T03/titan-courtyard-delivery-run/run.json"
+                    >Actual Godot 4.7.2 Forward+/Metal execution passed eleven checks with eighteen
+                    hashed captures, eleven local Titan exports and fourteen measured placements. A
+                    complete 1.8m Adventurer stands in a courtyard with correctly supported small
+                    props and larger house/tree/canopy. Native/pixel overview and close views match
+                    framing; original pixels restore exactly. Per-slot authored PBR maps transfer
+                    through unsaved texture duplicates. Human acceptance remains pending.</a
+                  >
+                  — AC 1, 3; Passed; revision b244213d411e3e2a29294efbf7f3c603c02358b3-dirty;
+                  reference-review-v6; exact source/asset hashes retained in run.json
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-097-T03/titan-courtyard-verified-run/run.json"
+                    >Final source retained the original 20-pixel character-region width guard and
+                    passed all eleven graphical checks. All eighteen capture hashes match the
+                    reviewed courtyard images exactly. This verifies the delivered stricter check
+                    without changing scene appearance; 138 game/tool regressions also pass. Human
+                    visual acceptance remains pending.</a
+                  >
+                  — AC 1, 3; Passed; revision b244213d411e3e2a29294efbf7f3c603c02358b3-dirty; final
+                  source hashes retained in run.json
                 </li>
               </ul>
               <h2 id="documentation">Related documentation</h2>

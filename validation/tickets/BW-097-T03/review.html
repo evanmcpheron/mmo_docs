@@ -9,7 +9,7 @@
     nav{max-width:1200px;margin:auto;padding:16px 32px 0;display:flex;gap:18px;align-items:center;font-size:12px}nav p{margin:0}.badge{border:1px solid #a17b3b;color:#efd29a;padding:7px 12px;display:inline-block;border-radius:6px}
     .hero{display:grid;grid-template-columns:1fr 1fr;gap:24px}figure{margin:0;min-width:0}img{max-width:100%;height:auto;image-rendering:pixelated}
     .hero img{width:100%}figcaption{font-size:12px;color:#aab8b0;margin-top:8px}.hero svg{width:100%;display:block}
-    .comparison img.native-pbr{image-rendering:auto}.comparison a{display:block}
+    .comparison img.native-pbr,.overview img{image-rendering:auto}.overview img{width:100%}.comparison a{display:block}
     rect{fill:none;stroke:#f6db79;stroke-width:3}text{fill:#fff2a5;font:22px system-ui;paint-order:stroke;stroke:#172027;stroke-width:5px}
     .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}article{background:#19262c;padding:20px;border-radius:8px}article h3{margin:0 0 14px}
     .crops{display:grid;grid-template-columns:1fr 1fr;gap:16px}.crops svg{width:100%;height:190px;background:#10191e;image-rendering:pixelated}
@@ -25,13 +25,72 @@
     <a data-inventory-nav href="../../../guide/data-inventory.html">Data Inventory</a>
   </nav>
   <main>
-    <div class="eyebrow">Briarwake · BW-097-T03 · reference-review-v5 · 2026-10-20</div>
-    <h1>Concept → gameplay-scale comparison</h1>
-    <div class="badge">Awaiting human review of character readability</div>
+    <div class="eyebrow">Briarwake · BW-097-T03 · reference-review-v6 · 2026-10-20</div>
+    <h1>Project Titan · a courtyard around the character</h1>
+    <div class="badge">Awaiting review of Project Titan courtyard</div>
     <p>
-      Principal concept at left. Imported Moore RPG probe at right. 384×216 world, ortho height 9,
-      −35° / −45°, nearest integer presentation. Enlarged images are diagnostic; review native
-      pixels below.
+      A 1.8m Adventurer stands on cobblestone paving beside a small market. Barrels, pottery,
+      containers, produce crates and a stool provide nearby detail; the house, birch and canopy
+      establish larger scale. Select each image to inspect its full resolution.
+    </p>
+    <figure class="overview">
+      <a href="titan-courtyard-delivery-run/overview-native.png"
+        ><img
+          src="titan-courtyard-delivery-run/overview-native.png"
+          width="1536"
+          height="864"
+          alt="Project Titan courtyard overview with a complete adventurer and correctly scaled small and large scenery"
+      /></a>
+      <figcaption>
+        Whole courtyard · native-resolution PBR · 12m orthographic height.
+        <a href="titan-courtyard-delivery-run/overview-pixelated.png"
+          >Matching pixelated overview</a
+        >
+        · <a href="titan-placement-review.json">Measured heights and support placement</a>.
+      </figcaption>
+    </figure>
+    <h2>Before and after pixel presentation</h2>
+    <p>
+      Native-resolution PBR versus 384×216 nearest presentation. The overview pair also shows the
+      whole courtyard. No custom toon/outline shader is active; the pairs isolate rendering
+      resolution. Day, close view / orthographic height 4.5m, heading 135°, identical camera, pose,
+      materials and lights. Both images have the same 1536×864 dimensions. Select an image to
+      inspect the full-size capture.
+    </p>
+    <div class="hero comparison">
+      <figure>
+        <a href="titan-courtyard-delivery-run/comparison-native.png"
+          ><img
+            class="native-pbr"
+            src="titan-courtyard-delivery-run/comparison-native.png"
+            width="1536"
+            height="864"
+            alt="Before: native-resolution PBR render with pixel presentation disabled"
+        /></a>
+        <figcaption>Before · native-resolution PBR · pixel presentation off</figcaption>
+      </figure>
+      <figure>
+        <a href="titan-courtyard-delivery-run/comparison-pixelated.png"
+          ><img
+            src="titan-courtyard-delivery-run/comparison-pixelated.png"
+            width="1536"
+            height="864"
+            alt="After: matching scene rendered at 384 by 216 and enlarged with nearest sampling"
+        /></a>
+        <figcaption>After · 384×216 with nearest integer upscale · current prototype</figcaption>
+      </figure>
+    </div>
+    <p>
+      The actual runtime checks unchanged framing, integer scale, different native/pixel readbacks
+      and exact restoration of the original viewport pixels.
+      <a href="titan-courtyard-delivery-run/run.json">Comparison execution and image hashes</a>. The
+      high-resolution image is diagnostic; gameplay readability still needs review at 384×216.
+    </p>
+    <h2>Principal concept and gameplay pixels</h2>
+    <p>
+      The original concept remains the appearance reference. The current courtyard uses Titan assets
+      and starts in the closer view, with a separate overview. These are comparison inputs; artistic
+      acceptance remains pending.
     </p>
     <div class="hero">
       <figure>
@@ -51,60 +110,23 @@
           <text x="1265" y="403">4 palette</text>
         </svg>
         <figcaption>
-          Principal concept · boxes identify the source crops below. SHA-256
+          Principal concept · unchanged SHA-256
           <code>12fb86f3b96226f20aacde1c135fcd3e29c7eb0fc4ffa6a68a3007b695fc3abc</code>
         </figcaption>
       </figure>
       <figure>
         <img
-          src="moores-readable-source-run/day-zoom-0-internal.png"
+          src="titan-courtyard-delivery-run/day-zoom-1-internal.png"
           width="384"
           height="216"
-          alt="Imported armored knight, timber hut, tree and barrel"
+          alt="Titan courtyard at the closer gameplay view"
         />
         <figcaption>
-          Moore RPG probe · day / zoom ×1. Larger upright knight with repaired source armor textures
-          and frontal fill. Native zoom ×1 is the readability test; the ×2 view is diagnostic.
-          Character readability and art approval remain pending.
+          Close view · 384×216 gameplay pixels · day / 4.5m orthographic height. Character scale
+          remains 1.8m.
         </figcaption>
       </figure>
     </div>
-    <h2>Before and after pixel presentation</h2>
-    <p>
-      Native-resolution PBR versus 384×216 nearest presentation. No custom toon/outline shader is
-      active in T03; these images isolate rendering resolution only. Reset: day, zoom ×1, heading
-      135°, same camera, pose, materials and lighting. Both images have the same 1536×864
-      dimensions. Select an image to inspect the full-size capture.
-    </p>
-    <div class="hero comparison">
-      <figure>
-        <a href="moores-native-comparison-run/comparison-native.png"
-          ><img
-            class="native-pbr"
-            src="moores-native-comparison-run/comparison-native.png"
-            width="1536"
-            height="864"
-            alt="Before: native-resolution PBR render with pixel presentation disabled"
-        /></a>
-        <figcaption>Before · native-resolution PBR · pixel presentation off</figcaption>
-      </figure>
-      <figure>
-        <a href="moores-native-comparison-run/comparison-pixelated.png"
-          ><img
-            src="moores-native-comparison-run/comparison-pixelated.png"
-            width="1536"
-            height="864"
-            alt="After: matching scene rendered at 384 by 216 and enlarged with nearest sampling"
-        /></a>
-        <figcaption>After · 384×216 with nearest integer upscale · current prototype</figcaption>
-      </figure>
-    </div>
-    <p>
-      The actual runtime checks unchanged framing, integer scale, different native/pixel readbacks
-      and exact restoration of the original viewport pixels.
-      <a href="moores-native-comparison-run/run.json">Comparison execution and image hashes</a>. The
-      high-resolution image is diagnostic; gameplay readability still needs review at 384×216.
-    </p>
     <h2>Character, props, depth and lighting</h2>
     <div class="cards">
       <article>
@@ -117,22 +139,22 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="166 44 52 105" role="img" aria-label="Probe character">
+            <svg viewBox="131 41 122 142" role="img" aria-label="Probe character">
               <image
-                href="moores-readable-source-run/day-zoom-0-internal.png"
+                href="titan-courtyard-delivery-run/day-zoom-1-internal.png"
                 width="384"
                 height="216"
               />
             </svg>
-            <figcaption>Probe · projected region at zoom ×1</figcaption>
+            <figcaption>Courtyard · projected region in the declared capture</figcaption>
           </figure>
         </div>
         <p>
-          The first imported-asset candidate was rejected by the user because the person was not
-          recognizable. The revised knight uses an upright source idle pose, 1.8 display scale, a
-          higher focus point, brighter sky/ambient and frontal fill. Source torso/cape PBR textures
-          transfer through simple export materials to fix black albedo. Judge head, torso, separate
-          arms and two legs at native zoom x1; this candidate still needs human review.
+          The user found the Moore RPG scene hard to see and requested a scene from ProjectTitan. A
+          complete Adventurer in its compatible source idle replaces the modular knight. The
+          character is 1.8m tall, with unchanged proportions and original color/normal/packed PBR
+          maps. The closer view is now the initial view; overview shows the larger surroundings.
+          Judge readability in both actual captures; no human acceptance is claimed.
         </p>
       </article>
       <article>
@@ -145,21 +167,20 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="152 113 46 56" role="img" aria-label="Probe props">
+            <svg viewBox="240 85 60 70" role="img" aria-label="Probe props">
               <image
-                href="moores-readable-source-run/day-zoom-0-internal.png"
+                href="titan-courtyard-delivery-run/day-zoom-1-internal.png"
                 width="384"
                 height="216"
               />
             </svg>
-            <figcaption>Probe · projected region at zoom ×1</figcaption>
+            <figcaption>Courtyard · projected region in the declared capture</figcaption>
           </figure>
         </div>
         <p>
-          The imported timber barrel is a single simple prop beside the detailed knight and a small
-          peasant hut. Its staves, rim and round mass read at zoom x1. The hut has more texture
-          density than the initial dummy corner; it establishes realistic material/architecture
-          inputs without starting asset-volume production.
+          A market canopy/table, 0.85–0.9m barrels, 0.25–0.45m pottery/containers, 0.35–0.5m produce
+          crates and a 0.5m stool surround the adventurer. The 4.8m house and 5.2m birch establish
+          larger scale. Runtime bounds, exact declared heights and support placement are retained.
         </p>
       </article>
       <article>
@@ -172,21 +193,21 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="203 36 103 101" role="img" aria-label="Probe contact">
+            <svg viewBox="78 122 70 51" role="img" aria-label="Probe contact">
               <image
-                href="moores-readable-source-run/day-zoom-0-internal.png"
+                href="titan-courtyard-delivery-run/day-zoom-0-internal.png"
                 width="384"
                 height="216"
               />
             </svg>
-            <figcaption>Probe · projected region at zoom ×1</figcaption>
+            <figcaption>Courtyard · projected region in the declared capture</figcaption>
           </figure>
         </div>
         <p>
-          Imported boots, barrel, tree trunk and hut foundation meet the plain ground receiver with
-          directional shadows. The hut overlaps the ground and supports wall/roof depth comparison.
-          AO/contact-depth candidates, water and final composition remain later tests; shadow-only
-          depth is not a completed contact-depth effect.
+          Grounded feet, barrel bases, the house and canopy meet a flat receiver textured with
+          original Titan cobblestone PBR maps. The tabletop props use the measured table top as
+          their support. Height/position, support contact, overhang and character-footprint checks
+          reject incorrect placement. This is not AO/contact-depth effect feasibility.
         </p>
       </article>
       <article>
@@ -199,33 +220,33 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="69 71 86 97" role="img" aria-label="Probe palette">
+            <svg viewBox="69 82 75 120" role="img" aria-label="Probe palette">
               <image
-                href="moores-readable-source-run/day-zoom-0-internal.png"
+                href="titan-courtyard-delivery-run/day-zoom-0-internal.png"
                 width="384"
                 height="216"
               />
             </svg>
-            <figcaption>Probe · projected region at zoom ×1</figcaption>
+            <figcaption>Courtyard · projected region in the declared capture</figcaption>
           </figure>
         </div>
         <p>
-          Source foliage, thatch/timber and barrel textures retain the muted environment palette.
-          The revised knight has frontal fill and brighter ambient/sky reflections to expose armor
-          forms. These are declared prototype lighting changes; final stylized value separation and
-          outline/highlight decisions remain T05.
+          Original Titan material colors, foliage, grassy roof and cobblestone supply the scene
+          palette. Export-only PBR materials and unsaved conventional texture duplicates repair
+          black/white conversion failures without changing source material samplers. Lighting is
+          reduced to retain color. Final toon/outline choices remain T05.
         </p>
       </article>
     </div>
     <h2>Native gameplay pixels</h2>
     <p>
-      Each image below has 384×216 source pixels, displayed 1:1 when room permits. Compare part
-      separation and warm/cool light here before inspecting the ×2 diagnostic.
+      Each image below has 384×216 source pixels, displayed 1:1 when room permits. Compare character
+      part separation and warm/cool light in the initial close view here.
     </p>
     <div class="native">
       <figure>
         <img
-          src="moores-readable-source-run/day-zoom-0-internal.png"
+          src="titan-courtyard-delivery-run/day-zoom-1-internal.png"
           width="384"
           height="216"
           alt="day lighting at native gameplay scale"
@@ -234,7 +255,7 @@
       </figure>
       <figure>
         <img
-          src="moores-readable-source-run/warm-zoom-0-internal.png"
+          src="titan-courtyard-delivery-run/warm-zoom-1-internal.png"
           width="384"
           height="216"
           alt="warm lighting at native gameplay scale"
@@ -243,7 +264,7 @@
       </figure>
       <figure>
         <img
-          src="moores-readable-source-run/cool-zoom-0-internal.png"
+          src="titan-courtyard-delivery-run/cool-zoom-1-internal.png"
           width="384"
           height="216"
           alt="cool lighting at native gameplay scale"
@@ -252,40 +273,40 @@
       </figure>
     </div>
     <p>
-      <a href="moores-readable-source-run/day-zoom-1-internal.png">Day zoom ×2 diagnostic</a> ·
-      <a href="moores-readable-source-run/day-zoom-0-output.png"
+      <a href="titan-courtyard-delivery-run/day-zoom-1-internal.png">Close gameplay view</a> ·
+      <a href="titan-courtyard-delivery-run/day-zoom-1-output.png"
         >Native Retina output with independent HUD</a
       >
-      · <a href="moores-readable-source-run/run.json">Actual execution and capture hashes</a>
+      · <a href="titan-courtyard-delivery-run/run.json">Actual execution and capture hashes</a>
     </p>
     <h2>Imported fixture provenance</h2>
     <p>
-      The user-selected Moore RPG library supplies the knight, hut, tree and barrel. Source and
-      converted models/textures remain local; the recipe and rendered evidence are retained. The
+      The user-selected Project Titan library supplies the character and courtyard assets. Source
+      and converted models/textures remain local; the recipe and rendered evidence are retained. The
       original Unreal project is read-only. Reproduction requires an authorized local copy of that
       library.
     </p>
     <p>
-      <a href="moores-readable-assets.json">Selected asset recipe</a> ·
-      <a href="moores-readable-export-manifest.json"
-        >Engine, source/dependency and converted hashes</a
-      >
-      · <a href="moores-readable-export.log">Unreal export log</a>
+      <a href="titan-assets.json">Selected asset recipe</a> ·
+      <a href="titan-export-manifest.json">Engine, source/dependency and converted hashes</a> ·
+      <a href="titan-export.log">Unreal export log</a>
     </p>
     <ul>
       <li>
-        Material transfer fixes the source torso/cape graphs that baked black, preserving authored
-        base color, normal, roughness, metallic and torso opacity maps. Export-only materials are
-        created unsaved in the isolated clone. Other export warnings remain in the retained exporter
-        log.
+        Eleven bounded exports supply a complete source character, nine scenery/prop meshes and a
+        paving-material donor. Source and converted assets remain local.
       </li>
       <li>
-        The knight freezes seven compatible Anim_Idle_Straight clips at time 0. Cloth simulation,
-        foliage wind, Blueprint interaction and UE gameplay are not transferred.
+        Source cloth/wind/Blueprint/gameplay behavior is not transferred; the character is frozen in
+        one compatible source idle.
       </li>
       <li>
-        Knight/hut/tree/barrel display scales are 1.8/0.5/0.35/1.0 and camera focus height is 1.3m.
-        These are comparison composition settings.
+        Only selected PBR graphs/maps transfer. Unsaved texture duplicates disable virtual streaming
+        for export without modifying original material samplers or saved input assets.
+      </li>
+      <li>
+        Paving geometry is an original flat receiver with tiled authored Titan cobblestone textures;
+        terrain/steps do not authorize gameplay traversal.
       </li>
     </ul>
     <h2>Proposed observable bounds</h2>
@@ -301,29 +322,29 @@
         <tr>
           <td>detail</td>
           <td>
-            At normal zoom x1, the reviewer must immediately recognize a human figure with a head,
-            torso, two arms and two distinct legs/boots; armor and cloak accents should remain
-            distinguishable from the ground and hut. Enlarged crops or zoom x2 do not establish this
-            bound.
+            The 1.8m character must read clearly as a complete humanoid in the initial close view
+            (4.5m ortho height) and remain identifiable in the overview (12m). Inspect head, torso,
+            arms and separate boots at native 384×216; native-resolution images diagnose scene/asset
+            quality but do not establish pixel readability.
           </td>
           <td>Proposed</td>
         </tr>
         <tr>
           <td>proportions</td>
           <td>
-            Retain 384x216 and orthographic height 9/4.5. Prototype display scales: knight 1.8, hut
-            0.5, tree 0.35, barrel 1.0; camera focus height 1.3m keeps the enlarged character within
-            both views. These composition proportions need explicit acceptance and do not define
-            production gameplay dimensions.
+            Use physically sensible scene proportions: character 1.8m; small items 0.25–0.5m;
+            barrels 0.85–0.9m; canopy 2.8m; house 4.8m; birch 5.2m. Pose precedes measurement;
+            uniform scaling preserves proportions. Bases contact ground/support and the character
+            footprint stays clear. Overview/close focus heights are 3.0m/1.0m.
           </td>
           <td>Proposed</td>
         </tr>
         <tr>
           <td>palette-depth-lighting</td>
           <td>
-            Knight silhouette remains separable from ground, hut and foliage in all three lighting
-            states; boots and building foundations meet the ground, architecture depth is visible,
-            amber light does not erase armor/cape separation.
+            The Adventurer silhouette remains separable from paving, the house and foliage in all
+            three lighting states. Boots and building foundations meet the ground; architecture
+            depth stays visible and amber light preserves character part separation.
           </td>
           <td>Proposed</td>
         </tr>
@@ -359,23 +380,29 @@
     <h2>Proposed deviations</h2>
     <ul>
       <li>
-        User-selected Moore RPG assets replace primitive fixtures. The original torso/cape graphs
-        exported black, so unsaved export materials connect their authored PBR textures directly.
-        Other source PBR materials remain; final toon/outline changes remain T05.
+        User-selected Project Titan assets replace the Moore RPG fixture. A complete source
+        Adventurer avoids modular-part alignment errors. The house, birch, market furniture and
+        small props form a courtyard rather than an asset lineup.
       </li>
       <li>
-        A single hut, tree and barrel, plain ground and reduced density isolate the comparison.
-        Following the user readability finding, knight display scale is 1.8, hut/tree 0.5/0.35;
-        upright pose, focus height 1.3m and camera-aligned fill are provisional composition changes.
+        The original ground receiver uses authored Titan cobblestone maps. The paving export
+        supplies its material only. Uniform per-asset normalization establishes sensible comparison
+        heights; these do not define gameplay dimensions.
       </li>
       <li>
-        Unreal-specific material features and blueprint behavior do not transfer automatically.
-        Export warnings and observed differences are retained with the local asset manifest; no UE
-        gameplay logic is ported.
+        Source graphs and virtual-texture readbacks produced black or white exports. Unsaved PBR
+        materials and unsaved conventional texture duplicates transfer the original authored maps
+        per slot, while preserving original material samplers. Export limitations remain explicit.
       </li>
       <li>
-        Final one-pixel outlines/highlights, water, AO/contact-depth and atmosphere are deferred to
-        their own tickets; this approval establishes comparison bounds only.
+        Reference-only framing uses orthographic height 12m for the whole courtyard and 4.5m for the
+        initial closer view, with focus heights 3m/1m. T02 pixel resolution, presentation/window
+        policy and angles remain unchanged. The character stays at normal height instead of being
+        enlarged to compensate for distant framing.
+      </li>
+      <li>
+        No final toon/outline, motion, water, contact-depth, atmosphere or performance/package
+        acceptance is claimed.
       </li>
     </ul>
     <h2>Supplementary research</h2>
@@ -424,11 +451,11 @@
       <strong>Reviewer: None · approval: None</strong>
       <ul>
         <li>
-          User finding on v3: the person was not recognizable at gameplay scale. The v4 readability
-          revision requires a new human review.
+          The user still found the earlier Moore RPG scene hard to see. This Project Titan courtyard
+          requires renewed human readability review.
         </li>
         <li>
-          Human approval of visual/motion bounds, prototype budgets and deviations has not been
+          Human approval of visual/motion bounds, proposed budgets and deviations has not been
           received.
         </li>
       </ul>
