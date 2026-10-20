@@ -1,0 +1,212 @@
+{
+  "version": "reference-review-v6",
+  "ticket": "BW-097-T03",
+  "date": "2026-10-20",
+  "status": "Awaiting review of Project Titan courtyard",
+  "reviewer": null,
+  "approved_at": null,
+  "principal_reference": {
+    "path": "assets/graphics_concept.png",
+    "sha256": "12fb86f3b96226f20aacde1c135fcd3e29c7eb0fc4ffa6a68a3007b695fc3abc",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "use": "Principal appearance target; comparison only, no copied art or engine capability claim"
+  },
+  "settings": {
+    "viewport": "384x216",
+    "orthographic_size": [
+      12,
+      4.5
+    ],
+    "pitch_degrees": -35,
+    "yaw_degrees": -45,
+    "sampling": "nearest integer physical upscale",
+    "anti_aliasing": "MSAA/TAA off",
+    "lighting": [
+      "day",
+      "warm",
+      "cool"
+    ],
+    "character_heading_degrees": 135,
+    "pose": "oot_lostfang_idle_01",
+    "fill_light": "camera-aligned neutral fill, energy 0.35",
+    "character_height_meters": 1.8,
+    "camera_focus_heights": [
+      3.0,
+      1.0
+    ],
+    "initial_view": "close"
+  },
+  "comparison_regions": [
+    {
+      "id": "character",
+      "concept_rectangle": [
+        790,
+        390,
+        83,
+        110
+      ],
+      "observation": "The user found the Moore RPG scene hard to see and requested a scene from ProjectTitan. A complete Adventurer in its compatible source idle replaces the modular knight. The character is 1.8m tall, with unchanged proportions and original color/normal/packed PBR maps. The closer view is now the initial view; overview shows the larger surroundings. Judge readability in both actual captures; no human acceptance is claimed.",
+      "capture": "day-zoom-1"
+    },
+    {
+      "id": "props",
+      "concept_rectangle": [
+        286,
+        381,
+        122,
+        95
+      ],
+      "observation": "A market canopy/table, 0.85–0.9m barrels, 0.25–0.45m pottery/containers, 0.35–0.5m produce crates and a 0.5m stool surround the adventurer. The 4.8m house and 5.2m birch establish larger scale. Runtime bounds, exact declared heights and support placement are retained.",
+      "capture": "day-zoom-1"
+    },
+    {
+      "id": "contact",
+      "concept_rectangle": [
+        892,
+        376,
+        180,
+        130
+      ],
+      "observation": "Grounded feet, barrel bases, the house and canopy meet a flat receiver textured with original Titan cobblestone PBR maps. The tabletop props use the measured table top as their support. Height/position, support contact, overhang and character-footprint checks reject incorrect placement. This is not AO/contact-depth effect feasibility.",
+      "capture": "day-zoom-0"
+    },
+    {
+      "id": "palette",
+      "concept_rectangle": [
+        1265,
+        411,
+        245,
+        175
+      ],
+      "observation": "Original Titan material colors, foliage, grassy roof and cobblestone supply the scene palette. Export-only PBR materials and unsaved conventional texture duplicates repair black/white conversion failures without changing source material samplers. Lighting is reduced to retain color. Final toon/outline choices remain T05.",
+      "capture": "day-zoom-0"
+    }
+  ],
+  "proposed_bounds": [
+    {
+      "id": "detail",
+      "bound": "The 1.8m character must read clearly as a complete humanoid in the initial close view (4.5m ortho height) and remain identifiable in the overview (12m). Inspect head, torso, arms and separate boots at native 384×216; native-resolution images diagnose scene/asset quality but do not establish pixel readability.",
+      "status": "Proposed"
+    },
+    {
+      "id": "proportions",
+      "bound": "Use physically sensible scene proportions: character 1.8m; small items 0.25–0.5m; barrels 0.85–0.9m; canopy 2.8m; house 4.8m; birch 5.2m. Pose precedes measurement; uniform scaling preserves proportions. Bases contact ground/support and the character footprint stays clear. Overview/close focus heights are 3.0m/1.0m.",
+      "status": "Proposed"
+    },
+    {
+      "id": "palette-depth-lighting",
+      "bound": "The Adventurer silhouette remains separable from paving, the house and foliage in all three lighting states. Boots and building foundations meet the ground; architecture depth stays visible and amber light preserves character part separation.",
+      "status": "Proposed"
+    },
+    {
+      "id": "motion",
+      "bound": "T04/T09 must show no stationary pixel changes, no repeated crawl/shimmer on rigid edges during slow/diagonal tracking, no one-frame silhouette disappearance or outline-width pumping. One internal-pixel silhouette lines and selective convex highlights are reviewed in T05. No motion pass is claimed in T03.",
+      "status": "Proposed"
+    },
+    {
+      "id": "composition",
+      "bound": "No filled-surface outlines, stale reflection/depth frames, actor disappearance or unauthorized information in later combined cases; fallback deviations need explicit review.",
+      "status": "Proposed"
+    }
+  ],
+  "proposed_budgets": {
+    "approval": "Required; proposals are not established requirements or measurements",
+    "hardware": "Current pinned Apple M2 Max / macOS 27.0 / Metal; other targets unverified",
+    "settings": "384x216 internal, 960x640 logical window, actual Retina 2x, source probe",
+    "target_fps": 60,
+    "cpu_frame_p95_ms": 8.0,
+    "gpu_frame_p95_ms": 8.0,
+    "process_rss_peak_mib": 1024,
+    "rendering_allocations_peak_mib": 256,
+    "measurement_plan": "T10 retains raw CPU/GPU frame percentiles and process RSS separately from engine rendering allocations, at declared settings. Missing/zero GPU timing is unavailable, never a pass. Include warmup and effects on/off samples; no feasibility measurement is claimed here."
+  },
+  "proposed_deviations": [
+    "User-selected Project Titan assets replace the Moore RPG fixture. A complete source Adventurer avoids modular-part alignment errors. The house, birch, market furniture and small props form a courtyard rather than an asset lineup.",
+    "The original ground receiver uses authored Titan cobblestone maps. The paving export supplies its material only. Uniform per-asset normalization establishes sensible comparison heights; these do not define gameplay dimensions.",
+    "Source graphs and virtual-texture readbacks produced black or white exports. Unsaved PBR materials and unsaved conventional texture duplicates transfer the original authored maps per slot, while preserving original material samplers. Export limitations remain explicit.",
+    "Reference-only framing uses orthographic height 12m for the whole courtyard and 4.5m for the initial closer view, with focus heights 3m/1m. T02 pixel resolution, presentation/window policy and angles remain unchanged. The character stays at normal height instead of being enlarged to compensate for distant framing.",
+    "No final toon/outline, motion, water, contact-depth, atmosphere or performance/package acceptance is claimed."
+  ],
+  "approved_deviations": [],
+  "blocking_findings": [
+    "The user still found the earlier Moore RPG scene hard to see. This Project Titan courtyard requires renewed human readability review.",
+    "Human approval of visual/motion bounds, proposed budgets and deviations has not been received."
+  ],
+  "supplementary_references": [
+    {
+      "url": "https://www.davidhol.land/articles/3d-pixel-art-rendering/",
+      "section": "Outlines / Camera / Lighting",
+      "observation": "Low-poly silhouettes, independent convex highlights, grid-aligned camera with residual correction, restrained toon light. These guide later cases; historical custom Godot build is not current capability evidence.",
+      "review": "Article text inspected 2026-10-19"
+    },
+    {
+      "url": "https://roystan.net/articles/outline-shader/",
+      "section": "Depth and normal outlines",
+      "observation": "Neighbor texel tests and surface/view-angle artifact checks inform T05; Unity-specific implementation and SMAA are not adopted as Godot defaults.",
+      "review": "Article text inspected 2026-10-19"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=3s",
+      "timestamp": "00:03",
+      "observation": "At 00:03 the Unity game-view scene separates pale stone stairs/columns and brown ground from green foliage with broad cast shadows. Adopt the readable large masses and restrained green/stone palette as a comparison observation; this is neither the principal appearance target nor Godot capability evidence.",
+      "review": "Actual decoded frame visually inspected by Codex on 2026-10-19; no human art approval.",
+      "capture": "supplementary-browser-run/frame-3.png"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=30s",
+      "timestamp": "00:30",
+      "observation": "At 00:30 the Blender view shows plain squared columns with stepped bases and simple stair/terrain masses before detailed surface work. Adopt simple architectural prop silhouettes beneath character-level detail; no model, texture or authoring pipeline is copied. This modeling view cannot certify gameplay pixel readability.",
+      "review": "Actual decoded frame visually inspected by Codex on 2026-10-19; no human art approval.",
+      "capture": "supplementary-browser-run/frame-30.png"
+    }
+  ],
+  "unverified": [
+    "Later camera/actor motion and combined effect tests",
+    "CPU/GPU frame percentiles, process RSS and engine allocation measurements",
+    "Packaged scene and other platform/display paths"
+  ],
+  "decision": null,
+  "resolved_findings": [
+    {
+      "finding": "Supplementary t3ssel8r clip observations at the proposed timestamps require actual video review; web retrieval exposed no playable frames or transcript.",
+      "resolution": "Decoded frames at 00:03 and 00:30 were captured and visually inspected in the installed Chrome using a new isolated profile. Media-time/readiness observations and source frames are retained. The initial 00:00/04:40 proposals are superseded; 04:40 was not decoded and carries no appearance claim."
+    },
+    {
+      "finding": "User requested existing Unreal assets instead of dummy fixtures.",
+      "resolution": "Selected the user-provided Moore RPG knight, hut, tree and barrel; exported with installed Unreal 5.8 in an isolated Content clone. Recipe, engine, 549 source/dependency hashes and converted hashes are retained; originals and GLBs stay local. Initial primitive evidence is historical."
+    }
+  ],
+  "supplementary_inspection": {
+    "result": "Passed",
+    "reviewer": "Codex, source-reference observation only",
+    "inspected_at_utc": "2026-10-19T22:27:44.151Z",
+    "artifact": "supplementary-browser-run/observations.json",
+    "method": "Actual decoded mediaTime via requestVideoFrameCallback, readyState 4 and paused video; screenshot clip from the installed isolated Chrome was visually inspected. No reference assets enter the game."
+  },
+  "capture_directory": "titan-courtyard-delivery-run",
+  "asset_provenance": {
+    "recipe": "titan-assets.json",
+    "manifest": "titan-export-manifest.json",
+    "source": "User-provided ~/Documents/Unreal Projects/ProjectTitan",
+    "distribution": "Source and converted models/textures remain local, outside Git; selected source/dependency hashes and rendered evidence are retained.",
+    "export_log": "titan-export.log",
+    "limitations": [
+      "Eleven bounded exports supply a complete source character, nine scenery/prop meshes and a paving-material donor. Source and converted assets remain local.",
+      "Source cloth/wind/Blueprint/gameplay behavior is not transferred; the character is frozen in one compatible source idle.",
+      "Only selected PBR graphs/maps transfer. Unsaved texture duplicates disable virtual streaming for export without modifying original material samplers or saved input assets.",
+      "Paving geometry is an original flat receiver with tiled authored Titan cobblestone textures; terrain/steps do not authorize gameplay traversal."
+    ],
+    "layout": "titan-layout.json"
+  },
+  "presentation_comparison": {
+    "capture_directory": "titan-courtyard-delivery-run",
+    "before": "comparison-native.png",
+    "after": "comparison-pixelated.png",
+    "state": "Day, close view / orthographic height 4.5m, heading 135°, identical camera, pose, materials and lights",
+    "meaning": "Native-resolution PBR versus 384×216 nearest presentation. The overview pair also shows the whole courtyard. No custom toon/outline shader is active; the pairs isolate rendering resolution.",
+    "verification": "The actual runtime checks unchanged framing, integer scale, different native/pixel readbacks and exact restoration of the original viewport pixels."
+  }
+}

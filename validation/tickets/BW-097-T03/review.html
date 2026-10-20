@@ -25,44 +25,74 @@
     <a data-inventory-nav href="../../../guide/data-inventory.html">Data Inventory</a>
   </nav>
   <main>
-    <div class="eyebrow">Briarwake · BW-097-T03 · reference-review-v6 · 2026-10-20</div>
-    <h1>Project Titan · a courtyard around the character</h1>
-    <div class="badge">Awaiting review of Project Titan courtyard</div>
+    <div class="eyebrow">Briarwake · BW-097-T03 · reference-review-v8-approved · 2026-10-20</div>
+    <h1>Project Titan · normal-scale visual review</h1>
+    <div class="badge">Approved prototype baseline</div>
     <p>
       A 1.8m Adventurer stands on cobblestone paving beside a small market. Barrels, pottery,
       containers, produce crates and a stool provide nearby detail; the house, birch and canopy
       establish larger scale. Select each image to inspect its full resolution.
     </p>
+    <h2>Normal ×1 · actual gameplay pixels</h2>
+    <p>
+      Normal means T02's 9m orthographic height, with a 1m focus and a 1.8m character. Reset still
+      starts in diagnostic ×2 (4.5m); it does not establish normal-scale readability. These desktop
+      images contain 384×216 pixels and display 1:1 when room permits.
+    </p>
+    <div class="native">
+      <figure>
+        <img
+          src="readability-normal-baseline-run/day-zoom-0-internal.png"
+          width="384"
+          height="216"
+          alt="Original materials and lighting at normal x1"
+        />
+        <figcaption>Before · original lighting / 2m paving repeat · normal ×1</figcaption>
+      </figure>
+      <figure>
+        <img
+          src="readability-reviewed-run/day-zoom-0-internal.png"
+          width="384"
+          height="216"
+          alt="Revised normal x1 reference"
+        />
+        <figcaption>Revised · lateral key / reduced fill / 4m paving repeat · normal ×1</figcaption>
+      </figure>
+    </div>
+    <p>
+      Matched normal ×1 framing isolates the lower ambient/fill, lateral key and 4m paving repeat.
+      Geometry, layout, pose and source maps are unchanged. Broader paving and more directional
+      shadows help scene structure; fine armor and face detail remain limited. Compare at actual
+      384×216 below; enlarged crops are diagnostic.
+    </p>
     <figure class="overview">
-      <a href="titan-courtyard-delivery-run/overview-native.png"
+      <a href="readability-reviewed-run/normal-day-native.png"
         ><img
-          src="titan-courtyard-delivery-run/overview-native.png"
+          src="readability-reviewed-run/normal-day-native.png"
           width="1536"
           height="864"
-          alt="Project Titan courtyard overview with a complete adventurer and correctly scaled small and large scenery"
+          alt="Normal-scale courtyard rendered at native resolution for diagnosis"
       /></a>
       <figcaption>
-        Whole courtyard · native-resolution PBR · 12m orthographic height.
-        <a href="titan-courtyard-delivery-run/overview-pixelated.png"
-          >Matching pixelated overview</a
-        >
-        · <a href="titan-placement-review.json">Measured heights and support placement</a>.
+        Normal ×1 framing · native-resolution PBR diagnostic · 9m height.
+        <a href="readability-reviewed-run/normal-day-pixelated.png">Matching pixelated view</a> ·
+        <a href="titan-placement-review.json">Unchanged measured placements</a>.
       </figcaption>
     </figure>
     <h2>Before and after pixel presentation</h2>
     <p>
-      Native-resolution PBR versus 384×216 nearest presentation. The overview pair also shows the
-      whole courtyard. No custom toon/outline shader is active; the pairs isolate rendering
-      resolution. Day, close view / orthographic height 4.5m, heading 135°, identical camera, pose,
-      materials and lights. Both images have the same 1536×864 dimensions. Select an image to
-      inspect the full-size capture.
+      Native-resolution PBR versus actual 384×216 nearest presentation at normal ×1. All three
+      lighting presets have matched pairs. The close Reset pair is diagnostic ×2 only; no custom
+      toon/outline shader is active. Day, normal ×1 / orthographic height 9m, focus 1m, heading
+      135°; same world, camera, pose, materials and lights. Both images have the same 1536×864
+      dimensions. Select an image to inspect the full-size capture.
     </p>
     <div class="hero comparison">
       <figure>
-        <a href="titan-courtyard-delivery-run/comparison-native.png"
+        <a href="readability-reviewed-run/normal-day-native.png"
           ><img
             class="native-pbr"
-            src="titan-courtyard-delivery-run/comparison-native.png"
+            src="readability-reviewed-run/normal-day-native.png"
             width="1536"
             height="864"
             alt="Before: native-resolution PBR render with pixel presentation disabled"
@@ -70,9 +100,9 @@
         <figcaption>Before · native-resolution PBR · pixel presentation off</figcaption>
       </figure>
       <figure>
-        <a href="titan-courtyard-delivery-run/comparison-pixelated.png"
+        <a href="readability-reviewed-run/normal-day-pixelated.png"
           ><img
-            src="titan-courtyard-delivery-run/comparison-pixelated.png"
+            src="readability-reviewed-run/normal-day-pixelated.png"
             width="1536"
             height="864"
             alt="After: matching scene rendered at 384 by 216 and enlarged with nearest sampling"
@@ -81,16 +111,19 @@
       </figure>
     </div>
     <p>
-      The actual runtime checks unchanged framing, integer scale, different native/pixel readbacks
-      and exact restoration of the original viewport pixels.
-      <a href="titan-courtyard-delivery-run/run.json">Comparison execution and image hashes</a>. The
+      Runtime checks exact physical presentation, shared world/camera framing, frozen source pixels
+      and restoration of update mode. A separate temporary native viewport leaves the original
+      384×216 viewport intact. This verifies a matched still snapshot, not future live-frame or
+      motion stability.
+      <a href="readability-reviewed-run/run.json">Comparison execution and image hashes</a>. The
       high-resolution image is diagnostic; gameplay readability still needs review at 384×216.
     </p>
     <h2>Principal concept and gameplay pixels</h2>
     <p>
-      The original concept remains the appearance reference. The current courtyard uses Titan assets
-      and starts in the closer view, with a separate overview. These are comparison inputs; artistic
-      acceptance remains pending.
+      The original concept remains the appearance reference. The bounded courtyard uses the same
+      Titan assets and fourteen placements. Its PBR-only treatment does not reproduce the concept's
+      painted detail, selective lighting, dense village or missing effects. The project owner
+      approved this prototype baseline and its documented limitations.
     </p>
     <div class="hero">
       <figure>
@@ -116,14 +149,14 @@
       </figure>
       <figure>
         <img
-          src="titan-courtyard-delivery-run/day-zoom-1-internal.png"
+          src="readability-reviewed-run/day-zoom-0-internal.png"
           width="384"
           height="216"
-          alt="Titan courtyard at the closer gameplay view"
+          alt="Titan courtyard at normal gameplay scale"
         />
         <figcaption>
-          Close view · 384×216 gameplay pixels · day / 4.5m orthographic height. Character scale
-          remains 1.8m.
+          Normal ×1 · 384×216 gameplay pixels · day / 9m height. This enlarged comparison is
+          diagnostic; use the 1:1 images above for readability.
         </figcaption>
       </figure>
     </div>
@@ -139,9 +172,9 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="131 41 122 142" role="img" aria-label="Probe character">
+            <svg viewBox="161 74 62 72" role="img" aria-label="Probe character">
               <image
-                href="titan-courtyard-delivery-run/day-zoom-1-internal.png"
+                href="readability-reviewed-run/day-zoom-0-internal.png"
                 width="384"
                 height="216"
               />
@@ -150,11 +183,12 @@
           </figure>
         </div>
         <p>
-          The user found the Moore RPG scene hard to see and requested a scene from ProjectTitan. A
-          complete Adventurer in its compatible source idle replaces the modular knight. The
-          character is 1.8m tall, with unchanged proportions and original color/normal/packed PBR
-          maps. The closer view is now the initial view; overview shows the larger surroundings.
-          Judge readability in both actual captures; no human acceptance is claimed.
+          Normal ×1 uses the unchanged T02 9m orthographic height; the previous 12m wide view and
+          4.5m initial close view did not establish this scale. At 384×216 the Adventurer reads as a
+          humanoid with a bun/head, torso, two arms and separated boots. Fine facial features and
+          armor engraving merge into a few pixels. Recognition and detail bounds still need human
+          review; diagnostic ×2 is not acceptance evidence. Geometry, 1.8m height and source pose
+          are unchanged.
         </p>
       </article>
       <article>
@@ -167,9 +201,9 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="240 85 60 70" role="img" aria-label="Probe props">
+            <svg viewBox="216 96 30 36" role="img" aria-label="Probe props">
               <image
-                href="titan-courtyard-delivery-run/day-zoom-1-internal.png"
+                href="readability-reviewed-run/day-zoom-0-internal.png"
                 width="384"
                 height="216"
               />
@@ -178,9 +212,11 @@
           </figure>
         </div>
         <p>
-          A market canopy/table, 0.85–0.9m barrels, 0.25–0.45m pottery/containers, 0.35–0.5m produce
-          crates and a 0.5m stool surround the adventurer. The 4.8m house and 5.2m birch establish
-          larger scale. Runtime bounds, exact declared heights and support placement are retained.
+          The same fourteen measured placements and eleven exports remain: small
+          containers/produce/stool below the 1.8m actor, barrels about half its height,
+          canopy/house/birch larger. The barrel has simpler broad bands and an opening; the
+          character has much more high-frequency ornament. Enlarged paving repeats reduce competing
+          surface noise without adding scenery.
         </p>
       </article>
       <article>
@@ -193,9 +229,9 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="78 122 70 51" role="img" aria-label="Probe contact">
+            <svg viewBox="40 88 93 67" role="img" aria-label="Probe contact">
               <image
-                href="titan-courtyard-delivery-run/day-zoom-0-internal.png"
+                href="readability-reviewed-run/day-zoom-0-internal.png"
                 width="384"
                 height="216"
               />
@@ -204,10 +240,11 @@
           </figure>
         </div>
         <p>
-          Grounded feet, barrel bases, the house and canopy meet a flat receiver textured with
-          original Titan cobblestone PBR maps. The tabletop props use the measured table top as
-          their support. Height/position, support contact, overhang and character-footprint checks
-          reject incorrect placement. This is not AO/contact-depth effect feasibility.
+          Bases/supports and character footprint remain unchanged. The lower lateral key creates
+          more legible cast-shadow direction and blue shadow versus warm lit paving. The original
+          flat receiver repeats the same maps over 4m instead of 2m; this is an explicit reversible
+          presentation deviation. No AO/contact-depth or detailed collision certification is
+          claimed.
         </p>
       </article>
       <article>
@@ -220,9 +257,9 @@
             <figcaption>Principal concept · native source crop</figcaption>
           </figure>
           <figure>
-            <svg viewBox="69 82 75 120" role="img" aria-label="Probe palette">
+            <svg viewBox="29 35 99 159" role="img" aria-label="Probe palette">
               <image
-                href="titan-courtyard-delivery-run/day-zoom-0-internal.png"
+                href="readability-reviewed-run/day-zoom-0-internal.png"
                 width="384"
                 height="216"
               />
@@ -231,22 +268,23 @@
           </figure>
         </div>
         <p>
-          Original Titan material colors, foliage, grassy roof and cobblestone supply the scene
-          palette. Export-only PBR materials and unsaved conventional texture duplicates repair
-          black/white conversion failures without changing source material samplers. Lighting is
-          reduced to retain color. Final toon/outline choices remain T05.
+          Lower ambient/fill and a lateral key retain source hues while making warm/cool lighting
+          and shadow masses clearer. Original PBR maps and authored metal/roughness response remain;
+          detailed normal/metal highlights still undersample. There is no toon banding,
+          outline/highlight pass, atmosphere or final palette treatment.
         </p>
       </article>
     </div>
-    <h2>Native gameplay pixels</h2>
+    <h2>Normal ×1 lighting matrix</h2>
     <p>
-      Each image below has 384×216 source pixels, displayed 1:1 when room permits. Compare character
-      part separation and warm/cool light in the initial close view here.
+      Each image below has 384×216 source pixels, displayed 1:1 when room permits. Compare head,
+      torso, arms, boots and warm/cool separation here. Fine facial and armor detail remains
+      limited.
     </p>
     <div class="native">
       <figure>
         <img
-          src="titan-courtyard-delivery-run/day-zoom-1-internal.png"
+          src="readability-reviewed-run/day-zoom-0-internal.png"
           width="384"
           height="216"
           alt="day lighting at native gameplay scale"
@@ -255,7 +293,7 @@
       </figure>
       <figure>
         <img
-          src="titan-courtyard-delivery-run/warm-zoom-1-internal.png"
+          src="readability-reviewed-run/warm-zoom-0-internal.png"
           width="384"
           height="216"
           alt="warm lighting at native gameplay scale"
@@ -264,7 +302,7 @@
       </figure>
       <figure>
         <img
-          src="titan-courtyard-delivery-run/cool-zoom-1-internal.png"
+          src="readability-reviewed-run/cool-zoom-0-internal.png"
           width="384"
           height="216"
           alt="cool lighting at native gameplay scale"
@@ -273,12 +311,97 @@
       </figure>
     </div>
     <p>
-      <a href="titan-courtyard-delivery-run/day-zoom-1-internal.png">Close gameplay view</a> ·
-      <a href="titan-courtyard-delivery-run/day-zoom-1-output.png"
+      <a href="readability-reviewed-run/day-zoom-0-output.png"
         >Native Retina output with independent HUD</a
       >
-      · <a href="titan-courtyard-delivery-run/run.json">Actual execution and capture hashes</a>
+      ·
+      <a href="readability-reviewed-run/run.json"
+        >Exact source/settings/asset identities and image hashes</a
+      >
+      ·
+      <a href="readability-engineering-review.json"
+        >Investigation, failed trials and regression evidence</a
+      >
     </p>
+    <p>
+      Matching native/pixel pairs:
+      <a href="readability-reviewed-run/normal-warm-native.png">warm native</a> /
+      <a href="readability-reviewed-run/normal-warm-pixelated.png">warm pixels</a>;
+      <a href="readability-reviewed-run/normal-cool-native.png">cool native</a> /
+      <a href="readability-reviewed-run/normal-cool-pixelated.png">cool pixels</a>.
+    </p>
+    <h2>Diagnostic ×2 · preserved Reset state</h2>
+    <p>
+      Diagnostic ×2 / 4.5m; Reset state, not normal-scale acceptance.
+      <a href="readability-reviewed-run/comparison-native.png">Native PBR</a> /
+      <a href="readability-reviewed-run/comparison-pixelated.png">matching pixelated image</a>. This
+      pair cannot establish normal-scale acceptance.
+    </p>
+    <h2>Rendering diagnosis and deferred findings</h2>
+    <p>
+      Captured world output matches exact nearest 4× enlargement, with no intermediate smoothing.
+      High-frequency source textures, shading gradients and specular detail lose definition inside
+      384×216. Pixel presentation cannot restore subpixel features. Early capture-resize trials also
+      exposed one-level live-frame variation on a crate; the revised capture preserves the source
+      frame and restores updates, without claiming a live stability fix. No speculative sky/material
+      changes were retained.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Owner</th>
+          <th>Visible limitation / required verification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>BW-097-T04</td>
+          <td>
+            Live stationary one-level crate variation and future camera/actor crawl or jitter need
+            time-indexed frame review; no correction algorithm implemented.
+          </td>
+        </tr>
+        <tr>
+          <td>BW-097-T05</td>
+          <td>
+            Fine armor/face detail, PBR gradients and highlights lack the concept’s selective bands,
+            one-pixel silhouettes and convex highlights; selected AA remains untested.
+          </td>
+        </tr>
+        <tr>
+          <td>BW-097-T06</td>
+          <td>
+            Opaque/foliage/screen-reading ordering and transparency interaction are not certified by
+            these static courtyard images.
+          </td>
+        </tr>
+        <tr>
+          <td>BW-097-T07</td>
+          <td>
+            The concept’s water/reflection/refraction cues have no current fixture or feasibility
+            proof.
+          </td>
+        </tr>
+        <tr>
+          <td>BW-097-T08</td>
+          <td>
+            Flat receiver and ordinary shadows lack the concept’s authored contact depth and corner
+            separation; bounds tests are not AO feasibility.
+          </td>
+        </tr>
+        <tr>
+          <td>BW-097-T09</td>
+          <td>Combined moving effects, atmosphere and pass composition have not run.</td>
+        </tr>
+        <tr>
+          <td>BW-097-T10 / BW-098 / BW-099</td>
+          <td>
+            Profiling/package proof and deliberate character/environment production remain deferred;
+            adding concept-level village density is outside this bounded fixture.
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <h2>Imported fixture provenance</h2>
     <p>
       The user-selected Project Titan library supplies the character and courtyard assets. Source
@@ -309,12 +432,12 @@
         terrain/steps do not authorize gameplay traversal.
       </li>
     </ul>
-    <h2>Proposed observable bounds</h2>
+    <h2>Approved observable bounds</h2>
     <table>
       <thead>
         <tr>
           <th>Area</th>
-          <th>Review proposal</th>
+          <th>Acceptance bound</th>
           <th>Decision</th>
         </tr>
       </thead>
@@ -322,12 +445,13 @@
         <tr>
           <td>detail</td>
           <td>
-            The 1.8m character must read clearly as a complete humanoid in the initial close view
-            (4.5m ortho height) and remain identifiable in the overview (12m). Inspect head, torso,
-            arms and separate boots at native 384×216; native-resolution images diagnose scene/asset
-            quality but do not establish pixel readability.
+            At normal ×1 (9m height, 384×216), identify head/hair, torso, arms and two boots as a
+            complete humanoid with a clear ground silhouette. Review native gameplay pixels, not
+            enlarged diagnostic ×2 or the full-resolution PBR image. Fine facial/armor detail is
+            currently limited and requires an explicit accepted deviation or later T05/BW-098
+            improvement.
           </td>
-          <td>Proposed</td>
+          <td>Approved for subsequent verification</td>
         </tr>
         <tr>
           <td>proportions</td>
@@ -335,9 +459,10 @@
             Use physically sensible scene proportions: character 1.8m; small items 0.25–0.5m;
             barrels 0.85–0.9m; canopy 2.8m; house 4.8m; birch 5.2m. Pose precedes measurement;
             uniform scaling preserves proportions. Bases contact ground/support and the character
-            footprint stays clear. Overview/close focus heights are 3.0m/1.0m.
+            footprint stays clear. Normal/diagnostic focus heights are both 1.0m; the 9m/4.5m
+            heights match T02 zooms. Reset remains close/day/135°.
           </td>
-          <td>Proposed</td>
+          <td>Approved for subsequent verification</td>
         </tr>
         <tr>
           <td>palette-depth-lighting</td>
@@ -346,7 +471,7 @@
             three lighting states. Boots and building foundations meet the ground; architecture
             depth stays visible and amber light preserves character part separation.
           </td>
-          <td>Proposed</td>
+          <td>Approved for subsequent verification</td>
         </tr>
         <tr>
           <td>motion</td>
@@ -356,7 +481,7 @@
             pumping. One internal-pixel silhouette lines and selective convex highlights are
             reviewed in T05. No motion pass is claimed in T03.
           </td>
-          <td>Proposed</td>
+          <td>Approved for subsequent verification</td>
         </tr>
         <tr>
           <td>composition</td>
@@ -365,19 +490,19 @@
             unauthorized information in later combined cases; fallback deviations need explicit
             review.
           </td>
-          <td>Proposed</td>
+          <td>Approved for subsequent verification</td>
         </tr>
       </tbody>
     </table>
-    <h2>Provisional measurement budgets — approval required</h2>
+    <h2>Approved future measurement targets</h2>
     <p>
-      Proposal for this source probe on Apple M2 Max / Metal: 60 FPS; CPU frame p95 ≤8 ms; GPU frame
-      p95 ≤8 ms; peak process RSS ≤1,024 MiB; peak engine rendering allocations ≤256 MiB. Use
-      384×216 internal and 960×640 logical output on actual Retina ×2. These are proposals, with no
-      measured compliance claim. T10 must retain warmup, raw samples, percentiles and separate
-      process/engine memory accounting; unavailable GPU timings cannot pass.
+      Source probe on Apple M2 Max / Metal: 60 FPS; CPU frame p95 ≤8 ms; GPU frame p95 ≤8 ms; peak
+      process RSS ≤1,024 MiB; peak engine rendering allocations ≤256 MiB. Use 384×216 internal and
+      960×640 logical output on actual Retina ×2. The project owner approved these future targets;
+      measured compliance remains unverified. T10 must retain warmup, raw samples, percentiles and
+      separate process/engine memory accounting; unavailable GPU timings cannot pass.
     </p>
-    <h2>Proposed deviations</h2>
+    <h2>Approved prototype deviations</h2>
     <ul>
       <li>
         User-selected Project Titan assets replace the Moore RPG fixture. A complete source
@@ -385,9 +510,9 @@
         small props form a courtyard rather than an asset lineup.
       </li>
       <li>
-        The original ground receiver uses authored Titan cobblestone maps. The paving export
-        supplies its material only. Uniform per-asset normalization establishes sensible comparison
-        heights; these do not define gameplay dimensions.
+        The existing flat receiver uses unchanged Titan cobblestone maps at a reversible 4m repeat
+        instead of 2m, making broad paving shapes easier to read. No source texture, source
+        geometry, asset scale or layout changed.
       </li>
       <li>
         Source graphs and virtual-texture readbacks produced black or white exports. Unsaved PBR
@@ -395,14 +520,29 @@
         per slot, while preserving original material samplers. Export limitations remain explicit.
       </li>
       <li>
-        Reference-only framing uses orthographic height 12m for the whole courtyard and 4.5m for the
-        initial closer view, with focus heights 3m/1m. T02 pixel resolution, presentation/window
-        policy and angles remain unchanged. The character stays at normal height instead of being
-        enlarged to compensate for distant framing.
+        Normal ×1 returns to the established T02 9m height. Diagnostic ×2 is 4.5m; both focus at 1m.
+        Reset deliberately retains the existing close/day/135° state. The review evaluates normal ×1
+        separately. Key rotation is −45°/−55°, fill 0.15 and ambient 0.25/0.18/0.25 for
+        day/warm/cool; this local lighting differs from the source environment.
       </li>
       <li>
         No final toon/outline, motion, water, contact-depth, atmosphere or performance/package
         acceptance is claimed.
+      </li>
+      <li>
+        Current fine face/armor detail and conventional PBR appearance are accepted for this
+        prototype comparison baseline. T05 and later art-production work still own the intended
+        selective bands, silhouette outlines and detail treatment.
+      </li>
+      <li>
+        The recorded one-level stationary crate variation is accepted as a disclosed baseline
+        limitation, not a live-frame stability pass. T04/T09 must investigate and verify the
+        approved motion bounds before their own acceptance.
+      </li>
+      <li>
+        The separate merged market showcase uses 10.5m main, 6.5m vendor and 21m settlement framing
+        with the same T02 angle/resolution/presentation policy. It supplements rather than replaces
+        the normal 9m T03 comparison.
       </li>
     </ul>
     <h2>Supplementary research</h2>
@@ -448,22 +588,15 @@
     </ul>
     <h2>Review decision</h2>
     <div class="notice">
-      <strong>Reviewer: None · approval: None</strong>
-      <ul>
-        <li>
-          The user still found the earlier Moore RPG scene hard to see. This Project Titan courtyard
-          requires renewed human readability review.
-        </li>
-        <li>
-          Human approval of visual/motion bounds, proposed budgets and deviations has not been
-          received.
-        </li>
-      </ul>
+      <strong>Reviewer: Project owner (user) · approval: 2026-10-20</strong>
+      <ul></ul>
       <p>
-        Confirm or revise the visual bounds, budgets and deviations. Supplementary frames at 00:03
-        and 00:30 have been inspected separately; the original 00:00/04:40 proposals are superseded.
-        Human approval establishes a comparison baseline only. Later motion/effect/package tests
-        remain required.
+        Approved T03 prototype baseline, current character readability, observable still/motion
+        bounds, future measurement targets and documented deviations. This accepts the comparison
+        baseline; it does not certify measured budget compliance or unfinished
+        camera/shader/effect/package features. Supplementary frames at 00:03 and 00:30 have been
+        inspected separately; the original 00:00/04:40 proposals are superseded. Human approval
+        establishes a comparison baseline only. Later motion/effect/package tests remain required.
       </p>
     </div>
     <p>
