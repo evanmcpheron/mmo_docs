@@ -390,12 +390,12 @@ def render_decisions(data, root=ROOT):
         parts.append(f'<section aria-labelledby="{decision["id"]}"><h3 id="{decision["id"]}">{escape(decision["title"])}</h3>'
                      f'<p><strong>Chosen sequence:</strong> {escape(decision["choice"])}</p><p><strong>Alternatives and tradeoff:</strong> {escape(decision["alternatives"])}</p>'
                      f'<p><strong>Basis:</strong> {escape(decision["basis"])}</p><p>{links(data, decision["epics"], page)} · {doclinks(decision["related_docs"])}</p></section>')
-    parts.append('<p><strong>Independent technical checks.</strong> Official Godot documentation was checked on ' + escape(data['research_date']) +
-                 ': <a href="https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html">dedicated headless exports</a>, '
-                 '<a href="https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html">RPC authority and independent traffic channels</a>, and '
-                 '<a href="https://docs.godotengine.org/en/stable/classes/class_multiplayersynchronizer.html">synchronizer visibility and unsupported Object/Resource values</a>. '
-                 'These establish building blocks, not an MMO architecture or capacity guarantee. The early boundary proof is our inference from those limits and Briarwake’s requirements. '
-                 'External references need internet; the roadmap pages do not.</p>')
+    parts.append('<p><strong>Independent technical checks.</strong> Official Unreal Engine 5 documentation describes '
+                 '<a href="https://dev.epicgames.com/documentation/unreal-engine/networking-overview-for-unreal-engine">networking and actor replication</a>, '
+                 '<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine">dedicated servers</a>, and '
+                 '<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-owner-and-owning-connection-in-unreal-engine">actor ownership and connection relevancy</a>. '
+                 'These are engine facilities, not proof of MMO scale or Briarwake implementation. Pin the tested engine/toolchain revision; '
+                 'verify owner-provided replication plugins before integration. The roadmap contains no game runtime evidence.</p>')
     parts.append('<h2 id="critical-review">Final dependency review</h2>' + bullets(data['critical_review']))
     return shell(data, page, 'Roadmap sequencing decisions', 'The analysis method, important alternatives and architectural reasons behind the recommended development sequence.',
                  parts, [('reading-guide', 'How to read'), ('analysis', 'Analysis and research'), ('sequencing-decisions', 'Ordering decisions')] +

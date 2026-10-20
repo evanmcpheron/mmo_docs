@@ -2,8 +2,8 @@
   "version": 1,
   "title": "Briarwake Development Roadmap",
   "research_date": "2026-10-17",
-  "purpose": "A capability and evidence map for building Briarwake from a blank Godot project to the complete documented MMORPG. Use it to identify the next useful work, the prerequisites of each playable milestone, and what remains before release.",
-  "evidence_baseline": "At the initial roadmap review on 2026-10-17, this repository contained design documents, canonical contracts and documentation validation, with no implemented Godot game or verified game-repository completion evidence. Every epic was initialized as Not Started. Later progress must come from the recorded epic evidence; a complete schema, passing arithmetic check or authored fixture is not completed gameplay.",
+  "purpose": "A dependency and evidence map for Briarwake, a brand-new Unreal Engine 5 native C++ MMORPG. This documentation is the authoritative gameplay reference; no game project or implementation repository exists yet. It identifies prerequisites, demonstrable milestones, and future work without asserting executable progress.",
+  "evidence_baseline": "As of 2026-10-20, the game has not been created: there is no Unreal Engine project, native C++ game code, game repository, installed replication integration, playable client, dedicated game server, or verified game runtime. This repository contains only gameplay design, canonical contracts, plans and documentation validation. Every implementation epic is Not Started; design decisions and documentation checks do not count as game implementation evidence.",
   "reading_guide": [
     "Each epic is one coherent, demonstrable capability with a permanent BW identifier, scope, hard prerequisites, acceptance criteria and required evidence. Phases group integration objectives derived from the dependency graph; they do not require every independent branch to wait for the previous phase.",
     "Navigate from the dashboard to a phase index, then open an individual epic page. Every epic has direct links to its prerequisites, downstream work, recommended sequence neighbors and numbered acceptance criteria. Existing dashboard and phase epic bookmarks lead to the same canonical epic page.",
@@ -12,7 +12,8 @@
     "An epic reaches Complete only when every acceptance criterion has passing, revision-specific runtime/content/operational evidence and its hard prerequisites are Complete. Criteria define observable behavior rather than internal methods. Failure scenarios are part of completion. Status does not advance automatically when a document or fixture specification is written.",
     "Milestone requirements include their transitive hard prerequisites. Explicit integration/certification epics test connected behavior on compatible builds. Phase completion means every member epic is Complete; it does not replace those integrated proofs.",
     "Foundations certify the state families in their tested package. An epic introducing another family must extend the applicable recipient-view, reconstruction, security and operational checks before admitting it. This never certifies a future family in advance; full-roster and release certification still cover their entire declared scope.",
-    "The selected presentation is low-resolution 3D pixel art inspired by David Holland. Rendering feasibility and production work have their own evidence gates; continuous planar/floor simulation remains authoritative. Historical references to eight sprite directions now mean compatible preview headings, not a required spritesheet pipeline."
+    "The selected presentation is low-resolution 3D pixel art inspired by David Holland. Rendering feasibility and production work have their own evidence gates; continuous planar/floor simulation remains authoritative. Historical references to eight sprite directions now mean compatible preview headings, not a required spritesheet pipeline.",
+    "The future native C++ Unreal Engine 5 game project will live in a separate repository created only when explicitly authorized. Ticket planning can proceed here; executing game implementation requires verified access to that future repository and a pinned tested engine/toolchain. The owner has replication plugins available, but their identities, compatibility and actual coverage must be checked before integration; neither selection nor integration is implied."
   ],
   "distinctions": [
     {
@@ -184,17 +185,17 @@
     {
       "id": "BW-001",
       "title": "Reproducible client and headless project",
-      "objective": "Establish a blank Godot implementation that can be built and exercised independently of presentation.",
-      "scope": "Pinned engine/export revision, client and dedicated headless builds, versioned configuration and repeatable foundational checks; no gameplay content.",
+      "objective": "Prepare and create the first native C++ Unreal Engine 5 project with reproducible client and dedicated-server execution from zero.",
+      "scope": "Install and verify the required Unreal Engine 5 editor, native C++ compiler/toolchain and build prerequisites; select a tested engine revision; create a new C++ project and its separate game repository; configure client and dedicated-server build targets, versioned settings and foundational smoke tests. No existing project, servers or plugins are assumed.",
       "hard_dependencies": [],
       "recommended_predecessors": [],
       "acceptance_criteria": [
-        "A clean checkout produces a launchable client and a headless server using the recorded engine and export-template revisions; client rendering choices and any engine patches are pinned separately from headless simulation requirements.",
-        "The server starts without graphics or a local player and reports its build, rules and content revisions.",
+        "On a documented clean machine, the developer can install the required engine and native C++ toolchain, create a fresh C++ Unreal project in an explicitly chosen separate repository, pin the tested engine revision, and produce launchable client and dedicated-server targets using recorded build, cook and package steps.",
+        "The compiled dedicated server starts without rendering or a local player and reports its executable, engine, rules and content revisions; the client can be launched separately.",
         "Missing required configuration fails with an actionable diagnostic; credentials are absent from distributed client artifacts.",
         "A clean automated run distinguishes build failure from an executed passing or failing runtime check."
       ],
-      "completion_evidence": "Clean-build logs, artifact identifiers and an actual headless smoke-test run.",
+      "completion_evidence": "New project/repository creation record, pinned toolchain and engine versions, clean native C++ client/server builds, packaged artifact identifiers, and an actually executed headless-server smoke test. No such evidence exists yet.",
       "related_docs": [
         {
           "label": "Authority and networking",
@@ -211,7 +212,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "An executable baseline is required for runtime evidence; engine version is selected here rather than inferred from changing stable documentation.",
+      "ordering_rationale": "Development environment verification, C++ project creation and an executable baseline must precede gameplay runtime evidence. Select and pin the engine version from a tested candidate rather than documentation defaults.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -294,20 +295,20 @@
     {
       "id": "BW-097",
       "title": "3D pixel-art renderer and camera feasibility proof",
-      "objective": "Prove the selected visual direction on a pinned Godot build before committing to asset volume.",
-      "scope": "A small standalone scene, low-resolution orthographic world view, pixel-stable camera, outline/toon material candidates and renderer/pass feasibility; production assets and final environment effects follow separately. Holland sets the visual target; Roystan’s Unity tutorial informs edge detection, with Godot-specific depth, normal-space, projection, sampling and composition behavior tested explicitly.",
+      "objective": "Demonstrate the selected 3D pixel-art-inspired visual direction using a new Unreal Engine 5 C++ scene and a tested renderer configuration before scaling art production.",
+      "scope": "A small Unreal Engine 5 orthographic 3D test level, low-resolution world presentation, motion-stable pixels, post-process/material outline candidates, stylized lighting and rendering-pass feasibility. Holland and Roystan are visual/technique references, not game implementation templates; verify buffer availability, compositing and resolution behavior on a pinned Unreal build. Production assets follow separately.",
       "hard_dependencies": [
         "BW-001",
         "BW-003"
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
-        "A packaged reference scene records engine/export revision, renderer, graphics backend and test hardware; required depth/normal and screen-copy access is demonstrated, with any unsupported path or engine patch explicitly resolved rather than assumed from the article.",
+        "A packaged Unreal Engine 5 reference level records the pinned engine revision, native C++ project/toolchain, graphics backend and test hardware; required depth/normal and post-process scene-texture access is demonstrated for the chosen pass, with unsupported paths explicitly documented.",
         "The orthographic view has a declared internal resolution, framing, pixel scale, nearest presentation and aspect/minimum-window policy; resizing and high-DPI displays retain readable separate UI and consistent world pixels.",
         "Slow and diagonal camera tracking, stationary views and moving actors have reviewed frame sequences for crawl, shimmer and jitter; camera grid alignment with residual screen correction, or a measured equivalent, preserves smooth tracking without snapping simulation.",
         "A representative model/terrain comparison establishes silhouette outlines one pixel wide at the internal resolution, distinct convex-edge highlights and approved toon lighting at gameplay scale; near/far surfaces, grazing slopes, thin geometry and overlapping actors do not produce filled surfaces or distracting false edges.",
         "Opaque, transparent and screen-reading test objects expose missing/stale outlines, depth and ordering errors; a water/reflection/atmosphere feasibility sample identifies required passes and a tested fallback before those effects enter production.",
-        "Review records CPU/GPU frame costs and memory at declared settings, visual acceptance findings and chosen defaults; the scene is reproducible from source, and custom-engine maintenance or platform exclusions require a documented implementation decision."
+        "Capture CPU/GPU frame costs and memory at documented Unreal renderer/scalability settings, visual acceptance findings and chosen defaults; the level reproduces from source. Any optional engine modification, platform exclusion or alternate pass needs a tested justification."
       ],
       "completion_evidence": "Packaged reproducible scene, versioned settings, stills and motion captures, renderer capability/pass matrix, measured frame/memory report and resolved feasibility decisions; this is not a completed game renderer. Annotated reference links and selected clip timestamps explain the visual comparisons and resulting project decisions.",
       "related_docs": [
@@ -338,7 +339,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "Probe renderer and camera risks alongside headless simulation. The reference describes a custom historical build, so neither a fork nor current engine support is assumed.",
+      "ordering_rationale": "Probe orthographic camera, shader/material, post-process and pixel-stability risks alongside first server development. No special renderer implementation, engine fork or third-party plugin is assumed before it is demonstrated.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -4155,7 +4156,7 @@
       "id": "decision-authority",
       "title": "Authority and the first network proof",
       "choice": "Establish server-owned intent/outcome boundaries, then validate two clients with movement and one direct action before the complete combat roster or persistent journey.",
-      "alternatives": "A client-owned local prototype gives fast visual feedback but cannot test the required concurrent authority. A complete offline combat kernel first is viable, but defers Godot lifecycle/protocol/latency risks. Headless combat fixtures can still develop in parallel with the transport.",
+      "alternatives": "A client-owned local prototype gives fast visual feedback but cannot test the required concurrent authority. A complete offline combat kernel first is viable, but defers Unreal actor lifecycle, replication and latency integration risks. Headless combat fixtures can still develop in parallel with the transport.",
       "basis": "Server authority is documented. The size and placement of the first integrated proof are recommendations intended to discover boundary errors at low content cost.",
       "epics": [
         "BW-002",
@@ -4182,8 +4183,8 @@
       "id": "decision-replication",
       "title": "Replication grows with executable semantics",
       "choice": "Begin with movement/lifecycle revisions and owner/public projections; add casts, statuses, projectiles and recovery state as their rules become executable. Enforce disclosure from the first snapshot.",
-      "alternatives": "A universal final replication layer before gameplay exists guesses state semantics. Broadcasting all state and hiding it in the client leaks information. Rich spatial tuning can wait for measurements, while privacy and hazard relevance cannot.",
-      "basis": "Godot provides building blocks, including visibility filtering and value constraints, rather than an MMO authorization policy. Recipient-specific disclosure and correct current-state reconstruction are documented invariants.",
+      "alternatives": "A universal final replication layer before gameplay exists guesses state semantics. Broadcasting all state and hiding it in the client leaks information. Rich spatial tuning can wait for measurements, while privacy and hazard relevance cannot. Evaluate built-in replication and the owner-provided plugins before deciding whether Iris, Replication Graph or any custom layer is warranted.",
+      "basis": "Unreal Engine 5 provides actor/component replication, RPCs, ownership and relevancy, but their availability does not establish Briarwake-specific authorization, recipient filtering or MMO scale. Verify the engine version and available third-party replication plugins before selecting further systems. Current-state reconstruction and disclosure remain game requirements.",
       "epics": [
         "BW-007",
         "BW-013",
@@ -4432,7 +4433,7 @@
       "title": "Renderer feasibility before asset volume",
       "choice": "Run a bounded 3D pixel-art camera/material/pass proof alongside headless development, establish reusable art import conventions before starter production, and certify environmental effects and complete assets before final presentation and capacity.",
       "alternatives": "Deferring rendering until final polish risks incompatible assets, input projection and platform assumptions. A custom engine fork may be justified by measured gaps, but the reference implementation does not make it mandatory; a stock-build solution or reviewed visual alternative must first be tested.",
-      "basis": "The user selected David Holland’s 3D pixel-art aesthetic on 2026-10-17. The article documents a custom Godot 4.3 implementation; project settings, current renderer support and acceptable equivalents require revision-specific evidence. This changes presentation, not authoritative movement, targeting or wire encodings.",
+      "basis": "The approved visual goal is low-resolution pixel-art-inspired 3D with an angled orthographic camera. External visual studies are technique references only. Test orthographic and post-process behavior, antialiasing, materials and performance in the selected Unreal Engine 5 version. Rendering choices do not change authority, movement or wire encodings.",
       "epics": [
         "BW-097",
         "BW-098",
@@ -4898,14 +4899,16 @@
       "id": "open-platform",
       "title": "Engine, platform and deployment candidates",
       "kind": "Open decision",
-      "description": "Select tested Godot/export-template and Unicode-data revisions, supported client platforms, trusted identity provider, persistence implementation and initial hosting. The documented headless/small modular relational approach is a defensible starting recommendation; vendors and capacity are unspecified.",
-      "resolution_gate": "BW-001/BW-018 choose and demonstrate tested candidates; BW-086/BW-088 verify external-play deployment and compatibility.",
+      "description": "Select and pin a tested Unreal Engine 5 revision, native C++ compiler/toolchain, supported platforms, build and dedicated-server targets and Unicode-data revisions. Inventory the owner's available replication plugins and verify each one's license, compatible engine versions, network capabilities and limits before choosing integration; none is presumed installed. Select trusted identity, persistence and initial hosting later; no game repository or deployment currently exists.",
+      "resolution_gate": "BW-001 demonstrates actual installation, new C++ project and tested build targets; BW-004/BW-013 evaluate builtin replication and compatible owner-provided plugins against connection and disclosure requirements; BW-018/BW-086/BW-088 verify persistence, provider and deployment choices before external play.",
       "epics": [
         "BW-001",
         "BW-018",
         "BW-020",
         "BW-086",
-        "BW-088"
+        "BW-088",
+        "BW-004",
+        "BW-013"
       ],
       "related_docs": [
         {
@@ -5204,6 +5207,7 @@
     "Art-direction revision: replaced the former 2D sprite mandate with the user-selected 3D pixel-art reference. Added BW-097/BW-098/BW-099 for early renderer feasibility, reusable art production and environment integration, retaining independent headless work and requiring complete visual/performance evidence at existing release gates."
   ],
   "maintenance": [
+    "No Unreal Engine project or game repository currently exists. Planning work in this repository does not execute implementation; only a future separately created, explicitly supplied repository with real build/test evidence can substantiate game completion. Document available replication plugins only after their actual compatibility and capability checks.",
     "Edit only sources/development-roadmap.json for planning content, statuses, blockers and evidence. Do not hand-edit the generated pages, dashboard, milestone states, search records or manifest counts. Status must be exactly Not Started, In Progress, Blocked or Complete.",
     "For an existing epic, change status and add verified_evidence records with criteria (one-based AC numbers), artifact (a committed repository-relative file or HTTPS evidence link), revision (the tested game/content revision), result (Passed or Failed) and summary. Preserve prior failure evidence in retained run artifacts; the current completion record must have passing evidence for every criterion. Never copy documentation-validation results into gameplay-completion evidence.",
     "A Blocked epic needs a concrete blockers entry identifying the unresolved decision, missing prerequisite or external limit. Ordinary future prerequisites do not make every unstarted epic Blocked. Reopen an epic when a regression invalidates its current evidence; update dependent completion states rather than leaving a false release gate.",

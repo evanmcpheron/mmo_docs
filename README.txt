@@ -1,5 +1,5 @@
 MMORPG GAMEPLAY REFERENCE — VERSION 2.2
-Mechanics design, not a playable Godot project
+Mechanics and architecture reference for a planned Unreal Engine 5 native C++ MMORPG; no game project exists
 
 OPEN THE REFERENCE
 1. Extract the entire ZIP, keeping the folder structure intact.
@@ -39,7 +39,7 @@ and the t3ssel8r channel supplement that reference. The art direction in
 guide/decisions.html and the rendering/camera and acceptance-test sections define
 project requirements. Continuous planar/floor gameplay contracts and existing
 SpriteDirection values remain compatible; the renderer does not mandate sprites.
-Godot version/renderer selection and any engine-fork decision require prototype
+Unreal Engine 5 version, toolchain, rendering path and plugin compatibility require prototype
 evidence before full asset production.
 Two points on each level-up from 2 through 60: 59 class + 59 specialization.
 Specialization points are banked before level 10. Level 1 starts at zero.
@@ -55,7 +55,7 @@ Numerical coefficients, progression pacing, item budgets and recipes are
 prototype proposals, not verified game balance. Named secondary ability effects
 and many inherited talent behaviors still require explicit runtime binding.
 Read guide/audit.html before treating this as implementation-ready game content.
-No Godot client/server, production database, economy or load test is included.
+No Unreal Engine project, C++ game code, dedicated server, production database, economy, or game load test exists. The separate implementation repository has not been created.
 
 VALIDATION
 Run: python validation/run_checks.py
@@ -180,7 +180,7 @@ security/operations contracts, fixture expectations and the first PvP rules.
 Required content parameters remain explicit; a concrete art/map/price record is
 future content production, not an unanswered question about its schema.
 
-Briarwake is the implementation target. This phase writes documentation and
+Briarwake is a planned new Unreal Engine 5 native C++ project, with Blueprint assets used only where suitable. No game repository or Unreal project exists. This phase writes documentation and
 language-neutral contracts only. The inventory preserves resolved decision
 history and separately labels future Briarwake implementation work. No game
 handlers, maps/art, provider/database deployment or gameplay test executions
@@ -250,3 +250,10 @@ SOURCES
 Official research links are in guide/sources.html. The source archive checksum
 is in data/provenance.json. Original attached files were left unchanged.
 No branding or name in this reference has received a legal clearance review.
+
+UNREAL ENGINE 5 PROJECT BOUNDARY
+This repository is the authoritative gameplay and planning reference, not the game source.
+Create a separate native C++ Unreal Engine 5 project and repository in a later task; do not invent or assume its location.
+Before implementation, select and pin the engine revision, supported C++ compiler/toolchain and platforms.
+The owner has replication plugins available, but names, licensing, supported engine revisions and capabilities require verification before design or integration; none is installed or configured here.
+An implementation ticket cannot be executed, tested, or marked Complete until a real game repository and reproducible runtime evidence exist.
