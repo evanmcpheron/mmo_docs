@@ -278,6 +278,14 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisi
                   engine/backend/device identity in a new launcher-owned artifacts directory. Human
                   visual approval is separate.
                 </li>
+                <li>
+                  Every automatic reference run also retains comparison-native.png and
+                  comparison-pixelated.png at identical physical world-content dimensions. The
+                  former renders standard PBR directly at native resolution; the latter enlarges
+                  384×216 with nearest sampling. No custom toon/outline shader is active. Camera,
+                  materials, pose and lighting match; the original viewport and exact pixels must be
+                  restored after capture.
+                </li>
               </ol>
               <h3>Actions</h3>
               <ol>
@@ -287,6 +295,12 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisi
                   names moores-readable-source-run; older source-run evidence is historical. Inspect
                   four annotated concept crops beside the projected imported-asset regions at native
                   384x216, all three lighting states and diagnostic zoom x2.
+                </li>
+                <li>
+                  Compare the Before / After images in review.html and open each full-resolution
+                  image. The Reset day/zoom ×1 state is identical; inspect the knight, hut, tree and
+                  barrel with pixel presentation off and on. The native image is a fresh engine
+                  render, not an enlargement of the pixelated image.
                 </li>
                 <li>
                   In the interactive probe select lighting and zoom, drag the continuous heading
@@ -373,7 +387,11 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisi
                 uses the upright source idle, moves the focus upward, adds frontal fill and fixes
                 black exported torso/cape albedo with direct source-texture materials. See
                 moores-readable-source-run and visual-review.json. Human readability acceptance
-                remains outstanding.
+                remains outstanding. Comparison follow-up 2026-10-20 (v5): matching
+                native-resolution PBR and 384×216 nearest-upscaled images are retained in
+                moores-native-comparison-run/ and shown in review.html. Ten actual graphical checks
+                include unchanged framing and exact pixel/viewport restoration. This isolates pixel
+                presentation; no custom toon/outline shader or visual acceptance is claimed.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <ul>
@@ -401,6 +419,17 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; source decisi
                   — AC 3; Passed; revision ff3b045e914f5527c5dc3e8946f59c3b6d3f27ba plus readability
                   working tree; reference-review-v4; exact hashes retained in
                   moores-readable-source-run/run.json
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-097-T03/moores-native-comparison-run/run.json"
+                    >Actual Godot 4.7.2 Forward+/Metal run passed ten checks and retained 16 hashed
+                    images. Native 1536×864 PBR and nearest 4× enlargement of 384×216 use identical
+                    Reset state; camera/actor framing is unchanged and original pixels/viewport are
+                    restored. All four asset hashes match. Human readability/bounds/budget/deviation
+                    acceptance remains pending.</a
+                  >
+                  — AC 1, 3; Passed; revision d84020497f560ce2c6e419bac995329d88d86fba plus
+                  comparison working tree; exact source hashes retained in run.json
                 </li>
               </ul>
               <h2 id="documentation">Related documentation</h2>

@@ -9,6 +9,7 @@
     nav{max-width:1200px;margin:auto;padding:16px 32px 0;display:flex;gap:18px;align-items:center;font-size:12px}nav p{margin:0}.badge{border:1px solid #a17b3b;color:#efd29a;padding:7px 12px;display:inline-block;border-radius:6px}
     .hero{display:grid;grid-template-columns:1fr 1fr;gap:24px}figure{margin:0;min-width:0}img{max-width:100%;height:auto;image-rendering:pixelated}
     .hero img{width:100%}figcaption{font-size:12px;color:#aab8b0;margin-top:8px}.hero svg{width:100%;display:block}
+    .comparison img.native-pbr{image-rendering:auto}.comparison a{display:block}
     rect{fill:none;stroke:#f6db79;stroke-width:3}text{fill:#fff2a5;font:22px system-ui;paint-order:stroke;stroke:#172027;stroke-width:5px}
     .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}article{background:#19262c;padding:20px;border-radius:8px}article h3{margin:0 0 14px}
     .crops{display:grid;grid-template-columns:1fr 1fr;gap:16px}.crops svg{width:100%;height:190px;background:#10191e;image-rendering:pixelated}
@@ -24,7 +25,7 @@
     <a data-inventory-nav href="../../../guide/data-inventory.html">Data Inventory</a>
   </nav>
   <main>
-    <div class="eyebrow">Briarwake · BW-097-T03 · reference-review-v4 · 2026-10-19</div>
+    <div class="eyebrow">Briarwake · BW-097-T03 · reference-review-v5 · 2026-10-20</div>
     <h1>Concept → gameplay-scale comparison</h1>
     <div class="badge">Awaiting human review of character readability</div>
     <p>
@@ -68,6 +69,42 @@
         </figcaption>
       </figure>
     </div>
+    <h2>Before and after pixel presentation</h2>
+    <p>
+      Native-resolution PBR versus 384×216 nearest presentation. No custom toon/outline shader is
+      active in T03; these images isolate rendering resolution only. Reset: day, zoom ×1, heading
+      135°, same camera, pose, materials and lighting. Both images have the same 1536×864
+      dimensions. Select an image to inspect the full-size capture.
+    </p>
+    <div class="hero comparison">
+      <figure>
+        <a href="moores-native-comparison-run/comparison-native.png"
+          ><img
+            class="native-pbr"
+            src="moores-native-comparison-run/comparison-native.png"
+            width="1536"
+            height="864"
+            alt="Before: native-resolution PBR render with pixel presentation disabled"
+        /></a>
+        <figcaption>Before · native-resolution PBR · pixel presentation off</figcaption>
+      </figure>
+      <figure>
+        <a href="moores-native-comparison-run/comparison-pixelated.png"
+          ><img
+            src="moores-native-comparison-run/comparison-pixelated.png"
+            width="1536"
+            height="864"
+            alt="After: matching scene rendered at 384 by 216 and enlarged with nearest sampling"
+        /></a>
+        <figcaption>After · 384×216 with nearest integer upscale · current prototype</figcaption>
+      </figure>
+    </div>
+    <p>
+      The actual runtime checks unchanged framing, integer scale, different native/pixel readbacks
+      and exact restoration of the original viewport pixels.
+      <a href="moores-native-comparison-run/run.json">Comparison execution and image hashes</a>. The
+      high-resolution image is diagnostic; gameplay readability still needs review at 384×216.
+    </p>
     <h2>Character, props, depth and lighting</h2>
     <div class="cards">
       <article>

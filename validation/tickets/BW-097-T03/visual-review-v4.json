@@ -1,0 +1,193 @@
+{
+  "version": "reference-review-v4",
+  "ticket": "BW-097-T03",
+  "date": "2026-10-19",
+  "status": "Awaiting human review of character readability",
+  "reviewer": null,
+  "approved_at": null,
+  "principal_reference": {
+    "path": "assets/graphics_concept.png",
+    "sha256": "12fb86f3b96226f20aacde1c135fcd3e29c7eb0fc4ffa6a68a3007b695fc3abc",
+    "dimensions": [
+      1672,
+      941
+    ],
+    "use": "Principal appearance target; comparison only, no copied art or engine capability claim"
+  },
+  "settings": {
+    "viewport": "384x216",
+    "orthographic_size": [
+      9,
+      4.5
+    ],
+    "pitch_degrees": -35,
+    "yaw_degrees": -45,
+    "sampling": "nearest integer physical upscale",
+    "anti_aliasing": "MSAA/TAA off",
+    "lighting": [
+      "day",
+      "warm",
+      "cool"
+    ],
+    "character_heading_degrees": 135,
+    "character_display_scale": 1.8,
+    "camera_focus_height": 1.3,
+    "pose": "Anim_Idle_Straight",
+    "fill_light": "camera-aligned neutral fill, energy 0.65"
+  },
+  "comparison_regions": [
+    {
+      "id": "character",
+      "concept_rectangle": [
+        790,
+        390,
+        83,
+        110
+      ],
+      "observation": "The first imported-asset candidate was rejected by the user because the person was not recognizable. The revised knight uses an upright source idle pose, 1.8 display scale, a higher focus point, brighter sky/ambient and frontal fill. Source torso/cape PBR textures transfer through simple export materials to fix black albedo. Judge head, torso, separate arms and two legs at native zoom x1; this candidate still needs human review."
+    },
+    {
+      "id": "props",
+      "concept_rectangle": [
+        286,
+        381,
+        122,
+        95
+      ],
+      "observation": "The imported timber barrel is a single simple prop beside the detailed knight and a small peasant hut. Its staves, rim and round mass read at zoom x1. The hut has more texture density than the initial dummy corner; it establishes realistic material/architecture inputs without starting asset-volume production."
+    },
+    {
+      "id": "contact",
+      "concept_rectangle": [
+        892,
+        376,
+        180,
+        130
+      ],
+      "observation": "Imported boots, barrel, tree trunk and hut foundation meet the plain ground receiver with directional shadows. The hut overlaps the ground and supports wall/roof depth comparison. AO/contact-depth candidates, water and final composition remain later tests; shadow-only depth is not a completed contact-depth effect."
+    },
+    {
+      "id": "palette",
+      "concept_rectangle": [
+        1265,
+        411,
+        245,
+        175
+      ],
+      "observation": "Source foliage, thatch/timber and barrel textures retain the muted environment palette. The revised knight has frontal fill and brighter ambient/sky reflections to expose armor forms. These are declared prototype lighting changes; final stylized value separation and outline/highlight decisions remain T05."
+    }
+  ],
+  "proposed_bounds": [
+    {
+      "id": "detail",
+      "bound": "At normal zoom x1, the reviewer must immediately recognize a human figure with a head, torso, two arms and two distinct legs/boots; armor and cloak accents should remain distinguishable from the ground and hut. Enlarged crops or zoom x2 do not establish this bound.",
+      "status": "Proposed"
+    },
+    {
+      "id": "proportions",
+      "bound": "Retain 384x216 and orthographic height 9/4.5. Prototype display scales: knight 1.8, hut 0.5, tree 0.35, barrel 1.0; camera focus height 1.3m keeps the enlarged character within both views. These composition proportions need explicit acceptance and do not define production gameplay dimensions.",
+      "status": "Proposed"
+    },
+    {
+      "id": "palette-depth-lighting",
+      "bound": "Knight silhouette remains separable from ground, hut and foliage in all three lighting states; boots and building foundations meet the ground, architecture depth is visible, amber light does not erase armor/cape separation.",
+      "status": "Proposed"
+    },
+    {
+      "id": "motion",
+      "bound": "T04/T09 must show no stationary pixel changes, no repeated crawl/shimmer on rigid edges during slow/diagonal tracking, no one-frame silhouette disappearance or outline-width pumping. One internal-pixel silhouette lines and selective convex highlights are reviewed in T05. No motion pass is claimed in T03.",
+      "status": "Proposed"
+    },
+    {
+      "id": "composition",
+      "bound": "No filled-surface outlines, stale reflection/depth frames, actor disappearance or unauthorized information in later combined cases; fallback deviations need explicit review.",
+      "status": "Proposed"
+    }
+  ],
+  "proposed_budgets": {
+    "approval": "Required; proposals are not established requirements or measurements",
+    "hardware": "Current pinned Apple M2 Max / macOS 27.0 / Metal; other targets unverified",
+    "settings": "384x216 internal, 960x640 logical window, actual Retina 2x, source probe",
+    "target_fps": 60,
+    "cpu_frame_p95_ms": 8.0,
+    "gpu_frame_p95_ms": 8.0,
+    "process_rss_peak_mib": 1024,
+    "rendering_allocations_peak_mib": 256,
+    "measurement_plan": "T10 retains raw CPU/GPU frame percentiles and process RSS separately from engine rendering allocations, at declared settings. Missing/zero GPU timing is unavailable, never a pass. Include warmup and effects on/off samples; no feasibility measurement is claimed here."
+  },
+  "proposed_deviations": [
+    "User-selected Moore RPG assets replace primitive fixtures. The original torso/cape graphs exported black, so unsaved export materials connect their authored PBR textures directly. Other source PBR materials remain; final toon/outline changes remain T05.",
+    "A single hut, tree and barrel, plain ground and reduced density isolate the comparison. Following the user readability finding, knight display scale is 1.8, hut/tree 0.5/0.35; upright pose, focus height 1.3m and camera-aligned fill are provisional composition changes.",
+    "Unreal-specific material features and blueprint behavior do not transfer automatically. Export warnings and observed differences are retained with the local asset manifest; no UE gameplay logic is ported.",
+    "Final one-pixel outlines/highlights, water, AO/contact-depth and atmosphere are deferred to their own tickets; this approval establishes comparison bounds only."
+  ],
+  "approved_deviations": [],
+  "blocking_findings": [
+    "User finding on v3: the person was not recognizable at gameplay scale. The v4 readability revision requires a new human review.",
+    "Human approval of visual/motion bounds, prototype budgets and deviations has not been received."
+  ],
+  "supplementary_references": [
+    {
+      "url": "https://www.davidhol.land/articles/3d-pixel-art-rendering/",
+      "section": "Outlines / Camera / Lighting",
+      "observation": "Low-poly silhouettes, independent convex highlights, grid-aligned camera with residual correction, restrained toon light. These guide later cases; historical custom Godot build is not current capability evidence.",
+      "review": "Article text inspected 2026-10-19"
+    },
+    {
+      "url": "https://roystan.net/articles/outline-shader/",
+      "section": "Depth and normal outlines",
+      "observation": "Neighbor texel tests and surface/view-angle artifact checks inform T05; Unity-specific implementation and SMAA are not adopted as Godot defaults.",
+      "review": "Article text inspected 2026-10-19"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=3s",
+      "timestamp": "00:03",
+      "observation": "At 00:03 the Unity game-view scene separates pale stone stairs/columns and brown ground from green foliage with broad cast shadows. Adopt the readable large masses and restrained green/stone palette as a comparison observation; this is neither the principal appearance target nor Godot capability evidence.",
+      "review": "Actual decoded frame visually inspected by Codex on 2026-10-19; no human art approval.",
+      "capture": "supplementary-browser-run/frame-3.png"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=ERA7-I5nPAU&t=30s",
+      "timestamp": "00:30",
+      "observation": "At 00:30 the Blender view shows plain squared columns with stepped bases and simple stair/terrain masses before detailed surface work. Adopt simple architectural prop silhouettes beneath character-level detail; no model, texture or authoring pipeline is copied. This modeling view cannot certify gameplay pixel readability.",
+      "review": "Actual decoded frame visually inspected by Codex on 2026-10-19; no human art approval.",
+      "capture": "supplementary-browser-run/frame-30.png"
+    }
+  ],
+  "unverified": [
+    "Later camera/actor motion and combined effect tests",
+    "CPU/GPU frame percentiles, process RSS and engine allocation measurements",
+    "Packaged scene and other platform/display paths"
+  ],
+  "decision": null,
+  "resolved_findings": [
+    {
+      "finding": "Supplementary t3ssel8r clip observations at the proposed timestamps require actual video review; web retrieval exposed no playable frames or transcript.",
+      "resolution": "Decoded frames at 00:03 and 00:30 were captured and visually inspected in the installed Chrome using a new isolated profile. Media-time/readiness observations and source frames are retained. The initial 00:00/04:40 proposals are superseded; 04:40 was not decoded and carries no appearance claim."
+    },
+    {
+      "finding": "User requested existing Unreal assets instead of dummy fixtures.",
+      "resolution": "Selected the user-provided Moore RPG knight, hut, tree and barrel; exported with installed Unreal 5.8 in an isolated Content clone. Recipe, engine, 549 source/dependency hashes and converted hashes are retained; originals and GLBs stay local. Initial primitive evidence is historical."
+    }
+  ],
+  "supplementary_inspection": {
+    "result": "Passed",
+    "reviewer": "Codex, source-reference observation only",
+    "inspected_at_utc": "2026-10-19T22:27:44.151Z",
+    "artifact": "supplementary-browser-run/observations.json",
+    "method": "Actual decoded mediaTime via requestVideoFrameCallback, readyState 4 and paused video; screenshot clip from the installed isolated Chrome was visually inspected. No reference assets enter the game."
+  },
+  "capture_directory": "moores-readable-source-run",
+  "asset_provenance": {
+    "recipe": "moores-readable-assets.json",
+    "manifest": "moores-readable-export-manifest.json",
+    "source": "User-provided ~/Documents/Unreal Projects/MooresRPGTemplate",
+    "distribution": "Source and converted models/textures remain local, outside Git; selected source/dependency hashes and rendered evidence are retained.",
+    "export_log": "moores-readable-export.log",
+    "limitations": [
+      "Material transfer fixes the source torso/cape graphs that baked black, preserving authored base color, normal, roughness, metallic and torso opacity maps. Export-only materials are created unsaved in the isolated clone. Other export warnings remain in the retained exporter log.",
+      "The knight freezes seven compatible Anim_Idle_Straight clips at time 0. Cloth simulation, foliage wind, Blueprint interaction and UE gameplay are not transferred.",
+      "Knight/hut/tree/barrel display scales are 1.8/0.5/0.35/1.0 and camera focus height is 1.3m. These are comparison composition settings."
+    ]
+  }
+}

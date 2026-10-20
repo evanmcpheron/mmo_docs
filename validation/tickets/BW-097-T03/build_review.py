@@ -12,6 +12,10 @@ review = json.loads((ROOT / 'visual-review.json').read_text())
 capture_directory = review['capture_directory']
 run = json.loads((ROOT / capture_directory / 'run.json').read_text())
 observations = {row['label']: row for row in run['actual']['observations']}
+comparison = review['presentation_comparison']
+comparison_directory = comparison['capture_directory']
+comparison_run = json.loads((ROOT / comparison_directory / 'run.json').read_text())
+native_width, native_height = comparison_run['actual']['native_comparison']['native_size']
 concept = '../../../assets/graphics_concept.png'
 
 
@@ -64,6 +68,7 @@ h3{{color:#dfbc7d}}p{{color:#c1cbc7}}a{{color:#9ed6da}}.eyebrow{{letter-spacing:
 nav{{max-width:1200px;margin:auto;padding:16px 32px 0;display:flex;gap:18px;align-items:center;font-size:12px}}nav p{{margin:0}}.badge{{border:1px solid #a17b3b;color:#efd29a;padding:7px 12px;display:inline-block;border-radius:6px}}
 .hero{{display:grid;grid-template-columns:1fr 1fr;gap:24px}}figure{{margin:0;min-width:0}}img{{max-width:100%;height:auto;image-rendering:pixelated}}
 .hero img{{width:100%}}figcaption{{font-size:12px;color:#aab8b0;margin-top:8px}}.hero svg{{width:100%;display:block}}
+.comparison img.native-pbr{{image-rendering:auto}}.comparison a{{display:block}}
 rect{{fill:none;stroke:#f6db79;stroke-width:3}}text{{fill:#fff2a5;font:22px system-ui;paint-order:stroke;stroke:#172027;stroke-width:5px}}
 .cards{{display:grid;grid-template-columns:1fr 1fr;gap:24px}}article{{background:#19262c;padding:20px;border-radius:8px}}article h3{{margin:0 0 14px}}
 .crops{{display:grid;grid-template-columns:1fr 1fr;gap:16px}}.crops svg{{width:100%;height:190px;background:#10191e;image-rendering:pixelated}}
@@ -76,6 +81,10 @@ code{{font-size:12px;overflow-wrap:anywhere}}.notice{{border-left:3px solid #dfb
 <p>Principal concept at left. Imported Moore RPG probe at right. 384×216 world, ortho height 9, −35° / −45°, nearest integer presentation. Enlarged images are diagnostic; review native pixels below.</p>
 <div class="hero"><figure><svg viewBox="0 0 1672 941" role="img" aria-label="Principal concept with numbered comparison regions"><image href="{concept}" width="1672" height="941"/>{annotations}</svg><figcaption>Principal concept · boxes identify the source crops below. SHA-256 <code>{review['principal_reference']['sha256']}</code></figcaption></figure>
 <figure><img src="{capture_directory}/day-zoom-0-internal.png" width="384" height="216" alt="Imported armored knight, timber hut, tree and barrel"><figcaption>Moore RPG probe · day / zoom ×1. Larger upright knight with repaired source armor textures and frontal fill. Native zoom ×1 is the readability test; the ×2 view is diagnostic. Character readability and art approval remain pending.</figcaption></figure></div>
+<h2>Before and after pixel presentation</h2><p>{escape(comparison['meaning'])} {escape(comparison['state'])}. Both images have the same {native_width}×{native_height} dimensions. Select an image to inspect the full-size capture.</p>
+<div class="hero comparison"><figure><a href="{comparison_directory}/{comparison['before']}"><img class="native-pbr" src="{comparison_directory}/{comparison['before']}" width="{native_width}" height="{native_height}" alt="Before: native-resolution PBR render with pixel presentation disabled"></a><figcaption>Before · native-resolution PBR · pixel presentation off</figcaption></figure>
+<figure><a href="{comparison_directory}/{comparison['after']}"><img src="{comparison_directory}/{comparison['after']}" width="{native_width}" height="{native_height}" alt="After: matching scene rendered at 384 by 216 and enlarged with nearest sampling"></a><figcaption>After · 384×216 with nearest integer upscale · current prototype</figcaption></figure></div>
+<p>{escape(comparison['verification'])} <a href="{comparison_directory}/run.json">Comparison execution and image hashes</a>. The high-resolution image is diagnostic; gameplay readability still needs review at 384×216.</p>
 <h2>Character, props, depth and lighting</h2><div class="cards">{''.join(rows)}</div>
 <h2>Native gameplay pixels</h2><p>Each image below has 384×216 source pixels, displayed 1:1 when room permits. Compare part separation and warm/cool light here before inspecting the ×2 diagnostic.</p><div class="native">{lighting}</div>
 <p><a href="{capture_directory}/day-zoom-1-internal.png">Day zoom ×2 diagnostic</a> · <a href="{capture_directory}/day-zoom-0-output.png">Native Retina output with independent HUD</a> · <a href="{capture_directory}/run.json">Actual execution and capture hashes</a></p>
