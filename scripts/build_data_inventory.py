@@ -281,6 +281,10 @@ def data_section(page, entries):
 
 
 def navigation(source, page):
+    # Normalize shared navigation on every generated page.
+    source = re.sub(r'(<a\b[^>]*href="(?:\.\./)?guide/networking\.html"[^>]*>).*?(</a>)',
+                    lambda match: match.group(1) + 'Unreal C++ &amp; networking' + match.group(2),
+                    source, count=1, flags=re.S)
     source = re.sub(r'<a data-inventory-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
     current = ' aria-current="page"' if page == INVENTORY_PAGE else ''
     address = posixpath.relpath(INVENTORY_PAGE, posixpath.dirname(page) or '.')
@@ -504,6 +508,34 @@ def expected_outputs(registry, root=ROOT):
     search_path = root / 'assets/search-index.js'
     search = json.loads(search_path.read_text(encoding='utf-8').removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
     search = [r for r in search if r.get('source') not in ('data-inventory', 'development-roadmap')]
+    # Keep manually reviewed engineering search descriptions synchronized.
+    refreshed_pages = {
+        'index.html', 'guide/networking.html', 'guide/decisions.html',
+        'guide/interface.html', 'guide/testing.html', 'guide/sources.html',
+        'guide/execution.html',
+    }
+    for record in search:
+        if record.get('source'):
+            continue
+        path, _, fragment = record['url'].partition('#')
+        if path not in refreshed_pages:
+            continue
+        page_source = strip_data((root / path).read_text(encoding='utf-8'))
+        main = re.search(r'<main\b.*?</main>', page_source, re.S)
+        if not main:
+            continue
+        content = main.group()
+        if fragment:
+            heading = re.search(r'<h[1-6]\b[^>]*id="' + re.escape(fragment) + r'"[^>]*>', content)
+            if heading:
+                content = content[heading.start():]
+                next_heading = re.search(r'<h[1-6]\b|<footer\b', content[len(heading.group()):])
+                if next_heading:
+                    content = content[:len(heading.group()) + next_heading.start()]
+        plain = html.unescape(re.sub(r'<[^>]*>', ' ', content))
+        record['text'] = ' '.join(plain.split())[:10000]
+        if path == 'guide/networking.html' and not fragment:
+            record['title'] = 'Unreal C++ & networking'
     records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Fully Defined design decisions future Briarwake implementation work'}]
     for entry in sorted(registry['entries'], key=lambda e: e['name'].casefold()):
         records.append({'title': entry['name'], 'section': 'Data Inventory · ' + entry['category'], 'url': INVENTORY_PAGE + '#' + entry['id'],

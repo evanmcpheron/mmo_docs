@@ -1,0 +1,57 @@
+name: Regenerate and validate reference
+on:
+  push:
+    branches: [docs/unreal5-cpp-foundation-reset-20261020]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild from canonical sources
+        run: |
+          python3 scripts/build_development_roadmap.py
+          python3 scripts/build_data_inventory.py --review-roadmap \
+            --review-page index.html \
+            --review-page guide/networking.html \
+            --review-page guide/decisions.html \
+            --review-page guide/interface.html \
+            --review-page guide/testing.html \
+            --review-page guide/sources.html \
+            --review-page guide/execution.html
+      - name: Validate generated output and regression tests
+        run: |
+          python3 scripts/build_development_roadmap.py --check
+          python3 scripts/build_data_inventory.py --check
+          python3 validation/check_development_roadmap.py
+          python3 validation/check_data_inventory.py
+          python3 -m unittest discover -s validation -p 'test_*.py'
+          python3 validation/run_checks.py
+      - name: Commit generated pages and validation record
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "Regenerate Unreal C++ documentation and validation evidence"
+            git push origin HEAD:refs/heads/docs/unreal5-cpp-foundation-reset-20261020
+          fi
+      - name: Audit obsolete engine references
+        run: |
+          python3 - <<'PY'
+          import pathlib, subprocess
+          forbidden = (bytes.fromhex('676f646f74'), bytes.fromhex('6764736372697074'))
+          for filename in subprocess.check_output(['git', 'ls-files', '-z']).split(b'\0'):
+              if filename:
+                  content = pathlib.Path(filename.decode()).read_bytes().lower()
+                  if any(word in content for word in forbidden):
+                      raise SystemExit('Obsolete engine reference in: ' + filename.decode())
+          print('Zero obsolete engine references')
+          PY
