@@ -1,887 +1,236 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Mechanics, governing rules, edge cases and acceptance criteria."
-    />
-    <title>Profession system · MMORPG Reference v2</title>
-    <link rel="stylesheet" href="../assets/styles.css" />
-    <script defer src="../assets/search-index.js"></script>
-    <script defer src="../assets/app.js"></script>
-  </head>
-  <body data-root="../">
-    <a class="skip-link" href="#main">Skip to content</a>
-    <aside class="sidebar" id="navigation">
-      <a class="brand" href="../index.html"
-        ><span class="brand-mark">M</span
-        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
-      >
-      <div class="version">v2.0 · Mechanics only</div>
-      <nav aria-label="Reference navigation">
-        <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
-        <div class="nav-group">
-          <p>Foundation</p>
-          <a href="../guide/decisions.html">Design decisions</a
-          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
-          ><a href="../guide/races-factions.html">Races & faction rules</a
-          ><a href="../guide/progression.html">Levels & talent points</a
-          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
-        </div>
-        <div class="nav-group">
-          <p>Combat</p>
-          <a href="../guide/attributes.html">Attributes & formulas</a
-          ><a href="../guide/combat.html">Combat mechanics</a
-          ><a href="../guide/status-effects.html">Statuses, control & summons</a
-          ><a href="../guide/execution.html">Ability execution contracts</a
-          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
-        </div>
-        <div class="nav-group">
-          <p>Economy</p>
-          <a href="../guide/items.html">Equipment & itemization</a
-          ><a aria-current="page" href="../guide/professions.html">Profession system</a
-          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
-          ><a href="../guide/economy.html">Bazaar & economy</a>
-        </div>
-        <div class="nav-group">
-          <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
-          ><a href="../guide/interface.html">Interface & accessibility</a
-          ><a href="../guide/operations.html">Supporting gameplay</a>
-        </div>
-        <div class="nav-group">
-          <p>Validation</p>
-          <a href="../guide/audit.html">Audit & open gates</a
-          ><a href="../guide/testing.html">Validation & test plan</a
-          ><a href="../guide/sources.html">Sources & provenance</a
-          ><a href="../guide/glossary.html">Mechanics glossary</a>
-        </div>
-        <details class="nav-list">
-          <summary>Classes <span>12</span></summary>
-          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
-          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
-          ><a href="../classes/necromancer.html">Necromancer</a
-          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
-          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
-          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
-          ><a href="../classes/warlock.html">Warlock</a>
-        </details>
-        <details class="nav-list">
-          <summary>Professions <span>16</span></summary>
-          <a href="../professions/blacksmithing.html">Blacksmithing</a
-          ><a href="../professions/leatherworking.html">Leatherworking</a
-          ><a href="../professions/tailoring.html">Tailoring</a
-          ><a href="../professions/alchemy.html">Alchemy</a
-          ><a href="../professions/enchanting.html">Enchanting</a
-          ><a href="../professions/engineering.html">Engineering</a
-          ><a href="../professions/woodworking.html">Woodworking</a
-          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
-          ><a href="../professions/inscription.html">Inscription</a
-          ><a href="../professions/mining.html">Mining</a
-          ><a href="../professions/herbalism.html">Herbalism</a
-          ><a href="../professions/skinning.html">Skinning</a
-          ><a href="../professions/forestry.html">Forestry</a
-          ><a href="../professions/cooking.html">Cooking</a
-          ><a href="../professions/fishing.html">Fishing</a
-          ><a href="../professions/first_aid.html">First Aid</a>
-        </details>
-        <div class="nav-group">
-          <p>Catalogs</p>
-          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
-          <a href="../catalog/abilities.html">Abilities</a
-          ><a href="../catalog/talents.html">Talents</a
-          ><a href="../catalog/recipes.html">Recipes</a>
-        </div>
-      </nav>
-      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
-    </aside>
-    <div class="workspace">
-      <header class="topbar">
-        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
-        ><span class="section-label">Economy</span>
-        <div class="search-wrap">
-          <label for="site-search" class="visually-hidden">Search all reference content</label
-          ><input
-            id="site-search"
-            type="search"
-            placeholder="Search rules, abilities, recipes…"
-            autocomplete="off"
-            aria-controls="search-results"
-            aria-expanded="false"
-          />
-          <div id="search-results" class="search-results" hidden></div>
-        </div>
-        <button class="print-button" type="button">Print</button>
-      </header>
-      <div class="page-layout">
-        <main id="main" tabindex="-1">
-          <div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div>
-          <h1>Profession system</h1>
-          <p class="page-description">
-            Mechanics, governing rules, edge cases and acceptance criteria.
-          </p>
-          <div class="article-body">
-            <h2 id="design-objective">Design objective</h2>
-            <p>
-              <strong
-                >Professions must produce useful, obtainable results while the character is still in
-                the relevant level band.</strong
-              >
-              Max-level profitability alone does not satisfy this requirement. Gathering, crafting,
-              service work and trade should be valid activities throughout progression.
-            </p>
-            <p>
-              Blizzard's published WoW: Forever design describes added recipes across level ranges
-              and profession-created campsite utilities. That is the reference principle used
-              here—not a reproduction of its recipe list, class bonuses or formulas. See
-              <a href="sources.html#s1">source S1</a>. The specific rules below are this project's
-              proposed design.
-            </p>
-            <h2 id="profession-slots">Profession slots</h2>
-            <p>
-              Choose <strong>two manufacturing professions</strong> and
-              <strong>two gathering professions</strong>. Cooking, Fishing and First Aid are
-              available to everyone as common life skills. Manufacturing and gathering do not
-              compete for the same two slots; otherwise a player who wants two crafts is pushed
-              toward gathering alts immediately.
-            </p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Manufacturing: choose two</th>
-                  <th>Main contribution</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Blacksmithing</td>
-                  <td>Metal weapons, mail/plate components, shields and maintenance</td>
-                </tr>
-                <tr>
-                  <td>Leatherworking</td>
-                  <td>Leather armor, flexible components and reinforcement</td>
-                </tr>
-                <tr>
-                  <td>Tailoring</td>
-                  <td>Cloth armor, cloaks, bags and textile components</td>
-                </tr>
-                <tr>
-                  <td>Alchemy</td>
-                  <td>Recovery consumables, preparations and catalysts</td>
-                </tr>
-                <tr>
-                  <td>Enchanting</td>
-                  <td>Item enhancements, magical service work and salvage processing</td>
-                </tr>
-                <tr>
-                  <td>Engineering</td>
-                  <td>Bounded devices, weapon attachments, tools and field stations</td>
-                </tr>
-                <tr>
-                  <td>Woodworking</td>
-                  <td>Bows, staves, shields, instruments and structural utility items</td>
-                </tr>
-                <tr>
-                  <td>Jewelcrafting</td>
-                  <td>Rings, necklaces, gems and profession accessories</td>
-                </tr>
-                <tr>
-                  <td>Inscription</td>
-                  <td>Ability presentation glyphs, situational scrolls and enhancement patterns</td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <thead>
-                <tr>
-                  <th>Gathering: choose two</th>
-                  <th>Main contribution</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Mining</td>
-                  <td>Ore, stone and occasional gems</td>
-                </tr>
-                <tr>
-                  <td>Herbalism</td>
-                  <td>Plants, fibers and reagents</td>
-                </tr>
-                <tr>
-                  <td>Skinning</td>
-                  <td>Hides and creature-derived materials from eligible kills</td>
-                </tr>
-                <tr>
-                  <td>Forestry</td>
-                  <td>Timber, resin and wood components</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Cooking supplies recovery food and prepared meals. Fishing supplies ingredients and
-              useful material byproducts. First Aid supplies emergency bandages and out-of-combat
-              treatment. These three have depth but do not displace a party healer.
-            </p>
-            <p>
-              There are 16 profession definitions in the reference. This is a complete system
-              roster, not a requirement to ship all professions before the combat prototype is
-              stable.
-            </p>
-            <h2 id="independent-skill-progression">Independent skill progression</h2>
-            <p>
-              Each profession has skill 1–300 across six 50-point bands. Profession skill is not the
-              same as character level, and combat talent points cannot be spent on it. A
-              low-combat-level specialist can craft advanced goods using acquired materials and
-              stations; using those goods still requires their item level. No high-level item
-              ignores its equip requirement because the character crafted it personally.
-            </p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Crafting band</th>
-                  <th>Skill</th>
-                  <th>Intended item users</th>
-                  <th>Basic recipes available</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>I</td>
-                  <td>1–50</td>
-                  <td>Levels 1–9</td>
-                  <td>Immediately upon training</td>
-                </tr>
-                <tr>
-                  <td>II</td>
-                  <td>51–100</td>
-                  <td>Levels 10–19</td>
-                  <td>At skill 51</td>
-                </tr>
-                <tr>
-                  <td>III</td>
-                  <td>101–150</td>
-                  <td>Levels 20–29</td>
-                  <td>At skill 101</td>
-                </tr>
-                <tr>
-                  <td>IV</td>
-                  <td>151–200</td>
-                  <td>Levels 30–39</td>
-                  <td>At skill 151</td>
-                </tr>
-                <tr>
-                  <td>V</td>
-                  <td>201–250</td>
-                  <td>Levels 40–49</td>
-                  <td>At skill 201</td>
-                </tr>
-                <tr>
-                  <td>VI</td>
-                  <td>251–300</td>
-                  <td>Levels 50–60</td>
-                  <td>At skill 251; level-60 finishes use late-band recipes</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Band recipes open at offsets 0, 15, 30 and 45 within the skill band. A complete band
-              should include a immediately useful entry product, a consumable or repeat-demand
-              output, a useful upgrade and a service/tool output. Different professions fulfill
-              these through their own product families; Woodworking's repeat demand includes
-              staff/bow parts, replacement enhancements and market commissions rather than forcing
-              bows to disappear.
-            </p>
-            <h3 id="deterministic-skill-gain">Deterministic skill gain</h3>
-            <p>
-              A successful, eligible craft grants skill-progress units based on
-              <code>current_skill − recipe_required_skill</code>: 100 for a gap below 10; 50 for
-              10–19; 20 for 20–29; zero at 30 or more. Every 100 units grants one skill, carrying
-              the remainder. Recipe output quality does not randomly fail. Craft cancellation grants
-              no progress. Refunds, duplicated requests, salvage and material transfers grant none.
-            </p>
-            <p>
-              Gathering grants the same difficulty-relative progress on successful node claims.
-              Common low-tier gathering remains profitable when there is demand, but does not level
-              skill 300 indefinitely. Training has a predictable affordable fee, not a hard
-              character-level gate.
-            </p>
-            <p>
-              Use first-craft bonuses only as optional exploration rewards, not as a limited weekly
-              power currency. No daily knowledge cap, time-gated energy meter or random catch-up
-              lottery is required for the initial system.
-            </p>
-            <h2 id="useful-while-leveling-enforceable-tests">
-              Useful while leveling: enforceable tests
-            </h2>
-            <p>
-              A learner using normally available materials should reach a useful entry recipe in a
-              band <strong>before</strong> character progression makes its products obsolete. The
-              target is less than 30 minutes from entering a character-level band to producing or
-              commissioning one useful item, excluding a deliberately rare prestige recipe. This is
-              a playtest target, not a measured duration.
-            </p>
-            <p>
-              At levels 10, 20, 30, 40 and 50, test a character using ordinary quest rewards and ask
-              whether a same-band craft improves an actual slot, meaningfully changes a stat
-              distribution, or supplies useful utility. At least two of those three conditions
-              should hold for every manufacturing profession's customers.
-            </p>
-            <p>
-              Basic recipes and essential tools come from training or ordinary vendors. Advanced
-              patterns may come from group activities, research tasks and player trade. A rare
-              recipe cannot be the only useful output for levels 10–19. High-level blueprint
-              ownership cannot be required to sell basic band-I recovery supplies.
-            </p>
-            <p>
-              The starter test must include a player with no rich main character funding them.
-              Materials accessible only through a high-level player's bank do not prove
-              level-appropriate usefulness.
-            </p>
-            <h2 id="fixed-products-specialist-configurations">
-              Fixed products, specialist configurations
-            </h2>
-            <p>
-              Use deterministic recipes. The crafting UI displays exact material requirements,
-              result grade, item budget, optional configuration, binding and recipient before
-              commitment. There is no random “quality 1–5” ladder in this baseline.
-            </p>
-            <p>
-              Standard, Refined, Masterwork and Challenge grades are explicit blueprints or upgrade
-              paths, not unpredictable outcomes of the same recipe. Advanced gear can be made
-              through customer-provided bound components, allowing a dedicated non-raiding crafter
-              to provide the service without personally acquiring the customer's raid progress.
-            </p>
-            <p>
-              Specialists unlock alternate configurations, faster handling and modest efficiency.
-              They do not receive a private combat stat bonus merely for holding the profession. All
-              combat-relevant crafted benefits must be tradable or commissionable under the same
-              eligibility rules for non-crafters.
-            </p>
-            <h2 id="profession-mastery-trees">Profession mastery trees</h2>
-            <p>
-              Each profession earns one mastery point per ten skill levels, up to 30 at skill 300.
-              These points are independent of the character's 118 combat points. Each profession has
-              three branches, each containing five three-rank nodes: 45 available ranks, 30 points
-              to spend. Branches are named and scoped on the profession pages.
-            </p>
-            <p>
-              Ranks improve a concrete production concern: eligible common-material efficiency,
-              batch handling, specialist configurations, gathering selectivity, station utility or
-              service convenience. Universal ceilings are 12% saved common materials, 15% faster
-              gathering/crafting channels and 10% additional common gathering yield. Rare/earned
-              cores are never saved or duplicated. Output quantity bonuses cannot apply to another
-              bonus output or salvaged material.
-            </p>
-            <p>
-              Every successful craft consumes at least one of each required non-optional material.
-              Use deterministic remainder accounting for fractional efficiency rather than resetting
-              rounding on every one-item batch. Show savings in the quote. Mastery bonuses are
-              snapshotted and authorized at craft acceptance; changing profession mid-craft cannot
-              upgrade its result.
-            </p>
-            <p>
-              Changing mastery is free at an appropriate station while idle. Changing the active
-              profession is a separate commitment: a 24-hour activation cooldown, no switching
-              during active work, and profession-bound active benefits removed on deactivation.
-              Previously learned skill and recipes remain dormant rather than being destroyed. This
-              allows correction without turning all professions into instantly interchangeable
-              loadouts. Alts remain possible; do not pretend this policy prevents every
-              account-level specialization advantage.
-            </p>
-            <h2 id="materials-and-old-tier-relevance">Materials and old-tier relevance</h2>
-            <p>
-              Use six material bands. Advanced recipes primarily consume current-band materials,
-              with selected previous-band common components in reinforcement, catalysts, thread,
-              resin, maintenance and consumables. Do not require a level-60 crafter to repeat every
-              earlier refinement chain for every item.
-            </p>
-            <p>
-              The example recipe catalog includes explicit material IDs and quantities, not just
-              “some ore.” Salvage returns common materials at a loss and never rare bound cores.
-              Common starter recovery alternatives remain vendor-accessible with non-exportable
-              starter supplies when necessary, protecting new players from shortages without
-              enabling vendor-arbitrage loops.
-            </p>
-            <p>
-              Old-tier relevance comes from leveling customers, profession tools, maintained utility
-              products, enhancement replacement and a modest amount of cross-tier demand. It does
-              not come from making every endgame consumable require an enormous quantity of
-              starter-zone resources.
-            </p>
-            <h2 id="gathering-and-shared-access">Gathering and shared access</h2>
-            <p>
-              The reviewed node prototype uses one claim per character per respawn cycle with the
-              existing three charges and three-second channel. Claims use a unique server cycle key;
-              fixed authored spawns or bounded replacement obey an explicit active-node cap and
-              positive respawn/replan timing. Fishing accepts only server-validated cast timing and
-              resolves its declared loot table once; the client never chooses the catch.
-            </p>
-            <p>
-              Ordinary nodes have a finite server-owned charge count; start with three charges and a
-              three-second gather channel. Claiming a charge is atomic at channel completion. A
-              losing concurrent claimant receives a clear empty-node response and consumes no tool
-              item or materials. Each character has a per-node respawn-cycle claim limit. Respawn
-              timing and population density are server data, not a client timer.
-            </p>
-            <p>
-              Skinning requires eligible loot rights and a completed loot phase. Unclaimed carcasses
-              become public after a configurable grace period. It cannot consume a body reserved for
-              an encounter mechanic. Fishing resolves from an authorized cast/interaction session
-              with bounded timing tolerance; no client reports the catch item.
-            </p>
-            <p>
-              Danger and PvP rules are independent of profession skill. Protected starter resource
-              areas remain protected. Node competition must not make a required low-tier profession
-              path effectively unavailable on one faction.
-            </p>
-            <h2 id="stations-and-field-utility">Stations and field utility</h2>
-            <p>
-              Every manufacturing profession has a public full-function station. Portable field
-              stations provide limited convenience: repair access, ordinary band-appropriate
-              crafting or out-of-combat preparation. They cannot block navigation, provide combat
-              collision, be placed on objectives or exceed an owner object limit.
-            </p>
-            <p>
-              A field site permits three utility objects and one active preparation buff per
-              category. Effects are weaker or equal substitutes for ordinary class preparation,
-              never additive mandatory raid buffs. Activation takes five out-of-combat seconds. Both
-              factions receive mechanically equivalent utilities. A missing crafter never prevents a
-              party from repairing or leaving an instance.
-            </p>
-            <h2 id="economic-and-balance-risks">Economic and balance risks</h2>
-            <p>
-              Two manufacturing slots do not guarantee interdependence when a population has many
-              alts. Monitor product demand, market concentration and actual production costs. Avoid
-              profession-exclusive raid DPS bonuses, infinite-use superior bombs and rare-ingredient
-              monopolies. Engineering devices share consumable cooldown categories and rated-PvP
-              restrictions.
-            </p>
-            <p>
-              Professions remain viable through useful goods and services, not by forcing players to
-              destroy good equipment repeatedly or perform daily chores. Mature-server demand is
-              tested separately from fresh-server leveling demand.
-            </p>
-            <!-- data-inventory:start -->
-            <section class="data-inventory" aria-labelledby="data">
-              <h2 id="data">Data</h2>
-              <p>
-                Follow a type name to its canonical members, properties, constraints and review
-                decisions. Definitions are generated from one shared registry.
-              </p>
-              <h3 id="data-enums">Enums</h3>
-              <ul>
-                <li data-inventory-id="gathering-claim-outcome">
-                  <code
-                    ><a href="data-inventory.html#gathering-claim-outcome"
-                      >GatheringClaimOutcome</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="item-binding-state">
-                  <code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="item-grade">
-                  <code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="item-kind">
-                  <code><a href="data-inventory.html#item-kind">ItemKind</a></code> — Existing ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="loot-reservation-state">
-                  <code
-                    ><a href="data-inventory.html#loot-reservation-state"
-                      >LootReservationState</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="material-family">
-                  <code><a href="data-inventory.html#material-family">MaterialFamily</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="profession-activation-state">
-                  <code
-                    ><a href="data-inventory.html#profession-activation-state"
-                      >ProfessionActivationState</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-band">
-                  <code><a href="data-inventory.html#profession-band">ProfessionBand</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="profession-category">
-                  <code
-                    ><a href="data-inventory.html#profession-category">ProfessionCategory</a></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="recipe-source">
-                  <code><a href="data-inventory.html#recipe-source">RecipeSource</a></code> —
-                  Existing · Fully Defined
-                </li>
-              </ul>
-              <h3 id="data-interfaces">Interfaces</h3>
-              <ul>
-                <li data-inventory-id="crafting-station">
-                  <code><a href="data-inventory.html#crafting-station">CraftingStation</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="craft-quote">
-                  <code><a href="data-inventory.html#craft-quote">CraftQuote</a></code> — Proposed ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="craft-result-preview">
-                  <code
-                    ><a href="data-inventory.html#craft-result-preview">CraftResultPreview</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="efficiency-remainder">
-                  <code
-                    ><a href="data-inventory.html#efficiency-remainder"
-                      >EfficiencyRemainder</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="field-site-state">
-                  <code><a href="data-inventory.html#field-site-state">FieldSiteState</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="field-utility-object">
-                  <code
-                    ><a href="data-inventory.html#field-utility-object">FieldUtilityObject</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="fishing-session">
-                  <code><a href="data-inventory.html#fishing-session">FishingSession</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="gathering-claim">
-                  <code><a href="data-inventory.html#gathering-claim">GatheringClaim</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="gathering-node-state">
-                  <code
-                    ><a href="data-inventory.html#gathering-node-state">GatheringNodeState</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="item-transfer-eligibility">
-                  <code
-                    ><a href="data-inventory.html#item-transfer-eligibility"
-                      >ItemTransferEligibility</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="mastery-bonus-snapshot">
-                  <code
-                    ><a href="data-inventory.html#mastery-bonus-snapshot"
-                      >MasteryBonusSnapshot</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-mastery-allocation">
-                  <code
-                    ><a href="data-inventory.html#profession-mastery-allocation"
-                      >ProfessionMasteryAllocation</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-progress">
-                  <code
-                    ><a href="data-inventory.html#profession-progress">ProfessionProgress</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-selection-state">
-                  <code
-                    ><a href="data-inventory.html#profession-selection-state"
-                      >ProfessionSelectionState</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="recipe-configuration">
-                  <code
-                    ><a href="data-inventory.html#recipe-configuration"
-                      >RecipeConfiguration</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="skinning-eligibility">
-                  <code
-                    ><a href="data-inventory.html#skinning-eligibility"
-                      >SkinningEligibility</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-              </ul>
-              <h3 id="data-schemas">Schemas</h3>
-              <ul>
-                <li data-inventory-id="character-profession-record">
-                  <code
-                    ><a href="data-inventory.html#character-profession-record"
-                      >CharacterProfessionRecord</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cooldown-family">
-                  <code><a href="data-inventory.html#cooldown-family">CooldownFamily</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cosmetic-variant-definition">
-                  <code
-                    ><a href="data-inventory.html#cosmetic-variant-definition"
-                      >CosmeticVariantDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="crafting-station-definition">
-                  <code
-                    ><a href="data-inventory.html#crafting-station-definition"
-                      >CraftingStationDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="equipment-definition">
-                  <code
-                    ><a href="data-inventory.html#equipment-definition"
-                      >EquipmentDefinition</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="field-utility-definition">
-                  <code
-                    ><a href="data-inventory.html#field-utility-definition"
-                      >FieldUtilityDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="field-utility-placement-request">
-                  <code
-                    ><a href="data-inventory.html#field-utility-placement-request"
-                      >FieldUtilityPlacementRequest</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="fishing-catch-definition">
-                  <code
-                    ><a href="data-inventory.html#fishing-catch-definition"
-                      >FishingCatchDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="fishing-session-record">
-                  <code
-                    ><a href="data-inventory.html#fishing-session-record"
-                      >FishingSessionRecord</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="gathering-claim-record">
-                  <code
-                    ><a href="data-inventory.html#gathering-claim-record"
-                      >GatheringClaimRecord</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="gathering-node-definition">
-                  <code
-                    ><a href="data-inventory.html#gathering-node-definition"
-                      >GatheringNodeDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="gathering-request">
-                  <code><a href="data-inventory.html#gathering-request">GatheringRequest</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="gathering-response">
-                  <code
-                    ><a href="data-inventory.html#gathering-response">GatheringResponse</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="item-definition">
-                  <code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="item-effect-definition">
-                  <code
-                    ><a href="data-inventory.html#item-effect-definition"
-                      >ItemEffectDefinition</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="known-recipe-record">
-                  <code
-                    ><a href="data-inventory.html#known-recipe-record">KnownRecipeRecord</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="loot-reservation-record">
-                  <code
-                    ><a href="data-inventory.html#loot-reservation-record"
-                      >LootReservationRecord</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="loot-roll-result">
-                  <code><a href="data-inventory.html#loot-roll-result">LootRollResult</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="material-definition">
-                  <code
-                    ><a href="data-inventory.html#material-definition">MaterialDefinition</a></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="node-spawn-configuration">
-                  <code
-                    ><a href="data-inventory.html#node-spawn-configuration"
-                      >NodeSpawnConfiguration</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-activation-request">
-                  <code
-                    ><a href="data-inventory.html#profession-activation-request"
-                      >ProfessionActivationRequest</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-definition">
-                  <code
-                    ><a href="data-inventory.html#profession-definition"
-                      >ProfessionDefinition</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="profession-mastery-change-request">
-                  <code
-                    ><a href="data-inventory.html#profession-mastery-change-request"
-                      >ProfessionMasteryChangeRequest</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-mastery-node-definition">
-                  <code
-                    ><a href="data-inventory.html#profession-mastery-node-definition"
-                      >ProfessionMasteryNodeDefinition</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="profession-mastery-record">
-                  <code
-                    ><a href="data-inventory.html#profession-mastery-record"
-                      >ProfessionMasteryRecord</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-mastery-rules-configuration">
-                  <code
-                    ><a href="data-inventory.html#profession-mastery-rules-configuration"
-                      >ProfessionMasteryRulesConfiguration</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="profession-progression-configuration">
-                  <code
-                    ><a href="data-inventory.html#profession-progression-configuration"
-                      >ProfessionProgressionConfiguration</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="recipe-definition">
-                  <code><a href="data-inventory.html#recipe-definition">RecipeDefinition</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="recipe-ingredient">
-                  <code><a href="data-inventory.html#recipe-ingredient">RecipeIngredient</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="recipe-result-preview">
-                  <code
-                    ><a href="data-inventory.html#recipe-result-preview"
-                      >RecipeResultPreview</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="salvage-rule">
-                  <code><a href="data-inventory.html#salvage-rule">SalvageRule</a></code> — Proposed
-                  · Fully Defined
-                </li>
-                <li data-inventory-id="world-object-definition">
-                  <code
-                    ><a href="data-inventory.html#world-object-definition"
-                      >WorldObjectDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-              </ul>
-            </section>
-            <!-- data-inventory:end -->
-          </div>
-          <footer class="page-footer">
-            <a href="../guide/audit.html">Readiness and open gates</a
-            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
-            ><a href="#main">Back to top ↑</a>
-          </footer>
-        </main>
-        <aside class="page-toc" aria-label="On this page">
-          <p>ON THIS PAGE</p>
-          <a href="#design-objective">Design objective</a
-          ><a href="#profession-slots">Profession slots</a
-          ><a href="#independent-skill-progression">Independent skill progression</a
-          ><a href="#useful-while-leveling-enforceable-tests"
-            >Useful while leveling: enforceable tests</a
-          ><a href="#fixed-products-specialist-configurations"
-            >Fixed products, specialist configurations</a
-          ><a href="#profession-mastery-trees">Profession mastery trees</a
-          ><a href="#materials-and-old-tier-relevance">Materials and old-tier relevance</a
-          ><a href="#gathering-and-shared-access">Gathering and shared access</a
-          ><a href="#stations-and-field-utility">Stations and field utility</a
-          ><a href="#economic-and-balance-risks">Economic and balance risks</a>
-          <a data-inventory-toc href="#data">Data</a>
-        </aside>
-      </div>
-    </div>
-  </body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Profession system · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a aria-current=page href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Economy</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div><h1>Profession system</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<h2 id="design-objective">Design objective</h2>
+<p><strong>Professions must produce useful, obtainable results while the character is still in the relevant level band.</strong> Max-level profitability alone does not satisfy this requirement. Gathering, crafting, service work and trade should be valid activities throughout progression.</p>
+<p>Blizzard's published WoW: Forever design describes added recipes across level ranges and profession-created campsite utilities. That is the reference principle used here—not a reproduction of its recipe list, class bonuses or formulas. See <a href="sources.html#s1">source S1</a>. The specific rules below are this project's proposed design.</p>
+<h2 id="profession-slots">Profession slots</h2>
+<p>Choose <strong>two manufacturing professions</strong> and <strong>two gathering professions</strong>. Cooking, Fishing and First Aid are available to everyone as common life skills. Manufacturing and gathering do not compete for the same two slots; otherwise a player who wants two crafts is pushed toward gathering alts immediately.</p>
+<table>
+<thead>
+<tr>
+<th>Manufacturing: choose two</th>
+<th>Main contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blacksmithing</td>
+<td>Metal weapons, mail/plate components, shields and maintenance</td>
+</tr>
+<tr>
+<td>Leatherworking</td>
+<td>Leather armor, flexible components and reinforcement</td>
+</tr>
+<tr>
+<td>Tailoring</td>
+<td>Cloth armor, cloaks, bags and textile components</td>
+</tr>
+<tr>
+<td>Alchemy</td>
+<td>Recovery consumables, preparations and catalysts</td>
+</tr>
+<tr>
+<td>Enchanting</td>
+<td>Item enhancements, magical service work and salvage processing</td>
+</tr>
+<tr>
+<td>Engineering</td>
+<td>Bounded devices, weapon attachments, tools and field stations</td>
+</tr>
+<tr>
+<td>Woodworking</td>
+<td>Bows, staves, shields, instruments and structural utility items</td>
+</tr>
+<tr>
+<td>Jewelcrafting</td>
+<td>Rings, necklaces, gems and profession accessories</td>
+</tr>
+<tr>
+<td>Inscription</td>
+<td>Ability presentation glyphs, situational scrolls and enhancement patterns</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Gathering: choose two</th>
+<th>Main contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mining</td>
+<td>Ore, stone and occasional gems</td>
+</tr>
+<tr>
+<td>Herbalism</td>
+<td>Plants, fibers and reagents</td>
+</tr>
+<tr>
+<td>Skinning</td>
+<td>Hides and creature-derived materials from eligible kills</td>
+</tr>
+<tr>
+<td>Forestry</td>
+<td>Timber, resin and wood components</td>
+</tr>
+</tbody>
+</table>
+<p>Cooking supplies recovery food and prepared meals. Fishing supplies ingredients and useful material byproducts. First Aid supplies emergency bandages and out-of-combat treatment. These three have depth but do not displace a party healer.</p>
+<p>There are 16 profession definitions in the reference. This is a complete system roster, not a requirement to ship all professions before the combat prototype is stable.</p>
+<h2 id="independent-skill-progression">Independent skill progression</h2>
+<p>Each profession has skill 1–300 across six 50-point bands. Profession skill is not the same as character level, and combat talent points cannot be spent on it. A low-combat-level specialist can craft advanced goods using acquired materials and stations; using those goods still requires their item level. No high-level item ignores its equip requirement because the character crafted it personally.</p>
+<table>
+<thead>
+<tr>
+<th>Crafting band</th>
+<th>Skill</th>
+<th>Intended item users</th>
+<th>Basic recipes available</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I</td>
+<td>1–50</td>
+<td>Levels 1–9</td>
+<td>Immediately upon training</td>
+</tr>
+<tr>
+<td>II</td>
+<td>51–100</td>
+<td>Levels 10–19</td>
+<td>At skill 51</td>
+</tr>
+<tr>
+<td>III</td>
+<td>101–150</td>
+<td>Levels 20–29</td>
+<td>At skill 101</td>
+</tr>
+<tr>
+<td>IV</td>
+<td>151–200</td>
+<td>Levels 30–39</td>
+<td>At skill 151</td>
+</tr>
+<tr>
+<td>V</td>
+<td>201–250</td>
+<td>Levels 40–49</td>
+<td>At skill 201</td>
+</tr>
+<tr>
+<td>VI</td>
+<td>251–300</td>
+<td>Levels 50–60</td>
+<td>At skill 251; level-60 finishes use late-band recipes</td>
+</tr>
+</tbody>
+</table>
+<p>Band recipes open at offsets 0, 15, 30 and 45 within the skill band. A complete band should include a immediately useful entry product, a consumable or repeat-demand output, a useful upgrade and a service/tool output. Different professions fulfill these through their own product families; Woodworking's repeat demand includes staff/bow parts, replacement enhancements and market commissions rather than forcing bows to disappear.</p>
+<h3 id="deterministic-skill-gain">Deterministic skill gain</h3>
+<p>A successful, eligible craft grants skill-progress units based on <code>current_skill − recipe_required_skill</code>: 100 for a gap below 10; 50 for 10–19; 20 for 20–29; zero at 30 or more. Every 100 units grants one skill, carrying the remainder. Recipe output quality does not randomly fail. Craft cancellation grants no progress. Refunds, duplicated requests, salvage and material transfers grant none.</p>
+<p>Gathering grants the same difficulty-relative progress on successful node claims. Common low-tier gathering remains profitable when there is demand, but does not level skill 300 indefinitely. Training has a predictable affordable fee, not a hard character-level gate.</p>
+<p>Use first-craft bonuses only as optional exploration rewards, not as a limited weekly power currency. No daily knowledge cap, time-gated energy meter or random catch-up lottery is required for the initial system.</p>
+<h2 id="useful-while-leveling-enforceable-tests">Useful while leveling: enforceable tests</h2>
+<p>A learner using normally available materials should reach a useful entry recipe in a band <strong>before</strong> character progression makes its products obsolete. The target is less than 30 minutes from entering a character-level band to producing or commissioning one useful item, excluding a deliberately rare prestige recipe. This is a playtest target, not a measured duration.</p>
+<p>At levels 10, 20, 30, 40 and 50, test a character using ordinary quest rewards and ask whether a same-band craft improves an actual slot, meaningfully changes a stat distribution, or supplies useful utility. At least two of those three conditions should hold for every manufacturing profession's customers.</p>
+<p>Basic recipes and essential tools come from training or ordinary vendors. Advanced patterns may come from group activities, research tasks and player trade. A rare recipe cannot be the only useful output for levels 10–19. High-level blueprint ownership cannot be required to sell basic band-I recovery supplies.</p>
+<p>The starter test must include a player with no rich main character funding them. Materials accessible only through a high-level player's bank do not prove level-appropriate usefulness.</p>
+<h2 id="fixed-products-specialist-configurations">Fixed products, specialist configurations</h2>
+<p>Use deterministic recipes. The crafting UI displays exact material requirements, result grade, item budget, optional configuration, binding and recipient before commitment. There is no random “quality 1–5” ladder in this baseline.</p>
+<p>Standard, Refined, Masterwork and Challenge grades are explicit blueprints or upgrade paths, not unpredictable outcomes of the same recipe. Advanced gear can be made through customer-provided bound components, allowing a dedicated non-raiding crafter to provide the service without personally acquiring the customer's raid progress.</p>
+<p>Specialists unlock alternate configurations, faster handling and modest efficiency. They do not receive a private combat stat bonus merely for holding the profession. All combat-relevant crafted benefits must be tradable or commissionable under the same eligibility rules for non-crafters.</p>
+<h2 id="profession-mastery-trees">Profession mastery trees</h2>
+<p>Each profession earns one mastery point per ten skill levels, up to 30 at skill 300. These points are independent of the character's 118 combat points. Each profession has three branches, each containing five three-rank nodes: 45 available ranks, 30 points to spend. Branches are named and scoped on the profession pages.</p>
+<p>Ranks improve a concrete production concern: eligible common-material efficiency, batch handling, specialist configurations, gathering selectivity, station utility or service convenience. Universal ceilings are 12% saved common materials, 15% faster gathering/crafting channels and 10% additional common gathering yield. Rare/earned cores are never saved or duplicated. Output quantity bonuses cannot apply to another bonus output or salvaged material.</p>
+<p>Every successful craft consumes at least one of each required non-optional material. Use deterministic remainder accounting for fractional efficiency rather than resetting rounding on every one-item batch. Show savings in the quote. Mastery bonuses are snapshotted and authorized at craft acceptance; changing profession mid-craft cannot upgrade its result.</p>
+<p>Changing mastery is free at an appropriate station while idle. Changing the active profession is a separate commitment: a 24-hour activation cooldown, no switching during active work, and profession-bound active benefits removed on deactivation. Previously learned skill and recipes remain dormant rather than being destroyed. This allows correction without turning all professions into instantly interchangeable loadouts. Alts remain possible; do not pretend this policy prevents every account-level specialization advantage.</p>
+<h2 id="materials-and-old-tier-relevance">Materials and old-tier relevance</h2>
+<p>Use six material bands. Advanced recipes primarily consume current-band materials, with selected previous-band common components in reinforcement, catalysts, thread, resin, maintenance and consumables. Do not require a level-60 crafter to repeat every earlier refinement chain for every item.</p>
+<p>The example recipe catalog includes explicit material IDs and quantities, not just “some ore.” Salvage returns common materials at a loss and never rare bound cores. Common starter recovery alternatives remain vendor-accessible with non-exportable starter supplies when necessary, protecting new players from shortages without enabling vendor-arbitrage loops.</p>
+<p>Old-tier relevance comes from leveling customers, profession tools, maintained utility products, enhancement replacement and a modest amount of cross-tier demand. It does not come from making every endgame consumable require an enormous quantity of starter-zone resources.</p>
+<h2 id="gathering-and-shared-access">Gathering and shared access</h2><p>The reviewed node prototype uses one claim per character per respawn cycle with the existing three charges and three-second channel. Claims use a unique server cycle key; fixed authored spawns or bounded replacement obey an explicit active-node cap and positive respawn/replan timing. Fishing accepts only server-validated cast timing and resolves its declared loot table once; the client never chooses the catch.</p>
+<p>Ordinary nodes have a finite server-owned charge count; start with three charges and a three-second gather channel. Claiming a charge is atomic at channel completion. A losing concurrent claimant receives a clear empty-node response and consumes no tool item or materials. Each character has a per-node respawn-cycle claim limit. Respawn timing and population density are server data, not a client timer.</p>
+<p>Skinning requires eligible loot rights and a completed loot phase. Unclaimed carcasses become public after a configurable grace period. It cannot consume a body reserved for an encounter mechanic. Fishing resolves from an authorized cast/interaction session with bounded timing tolerance; no client reports the catch item.</p>
+<p>Danger and PvP rules are independent of profession skill. Protected starter resource areas remain protected. Node competition must not make a required low-tier profession path effectively unavailable on one faction.</p>
+<h2 id="stations-and-field-utility">Stations and field utility</h2>
+<p>Every manufacturing profession has a public full-function station. Portable field stations provide limited convenience: repair access, ordinary band-appropriate crafting or out-of-combat preparation. They cannot block navigation, provide combat collision, be placed on objectives or exceed an owner object limit.</p>
+<p>A field site permits three utility objects and one active preparation buff per category. Effects are weaker or equal substitutes for ordinary class preparation, never additive mandatory raid buffs. Activation takes five out-of-combat seconds. Both factions receive mechanically equivalent utilities. A missing crafter never prevents a party from repairing or leaving an instance.</p>
+<h2 id="economic-and-balance-risks">Economic and balance risks</h2>
+<p>Two manufacturing slots do not guarantee interdependence when a population has many alts. Monitor product demand, market concentration and actual production costs. Avoid profession-exclusive raid DPS bonuses, infinite-use superior bombs and rare-ingredient monopolies. Engineering devices share consumable cooldown categories and rated-PvP restrictions.</p>
+<p>Professions remain viable through useful goods and services, not by forcing players to destroy good equipment repeatedly or perform daily chores. Mature-server demand is tested separately from fresh-server leveling demand.</p>
+<!-- data-inventory:start -->
+<section class="data-inventory" aria-labelledby="data">
+<h2 id="data">Data</h2>
+<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
+<h3 id="data-enums">Enums</h3>
+<ul>
+<li data-inventory-id="gathering-claim-outcome"><code><a href="data-inventory.html#gathering-claim-outcome">GatheringClaimOutcome</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="item-binding-state"><code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="item-grade"><code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="item-kind"><code><a href="data-inventory.html#item-kind">ItemKind</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="loot-reservation-state"><code><a href="data-inventory.html#loot-reservation-state">LootReservationState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="material-family"><code><a href="data-inventory.html#material-family">MaterialFamily</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="profession-activation-state"><code><a href="data-inventory.html#profession-activation-state">ProfessionActivationState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-band"><code><a href="data-inventory.html#profession-band">ProfessionBand</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="profession-category"><code><a href="data-inventory.html#profession-category">ProfessionCategory</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="recipe-source"><code><a href="data-inventory.html#recipe-source">RecipeSource</a></code> — Existing · Fully Defined</li>
+</ul>
+<h3 id="data-interfaces">Interfaces</h3>
+<ul>
+<li data-inventory-id="crafting-station"><code><a href="data-inventory.html#crafting-station">CraftingStation</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="craft-quote"><code><a href="data-inventory.html#craft-quote">CraftQuote</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="craft-result-preview"><code><a href="data-inventory.html#craft-result-preview">CraftResultPreview</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="efficiency-remainder"><code><a href="data-inventory.html#efficiency-remainder">EfficiencyRemainder</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="field-site-state"><code><a href="data-inventory.html#field-site-state">FieldSiteState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="field-utility-object"><code><a href="data-inventory.html#field-utility-object">FieldUtilityObject</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="fishing-session"><code><a href="data-inventory.html#fishing-session">FishingSession</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="gathering-claim"><code><a href="data-inventory.html#gathering-claim">GatheringClaim</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="gathering-node-state"><code><a href="data-inventory.html#gathering-node-state">GatheringNodeState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="item-transfer-eligibility"><code><a href="data-inventory.html#item-transfer-eligibility">ItemTransferEligibility</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="mastery-bonus-snapshot"><code><a href="data-inventory.html#mastery-bonus-snapshot">MasteryBonusSnapshot</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-mastery-allocation"><code><a href="data-inventory.html#profession-mastery-allocation">ProfessionMasteryAllocation</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-progress"><code><a href="data-inventory.html#profession-progress">ProfessionProgress</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-selection-state"><code><a href="data-inventory.html#profession-selection-state">ProfessionSelectionState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="recipe-configuration"><code><a href="data-inventory.html#recipe-configuration">RecipeConfiguration</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="skinning-eligibility"><code><a href="data-inventory.html#skinning-eligibility">SkinningEligibility</a></code> — Proposed · Fully Defined</li>
+</ul>
+<h3 id="data-schemas">Schemas</h3>
+<ul>
+<li data-inventory-id="character-profession-record"><code><a href="data-inventory.html#character-profession-record">CharacterProfessionRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cooldown-family"><code><a href="data-inventory.html#cooldown-family">CooldownFamily</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cosmetic-variant-definition"><code><a href="data-inventory.html#cosmetic-variant-definition">CosmeticVariantDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="crafting-station-definition"><code><a href="data-inventory.html#crafting-station-definition">CraftingStationDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="equipment-definition"><code><a href="data-inventory.html#equipment-definition">EquipmentDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="field-utility-definition"><code><a href="data-inventory.html#field-utility-definition">FieldUtilityDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="field-utility-placement-request"><code><a href="data-inventory.html#field-utility-placement-request">FieldUtilityPlacementRequest</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="fishing-catch-definition"><code><a href="data-inventory.html#fishing-catch-definition">FishingCatchDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="fishing-session-record"><code><a href="data-inventory.html#fishing-session-record">FishingSessionRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="gathering-claim-record"><code><a href="data-inventory.html#gathering-claim-record">GatheringClaimRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="gathering-node-definition"><code><a href="data-inventory.html#gathering-node-definition">GatheringNodeDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="gathering-request"><code><a href="data-inventory.html#gathering-request">GatheringRequest</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="gathering-response"><code><a href="data-inventory.html#gathering-response">GatheringResponse</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="item-definition"><code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="item-effect-definition"><code><a href="data-inventory.html#item-effect-definition">ItemEffectDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="known-recipe-record"><code><a href="data-inventory.html#known-recipe-record">KnownRecipeRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="loot-reservation-record"><code><a href="data-inventory.html#loot-reservation-record">LootReservationRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="loot-roll-result"><code><a href="data-inventory.html#loot-roll-result">LootRollResult</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="material-definition"><code><a href="data-inventory.html#material-definition">MaterialDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="node-spawn-configuration"><code><a href="data-inventory.html#node-spawn-configuration">NodeSpawnConfiguration</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-activation-request"><code><a href="data-inventory.html#profession-activation-request">ProfessionActivationRequest</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-definition"><code><a href="data-inventory.html#profession-definition">ProfessionDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="profession-mastery-change-request"><code><a href="data-inventory.html#profession-mastery-change-request">ProfessionMasteryChangeRequest</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-mastery-node-definition"><code><a href="data-inventory.html#profession-mastery-node-definition">ProfessionMasteryNodeDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="profession-mastery-record"><code><a href="data-inventory.html#profession-mastery-record">ProfessionMasteryRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-mastery-rules-configuration"><code><a href="data-inventory.html#profession-mastery-rules-configuration">ProfessionMasteryRulesConfiguration</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="profession-progression-configuration"><code><a href="data-inventory.html#profession-progression-configuration">ProfessionProgressionConfiguration</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="recipe-definition"><code><a href="data-inventory.html#recipe-definition">RecipeDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="recipe-ingredient"><code><a href="data-inventory.html#recipe-ingredient">RecipeIngredient</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="recipe-result-preview"><code><a href="data-inventory.html#recipe-result-preview">RecipeResultPreview</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="salvage-rule"><code><a href="data-inventory.html#salvage-rule">SalvageRule</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="world-object-definition"><code><a href="data-inventory.html#world-object-definition">WorldObjectDefinition</a></code> — Proposed · Fully Defined</li>
+</ul>
+</section>
+<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#design-objective">Design objective</a><a href="#profession-slots">Profession slots</a><a href="#independent-skill-progression">Independent skill progression</a><a href="#useful-while-leveling-enforceable-tests">Useful while leveling: enforceable tests</a><a href="#fixed-products-specialist-configurations">Fixed products, specialist configurations</a><a href="#profession-mastery-trees">Profession mastery trees</a><a href="#materials-and-old-tier-relevance">Materials and old-tier relevance</a><a href="#gathering-and-shared-access">Gathering and shared access</a><a href="#stations-and-field-utility">Stations and field utility</a><a href="#economic-and-balance-risks">Economic and balance risks</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>

@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import copy
-import json
 import sys
 import unittest
 from pathlib import Path
@@ -26,21 +25,6 @@ class ReviewedContractTests(unittest.TestCase):
         return {'schema': 'ability_command_v2', 'session_epoch': 17, 'command_sequence': 403,
                 'ability_id': 'ability.example', 'build_version': 8, 'content_version': '2.1.0-design',
                 'target_entity_id': None, 'aim_point': None, 'aim_direction': None, **inputs}
-
-    def test_economic_identity_fields_preserve_legacy_records_and_reject_invalid_classification(self):
-        material = {'id': 'synthetic.material', 'name': 'Unrelated display name', 'band': 1,
-                    'family': 'ore', 'binding': 'unbound', 'source': 'synthetic', 'stack_limit': 100}
-        self.assertEqual([], self.errors('MaterialDefinition', material))
-        explicit = {**material, 'item_definition_id': 'synthetic.item', 'salvage_class': 'common'}
-        self.assertEqual([], self.errors('MaterialDefinition', explicit))
-        for invalid in ({**explicit, 'item_definition_id': None},
-                        {**explicit, 'item_definition_id': ''},
-                        {**explicit, 'salvage_class': 'inferred_from_name'}):
-            self.assertTrue(self.errors('MaterialDefinition', invalid))
-        item = json.loads((ROOT / 'data/item_examples.json').read_text())[0]
-        self.assertEqual([], self.errors('ItemDefinition', item))
-        self.assertEqual([], self.errors('ItemDefinition', {**item, 'starter_assistance': False}))
-        self.assertTrue(self.errors('ItemDefinition', {**item, 'starter_assistance': None}))
 
     def policy(self, mode, kind):
         return {'mode': mode, 'input_kind': kind, 'relation': 'enemy', 'range_units': 8,

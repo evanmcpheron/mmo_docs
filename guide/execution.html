@@ -1,264 +1,10 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Mechanics, governing rules, edge cases and acceptance criteria."
-    />
-    <title>Ability execution contracts · MMORPG Reference v2</title>
-    <link rel="stylesheet" href="../assets/styles.css" />
-    <script defer src="../assets/search-index.js"></script>
-    <script defer src="../assets/app.js"></script>
-  </head>
-  <body data-root="../">
-    <a class="skip-link" href="#main">Skip to content</a>
-    <aside class="sidebar" id="navigation">
-      <a class="brand" href="../index.html"
-        ><span class="brand-mark">M</span
-        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
-      >
-      <div class="version">v2.0 · Mechanics only</div>
-      <nav aria-label="Reference navigation">
-        <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
-        <div class="nav-group">
-          <p>Foundation</p>
-          <a href="../guide/decisions.html">Design decisions</a
-          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
-          ><a href="../guide/races-factions.html">Races & faction rules</a
-          ><a href="../guide/progression.html">Levels & talent points</a
-          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
-        </div>
-        <div class="nav-group">
-          <p>Combat</p>
-          <a href="../guide/attributes.html">Attributes & formulas</a
-          ><a href="../guide/combat.html">Combat mechanics</a
-          ><a href="../guide/status-effects.html">Statuses, control & summons</a
-          ><a aria-current="page" href="../guide/execution.html">Ability execution contracts</a
-          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
-        </div>
-        <div class="nav-group">
-          <p>Economy</p>
-          <a href="../guide/items.html">Equipment & itemization</a
-          ><a href="../guide/professions.html">Profession system</a
-          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
-          ><a href="../guide/economy.html">Bazaar & economy</a>
-        </div>
-        <div class="nav-group">
-          <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
-          ><a href="../guide/interface.html">Interface & accessibility</a
-          ><a href="../guide/operations.html">Supporting gameplay</a>
-        </div>
-        <div class="nav-group">
-          <p>Validation</p>
-          <a href="../guide/audit.html">Audit & open gates</a
-          ><a href="../guide/testing.html">Validation & test plan</a
-          ><a href="../guide/sources.html">Sources & provenance</a
-          ><a href="../guide/glossary.html">Mechanics glossary</a>
-        </div>
-        <details class="nav-list">
-          <summary>Classes <span>12</span></summary>
-          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
-          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
-          ><a href="../classes/necromancer.html">Necromancer</a
-          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
-          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
-          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
-          ><a href="../classes/warlock.html">Warlock</a>
-        </details>
-        <details class="nav-list">
-          <summary>Professions <span>16</span></summary>
-          <a href="../professions/blacksmithing.html">Blacksmithing</a
-          ><a href="../professions/leatherworking.html">Leatherworking</a
-          ><a href="../professions/tailoring.html">Tailoring</a
-          ><a href="../professions/alchemy.html">Alchemy</a
-          ><a href="../professions/enchanting.html">Enchanting</a
-          ><a href="../professions/engineering.html">Engineering</a
-          ><a href="../professions/woodworking.html">Woodworking</a
-          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
-          ><a href="../professions/inscription.html">Inscription</a
-          ><a href="../professions/mining.html">Mining</a
-          ><a href="../professions/herbalism.html">Herbalism</a
-          ><a href="../professions/skinning.html">Skinning</a
-          ><a href="../professions/forestry.html">Forestry</a
-          ><a href="../professions/cooking.html">Cooking</a
-          ><a href="../professions/fishing.html">Fishing</a
-          ><a href="../professions/first_aid.html">First Aid</a>
-        </details>
-        <div class="nav-group">
-          <p>Catalogs</p>
-          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
-          <a href="../catalog/abilities.html">Abilities</a
-          ><a href="../catalog/talents.html">Talents</a
-          ><a href="../catalog/recipes.html">Recipes</a>
-        </div>
-      </nav>
-      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
-    </aside>
-    <div class="workspace">
-      <header class="topbar">
-        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
-        ><span class="section-label">Combat</span>
-        <div class="search-wrap">
-          <label for="site-search" class="visually-hidden">Search all reference content</label
-          ><input
-            id="site-search"
-            type="search"
-            placeholder="Search rules, abilities, recipes…"
-            autocomplete="off"
-            aria-controls="search-results"
-            aria-expanded="false"
-          />
-          <div id="search-results" class="search-results" hidden></div>
-        </div>
-        <button class="print-button" type="button">Print</button>
-      </header>
-      <div class="page-layout">
-        <main id="main" tabindex="-1">
-          <div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Combat</div>
-          <h1>Ability execution contracts</h1>
-          <p class="page-description">
-            Mechanics, governing rules, edge cases and acceptance criteria.
-          </p>
-          <div class="article-body">
-            <h2 id="scope-of-the-executable-rule-model">Scope of the executable rule model</h2>
-            <p>
-              The v2 data separates authored intent, a numerical primary-effect profile, a
-              specialization state contract and a binding/review status. A profile specifies cast
-              time, cooldown, resource-cost policy, effect magnitudes and structured operations. It
-              is not a substitute for coding every named secondary behavior.
-            </p>
-            <p>
-              The package contains 330 inherited named ability entries and 63 prototype execution
-              profiles. All entries have a selected profile and numerical timing/cost defaults
-              instead of v1's <code>TBD_BALANCE</code> fields. Charge Lance is supplied as an
-              explicit example of a dynamic charge-based contract. Other named secondary behaviors
-              remain flagged for individual binding and tests. They must not be automatically
-              enabled because a table row happens to contain a damage coefficient.
-            </p>
-            <p>
-              <strong>A runtime must reject an entry with unresolved required bindings.</strong> Do
-              not execute prose, ask a language model to interpret ability text during gameplay, or
-              let clients choose missing parameters.
-            </p>
-            <h2 id="ability-command">Ability command</h2>
-            <p>
-              <strong>Reviewed input contract:</strong> target_entity_id, aim_point and
-              aim_direction are always present. Supply exactly the resolved input kind and set
-              unused inputs to null. A supplied character_id is optional and must match the
-              authenticated session; it never selects the actor. Points are absolute x/y coordinates
-              in the caster current zone, instance and floor; the server attaches that scope. A
-              direction must be finite and nonzero and is normalized by the server. No missing-input
-              fallback selects a current target or facing direction. Passive abilities cannot be
-              activated.
-            </p>
-            <p>
-              Each resolved AbilityTargetingPolicy declares one input_kind. Modes with alternatives
-              require an explicit content binding: summon upgrades may select an owned entity,
-              placements use a point and ordinary summoning uses none. Pet abilities may require an
-              entity or none; ordinary follow/hold/attack/return control uses PetCommandRequest.
-              Unbound choices fail readiness.
-            </p>
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Existing TargetMode</th>
-                    <th>Allowed resolved input kind</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>channel_friendly</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>cone</code></td>
-                    <td>direction</td>
-                  </tr>
-                  <tr>
-                    <td><code>dash_point</code></td>
-                    <td>point</td>
-                  </tr>
-                  <tr>
-                    <td><code>dash_target</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>enemy_channel</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>enemy_line</code></td>
-                    <td>direction</td>
-                  </tr>
-                  <tr>
-                    <td><code>enemy_melee</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>enemy_projectile</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>enemy_target</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>friendly</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>friendly_chain</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>friendly_cone</code></td>
-                    <td>direction</td>
-                  </tr>
-                  <tr>
-                    <td><code>friendly_dash</code></td>
-                    <td>entity</td>
-                  </tr>
-                  <tr>
-                    <td><code>ground</code></td>
-                    <td>point</td>
-                  </tr>
-                  <tr>
-                    <td><code>passive</code></td>
-                    <td>none</td>
-                  </tr>
-                  <tr>
-                    <td><code>pet_command</code></td>
-                    <td>entity / none</td>
-                  </tr>
-                  <tr>
-                    <td><code>self</code></td>
-                    <td>none</td>
-                  </tr>
-                  <tr>
-                    <td><code>self_aoe</code></td>
-                    <td>none</td>
-                  </tr>
-                  <tr>
-                    <td><code>summon</code></td>
-                    <td>entity / point / none</td>
-                  </tr>
-                  <tr>
-                    <td><code>summon_static</code></td>
-                    <td>point</td>
-                  </tr>
-                  <tr>
-                    <td><code>toggle</code></td>
-                    <td>none</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <pre><code class="language-json">{
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Ability execution contracts · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a aria-current=page href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Combat</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Combat</div><h1>Ability execution contracts</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<h2 id="scope-of-the-executable-rule-model">Scope of the executable rule model</h2>
+<p>The v2 data separates authored intent, a numerical primary-effect profile, a specialization state contract and a binding/review status. A profile specifies cast time, cooldown, resource-cost policy, effect magnitudes and structured operations. It is not a substitute for coding every named secondary behavior.</p>
+<p>The package contains 330 inherited named ability entries and 63 prototype execution profiles. All entries have a selected profile and numerical timing/cost defaults instead of v1's <code>TBD_BALANCE</code> fields. Charge Lance is supplied as an explicit example of a dynamic charge-based contract. Other named secondary behaviors remain flagged for individual binding and tests. They must not be automatically enabled because a table row happens to contain a damage coefficient.</p>
+<p><strong>A runtime must reject an entry with unresolved required bindings.</strong> Do not execute prose, ask a language model to interpret ability text during gameplay, or let clients choose missing parameters.</p>
+<h2 id="ability-command">Ability command</h2><p><strong>Reviewed input contract:</strong> target_entity_id, aim_point and aim_direction are always present. Supply exactly the resolved input kind and set unused inputs to null. A supplied character_id is optional and must match the authenticated session; it never selects the actor. Points are absolute x/y coordinates in the caster current zone, instance and floor; the server attaches that scope. A direction must be finite and nonzero and is normalized by the server. No missing-input fallback selects a current target or facing direction. Passive abilities cannot be activated.</p><p>Each resolved AbilityTargetingPolicy declares one input_kind. Modes with alternatives require an explicit content binding: summon upgrades may select an owned entity, placements use a point and ordinary summoning uses none. Pet abilities may require an entity or none; ordinary follow/hold/attack/return control uses PetCommandRequest. Unbound choices fail readiness.</p><div class="table-scroll"><table><thead><tr><th>Existing TargetMode</th><th>Allowed resolved input kind</th></tr></thead><tbody><tr><td><code>channel_friendly</code></td><td>entity</td></tr><tr><td><code>cone</code></td><td>direction</td></tr><tr><td><code>dash_point</code></td><td>point</td></tr><tr><td><code>dash_target</code></td><td>entity</td></tr><tr><td><code>enemy_channel</code></td><td>entity</td></tr><tr><td><code>enemy_line</code></td><td>direction</td></tr><tr><td><code>enemy_melee</code></td><td>entity</td></tr><tr><td><code>enemy_projectile</code></td><td>entity</td></tr><tr><td><code>enemy_target</code></td><td>entity</td></tr><tr><td><code>friendly</code></td><td>entity</td></tr><tr><td><code>friendly_chain</code></td><td>entity</td></tr><tr><td><code>friendly_cone</code></td><td>direction</td></tr><tr><td><code>friendly_dash</code></td><td>entity</td></tr><tr><td><code>ground</code></td><td>point</td></tr><tr><td><code>passive</code></td><td>none</td></tr><tr><td><code>pet_command</code></td><td>entity / none</td></tr><tr><td><code>self</code></td><td>none</td></tr><tr><td><code>self_aoe</code></td><td>none</td></tr><tr><td><code>summon</code></td><td>entity / point / none</td></tr><tr><td><code>summon_static</code></td><td>point</td></tr><tr><td><code>toggle</code></td><td>none</td></tr></tbody></table></div>
+<pre><code class="language-json">{
   "schema": "ability_command_v2",
   "session_epoch": 17,
   "command_sequence": 403,
@@ -272,230 +18,142 @@
   "requested_charge_spend": 4
 }
 </code></pre>
-            <p>
-              The server derives the character from the authenticated session and compares any
-              supplied ID; it never trusts the field as ownership proof. The client cannot supply
-              damage, target health, cooldown completion, resource balance, random seed or
-              authoritative position. Reject NaN/infinite coordinates, oversized arrays, invalid IDs
-              and stale session epochs.
-            </p>
-            <p>
-              A repeated <code>(session_epoch, command_sequence)</code> returns the prior
-              acceptance/rejection/result reference. It does not re-execute. Restrict command rate
-              independently of GCD. Queue at most one future eligible action and preserve its
-              sequence.
-            </p>
-            <h2 id="definition-fields">Definition fields</h2>
-            <p>
-              <strong>Briarwake documentation phase:</strong> AbilityDefinition preserves the
-              shipped prototype record and can optionally reference a complete
-              AbilityRuntimeBinding: rules revision, targeting, timing, finite operations,
-              signature-resource rules, presentation, supported talent paths and cleanup. A missing
-              binding stays disabled. Talent modifiers use finite field paths and an explicit
-              operation index, never an arbitrary expression. Other named secondary behavior must be
-              represented by a versioned typed operation before implementation may enable it. No
-              gameplay handler is written or claimed by this review.
-            </p>
-            <p>
-              Targeting includes the required input_kind and the complete mode matrix in the
-              ability-command section. Only content selects that policy; a client command cannot
-              override mode, relation, range, floor, line-of-sight or release-revalidation rules.
-              Non-channel start-commit is outside the supported baseline. Content package
-              2.2.0-design records these reviewed contract choices; structural completeness does not
-              enable an unbound ability.
-            </p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Group</th>
-                  <th>Required fields</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Identity</td>
-                  <td>Ability ID, owner, class, specialization if any, content version</td>
-                </tr>
-                <tr>
-                  <td>Access</td>
-                  <td>
-                    Required level, talent grant if any, faction/class eligibility, equipment
-                    permissions
-                  </td>
-                </tr>
-                <tr>
-                  <td>Targeting</td>
-                  <td>
-                    Target relation, mode, range, floor policy, line-of-sight policy, target cap
-                  </td>
-                </tr>
-                <tr>
-                  <td>Timing</td>
-                  <td>
-                    Cast/channel, GCD, cooldown family, charge count, recharge policy, commit policy
-                  </td>
-                </tr>
-                <tr>
-                  <td>Cost</td>
-                  <td>
-                    Sustained resource amount or percentage; signature-resource rule; reservation
-                    behavior
-                  </td>
-                </tr>
-                <tr>
-                  <td>Effects</td>
-                  <td>
-                    Ordered operation list, coefficients, schools, durations, radius and status
-                    references
-                  </td>
-                </tr>
-                <tr>
-                  <td>State</td>
-                  <td>Signature event hooks, allowed forms, conditions, proc eligibility</td>
-                </tr>
-                <tr>
-                  <td>Presentation</td>
-                  <td>
-                    Animation event key, telegraph key, audio/effect key, visual facing policy
-                  </td>
-                </tr>
-                <tr>
-                  <td>Safety</td>
-                  <td>
-                    Child-effect cap, recursion depth, PvP overrides, persistence/cleanup policy
-                  </td>
-                </tr>
-                <tr>
-                  <td>Readiness</td>
-                  <td>Required bindings resolved, data tests passed, runtime tests passed</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Profiles are defaults. A specific override must name the changed field and its allowed
-              range. Never combine two full independent profile budgets simply because an ability
-              has both damage and healing flavor.
-            </p>
-            <h2 id="cost-and-cooldown-semantics">Cost and cooldown semantics</h2>
-            <p>
-              For mana users, the profile's mana percentage applies to maximum mana. For non-mana
-              users, the prototype conversion is five resource units per percentage point, capped at
-              30. Ordinary weapon generators have class-specific costs: Energy/Focus users pay their
-              declared generator cost; Rage generators generally pay no Rage and generate only on a
-              valid hit. A specialization state contract governs additional charges or marks; it
-              never creates a second contradictory cost.
-            </p>
-            <p>
-              The resolved definition replaces this prototype conversion with explicit
-              class-specific fields before runtime certification. Price displays use resolved
-              values, not a generic tooltip guessed from the class name.
-            </p>
-            <p>
-              Release-commit spells reserve resources at acceptance and spend at release. Channels
-              commit at start. Multi-charge abilities consume one charge and recharge sequentially
-              unless explicitly declared otherwise. Cooldowns belong to stable ability families and
-              survive talent removal or specialization switching.
-            </p>
-            <h2 id="operation-vocabulary">Operation vocabulary</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Operation family</th>
-                  <th>Rules</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>DAMAGE / HEAL / ABSORB</td>
-                  <td>Use the shared power formula, target relation and final rounding</td>
-                </tr>
-                <tr>
-                  <td>PERIODIC_DAMAGE / PERIODIC_HEAL</td>
-                  <td>Finite tick schedule; one source instance; explicit refresh behavior</td>
-                </tr>
-                <tr>
-                  <td>APPLY_STATUS / SET_MARK</td>
-                  <td>Known status definition; stack group and expiry mandatory</td>
-                </tr>
-                <tr>
-                  <td>MOVE</td>
-                  <td>Server collision/floor/route validation; no client teleport authority</td>
-                </tr>
-                <tr>
-                  <td>INTERRUPT / DISPEL</td>
-                  <td>Eligible category and target state; obey lockout and diminishing returns</td>
-                </tr>
-                <tr>
-                  <td>SUMMON / SUMMON_STATIC</td>
-                  <td>Shared owner capacity, lifetime, inheritance and cleanup</td>
-                </tr>
-                <tr>
-                  <td>PET_COMMAND</td>
-                  <td>Existing authorized pets only; aggregate output budget</td>
-                </tr>
-                <tr>
-                  <td>CHAIN_DAMAGE</td>
-                  <td>Finite jumps, no repeated target, explicit falloff and jump range</td>
-                </tr>
-                <tr>
-                  <td>REDIRECT</td>
-                  <td>Transfer cap, no second mitigation or recursive transfer</td>
-                </tr>
-                <tr>
-                  <td>DELAY_DAMAGE / CLEAR_DAMAGE_LEDGER</td>
-                  <td>Explicit debt accounting; no respec or reconnect deletion</td>
-                </tr>
-                <tr>
-                  <td>RESOURCE_RESTORE / EXCHANGE</td>
-                  <td>Capped amounts; no nonlethal-cost bypass or fake effective-heal trigger</td>
-                </tr>
-                <tr>
-                  <td>REVIVE</td>
-                  <td>Correct alive/dead relation, encounter charges and combat permission</td>
-                </tr>
-                <tr>
-                  <td>SET_FORM / PASSIVE</td>
-                  <td>Server-owned capability state; no duplicated resource or equipment budget</td>
-                </tr>
-                <tr>
-                  <td>RESOLVE_PATTERN / RESOLVE_PERFORMANCE</td>
-                  <td>Named specialized handler, finite input count and total output budget</td>
-                </tr>
-                <tr>
-                  <td>RETURN_ANCHOR / REVEAL</td>
-                  <td>
-                    Authorized destination/information only; not a shortcut around world ownership
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Specialized resolvers need finite enumerated states and an implementation, not
-              arbitrary scripts supplied by the client. Prefer a small explicit operation registry
-              and a few class-specific handlers to a universal programming language inside the
-              combat system.
-            </p>
-            <h2 id="modifier-order">Modifier order</h2>
-            <p>
-              Resolve base profile → specialization substitution → selected exclusive transformation
-              → additive same-family talent ranks → declared multiplicative talent families →
-              equipment-budgeted effects → active source buffs → PvP overrides → clamp caps → target
-              defenses at effect resolution.
-            </p>
-            <p>
-              Mutually exclusive transforms cannot both apply. Replacements remove the original
-              effect rather than retaining both. Additive modifiers in the same family sum before
-              multiplying; modifiers from independent families multiply only when explicitly
-              allowed. A 6% talent and a 4% talent in one family produce 10%, not 10.24%.
-            </p>
-            <p>
-              A talent can alter output coefficient, cost, timing, targeting geometry, resource
-              generation, required sequence, movement permission or an explicit triggered operation.
-              It may not edit a hidden arbitrary property on a player node. Validate affected fields
-              against an allowlist.
-            </p>
-            <h2 id="talent-allocation-contract">Talent allocation contract</h2>
-            <pre><code class="language-json">{
+<p>The server derives the character from the authenticated session and compares any supplied ID; it never trusts the field as ownership proof. The client cannot supply damage, target health, cooldown completion, resource balance, random seed or authoritative position. Reject NaN/infinite coordinates, oversized arrays, invalid IDs and stale session epochs.</p>
+<p>A repeated <code>(session_epoch, command_sequence)</code> returns the prior acceptance/rejection/result reference. It does not re-execute. Restrict command rate independently of GCD. Queue at most one future eligible action and preserve its sequence.</p>
+<h2 id="definition-fields">Definition fields</h2><p><strong>Briarwake documentation phase:</strong> AbilityDefinition preserves the shipped prototype record and can optionally reference a complete AbilityRuntimeBinding: rules revision, targeting, timing, finite operations, signature-resource rules, presentation, supported talent paths and cleanup. A missing binding stays disabled. Talent modifiers use finite field paths and an explicit operation index, never an arbitrary expression. Other named secondary behavior must be represented by a versioned typed operation before implementation may enable it. No gameplay handler is written or claimed by this review.</p><p>Targeting includes the required input_kind and the complete mode matrix in the ability-command section. Only content selects that policy; a client command cannot override mode, relation, range, floor, line-of-sight or release-revalidation rules. Non-channel start-commit is outside the supported baseline. Content package 2.2.0-design records these reviewed contract choices; structural completeness does not enable an unbound ability.</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Required fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identity</td>
+<td>Ability ID, owner, class, specialization if any, content version</td>
+</tr>
+<tr>
+<td>Access</td>
+<td>Required level, talent grant if any, faction/class eligibility, equipment permissions</td>
+</tr>
+<tr>
+<td>Targeting</td>
+<td>Target relation, mode, range, floor policy, line-of-sight policy, target cap</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>Cast/channel, GCD, cooldown family, charge count, recharge policy, commit policy</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Sustained resource amount or percentage; signature-resource rule; reservation behavior</td>
+</tr>
+<tr>
+<td>Effects</td>
+<td>Ordered operation list, coefficients, schools, durations, radius and status references</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Signature event hooks, allowed forms, conditions, proc eligibility</td>
+</tr>
+<tr>
+<td>Presentation</td>
+<td>Animation event key, telegraph key, audio/effect key, visual facing policy</td>
+</tr>
+<tr>
+<td>Safety</td>
+<td>Child-effect cap, recursion depth, PvP overrides, persistence/cleanup policy</td>
+</tr>
+<tr>
+<td>Readiness</td>
+<td>Required bindings resolved, data tests passed, runtime tests passed</td>
+</tr>
+</tbody>
+</table>
+<p>Profiles are defaults. A specific override must name the changed field and its allowed range. Never combine two full independent profile budgets simply because an ability has both damage and healing flavor.</p>
+<h2 id="cost-and-cooldown-semantics">Cost and cooldown semantics</h2>
+<p>For mana users, the profile's mana percentage applies to maximum mana. For non-mana users, the prototype conversion is five resource units per percentage point, capped at 30. Ordinary weapon generators have class-specific costs: Energy/Focus users pay their declared generator cost; Rage generators generally pay no Rage and generate only on a valid hit. A specialization state contract governs additional charges or marks; it never creates a second contradictory cost.</p>
+<p>The resolved definition replaces this prototype conversion with explicit class-specific fields before runtime certification. Price displays use resolved values, not a generic tooltip guessed from the class name.</p>
+<p>Release-commit spells reserve resources at acceptance and spend at release. Channels commit at start. Multi-charge abilities consume one charge and recharge sequentially unless explicitly declared otherwise. Cooldowns belong to stable ability families and survive talent removal or specialization switching.</p>
+<h2 id="operation-vocabulary">Operation vocabulary</h2>
+<table>
+<thead>
+<tr>
+<th>Operation family</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DAMAGE / HEAL / ABSORB</td>
+<td>Use the shared power formula, target relation and final rounding</td>
+</tr>
+<tr>
+<td>PERIODIC_DAMAGE / PERIODIC_HEAL</td>
+<td>Finite tick schedule; one source instance; explicit refresh behavior</td>
+</tr>
+<tr>
+<td>APPLY_STATUS / SET_MARK</td>
+<td>Known status definition; stack group and expiry mandatory</td>
+</tr>
+<tr>
+<td>MOVE</td>
+<td>Server collision/floor/route validation; no client teleport authority</td>
+</tr>
+<tr>
+<td>INTERRUPT / DISPEL</td>
+<td>Eligible category and target state; obey lockout and diminishing returns</td>
+</tr>
+<tr>
+<td>SUMMON / SUMMON_STATIC</td>
+<td>Shared owner capacity, lifetime, inheritance and cleanup</td>
+</tr>
+<tr>
+<td>PET_COMMAND</td>
+<td>Existing authorized pets only; aggregate output budget</td>
+</tr>
+<tr>
+<td>CHAIN_DAMAGE</td>
+<td>Finite jumps, no repeated target, explicit falloff and jump range</td>
+</tr>
+<tr>
+<td>REDIRECT</td>
+<td>Transfer cap, no second mitigation or recursive transfer</td>
+</tr>
+<tr>
+<td>DELAY_DAMAGE / CLEAR_DAMAGE_LEDGER</td>
+<td>Explicit debt accounting; no respec or reconnect deletion</td>
+</tr>
+<tr>
+<td>RESOURCE_RESTORE / EXCHANGE</td>
+<td>Capped amounts; no nonlethal-cost bypass or fake effective-heal trigger</td>
+</tr>
+<tr>
+<td>REVIVE</td>
+<td>Correct alive/dead relation, encounter charges and combat permission</td>
+</tr>
+<tr>
+<td>SET_FORM / PASSIVE</td>
+<td>Server-owned capability state; no duplicated resource or equipment budget</td>
+</tr>
+<tr>
+<td>RESOLVE_PATTERN / RESOLVE_PERFORMANCE</td>
+<td>Named specialized handler, finite input count and total output budget</td>
+</tr>
+<tr>
+<td>RETURN_ANCHOR / REVEAL</td>
+<td>Authorized destination/information only; not a shortcut around world ownership</td>
+</tr>
+</tbody>
+</table>
+<p>Specialized resolvers need finite enumerated states and an implementation, not arbitrary scripts supplied by the client. Prefer a small explicit operation registry and a few class-specific handlers to a universal programming language inside the combat system.</p>
+<h2 id="modifier-order">Modifier order</h2>
+<p>Resolve base profile → specialization substitution → selected exclusive transformation → additive same-family talent ranks → declared multiplicative talent families → equipment-budgeted effects → active source buffs → PvP overrides → clamp caps → target defenses at effect resolution.</p>
+<p>Mutually exclusive transforms cannot both apply. Replacements remove the original effect rather than retaining both. Additive modifiers in the same family sum before multiplying; modifiers from independent families multiply only when explicitly allowed. A 6% talent and a 4% talent in one family produce 10%, not 10.24%.</p>
+<p>A talent can alter output coefficient, cost, timing, targeting geometry, resource generation, required sequence, movement permission or an explicit triggered operation. It may not edit a hidden arbitrary property on a player node. Validate affected fields against an allowlist.</p>
+<h2 id="talent-allocation-contract">Talent allocation contract</h2>
+<pre><code class="language-json">{
   "operation": "apply_build",
   "expected_build_version": 8,
   "specialization_id": "arcanist",
@@ -505,1132 +163,122 @@
   "equipment_set_id": "equipment-example"
 }
 </code></pre>
-            <p>
-              This is a partial example, not a complete 118-point build. Validate ownership,
-              class/faction, earned point balances, level gates, all prerequisites, exclusive
-              groups, rank bounds, unlocked referenced abilities, active encounter state and
-              expected version before committing anything. Returning an error preserves the old
-              build in full.
-            </p>
-            <h2 id="example-pyromancer-consumption">Example: Pyromancer consumption</h2>
-            <p>
-              Burning records remaining authored damage, next tick and owner. A detonation selects
-              only that caster's eligible effect on a valid target. In one simulation action, mark
-              the consumed budget, remove or reduce the periodic effect, calculate the finisher and
-              emit the result. The consumed damage cannot tick again, count as a second kill, or
-              trigger its own resource generator. Other Pyromancers' effects are unaffected.
-            </p>
-            <h2 id="example-grovekeeper-seed-consumption">Example: Grovekeeper seed consumption</h2>
-            <p>
-              A seed has stage, expiry, remaining healing budget and owner. Open Bloom consumes the
-              selected seed and converts the declared remaining budget into immediate healing using
-              its specialization coefficient. Cancel the next scheduled tick before resolving
-              consumption. If another heal fills the target first, excess becomes overhealing; it
-              cannot be converted into free resource or automatically jump to another target.
-            </p>
-            <h2 id="replication-events">Replication events</h2>
-            <p>
-              Use accepted/rejected command responses; cast started/interrupted/released; entity
-              spawned/despawned; effect applied/updated/removed; resource snapshot; combat result;
-              death/revival; build accepted; durable reward committed. Event payloads contain server
-              tick, stable IDs, version and outcome values, not serialized Godot objects.
-            </p>
-            <p>
-              Animation is derived from events and gameplay state. A two-frame animation variant
-              cannot cause two server attacks. Clients interpolate presentation and predict local
-              input where safe; they do not reproduce authoritative damage rolls.
-            </p>
-            <h2 id="data-and-runtime-gates">Data and runtime gates</h2>
-            <p>
-              Schema completeness and runtime readiness are independent milestones. The reviewed
-              contracts specify optional bindings and explicit fixture run evidence; the shipped
-              prototype content remains at its current readiness state. Authored expected outcomes
-              are unexecuted until a real Briarwake runner tests that exact content/rules/build
-              revision. Existing bindings_resolved, data_tests_passed and runtime_tests_passed gates
-              continue to control future execution.
-            </p>
-            <p>
-              The included tests verify schema-like structural requirements, IDs, levels, tree
-              capacity and reference integrity. They do not execute all class-specific handlers.
-              Before an ability is marked runtime-ready, require tests for rejection, normal use,
-              interruption, duplicate request, resource boundary, invalid target, PvP control,
-              respec, death and disconnect. Before a talent is enabled, test it alongside each
-              competing transformation and any affected gear effect.
-            </p>
-            <div
-              aria-label="Scrollable reference table"
-              class="table-scroll"
-              role="region"
-              tabindex="0"
-            >
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">ID / profile</th>
-                    <th scope="col">Cast / cooldown</th>
-                    <th scope="col">Mana / duration</th>
-                    <th scope="col">Operations</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>M</code><br />Martial generator</td>
-                    <td>0s / 0s</td>
-                    <td>0% / 0s</td>
-                    <td>damage: power coefficient=0.55, weapon coefficient=0.65</td>
-                  </tr>
-                  <tr>
-                    <td><code>D</code><br />Measured direct spell</td>
-                    <td>1.5s / 0s</td>
-                    <td>3% / 0s</td>
-                    <td>damage: power coefficient=1.1</td>
-                  </tr>
-                  <tr>
-                    <td><code>G</code><br />Targeted advance</td>
-                    <td>0s / 15s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      move: movement=dash_to_target, distance cap=6; damage: power coefficient=0.25
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>DD</code><br />Legal reposition</td>
-                    <td>0s / 15s</td>
-                    <td>0% / 0s</td>
-                    <td>move: movement=dash_to_point, distance cap=3</td>
-                  </tr>
-                  <tr>
-                    <td><code>TP</code><br />Short teleport</td>
-                    <td>0s / 20s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      move: movement=teleport_to_point, distance cap=4, requires clear route=True
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>I</code><br />Interrupt</td>
-                    <td>0s / 15s</td>
-                    <td>0% / 0s</td>
-                    <td>interrupt: lockout seconds=3, pvp lockout seconds=2</td>
-                  </tr>
-                  <tr>
-                    <td><code>BU</code><br />Group readiness</td>
-                    <td>0s / 30s</td>
-                    <td>3% / 10s</td>
-                    <td>
-                      apply status: status=group_output, amount=0.05, stack
-                      group=group_amplification, target cap=5
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>PA</code><br />Class proficiency</td>
-                    <td>0s / 0s</td>
-                    <td>0% / 0s</td>
-                    <td>passive: policy=class_equipment_and_resource_rules</td>
-                  </tr>
-                  <tr>
-                    <td><code>MS</code><br />Slowing strike</td>
-                    <td>0s / 8s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      damage: power coefficient=0.4; apply status: status=slow, amount=0.3, duration
-                      seconds=4
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>DR</code><br />Personal defense</td>
-                    <td>0s / 30s</td>
-                    <td>0% / 6s</td>
-                    <td>
-                      apply status: status=damage_reduction, amount=0.3, stack
-                      group=personal_defense
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>CA</code><br />Area strike</td>
-                    <td>0s / 10s</td>
-                    <td>5% / 0s</td>
-                    <td>damage: power coefficient=0.65</td>
-                  </tr>
-                  <tr>
-                    <td><code>ST</code><br />Forced-movement protection</td>
-                    <td>0s / 90s</td>
-                    <td>0% / 4s</td>
-                    <td>apply status: status=displacement_immunity, target cap=5</td>
-                  </tr>
-                  <tr>
-                    <td><code>BK</code><br />Frontal active block</td>
-                    <td>0s / 8s</td>
-                    <td>0% / 4s</td>
-                    <td>
-                      apply status: status=frontal_block, amount=0.5, arc degrees=120,
-                      school=physical, movement multiplier=0.5
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>TH</code><br />Threat counterstrike</td>
-                    <td>0s / 6s</td>
-                    <td>0% / 0s</td>
-                    <td>damage: power coefficient=0.8, threat multiplier=2.0</td>
-                  </tr>
-                  <tr>
-                    <td><code>ZD</code><br />Persistent damage area</td>
-                    <td>0s / 15s</td>
-                    <td>6% / 6s</td>
-                    <td>
-                      periodic damage: power coefficient per tick=0.2, tick seconds=1, tick count=6
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>ZC</code><br />Slowing area</td>
-                    <td>0s / 15s</td>
-                    <td>3% / 6s</td>
-                    <td>apply status: status=slow, amount=0.3, tick seconds=1</td>
-                  </tr>
-                  <tr>
-                    <td><code>ZM</code><br />Mixed consecrated area</td>
-                    <td>0s / 20s</td>
-                    <td>6% / 6s</td>
-                    <td>
-                      periodic damage: power coefficient per tick=0.12, tick seconds=1, tick
-                      count=6, relation=enemy; periodic heal: power coefficient per tick=0.08, tick
-                      seconds=1, tick count=6, relation=ally
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>IN</code><br />Ally interception</td>
-                    <td>0s / 20s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      move: movement=dash_to_ally, distance cap=5; redirect: fraction=0.3, total cap
-                      caster health fraction=0.2, duration seconds=6
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>RD</code><br />Damage transfer</td>
-                    <td>0s / 30s</td>
-                    <td>4% / 0s</td>
-                    <td>
-                      redirect: fraction=0.3, total cap caster health fraction=0.2, duration
-                      seconds=6
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>BW</code><br />Controlled attack weakening</td>
-                    <td>0s / 30s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      damage: power coefficient=0.7; apply status: status=next_attack_reduction,
-                      amount=0.1, duration seconds=6, charges=1
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>PR</code><br />Timed parry</td>
-                    <td>0s / 12s</td>
-                    <td>0% / 2s</td>
-                    <td>apply status: status=next_physical_hit_reduction, amount=0.5, charges=1</td>
-                  </tr>
-                  <tr>
-                    <td><code>HA</code><br />Temporary haste</td>
-                    <td>0s / 60s</td>
-                    <td>0% / 8s</td>
-                    <td>apply status: status=haste, amount=0.2, stack group=personal_haste</td>
-                  </tr>
-                  <tr>
-                    <td><code>F</code><br />Committed finisher</td>
-                    <td>0s / 12s</td>
-                    <td>6% / 0s</td>
-                    <td>damage: power coefficient=1.8</td>
-                  </tr>
-                  <tr>
-                    <td><code>CD</code><br />Major output window</td>
-                    <td>0s / 90s</td>
-                    <td>0% / 10s</td>
-                    <td>
-                      apply status: status=personal_output, amount=0.15, stack group=major_output
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>MK</code><br />Owner vulnerability mark</td>
-                    <td>0s / 12s</td>
-                    <td>2% / 10s</td>
-                    <td>
-                      set mark: amount=0.1, stack group=owner_vulnerability, max targets per owner=1
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>DOT</code><br />Periodic affliction</td>
-                    <td>0s / 0s</td>
-                    <td>4% / 12s</td>
-                    <td>
-                      periodic damage: power coefficient per tick=0.15, tick seconds=2, tick count=6
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>PO</code><br />Weapon poison</td>
-                    <td>0s / 6s</td>
-                    <td>0% / 12s</td>
-                    <td>
-                      damage: power coefficient=0.2; periodic damage: power coefficient per
-                      tick=0.12, tick seconds=2, tick count=6
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>SH</code><br />Absorption ward</td>
-                    <td>0s / 12s</td>
-                    <td>4% / 10s</td>
-                    <td>absorb: power coefficient=1.0, recipient health cap=0.3</td>
-                  </tr>
-                  <tr>
-                    <td><code>H</code><br />Direct heal</td>
-                    <td>1.5s / 0s</td>
-                    <td>4% / 0s</td>
-                    <td>heal: power coefficient=1.7</td>
-                  </tr>
-                  <tr>
-                    <td><code>EH</code><br />Emergency direct heal</td>
-                    <td>0s / 90s</td>
-                    <td>8% / 0s</td>
-                    <td>heal: power coefficient=3.2</td>
-                  </tr>
-                  <tr>
-                    <td><code>HS</code><br />Modest self-recovery</td>
-                    <td>0s / 30s</td>
-                    <td>0% / 0s</td>
-                    <td>heal: power coefficient=0.8, relation=self</td>
-                  </tr>
-                  <tr>
-                    <td><code>HOT</code><br />Sustained recovery</td>
-                    <td>0s / 0s</td>
-                    <td>4% / 10s</td>
-                    <td>
-                      periodic heal: power coefficient per tick=0.3, tick seconds=2, tick count=5
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>HC</code><br />Healing channel</td>
-                    <td>3s / 0s</td>
-                    <td>6% / 3s</td>
-                    <td>
-                      periodic heal: power coefficient per tick=0.7, tick seconds=1, tick count=3
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>CH</code><br />Life-drain channel</td>
-                    <td>3s / 0s</td>
-                    <td>5% / 3s</td>
-                    <td>
-                      periodic damage: power coefficient per tick=0.5, tick seconds=1, tick count=3;
-                      lifesteal: effective damage fraction=0.5, relation=self
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>EX</code><br />Nonlethal resource exchange</td>
-                    <td>0s / 20s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      exchange: health cost max fraction=0.1, minimum remaining health
-                      fraction=0.35, mana gain max fraction=0.08
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>PU</code><br />Friendly cleanse</td>
-                    <td>0s / 8s</td>
-                    <td>2% / 0s</td>
-                    <td>dispel: relation=ally, families=['harmful_magic'], count=1</td>
-                  </tr>
-                  <tr>
-                    <td><code>PD</code><br />Enemy beneficial dispel</td>
-                    <td>0s / 12s</td>
-                    <td>3% / 0s</td>
-                    <td>dispel: relation=enemy, families=['beneficial_magic'], count=1</td>
-                  </tr>
-                  <tr>
-                    <td><code>RE</code><br />Out-of-combat revival</td>
-                    <td>8s / 0s</td>
-                    <td>10% / 0s</td>
-                    <td>revive: health fraction=0.2, mana fraction=0.2, combat allowed=False</td>
-                  </tr>
-                  <tr>
-                    <td><code>AH</code><br />Group recovery</td>
-                    <td>2s / 10s</td>
-                    <td>8% / 0s</td>
-                    <td>heal: power coefficient=1.0, target cap=5</td>
-                  </tr>
-                  <tr>
-                    <td><code>GH</code><br />Group regenerative area</td>
-                    <td>2s / 20s</td>
-                    <td>8% / 10s</td>
-                    <td>
-                      periodic heal: power coefficient per tick=0.25, tick seconds=2, tick count=5,
-                      target cap=5
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>GW</code><br />Group prevention</td>
-                    <td>0s / 30s</td>
-                    <td>7% / 8s</td>
-                    <td>absorb: power coefficient=0.6, target cap=5, recipient health cap=0.2</td>
-                  </tr>
-                  <tr>
-                    <td><code>T</code><br />Single-target challenge</td>
-                    <td>0s / 8s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      taunt: duration seconds=3, threat factor of highest=1.1, engaged npc only=True
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>TA</code><br />Area challenge</td>
-                    <td>0s / 20s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      taunt: duration seconds=3, threat factor of highest=1.1, target cap=5, engaged
-                      npc only=True
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>SU</code><br />Mobile summon</td>
-                    <td>2s / 10s</td>
-                    <td>4% / 0s</td>
-                    <td>
-                      summon: capacity pool=owner_combat, capacity cost=1, aggregate full pool DPS
-                      power coefficient=0.3, lifetime seconds=0
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>PC</code><br />Coordinated pet attack</td>
-                    <td>0s / 6s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      pet command: command=attack, aggregate power coefficient=0.5, owner capacity
-                      pool=True
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>TS</code><br />Offensive totem</td>
-                    <td>0s / 15s</td>
-                    <td>4% / 15s</td>
-                    <td>
-                      summon static: capacity cost=1, power coefficient per tick=0.15, tick
-                      seconds=1, lifetime seconds=15
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>TH0</code><br />Healing totem</td>
-                    <td>0s / 15s</td>
-                    <td>4% / 15s</td>
-                    <td>
-                      summon static: capacity cost=1, healing power coefficient per tick=0.12,
-                      target cap=5, tick seconds=1, lifetime seconds=15
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>FO</code><br />Validated form</td>
-                    <td>0s / 1.5s</td>
-                    <td>0% / 0s</td>
-                    <td>set form: policy=selected_specialization_and_shared_form_rules</td>
-                  </tr>
-                  <tr>
-                    <td><code>SE</code><br />Stealth preparation</td>
-                    <td>0s / 10s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      apply status: status=stealth, movement multiplier=0.7, break on hostile
-                      action=True, combat activation=False
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>FE</code><br />Breakable disorientation</td>
-                    <td>0s / 30s</td>
-                    <td>3% / 4s</td>
-                    <td>
-                      apply status: status=disorient, pvp duration seconds=3, break on damage=True,
-                      diminishing group=hard_control
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>RT</code><br />Root control</td>
-                    <td>0s / 15s</td>
-                    <td>3% / 4s</td>
-                    <td>
-                      apply status: status=root, pvp duration seconds=2, diminishing group=root
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>MR</code><br />Resource recovery channel</td>
-                    <td>3s / 30s</td>
-                    <td>0% / 0s</td>
-                    <td>resource restore: primary max fraction=0.15, ticks=3</td>
-                  </tr>
-                  <tr>
-                    <td><code>BS</code><br />Moving performance</td>
-                    <td>0s / 3s</td>
-                    <td>0% / 10s</td>
-                    <td>
-                      apply status: status=group_movement, amount=0.1, stack group=group_movement,
-                      target cap=5
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>BF</code><br />Performance finale</td>
-                    <td>0s / 30s</td>
-                    <td>6% / 0s</td>
-                    <td>
-                      resolve performance: max active songs consumed=2, damage power
-                      coefficient=0.8, healing power coefficient=0.8, target cap=5
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>SM</code><br />Target-acquisition smoke</td>
-                    <td>0s / 30s</td>
-                    <td>0% / 6s</td>
-                    <td>
-                      apply zone: status=concealment, radius=2.5, blocks projectiles=False, breaks
-                      existing casts=False
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>TR</code><br />Bounded tracking</td>
-                    <td>0s / 15s</td>
-                    <td>0% / 0s</td>
-                    <td>
-                      reveal: radius=6, duration seconds=4, only authorized tracks=True, does not
-                      reveal hidden players=True
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>SP</code><br />Movement acceleration</td>
-                    <td>0s / 30s</td>
-                    <td>0% / 4s</td>
-                    <td>
-                      apply status: status=movement_speed, amount=0.3, stack group=personal_movement
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>CL</code><br />Bounded chain attack</td>
-                    <td>1.5s / 8s</td>
-                    <td>5% / 0s</td>
-                    <td>
-                      chain damage: power coefficient=1.0, falloff per jump=0.25, target cap=3, jump
-                      range=3
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>WM</code><br />Non-combat return anchor</td>
-                    <td>8s / 900s</td>
-                    <td>10% / 0s</td>
-                    <td>
-                      return anchor: combat allowed=False, cross instance allowed=False, destination
-                      validation=server_owned_safe_anchor
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>ZA</code><br />Area defensive preparation</td>
-                    <td>0s / 30s</td>
-                    <td>5% / 8s</td>
-                    <td>
-                      apply zone: status=damage_reduction, amount=0.1, radius=2.5, target cap=5,
-                      stack group=group_defense
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>LED</code><br />Delayed-damage defense</td>
-                    <td>0s / 12s</td>
-                    <td>0% / 6s</td>
-                    <td>delay damage: fraction=0.3, ledger seconds=6, reentry allowed=False</td>
-                  </tr>
-                  <tr>
-                    <td><code>CLR</code><br />Debt reduction</td>
-                    <td>0s / 8s</td>
-                    <td>0% / 0s</td>
-                    <td>clear damage ledger: current ledger fraction=0.25</td>
-                  </tr>
-                  <tr>
-                    <td><code>PAT</code><br />Bounded pattern resolver</td>
-                    <td>0s / 20s</td>
-                    <td>6% / 0s</td>
-                    <td>
-                      resolve pattern: max sources=4, max links=3, output budget power
-                      coefficient=1.8
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <!-- data-inventory:start -->
-            <section class="data-inventory" aria-labelledby="data">
-              <h2 id="data">Data</h2>
-              <p>
-                Follow a type name to its canonical members, properties, constraints and review
-                decisions. Definitions are generated from one shared registry.
-              </p>
-              <h3 id="data-enums">Enums</h3>
-              <ul>
-                <li data-inventory-id="action-rejection-reason">
-                  <code
-                    ><a href="data-inventory.html#action-rejection-reason"
-                      >ActionRejectionReason</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cast-commit-policy">
-                  <code><a href="data-inventory.html#cast-commit-policy">CastCommitPolicy</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="cast-phase">
-                  <code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="command-outcome">
-                  <code><a href="data-inventory.html#command-outcome">CommandOutcome</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="content-readiness-status">
-                  <code
-                    ><a href="data-inventory.html#content-readiness-status"
-                      >ContentReadinessStatus</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="damage-school">
-                  <code><a href="data-inventory.html#damage-school">DamageSchool</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="effect-operation">
-                  <code><a href="data-inventory.html#effect-operation">EffectOperation</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="pet-command-type">
-                  <code><a href="data-inventory.html#pet-command-type">PetCommandType</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="projectile-collision-policy">
-                  <code
-                    ><a href="data-inventory.html#projectile-collision-policy"
-                      >ProjectileCollisionPolicy</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="projectile-hit-policy">
-                  <code
-                    ><a href="data-inventory.html#projectile-hit-policy"
-                      >ProjectileHitPolicy</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="replication-event-kind">
-                  <code
-                    ><a href="data-inventory.html#replication-event-kind"
-                      >ReplicationEventKind</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="seed-growth-stage">
-                  <code><a href="data-inventory.html#seed-growth-stage">SeedGrowthStage</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="session-ownership-state">
-                  <code
-                    ><a href="data-inventory.html#session-ownership-state"
-                      >SessionOwnershipState</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="status-category">
-                  <code><a href="data-inventory.html#status-category">StatusCategory</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="status-stacking-policy">
-                  <code
-                    ><a href="data-inventory.html#status-stacking-policy"
-                      >StatusStackingPolicy</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="summon-kind">
-                  <code><a href="data-inventory.html#summon-kind">SummonKind</a></code> — Existing ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="target-mode">
-                  <code><a href="data-inventory.html#target-mode">TargetMode</a></code> — Existing ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="target-relation">
-                  <code><a href="data-inventory.html#target-relation">TargetRelation</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="transfer-phase">
-                  <code><a href="data-inventory.html#transfer-phase">TransferPhase</a></code> —
-                  Proposed · Fully Defined
-                </li>
-              </ul>
-              <h3 id="data-interfaces">Interfaces</h3>
-              <ul>
-                <li data-inventory-id="ability-execution-context">
-                  <code
-                    ><a href="data-inventory.html#ability-execution-context"
-                      >AbilityExecutionContext</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="absorb-state">
-                  <code><a href="data-inventory.html#absorb-state">AbsorbState</a></code> — Proposed
-                  · Fully Defined
-                </li>
-                <li data-inventory-id="build-preview">
-                  <code><a href="data-inventory.html#build-preview">BuildPreview</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cast-state">
-                  <code><a href="data-inventory.html#cast-state">CastState</a></code> — Proposed ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="character-loadout">
-                  <code><a href="data-inventory.html#character-loadout">CharacterLoadout</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="combat-result">
-                  <code><a href="data-inventory.html#combat-result">CombatResult</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="combat-sequence-state">
-                  <code
-                    ><a href="data-inventory.html#combat-sequence-state"
-                      >CombatSequenceState</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cooldown-state">
-                  <code><a href="data-inventory.html#cooldown-state">CooldownState</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="effect-operation-context">
-                  <code
-                    ><a href="data-inventory.html#effect-operation-context"
-                      >EffectOperationContext</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="ground-effect-state">
-                  <code
-                    ><a href="data-inventory.html#ground-effect-state">GroundEffectState</a></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="healing-seed-state">
-                  <code><a href="data-inventory.html#healing-seed-state">HealingSeedState</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="input-queue-state">
-                  <code><a href="data-inventory.html#input-queue-state">InputQueueState</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="periodic-effect-schedule">
-                  <code
-                    ><a href="data-inventory.html#periodic-effect-schedule"
-                      >PeriodicEffectSchedule</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="projectile-state">
-                  <code><a href="data-inventory.html#projectile-state">ProjectileState</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="resolved-ability-definition">
-                  <code
-                    ><a href="data-inventory.html#resolved-ability-definition"
-                      >ResolvedAbilityDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="resource-pool-state">
-                  <code
-                    ><a href="data-inventory.html#resource-pool-state">ResourcePoolState</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="resource-reservation">
-                  <code
-                    ><a href="data-inventory.html#resource-reservation"
-                      >ResourceReservation</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="status-instance">
-                  <code><a href="data-inventory.html#status-instance">StatusInstance</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="talent-allocation">
-                  <code><a href="data-inventory.html#talent-allocation">TalentAllocation</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="talent-modifier">
-                  <code><a href="data-inventory.html#talent-modifier">TalentModifier</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="talent-proc-state">
-                  <code><a href="data-inventory.html#talent-proc-state">TalentProcState</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="talent-validation-result">
-                  <code
-                    ><a href="data-inventory.html#talent-validation-result"
-                      >TalentValidationResult</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="trigger-context">
-                  <code><a href="data-inventory.html#trigger-context">TriggerContext</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="trigger-queue-state">
-                  <code
-                    ><a href="data-inventory.html#trigger-queue-state">TriggerQueueState</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-              </ul>
-              <h3 id="data-schemas">Schemas</h3>
-              <ul>
-                <li data-inventory-id="ability-command-v2">
-                  <code
-                    ><a href="data-inventory.html#ability-command-v2">ability_command_v2</a></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="ability-cost-policy">
-                  <code
-                    ><a href="data-inventory.html#ability-cost-policy">AbilityCostPolicy</a></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="ability-definition">
-                  <code
-                    ><a href="data-inventory.html#ability-definition">AbilityDefinition</a></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="ability-execution-fixture">
-                  <code
-                    ><a href="data-inventory.html#ability-execution-fixture"
-                      >AbilityExecutionFixture</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="ability-targeting-policy">
-                  <code
-                    ><a href="data-inventory.html#ability-targeting-policy"
-                      >AbilityTargetingPolicy</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="ability-timing-policy">
-                  <code
-                    ><a href="data-inventory.html#ability-timing-policy"
-                      >AbilityTimingPolicy</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="build-accepted-event">
-                  <code
-                    ><a href="data-inventory.html#build-accepted-event">BuildAcceptedEvent</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="build-application-request">
-                  <code
-                    ><a href="data-inventory.html#build-application-request"
-                      >BuildApplicationRequest</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="build-application-response">
-                  <code
-                    ><a href="data-inventory.html#build-application-response"
-                      >BuildApplicationResponse</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cast-event">
-                  <code><a href="data-inventory.html#cast-event">CastEvent</a></code> — Proposed ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="combat-result-event">
-                  <code
-                    ><a href="data-inventory.html#combat-result-event">CombatResultEvent</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="combat-rules-configuration">
-                  <code
-                    ><a href="data-inventory.html#combat-rules-configuration"
-                      >CombatRulesConfiguration</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="combat-stance">
-                  <code><a href="data-inventory.html#combat-stance">CombatStance</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="command-response">
-                  <code><a href="data-inventory.html#command-response">CommandResponse</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="content-validation-fixture">
-                  <code
-                    ><a href="data-inventory.html#content-validation-fixture"
-                      >ContentValidationFixture</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="content-validation-result">
-                  <code
-                    ><a href="data-inventory.html#content-validation-result"
-                      >ContentValidationResult</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cooldown-definition">
-                  <code
-                    ><a href="data-inventory.html#cooldown-definition">CooldownDefinition</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cooldown-family">
-                  <code><a href="data-inventory.html#cooldown-family">CooldownFamily</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="death-revival-event">
-                  <code
-                    ><a href="data-inventory.html#death-revival-event">DeathRevivalEvent</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="druid-form">
-                  <code><a href="data-inventory.html#druid-form">DruidForm</a></code> — Proposed ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="effect-operation-definition">
-                  <code
-                    ><a href="data-inventory.html#effect-operation-definition"
-                      >EffectOperationDefinition</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="entity-lifecycle-event">
-                  <code
-                    ><a href="data-inventory.html#entity-lifecycle-event"
-                      >EntityLifecycleEvent</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="execution-profile">
-                  <code><a href="data-inventory.html#execution-profile">ExecutionProfile</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="form-definition">
-                  <code><a href="data-inventory.html#form-definition">FormDefinition</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="invalid-target-fixture">
-                  <code
-                    ><a href="data-inventory.html#invalid-target-fixture"
-                      >InvalidTargetFixture</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="note-family">
-                  <code><a href="data-inventory.html#note-family">NoteFamily</a></code> — Proposed ·
-                  Fully Defined
-                </li>
-                <li data-inventory-id="operation-receipt">
-                  <code><a href="data-inventory.html#operation-receipt">OperationReceipt</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="party-command">
-                  <code><a href="data-inventory.html#party-command">PartyCommand</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="party-snapshot">
-                  <code><a href="data-inventory.html#party-snapshot">PartySnapshot</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="pet-command-request">
-                  <code
-                    ><a href="data-inventory.html#pet-command-request">PetCommandRequest</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="resource-definition">
-                  <code
-                    ><a href="data-inventory.html#resource-definition">ResourceDefinition</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="resource-gain-rule">
-                  <code><a href="data-inventory.html#resource-gain-rule">ResourceGainRule</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="resource-snapshot">
-                  <code><a href="data-inventory.html#resource-snapshot">ResourceSnapshot</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="resource-type">
-                  <code><a href="data-inventory.html#resource-type">ResourceType</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="reward-committed-event">
-                  <code
-                    ><a href="data-inventory.html#reward-committed-event"
-                      >RewardCommittedEvent</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="stance-definition">
-                  <code><a href="data-inventory.html#stance-definition">StanceDefinition</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="state-reconstruction-fixture">
-                  <code
-                    ><a href="data-inventory.html#state-reconstruction-fixture"
-                      >StateReconstructionFixture</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="status-definition">
-                  <code><a href="data-inventory.html#status-definition">StatusDefinition</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="status-effect-event">
-                  <code
-                    ><a href="data-inventory.html#status-effect-event">StatusEffectEvent</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="summon-checkpoint">
-                  <code><a href="data-inventory.html#summon-checkpoint">SummonCheckpoint</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="summon-definition">
-                  <code><a href="data-inventory.html#summon-definition">SummonDefinition</a></code>
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="talent-build-record">
-                  <code
-                    ><a href="data-inventory.html#talent-build-record">TalentBuildRecord</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="talent-interaction-fixture">
-                  <code
-                    ><a href="data-inventory.html#talent-interaction-fixture"
-                      >TalentInteractionFixture</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="talent-modifier-definition">
-                  <code
-                    ><a href="data-inventory.html#talent-modifier-definition"
-                      >TalentModifierDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="telegraph-definition">
-                  <code
-                    ><a href="data-inventory.html#telegraph-definition"
-                      >TelegraphDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="travel-anchor-record">
-                  <code
-                    ><a href="data-inventory.html#travel-anchor-record">TravelAnchorRecord</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="travel-request">
-                  <code><a href="data-inventory.html#travel-request">TravelRequest</a></code> —
-                  Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="trigger-definition">
-                  <code
-                    ><a href="data-inventory.html#trigger-definition">TriggerDefinition</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="visual-presentation-definition">
-                  <code
-                    ><a href="data-inventory.html#visual-presentation-definition"
-                      >VisualPresentationDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="zone-transition-definition">
-                  <code
-                    ><a href="data-inventory.html#zone-transition-definition"
-                      >ZoneTransitionDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-              </ul>
-            </section>
-            <!-- data-inventory:end -->
-          </div>
-          <footer class="page-footer">
-            <a href="../guide/audit.html">Readiness and open gates</a
-            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
-            ><a href="#main">Back to top ↑</a>
-          </footer>
-        </main>
-        <aside class="page-toc" aria-label="On this page">
-          <p>ON THIS PAGE</p>
-          <a href="#scope-of-the-executable-rule-model">Scope of the executable rule model</a
-          ><a href="#ability-command">Ability command</a
-          ><a href="#definition-fields">Definition fields</a
-          ><a href="#cost-and-cooldown-semantics">Cost and cooldown semantics</a
-          ><a href="#operation-vocabulary">Operation vocabulary</a
-          ><a href="#modifier-order">Modifier order</a
-          ><a href="#talent-allocation-contract">Talent allocation contract</a
-          ><a href="#example-pyromancer-consumption">Example: Pyromancer consumption</a
-          ><a href="#example-grovekeeper-seed-consumption">Example: Grovekeeper seed consumption</a
-          ><a href="#replication-events">Replication events</a
-          ><a href="#data-and-runtime-gates">Data and runtime gates</a>
-          <a data-inventory-toc href="#data">Data</a>
-        </aside>
-      </div>
-    </div>
-  </body>
-</html>
+<p>This is a partial example, not a complete 118-point build. Validate ownership, class/faction, earned point balances, level gates, all prerequisites, exclusive groups, rank bounds, unlocked referenced abilities, active encounter state and expected version before committing anything. Returning an error preserves the old build in full.</p>
+<h2 id="example-pyromancer-consumption">Example: Pyromancer consumption</h2>
+<p>Burning records remaining authored damage, next tick and owner. A detonation selects only that caster's eligible effect on a valid target. In one simulation action, mark the consumed budget, remove or reduce the periodic effect, calculate the finisher and emit the result. The consumed damage cannot tick again, count as a second kill, or trigger its own resource generator. Other Pyromancers' effects are unaffected.</p>
+<h2 id="example-grovekeeper-seed-consumption">Example: Grovekeeper seed consumption</h2>
+<p>A seed has stage, expiry, remaining healing budget and owner. Open Bloom consumes the selected seed and converts the declared remaining budget into immediate healing using its specialization coefficient. Cancel the next scheduled tick before resolving consumption. If another heal fills the target first, excess becomes overhealing; it cannot be converted into free resource or automatically jump to another target.</p>
+<h2 id="replication-events">Replication events</h2>
+<p>Use accepted/rejected command responses; cast started/interrupted/released; entity spawned/despawned; effect applied/updated/removed; resource snapshot; combat result; death/revival; build accepted; durable reward committed. Event payloads contain server tick, stable IDs, version and outcome values, not serialized Godot objects.</p>
+<p>Animation is derived from events and gameplay state. A two-frame animation variant cannot cause two server attacks. Clients interpolate presentation and predict local input where safe; they do not reproduce authoritative damage rolls.</p>
+<h2 id="data-and-runtime-gates">Data and runtime gates</h2><p>Schema completeness and runtime readiness are independent milestones. The reviewed contracts specify optional bindings and explicit fixture run evidence; the shipped prototype content remains at its current readiness state. Authored expected outcomes are unexecuted until a real Briarwake runner tests that exact content/rules/build revision. Existing bindings_resolved, data_tests_passed and runtime_tests_passed gates continue to control future execution.</p>
+<p>The included tests verify schema-like structural requirements, IDs, levels, tree capacity and reference integrity. They do not execute all class-specific handlers. Before an ability is marked runtime-ready, require tests for rejection, normal use, interruption, duplicate request, resource boundary, invalid target, PvP control, respec, death and disconnect. Before a talent is enabled, test it alongside each competing transformation and any affected gear effect.</p>
+<div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">ID / profile</th><th scope="col">Cast / cooldown</th><th scope="col">Mana / duration</th><th scope="col">Operations</th></tr></thead><tbody><tr><td><code>M</code><br/>Martial generator</td><td>0s / 0s</td><td>0% / 0s</td><td>damage: power coefficient=0.55, weapon coefficient=0.65</td></tr><tr><td><code>D</code><br/>Measured direct spell</td><td>1.5s / 0s</td><td>3% / 0s</td><td>damage: power coefficient=1.1</td></tr><tr><td><code>G</code><br/>Targeted advance</td><td>0s / 15s</td><td>0% / 0s</td><td>move: movement=dash_to_target, distance cap=6; damage: power coefficient=0.25</td></tr><tr><td><code>DD</code><br/>Legal reposition</td><td>0s / 15s</td><td>0% / 0s</td><td>move: movement=dash_to_point, distance cap=3</td></tr><tr><td><code>TP</code><br/>Short teleport</td><td>0s / 20s</td><td>0% / 0s</td><td>move: movement=teleport_to_point, distance cap=4, requires clear route=True</td></tr><tr><td><code>I</code><br/>Interrupt</td><td>0s / 15s</td><td>0% / 0s</td><td>interrupt: lockout seconds=3, pvp lockout seconds=2</td></tr><tr><td><code>BU</code><br/>Group readiness</td><td>0s / 30s</td><td>3% / 10s</td><td>apply status: status=group_output, amount=0.05, stack group=group_amplification, target cap=5</td></tr><tr><td><code>PA</code><br/>Class proficiency</td><td>0s / 0s</td><td>0% / 0s</td><td>passive: policy=class_equipment_and_resource_rules</td></tr><tr><td><code>MS</code><br/>Slowing strike</td><td>0s / 8s</td><td>0% / 0s</td><td>damage: power coefficient=0.4; apply status: status=slow, amount=0.3, duration seconds=4</td></tr><tr><td><code>DR</code><br/>Personal defense</td><td>0s / 30s</td><td>0% / 6s</td><td>apply status: status=damage_reduction, amount=0.3, stack group=personal_defense</td></tr><tr><td><code>CA</code><br/>Area strike</td><td>0s / 10s</td><td>5% / 0s</td><td>damage: power coefficient=0.65</td></tr><tr><td><code>ST</code><br/>Forced-movement protection</td><td>0s / 90s</td><td>0% / 4s</td><td>apply status: status=displacement_immunity, target cap=5</td></tr><tr><td><code>BK</code><br/>Frontal active block</td><td>0s / 8s</td><td>0% / 4s</td><td>apply status: status=frontal_block, amount=0.5, arc degrees=120, school=physical, movement multiplier=0.5</td></tr><tr><td><code>TH</code><br/>Threat counterstrike</td><td>0s / 6s</td><td>0% / 0s</td><td>damage: power coefficient=0.8, threat multiplier=2.0</td></tr><tr><td><code>ZD</code><br/>Persistent damage area</td><td>0s / 15s</td><td>6% / 6s</td><td>periodic damage: power coefficient per tick=0.2, tick seconds=1, tick count=6</td></tr><tr><td><code>ZC</code><br/>Slowing area</td><td>0s / 15s</td><td>3% / 6s</td><td>apply status: status=slow, amount=0.3, tick seconds=1</td></tr><tr><td><code>ZM</code><br/>Mixed consecrated area</td><td>0s / 20s</td><td>6% / 6s</td><td>periodic damage: power coefficient per tick=0.12, tick seconds=1, tick count=6, relation=enemy; periodic heal: power coefficient per tick=0.08, tick seconds=1, tick count=6, relation=ally</td></tr><tr><td><code>IN</code><br/>Ally interception</td><td>0s / 20s</td><td>0% / 0s</td><td>move: movement=dash_to_ally, distance cap=5; redirect: fraction=0.3, total cap caster health fraction=0.2, duration seconds=6</td></tr><tr><td><code>RD</code><br/>Damage transfer</td><td>0s / 30s</td><td>4% / 0s</td><td>redirect: fraction=0.3, total cap caster health fraction=0.2, duration seconds=6</td></tr><tr><td><code>BW</code><br/>Controlled attack weakening</td><td>0s / 30s</td><td>0% / 0s</td><td>damage: power coefficient=0.7; apply status: status=next_attack_reduction, amount=0.1, duration seconds=6, charges=1</td></tr><tr><td><code>PR</code><br/>Timed parry</td><td>0s / 12s</td><td>0% / 2s</td><td>apply status: status=next_physical_hit_reduction, amount=0.5, charges=1</td></tr><tr><td><code>HA</code><br/>Temporary haste</td><td>0s / 60s</td><td>0% / 8s</td><td>apply status: status=haste, amount=0.2, stack group=personal_haste</td></tr><tr><td><code>F</code><br/>Committed finisher</td><td>0s / 12s</td><td>6% / 0s</td><td>damage: power coefficient=1.8</td></tr><tr><td><code>CD</code><br/>Major output window</td><td>0s / 90s</td><td>0% / 10s</td><td>apply status: status=personal_output, amount=0.15, stack group=major_output</td></tr><tr><td><code>MK</code><br/>Owner vulnerability mark</td><td>0s / 12s</td><td>2% / 10s</td><td>set mark: amount=0.1, stack group=owner_vulnerability, max targets per owner=1</td></tr><tr><td><code>DOT</code><br/>Periodic affliction</td><td>0s / 0s</td><td>4% / 12s</td><td>periodic damage: power coefficient per tick=0.15, tick seconds=2, tick count=6</td></tr><tr><td><code>PO</code><br/>Weapon poison</td><td>0s / 6s</td><td>0% / 12s</td><td>damage: power coefficient=0.2; periodic damage: power coefficient per tick=0.12, tick seconds=2, tick count=6</td></tr><tr><td><code>SH</code><br/>Absorption ward</td><td>0s / 12s</td><td>4% / 10s</td><td>absorb: power coefficient=1.0, recipient health cap=0.3</td></tr><tr><td><code>H</code><br/>Direct heal</td><td>1.5s / 0s</td><td>4% / 0s</td><td>heal: power coefficient=1.7</td></tr><tr><td><code>EH</code><br/>Emergency direct heal</td><td>0s / 90s</td><td>8% / 0s</td><td>heal: power coefficient=3.2</td></tr><tr><td><code>HS</code><br/>Modest self-recovery</td><td>0s / 30s</td><td>0% / 0s</td><td>heal: power coefficient=0.8, relation=self</td></tr><tr><td><code>HOT</code><br/>Sustained recovery</td><td>0s / 0s</td><td>4% / 10s</td><td>periodic heal: power coefficient per tick=0.3, tick seconds=2, tick count=5</td></tr><tr><td><code>HC</code><br/>Healing channel</td><td>3s / 0s</td><td>6% / 3s</td><td>periodic heal: power coefficient per tick=0.7, tick seconds=1, tick count=3</td></tr><tr><td><code>CH</code><br/>Life-drain channel</td><td>3s / 0s</td><td>5% / 3s</td><td>periodic damage: power coefficient per tick=0.5, tick seconds=1, tick count=3; lifesteal: effective damage fraction=0.5, relation=self</td></tr><tr><td><code>EX</code><br/>Nonlethal resource exchange</td><td>0s / 20s</td><td>0% / 0s</td><td>exchange: health cost max fraction=0.1, minimum remaining health fraction=0.35, mana gain max fraction=0.08</td></tr><tr><td><code>PU</code><br/>Friendly cleanse</td><td>0s / 8s</td><td>2% / 0s</td><td>dispel: relation=ally, families=['harmful_magic'], count=1</td></tr><tr><td><code>PD</code><br/>Enemy beneficial dispel</td><td>0s / 12s</td><td>3% / 0s</td><td>dispel: relation=enemy, families=['beneficial_magic'], count=1</td></tr><tr><td><code>RE</code><br/>Out-of-combat revival</td><td>8s / 0s</td><td>10% / 0s</td><td>revive: health fraction=0.2, mana fraction=0.2, combat allowed=False</td></tr><tr><td><code>AH</code><br/>Group recovery</td><td>2s / 10s</td><td>8% / 0s</td><td>heal: power coefficient=1.0, target cap=5</td></tr><tr><td><code>GH</code><br/>Group regenerative area</td><td>2s / 20s</td><td>8% / 10s</td><td>periodic heal: power coefficient per tick=0.25, tick seconds=2, tick count=5, target cap=5</td></tr><tr><td><code>GW</code><br/>Group prevention</td><td>0s / 30s</td><td>7% / 8s</td><td>absorb: power coefficient=0.6, target cap=5, recipient health cap=0.2</td></tr><tr><td><code>T</code><br/>Single-target challenge</td><td>0s / 8s</td><td>0% / 0s</td><td>taunt: duration seconds=3, threat factor of highest=1.1, engaged npc only=True</td></tr><tr><td><code>TA</code><br/>Area challenge</td><td>0s / 20s</td><td>0% / 0s</td><td>taunt: duration seconds=3, threat factor of highest=1.1, target cap=5, engaged npc only=True</td></tr><tr><td><code>SU</code><br/>Mobile summon</td><td>2s / 10s</td><td>4% / 0s</td><td>summon: capacity pool=owner_combat, capacity cost=1, aggregate full pool DPS power coefficient=0.3, lifetime seconds=0</td></tr><tr><td><code>PC</code><br/>Coordinated pet attack</td><td>0s / 6s</td><td>0% / 0s</td><td>pet command: command=attack, aggregate power coefficient=0.5, owner capacity pool=True</td></tr><tr><td><code>TS</code><br/>Offensive totem</td><td>0s / 15s</td><td>4% / 15s</td><td>summon static: capacity cost=1, power coefficient per tick=0.15, tick seconds=1, lifetime seconds=15</td></tr><tr><td><code>TH0</code><br/>Healing totem</td><td>0s / 15s</td><td>4% / 15s</td><td>summon static: capacity cost=1, healing power coefficient per tick=0.12, target cap=5, tick seconds=1, lifetime seconds=15</td></tr><tr><td><code>FO</code><br/>Validated form</td><td>0s / 1.5s</td><td>0% / 0s</td><td>set form: policy=selected_specialization_and_shared_form_rules</td></tr><tr><td><code>SE</code><br/>Stealth preparation</td><td>0s / 10s</td><td>0% / 0s</td><td>apply status: status=stealth, movement multiplier=0.7, break on hostile action=True, combat activation=False</td></tr><tr><td><code>FE</code><br/>Breakable disorientation</td><td>0s / 30s</td><td>3% / 4s</td><td>apply status: status=disorient, pvp duration seconds=3, break on damage=True, diminishing group=hard_control</td></tr><tr><td><code>RT</code><br/>Root control</td><td>0s / 15s</td><td>3% / 4s</td><td>apply status: status=root, pvp duration seconds=2, diminishing group=root</td></tr><tr><td><code>MR</code><br/>Resource recovery channel</td><td>3s / 30s</td><td>0% / 0s</td><td>resource restore: primary max fraction=0.15, ticks=3</td></tr><tr><td><code>BS</code><br/>Moving performance</td><td>0s / 3s</td><td>0% / 10s</td><td>apply status: status=group_movement, amount=0.1, stack group=group_movement, target cap=5</td></tr><tr><td><code>BF</code><br/>Performance finale</td><td>0s / 30s</td><td>6% / 0s</td><td>resolve performance: max active songs consumed=2, damage power coefficient=0.8, healing power coefficient=0.8, target cap=5</td></tr><tr><td><code>SM</code><br/>Target-acquisition smoke</td><td>0s / 30s</td><td>0% / 6s</td><td>apply zone: status=concealment, radius=2.5, blocks projectiles=False, breaks existing casts=False</td></tr><tr><td><code>TR</code><br/>Bounded tracking</td><td>0s / 15s</td><td>0% / 0s</td><td>reveal: radius=6, duration seconds=4, only authorized tracks=True, does not reveal hidden players=True</td></tr><tr><td><code>SP</code><br/>Movement acceleration</td><td>0s / 30s</td><td>0% / 4s</td><td>apply status: status=movement_speed, amount=0.3, stack group=personal_movement</td></tr><tr><td><code>CL</code><br/>Bounded chain attack</td><td>1.5s / 8s</td><td>5% / 0s</td><td>chain damage: power coefficient=1.0, falloff per jump=0.25, target cap=3, jump range=3</td></tr><tr><td><code>WM</code><br/>Non-combat return anchor</td><td>8s / 900s</td><td>10% / 0s</td><td>return anchor: combat allowed=False, cross instance allowed=False, destination validation=server_owned_safe_anchor</td></tr><tr><td><code>ZA</code><br/>Area defensive preparation</td><td>0s / 30s</td><td>5% / 8s</td><td>apply zone: status=damage_reduction, amount=0.1, radius=2.5, target cap=5, stack group=group_defense</td></tr><tr><td><code>LED</code><br/>Delayed-damage defense</td><td>0s / 12s</td><td>0% / 6s</td><td>delay damage: fraction=0.3, ledger seconds=6, reentry allowed=False</td></tr><tr><td><code>CLR</code><br/>Debt reduction</td><td>0s / 8s</td><td>0% / 0s</td><td>clear damage ledger: current ledger fraction=0.25</td></tr><tr><td><code>PAT</code><br/>Bounded pattern resolver</td><td>0s / 20s</td><td>6% / 0s</td><td>resolve pattern: max sources=4, max links=3, output budget power coefficient=1.8</td></tr></tbody></table></div>
+<!-- data-inventory:start -->
+<section class="data-inventory" aria-labelledby="data">
+<h2 id="data">Data</h2>
+<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
+<h3 id="data-enums">Enums</h3>
+<ul>
+<li data-inventory-id="action-rejection-reason"><code><a href="data-inventory.html#action-rejection-reason">ActionRejectionReason</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cast-commit-policy"><code><a href="data-inventory.html#cast-commit-policy">CastCommitPolicy</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="cast-phase"><code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="command-outcome"><code><a href="data-inventory.html#command-outcome">CommandOutcome</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="content-readiness-status"><code><a href="data-inventory.html#content-readiness-status">ContentReadinessStatus</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="damage-school"><code><a href="data-inventory.html#damage-school">DamageSchool</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="effect-operation"><code><a href="data-inventory.html#effect-operation">EffectOperation</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="pet-command-type"><code><a href="data-inventory.html#pet-command-type">PetCommandType</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="projectile-collision-policy"><code><a href="data-inventory.html#projectile-collision-policy">ProjectileCollisionPolicy</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="projectile-hit-policy"><code><a href="data-inventory.html#projectile-hit-policy">ProjectileHitPolicy</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="replication-event-kind"><code><a href="data-inventory.html#replication-event-kind">ReplicationEventKind</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="seed-growth-stage"><code><a href="data-inventory.html#seed-growth-stage">SeedGrowthStage</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="session-ownership-state"><code><a href="data-inventory.html#session-ownership-state">SessionOwnershipState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="status-category"><code><a href="data-inventory.html#status-category">StatusCategory</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="status-stacking-policy"><code><a href="data-inventory.html#status-stacking-policy">StatusStackingPolicy</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="summon-kind"><code><a href="data-inventory.html#summon-kind">SummonKind</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="target-mode"><code><a href="data-inventory.html#target-mode">TargetMode</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="target-relation"><code><a href="data-inventory.html#target-relation">TargetRelation</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="transfer-phase"><code><a href="data-inventory.html#transfer-phase">TransferPhase</a></code> — Proposed · Fully Defined</li>
+</ul>
+<h3 id="data-interfaces">Interfaces</h3>
+<ul>
+<li data-inventory-id="ability-execution-context"><code><a href="data-inventory.html#ability-execution-context">AbilityExecutionContext</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="absorb-state"><code><a href="data-inventory.html#absorb-state">AbsorbState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="build-preview"><code><a href="data-inventory.html#build-preview">BuildPreview</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cast-state"><code><a href="data-inventory.html#cast-state">CastState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="character-loadout"><code><a href="data-inventory.html#character-loadout">CharacterLoadout</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="combat-result"><code><a href="data-inventory.html#combat-result">CombatResult</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="combat-sequence-state"><code><a href="data-inventory.html#combat-sequence-state">CombatSequenceState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cooldown-state"><code><a href="data-inventory.html#cooldown-state">CooldownState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="effect-operation-context"><code><a href="data-inventory.html#effect-operation-context">EffectOperationContext</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="ground-effect-state"><code><a href="data-inventory.html#ground-effect-state">GroundEffectState</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="healing-seed-state"><code><a href="data-inventory.html#healing-seed-state">HealingSeedState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="input-queue-state"><code><a href="data-inventory.html#input-queue-state">InputQueueState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="periodic-effect-schedule"><code><a href="data-inventory.html#periodic-effect-schedule">PeriodicEffectSchedule</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="projectile-state"><code><a href="data-inventory.html#projectile-state">ProjectileState</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="resolved-ability-definition"><code><a href="data-inventory.html#resolved-ability-definition">ResolvedAbilityDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="resource-pool-state"><code><a href="data-inventory.html#resource-pool-state">ResourcePoolState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="resource-reservation"><code><a href="data-inventory.html#resource-reservation">ResourceReservation</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="status-instance"><code><a href="data-inventory.html#status-instance">StatusInstance</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="talent-allocation"><code><a href="data-inventory.html#talent-allocation">TalentAllocation</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="talent-modifier"><code><a href="data-inventory.html#talent-modifier">TalentModifier</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="talent-proc-state"><code><a href="data-inventory.html#talent-proc-state">TalentProcState</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="talent-validation-result"><code><a href="data-inventory.html#talent-validation-result">TalentValidationResult</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="trigger-context"><code><a href="data-inventory.html#trigger-context">TriggerContext</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="trigger-queue-state"><code><a href="data-inventory.html#trigger-queue-state">TriggerQueueState</a></code> — Proposed · Fully Defined</li>
+</ul>
+<h3 id="data-schemas">Schemas</h3>
+<ul>
+<li data-inventory-id="ability-command-v2"><code><a href="data-inventory.html#ability-command-v2">ability_command_v2</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="ability-cost-policy"><code><a href="data-inventory.html#ability-cost-policy">AbilityCostPolicy</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="ability-definition"><code><a href="data-inventory.html#ability-definition">AbilityDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="ability-execution-fixture"><code><a href="data-inventory.html#ability-execution-fixture">AbilityExecutionFixture</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="ability-targeting-policy"><code><a href="data-inventory.html#ability-targeting-policy">AbilityTargetingPolicy</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="ability-timing-policy"><code><a href="data-inventory.html#ability-timing-policy">AbilityTimingPolicy</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="build-accepted-event"><code><a href="data-inventory.html#build-accepted-event">BuildAcceptedEvent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="build-application-request"><code><a href="data-inventory.html#build-application-request">BuildApplicationRequest</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="build-application-response"><code><a href="data-inventory.html#build-application-response">BuildApplicationResponse</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cast-event"><code><a href="data-inventory.html#cast-event">CastEvent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="combat-result-event"><code><a href="data-inventory.html#combat-result-event">CombatResultEvent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="combat-rules-configuration"><code><a href="data-inventory.html#combat-rules-configuration">CombatRulesConfiguration</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="combat-stance"><code><a href="data-inventory.html#combat-stance">CombatStance</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="command-response"><code><a href="data-inventory.html#command-response">CommandResponse</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="content-validation-fixture"><code><a href="data-inventory.html#content-validation-fixture">ContentValidationFixture</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="content-validation-result"><code><a href="data-inventory.html#content-validation-result">ContentValidationResult</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cooldown-definition"><code><a href="data-inventory.html#cooldown-definition">CooldownDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cooldown-family"><code><a href="data-inventory.html#cooldown-family">CooldownFamily</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="death-revival-event"><code><a href="data-inventory.html#death-revival-event">DeathRevivalEvent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="druid-form"><code><a href="data-inventory.html#druid-form">DruidForm</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="effect-operation-definition"><code><a href="data-inventory.html#effect-operation-definition">EffectOperationDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="entity-lifecycle-event"><code><a href="data-inventory.html#entity-lifecycle-event">EntityLifecycleEvent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="execution-profile"><code><a href="data-inventory.html#execution-profile">ExecutionProfile</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="form-definition"><code><a href="data-inventory.html#form-definition">FormDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="invalid-target-fixture"><code><a href="data-inventory.html#invalid-target-fixture">InvalidTargetFixture</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="note-family"><code><a href="data-inventory.html#note-family">NoteFamily</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="operation-receipt"><code><a href="data-inventory.html#operation-receipt">OperationReceipt</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="party-command"><code><a href="data-inventory.html#party-command">PartyCommand</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="party-snapshot"><code><a href="data-inventory.html#party-snapshot">PartySnapshot</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="pet-command-request"><code><a href="data-inventory.html#pet-command-request">PetCommandRequest</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="resource-definition"><code><a href="data-inventory.html#resource-definition">ResourceDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="resource-gain-rule"><code><a href="data-inventory.html#resource-gain-rule">ResourceGainRule</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="resource-snapshot"><code><a href="data-inventory.html#resource-snapshot">ResourceSnapshot</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="resource-type"><code><a href="data-inventory.html#resource-type">ResourceType</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="reward-committed-event"><code><a href="data-inventory.html#reward-committed-event">RewardCommittedEvent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="stance-definition"><code><a href="data-inventory.html#stance-definition">StanceDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="state-reconstruction-fixture"><code><a href="data-inventory.html#state-reconstruction-fixture">StateReconstructionFixture</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="status-definition"><code><a href="data-inventory.html#status-definition">StatusDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="status-effect-event"><code><a href="data-inventory.html#status-effect-event">StatusEffectEvent</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="summon-checkpoint"><code><a href="data-inventory.html#summon-checkpoint">SummonCheckpoint</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="summon-definition"><code><a href="data-inventory.html#summon-definition">SummonDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="talent-build-record"><code><a href="data-inventory.html#talent-build-record">TalentBuildRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="talent-interaction-fixture"><code><a href="data-inventory.html#talent-interaction-fixture">TalentInteractionFixture</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="talent-modifier-definition"><code><a href="data-inventory.html#talent-modifier-definition">TalentModifierDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="telegraph-definition"><code><a href="data-inventory.html#telegraph-definition">TelegraphDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="travel-anchor-record"><code><a href="data-inventory.html#travel-anchor-record">TravelAnchorRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="travel-request"><code><a href="data-inventory.html#travel-request">TravelRequest</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="trigger-definition"><code><a href="data-inventory.html#trigger-definition">TriggerDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="visual-presentation-definition"><code><a href="data-inventory.html#visual-presentation-definition">VisualPresentationDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="zone-transition-definition"><code><a href="data-inventory.html#zone-transition-definition">ZoneTransitionDefinition</a></code> — Proposed · Fully Defined</li>
+</ul>
+</section>
+<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope-of-the-executable-rule-model">Scope of the executable rule model</a><a href="#ability-command">Ability command</a><a href="#definition-fields">Definition fields</a><a href="#cost-and-cooldown-semantics">Cost and cooldown semantics</a><a href="#operation-vocabulary">Operation vocabulary</a><a href="#modifier-order">Modifier order</a><a href="#talent-allocation-contract">Talent allocation contract</a><a href="#example-pyromancer-consumption">Example: Pyromancer consumption</a><a href="#example-grovekeeper-seed-consumption">Example: Grovekeeper seed consumption</a><a href="#replication-events">Replication events</a><a href="#data-and-runtime-gates">Data and runtime gates</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
