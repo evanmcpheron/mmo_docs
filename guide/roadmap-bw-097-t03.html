@@ -252,12 +252,11 @@
                 test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT (/Users/le-evanmcpheron/Documents/Godot/briarwake), with installed Unreal 5.8, the user-provided ~/Documents/Unreal Projects/ProjectTitan library and pinned graphical macOS ARM64 Godot.
-python3 tools/export_titan_reference.py
+              <pre><code>Working directory: GAME_ROOT (/Users/le-evanmcpheron/Documents/Godot/briarwake), with pinned graphical macOS ARM64 Godot and the already verified local Titan exports. Re-export with python3 tools/export_titan_reference.py only when source inputs or recipe require it.
 python3 tools/verify_toolchain.py
 python3 tools/run_rendering_probe.py --case reference
-Interactive: python3 tools/run_rendering_probe.py --case reference --interactive
-Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; decisions: visual-review.json.</code></pre>
+python3 tools/run_rendering_probe.py --case reference --interactive
+Review: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; rebuild with python3 validation/tickets/BW-097-T03/build_review.py from DOCS_ROOT.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
@@ -279,22 +278,25 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; decisions: vi
                   only its material.
                 </li>
                 <li>
-                  Automatic captures cover day/warm/cool and two views, plus Reset. Reference-only
-                  orthographic heights are 12m overview and initial 4.5m close view, with 3m/1m
-                  focus heights. T02 pixel/window presentation and angles remain unchanged.
-                  overview-native/pixelated.png and comparison-native/pixelated.png retain matching
-                  resolution-on/off pairs, unchanged framing and exact viewport/pixel restoration.
-                  No custom toon/outline shader is active.
+                  Automatic captures cover day/warm/cool at normal ×1 (9m orthographic height) and
+                  diagnostic ×2 (4.5m), both focused at 1m. Reset preserves close/day/135°/first
+                  window; the initial diagnostic view is not normal-scale acceptance. T02
+                  resolution/angles/window/HUD policy remains unchanged.
+                  Normal-{day,warm,cool}-{native,pixelated}.png and
+                  comparison-{native,pixelated}.png use the same world/camera/pose/materials/lights.
+                  Native capture freezes the displayed source frame, renders the shared World3D
+                  through a duplicate camera in a temporary viewport, then verifies exact original
+                  pixels and restored update mode. No toon/outline shader is active.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Open review.html or rebuild from DOCS_ROOT with python3
-                  validation/tickets/BW-097-T03/build_review.py. Inspect the full courtyard
-                  overview, closer native/pixelated pair, four concept regions and day/warm/cool
-                  gameplay pixels. Select images to view full resolution. Historical Moore RPG
-                  captures remain retained.
+                  Rebuild/open review.html. Compare the original-lighting/UV and revised images at
+                  actual 384×216 normal ×1, then inspect annotated concept regions and normal
+                  day/warm/cool native/pixel pairs. Use diagnostic ×2 only to inspect lost source
+                  detail. readability-engineering-review.json proves current Titan versus historical
+                  Moore provenance, records failed trials, pixel audit and remaining findings.
                 </li>
                 <li>
                   Inspect titan-placement-review.json for every measured world height, scale, base
@@ -303,10 +305,10 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; decisions: vi
                   clear.
                 </li>
                 <li>
-                  In the interactive probe select Overview or Character, lighting and fractional
-                  continuous heading; use Capture, then Reset. Inspect manual-NNN-internal.png,
-                  manual-NNN-output.png and manual-NNN.json. Reset restores the initial
-                  close/day/heading/window state; no SpriteDirection presets exist.
+                  In the interactive probe select Normal ×1 or Diagnostic ×2, lighting and
+                  fractional continuous heading; use Capture, then Reset. Inspect
+                  manual-NNN-internal.png, manual-NNN-output.png and manual-NNN.json. Reset restores
+                  the existing close/day/heading/window state; no SpriteDirection presets exist.
                 </li>
                 <li>
                   Run python3 -m unittest discover -s tools -p &quot;test_*probe.py&quot; and
@@ -332,11 +334,13 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; decisions: vi
                   valid source appearance.
                 </li>
                 <li>
-                  Both native/pixel pairs match camera, pose, materials and lights. Native images
-                  are fresh full-resolution renders; pixelated images enlarge actual 384×216 pixels
-                  with nearest sampling. Original viewport pixels are restored exactly. The wider
-                  overview includes larger surroundings; the initial close view establishes the
-                  proposed character-readability review.
+                  Native/pixel pairs preserve world, camera, pose, materials and lights. Native
+                  images are fresh full-resolution renders; pixelated images enlarge actual 384×216
+                  pixels with nearest sampling and match physical presentation exactly. The original
+                  viewport is never resized; source-frame pixels and update mode restore exactly.
+                  This snapshot identity does not prove live-frame stability: retained one-level
+                  crate variation awaits T04 stationary/motion review. Normal ×1, not diagnostic ×2,
+                  governs character-readability review.
                 </li>
                 <li>
                   Current comparisons and stable provenance support AC1/AC3 technically. AC2 and
@@ -392,7 +396,15 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; decisions: vi
                 Unsaved texture duplicates and per-slot PBR transfers correct virtual-texture
                 conversion failures without altering originals. See titan-courtyard-delivery-run,
                 titan-placement-review.json and visual-review.json. Human acceptance remains
-                pending.
+                pending. Visual-readability continuation 2026-10-20 (v7): fresh baseline reproduced
+                all eighteen committed v6 images exactly, resolving the brief’s outdated Moore
+                description. Review now evaluates normal ×1 at T02’s 9m height, with lower
+                ambient/fill, a lateral key and reversible 4m paving repeat. Shared-world native
+                snapshots preserve source pixels without resizing the gameplay viewport; thirteen
+                checks and twenty-two images pass after negative controls. See
+                readability-engineering-review.json, readability-pixel-audit.json and
+                readability-reviewed-run. Fine character detail and one-level live crate variation
+                remain explicit; no human bounds/budget/deviation or motion approval is inferred.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <ul>
@@ -455,6 +467,19 @@ Review sheet: DOCS_ROOT/validation/tickets/BW-097-T03/review.html; decisions: vi
                   >
                   — AC 1, 3; Passed; revision b244213d411e3e2a29294efbf7f3c603c02358b3-dirty; final
                   source hashes retained in run.json
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-097-T03/readability-reviewed-run/run.json"
+                    >Fresh normal-scale recovery after negative controls passed thirteen graphical
+                    checks with twenty-two hashed images. Normal ×1 uses T02 9m height; original
+                    1.8m geometry/layout/maps and Reset are preserved. Three native/pixel lighting
+                    pairs verify shared world/camera, exact nearest presentation, source-frame
+                    preservation and restored update mode. Review v7 compares normal before/after
+                    lighting and paving changes. Live-frame variation remains a T04 finding; AC2 and
+                    parent AC7 still require actual human approval.</a
+                  >
+                  — AC 1, 3; Passed; revision 0b06c247e97acca8abd8661baf9c35b107fff1db plus
+                  visual-readability branch; exact final source hashes in run.json
                 </li>
               </ul>
               <h2 id="documentation">Related documentation</h2>
