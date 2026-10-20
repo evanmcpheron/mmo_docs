@@ -1,468 +1,119 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Mechanics, governing rules, edge cases and acceptance criteria."
-    />
-    <title>Design decisions · MMORPG Reference v2</title>
-    <link rel="stylesheet" href="../assets/styles.css" />
-    <script defer src="../assets/search-index.js"></script>
-    <script defer src="../assets/app.js"></script>
-  </head>
-  <body data-root="../">
-    <a class="skip-link" href="#main">Skip to content</a>
-    <aside class="sidebar" id="navigation">
-      <a class="brand" href="../index.html"
-        ><span class="brand-mark">M</span
-        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
-      >
-      <div class="version">v2.0 · Mechanics only</div>
-      <nav aria-label="Reference navigation">
-        <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
-        <div class="nav-group">
-          <p>Foundation</p>
-          <a aria-current="page" href="../guide/decisions.html">Design decisions</a
-          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
-          ><a href="../guide/races-factions.html">Races & faction rules</a
-          ><a href="../guide/progression.html">Levels & talent points</a
-          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
-        </div>
-        <div class="nav-group">
-          <p>Combat</p>
-          <a href="../guide/attributes.html">Attributes & formulas</a
-          ><a href="../guide/combat.html">Combat mechanics</a
-          ><a href="../guide/status-effects.html">Statuses, control & summons</a
-          ><a href="../guide/execution.html">Ability execution contracts</a
-          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
-        </div>
-        <div class="nav-group">
-          <p>Economy</p>
-          <a href="../guide/items.html">Equipment & itemization</a
-          ><a href="../guide/professions.html">Profession system</a
-          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
-          ><a href="../guide/economy.html">Bazaar & economy</a>
-        </div>
-        <div class="nav-group">
-          <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
-          ><a href="../guide/interface.html">Interface & accessibility</a
-          ><a href="../guide/operations.html">Supporting gameplay</a>
-        </div>
-        <div class="nav-group">
-          <p>Validation</p>
-          <a href="../guide/audit.html">Audit & open gates</a
-          ><a href="../guide/testing.html">Validation & test plan</a
-          ><a href="../guide/sources.html">Sources & provenance</a
-          ><a href="../guide/glossary.html">Mechanics glossary</a>
-        </div>
-        <details class="nav-list">
-          <summary>Classes <span>12</span></summary>
-          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
-          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
-          ><a href="../classes/necromancer.html">Necromancer</a
-          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
-          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
-          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
-          ><a href="../classes/warlock.html">Warlock</a>
-        </details>
-        <details class="nav-list">
-          <summary>Professions <span>16</span></summary>
-          <a href="../professions/blacksmithing.html">Blacksmithing</a
-          ><a href="../professions/leatherworking.html">Leatherworking</a
-          ><a href="../professions/tailoring.html">Tailoring</a
-          ><a href="../professions/alchemy.html">Alchemy</a
-          ><a href="../professions/enchanting.html">Enchanting</a
-          ><a href="../professions/engineering.html">Engineering</a
-          ><a href="../professions/woodworking.html">Woodworking</a
-          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
-          ><a href="../professions/inscription.html">Inscription</a
-          ><a href="../professions/mining.html">Mining</a
-          ><a href="../professions/herbalism.html">Herbalism</a
-          ><a href="../professions/skinning.html">Skinning</a
-          ><a href="../professions/forestry.html">Forestry</a
-          ><a href="../professions/cooking.html">Cooking</a
-          ><a href="../professions/fishing.html">Fishing</a
-          ><a href="../professions/first_aid.html">First Aid</a>
-        </details>
-        <div class="nav-group">
-          <p>Catalogs</p>
-          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
-          <a href="../catalog/abilities.html">Abilities</a
-          ><a href="../catalog/talents.html">Talents</a
-          ><a href="../catalog/recipes.html">Recipes</a>
-        </div>
-      </nav>
-      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
-    </aside>
-    <div class="workspace">
-      <header class="topbar">
-        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
-        ><span class="section-label">Foundation</span>
-        <div class="search-wrap">
-          <label for="site-search" class="visually-hidden">Search all reference content</label
-          ><input
-            id="site-search"
-            type="search"
-            placeholder="Search rules, abilities, recipes…"
-            autocomplete="off"
-            aria-controls="search-results"
-            aria-expanded="false"
-          />
-          <div id="search-results" class="search-results" hidden></div>
-        </div>
-        <button class="print-button" type="button">Print</button>
-      </header>
-      <div class="page-layout">
-        <main id="main" tabindex="-1">
-          <div class="breadcrumb">
-            <a href="../index.html">Reference</a><span>/</span>Foundation
-          </div>
-          <h1>Design decisions</h1>
-          <p class="page-description">
-            Mechanics, governing rules, edge cases and acceptance criteria.
-          </p>
-          <div class="article-body">
-            <p>
-              This revision supersedes the supplied v1 character pack. It is a
-              <strong>gameplay-design reference and numerical prototype baseline</strong>, not a
-              shipping game, a balance certification, or a complete Godot implementation. Structural
-              checks and arithmetic tests are distinguished from tests that require a playable
-              server.
-            </p>
-            <h2 id="confirmed-direction">Confirmed direction</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Area</th>
-                  <th>v2 rule</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Presentation</td>
-                  <td>
-                    <a href="#art-direction"
-                      >Low-resolution 3D pixel-art scenes with an angled orthographic camera</a
-                    >; continuous planar movement and targeting
-                  </td>
-                </tr>
-                <tr>
-                  <td>Combat</td>
-                  <td>
-                    Hybrid target-based combat with directional attacks, ground effects and
-                    server-owned outcomes
-                  </td>
-                </tr>
-                <tr>
-                  <td>Roles</td>
-                  <td>
-                    Tank, healer, damage; support is a substantial secondary identity, not a
-                    required fourth slot
-                  </td>
-                </tr>
-                <tr>
-                  <td>Group baseline</td>
-                  <td>Five players: one tank, one healer, three damage specializations</td>
-                </tr>
-                <tr>
-                  <td>Character scope</td>
-                  <td>Twelve classes, 37 specializations, level cap 60</td>
-                </tr>
-                <tr>
-                  <td>Character creation</td>
-                  <td>
-                    <a href="character-creation.html#character-creation-experience"
-                      >Very similar to World of Warcraft in layout, presentation and flow</a
-                    >: character preview, faction/race/class, appearance, name, review and entry
-                  </td>
-                </tr>
-                <tr>
-                  <td>Beginner starting area</td>
-                  <td>
-                    <a href="character-creation.html#beginner-starting-area"
-                      >Guided, solo-completable level 1–10 area</a
-                    >, ending with specialization and a clear next destination; also the first
-                    complete playable testing ground
-                  </td>
-                </tr>
-                <tr>
-                  <td>Talent awards</td>
-                  <td>
-                    Two points per level-up, from level 2 through 60: one class and one
-                    specialization point
-                  </td>
-                </tr>
-                <tr>
-                  <td>Final talent budget</td>
-                  <td>
-                    59 class + 59 specialization = 118 points; no extra points at character creation
-                  </td>
-                </tr>
-                <tr>
-                  <td>Specialization</td>
-                  <td>
-                    Select at level 10; previously earned specialization points become spendable
-                    then
-                  </td>
-                </tr>
-                <tr>
-                  <td>Races</td>
-                  <td>Eleven distinct races; Humans may join either side; Ogres removed</td>
-                </tr>
-                <tr>
-                  <td>Faction restrictions</td>
-                  <td>
-                    Paladin and Cleric: good-aligned side only. Necromancer and Warlock:
-                    evil-aligned side only. Other classes: both
-                  </td>
-                </tr>
-                <tr>
-                  <td>Professions</td>
-                  <td>
-                    Two manufacturing slots, two gathering slots, and three common life skills;
-                    progression is separate from combat talents
-                  </td>
-                </tr>
-                <tr>
-                  <td>Persistence</td>
-                  <td>
-                    Items, currency, crafting orders and build changes use authoritative, versioned
-                    records
-                  </td>
-                </tr>
-                <tr>
-                  <td>Excluded</td>
-                  <td>
-                    Fictional history, place names, capitals, religion, biographies, race cultures,
-                    authored story quests and detailed maps. The beginner-area feature flow and
-                    learning objectives are included.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              <strong
-                >“Good” and “evil” are working faction-selection labels, not a morality
-                simulation.</strong
-              >
-              Race and faction are separate fields. Nothing in this revision creates a
-              crime/alignment meter, forces moral dialogue choices, or assigns new stories to a
-              race.
-            </p>
-            <h2 id="art-direction">Art direction</h2>
-            <p>
-              Use low-resolution 3D scenes with an orthographic camera viewed from above at an
-              angle. Favor clear low-poly silhouettes, toon surfaces, pixel-width outlines and
-              selective edge highlights, with cohesive foliage, water and atmosphere. The visual
-              reference is
-              <a href="https://www.davidhol.land/articles/3d-pixel-art-rendering/"
-                >David Holland’s 3D Pixel Art Rendering</a
-              >. Holland describes depth/normal outlines, camera snapping with screen-space
-              correction, billboard foliage, stylized water and atmospheric lighting. His
-              implementation used a custom Godot 4.3 build; its patches describe that historical
-              setup.
-            </p>
-            <p>
-              <a href="https://roystan.net/articles/outline-shader/">Roystan’s Outline Shader</a> is
-              a technique reference for depth/normal edge detection with diagonal Roberts-cross
-              samples, integer texel spacing, depth-relative and view-angle thresholds, and alpha
-              composition. It targets Unity 2018.3. A Godot implementation must adapt depth
-              conventions, normal space, orthographic projection and available textures. Convex-only
-              highlight selection remains a separate design.
-            </p>
-            <p>
-              The user-selected
-              <a href="https://www.youtube.com/channel/UCIjUIjWig0r5DIixQrt6A3A"
-                >t3ssel8r channel</a
-              >
-              is a supplementary visual research source, including
-              <a href="https://www.youtube.com/watch?v=ERA7-I5nPAU"
-                >Creating a Scene for my 3D Pixel Art Game</a
-              >. Record selected clips and timestamps in the renderer and art reference comparisons,
-              then validate adopted techniques in the pinned Godot build. The channel supports
-              ongoing visual research; production decisions require the project’s own scene and
-              performance evidence.
-            </p>
-            <p>
-              <strong>Project acceptance criteria:</strong> Establish the camera, internal
-              resolution, scaling policy, asset proportions and material conventions through a
-              representative playable scene before producing the full art roster. Validate every
-              asset in that scene, including animation, equipped items and alternate forms. Choose
-              and test a supported Godot version, renderer and any fallback against the visual
-              target; adopting an engine fork requires a demonstrated unmet requirement and a
-              maintenance decision. The
-              <a href="interface.html#rendering-and-camera">rendering and camera requirements</a>
-              and
-              <a href="testing.html#rendering-verification">rendering verification checks</a> govern
-              gameplay readability.
-            </p>
-            <p>
-              <strong>Outline acceptance:</strong> Target silhouettes one pixel wide at the internal
-              render resolution, with selective convex-edge highlights controlled separately from
-              general normal discontinuities. Verify slopes, distance changes, near/far clipping,
-              thin and overlapping geometry, and camera motion. Select antialiasing through those
-              tests to preserve crisp, stable pixel widths; the tutorial’s SMAA setting is not a
-              project default.
-            </p>
-            <p>
-              3D presentation leaves the existing continuous planar movement, floor identities,
-              server-owned foot anchors, collision, line of sight and aim contracts unchanged.
-              Convert those coordinates to scene transforms in the client.
-              <code>SpriteDirection</code> keeps its existing name and eight serialized values as
-              preview heading presets; it does not require sprite sheets or constrain animated
-              models to eight headings. A rendering choice adds no wire fields, vertical-combat
-              rules or new world-coordinate schema.
-            </p>
-            <h2 id="what-changed-from-v1">What changed from v1</h2>
-            <p>
-              The previous 50-point progression is retired. Giving 118 points to the old 18-node
-              trees would remove meaningful scarcity and exceed their maximum selectable ranks. The
-              new tree layout contains 36 nodes per tree, with 92 purchasable ranks in any legal
-              fully expanded route and only 59 available points. Early exclusive transformations
-              begin in tier II; capstones remain late-game choices.
-            </p>
-            <p>
-              The former assumption that every faction receives every class is also retired.
-              Mandatory encounter capabilities instead have shared providers. This is
-              <strong>functional coverage</strong>, not a promise that faction-exclusive classes
-              have identical mechanics or that faction populations will balance themselves.
-            </p>
-            <p>
-              V1's original 330 ability identifiers are retained for traceability. Their unlock
-              schedules, execution profiles and review status are documented in the ability catalog.
-              The original 882 talent identifiers remain traceable in the revised catalog alongside
-              882 additional nodes. Generic or contradictory wording is corrected where detected;
-              bespoke talent interactions that still need implementation binding are explicitly
-              marked rather than silently treated as finished code.
-            </p>
-            <h2 id="decision-precedence">Decision precedence</h2>
-            <ol>
-              <li>These v2 global rules and explicit v2 overrides govern.</li>
-              <li>
-                A specific ability or talent contract may override a default only through a named
-                field.
-              </li>
-              <li>
-                A legacy intent sentence never overrides a resource cap, targeting permission,
-                faction restriction, crowd-control rule or transaction invariant.
-              </li>
-              <li>
-                Missing behavior is rejected by content validation; it is not guessed by a client or
-                runtime AI.
-              </li>
-            </ol>
-            <h2 id="recommended-boundaries">Recommended boundaries</h2>
-            <p>
-              Keep class changes disabled. A specialization switch changes role and selected tree,
-              not class. Race changes and faction transfers are not a launch feature; character
-              creation must validate the final race/faction/class combination. Do not quietly
-              convert a faction-exclusive class during transfer.
-            </p>
-            <p>
-              Keep the bazaar faction-local at first, including crafting orders. Both sides receive
-              equivalent recipes, material access rules and NPC fallback services. Cross-faction
-              listings, neutral exchanges and war logistics are deferred mechanics; no supply chain
-              depends on them.
-            </p>
-            <p>
-              Account-wide collections may be cosmetic. Do not add account-wide combat power,
-              profession throughput boosts or unlimited prestige statistics in this baseline.
-            </p>
-            <h2 id="what-complete-means-here">What “complete” means here</h2>
-            <p>
-              All requested <strong>systems</strong> have a proposed policy, key numerical defaults,
-              interactions, persistence rules and acceptance criteria. The inherited content
-              inventory remains navigable. The numerical execution profiles are explicit starting
-              points, but several named secondary effects and transformative talent bindings still
-              require individual implementation work. The audit lists these as open
-              content-engineering gates. No page claims all 330 abilities or all talent combinations
-              have been simulated or balanced.
-            </p>
-            <!-- data-inventory:start -->
-            <section class="data-inventory" aria-labelledby="data">
-              <h2 id="data">Data</h2>
-              <p>
-                Follow a type name to its canonical members, properties, constraints and review
-                decisions. Definitions are generated from one shared registry.
-              </p>
-              <h3 id="data-enums">Enums</h3>
-              <ul>
-                <li data-inventory-id="sprite-direction">
-                  <code><a href="data-inventory.html#sprite-direction">SpriteDirection</a></code> —
-                  Proposed · Fully Defined
-                </li>
-              </ul>
-              <h3 id="data-schemas">Schemas</h3>
-              <ul>
-                <li data-inventory-id="character-catalog">
-                  <code><a href="data-inventory.html#character-catalog">CharacterCatalog</a></code>
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="character-class">
-                  <code><a href="data-inventory.html#character-class">CharacterClass</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="character-race">
-                  <code><a href="data-inventory.html#character-race">CharacterRace</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="content-package-manifest">
-                  <code
-                    ><a href="data-inventory.html#content-package-manifest"
-                      >ContentPackageManifest</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="cosmetic-collection-record">
-                  <code
-                    ><a href="data-inventory.html#cosmetic-collection-record"
-                      >CosmeticCollectionRecord</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cosmetic-variant-definition">
-                  <code
-                    ><a href="data-inventory.html#cosmetic-variant-definition"
-                      >CosmeticVariantDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="faction">
-                  <code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully
-                  Defined
-                </li>
-                <li data-inventory-id="specialization">
-                  <code><a href="data-inventory.html#specialization">Specialization</a></code> —
-                  Existing · Fully Defined
-                </li>
-              </ul>
-            </section>
-            <!-- data-inventory:end -->
-          </div>
-          <footer class="page-footer">
-            <a href="../guide/audit.html">Readiness and open gates</a
-            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
-            ><a href="#main">Back to top ↑</a>
-          </footer>
-        </main>
-        <aside class="page-toc" aria-label="On this page">
-          <p>ON THIS PAGE</p>
-          <a href="#confirmed-direction">Confirmed direction</a
-          ><a href="#art-direction">Art direction</a
-          ><a href="#what-changed-from-v1">What changed from v1</a
-          ><a href="#decision-precedence">Decision precedence</a
-          ><a href="#recommended-boundaries">Recommended boundaries</a
-          ><a href="#what-complete-means-here">What “complete” means here</a>
-          <a data-inventory-toc href="#data">Data</a>
-        </aside>
-      </div>
-    </div>
-  </body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Design decisions · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a aria-current=page href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Foundation</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Foundation</div><h1>Design decisions</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<p>This revision supersedes the supplied v1 character pack. It is a <strong>gameplay-design reference and numerical prototype baseline</strong>, not a shipping game, a balance certification, or a complete Godot implementation. Structural checks and arithmetic tests are distinguished from tests that require a playable server.</p>
+<h2 id="confirmed-direction">Confirmed direction</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>v2 rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Presentation</td>
+<td><a href="#art-direction">Low-resolution 3D pixel-art scenes with an angled orthographic camera</a>; continuous planar movement and targeting</td>
+</tr>
+<tr>
+<td>Combat</td>
+<td>Hybrid target-based combat with directional attacks, ground effects and server-owned outcomes</td>
+</tr>
+<tr>
+<td>Roles</td>
+<td>Tank, healer, damage; support is a substantial secondary identity, not a required fourth slot</td>
+</tr>
+<tr>
+<td>Group baseline</td>
+<td>Five players: one tank, one healer, three damage specializations</td>
+</tr>
+<tr>
+<td>Character scope</td>
+<td>Twelve classes, 37 specializations, level cap 60</td>
+</tr>
+<tr>
+<td>Character creation</td>
+<td><a href="character-creation.html#character-creation-experience">Very similar to World of Warcraft in layout, presentation and flow</a>: character preview, faction/race/class, appearance, name, review and entry</td>
+</tr>
+<tr>
+<td>Beginner starting area</td>
+<td><a href="character-creation.html#beginner-starting-area">Guided, solo-completable level 1–10 area</a>, ending with specialization and a clear next destination; also the first complete playable testing ground</td>
+</tr>
+<tr>
+<td>Talent awards</td>
+<td>Two points per level-up, from level 2 through 60: one class and one specialization point</td>
+</tr>
+<tr>
+<td>Final talent budget</td>
+<td>59 class + 59 specialization = 118 points; no extra points at character creation</td>
+</tr>
+<tr>
+<td>Specialization</td>
+<td>Select at level 10; previously earned specialization points become spendable then</td>
+</tr>
+<tr>
+<td>Races</td>
+<td>Eleven distinct races; Humans may join either side; Ogres removed</td>
+</tr>
+<tr>
+<td>Faction restrictions</td>
+<td>Paladin and Cleric: good-aligned side only. Necromancer and Warlock: evil-aligned side only. Other classes: both</td>
+</tr>
+<tr>
+<td>Professions</td>
+<td>Two manufacturing slots, two gathering slots, and three common life skills; progression is separate from combat talents</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>Items, currency, crafting orders and build changes use authoritative, versioned records</td>
+</tr>
+<tr>
+<td>Excluded</td>
+<td>Fictional history, place names, capitals, religion, biographies, race cultures, authored story quests and detailed maps. The beginner-area feature flow and learning objectives are included.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>“Good” and “evil” are working faction-selection labels, not a morality simulation.</strong> Race and faction are separate fields. Nothing in this revision creates a crime/alignment meter, forces moral dialogue choices, or assigns new stories to a race.</p>
+<h2 id="art-direction">Art direction</h2>
+<p>Use low-resolution 3D scenes with an orthographic camera viewed from above at an angle. Favor clear low-poly silhouettes, toon surfaces, pixel-width outlines and selective edge highlights, with cohesive foliage, water and atmosphere. The visual reference is <a href="https://www.davidhol.land/articles/3d-pixel-art-rendering/">David Holland’s 3D Pixel Art Rendering</a>. Holland describes depth/normal outlines, camera snapping with screen-space correction, billboard foliage, stylized water and atmospheric lighting. His implementation used a custom Godot 4.3 build; its patches describe that historical setup.</p>
+<p><a href="https://roystan.net/articles/outline-shader/">Roystan’s Outline Shader</a> is a technique reference for depth/normal edge detection with diagonal Roberts-cross samples, integer texel spacing, depth-relative and view-angle thresholds, and alpha composition. It targets Unity 2018.3. A Godot implementation must adapt depth conventions, normal space, orthographic projection and available textures. Convex-only highlight selection remains a separate design.</p>
+<p>The user-selected <a href="https://www.youtube.com/channel/UCIjUIjWig0r5DIixQrt6A3A">t3ssel8r channel</a> is a supplementary visual research source, including <a href="https://www.youtube.com/watch?v=ERA7-I5nPAU">Creating a Scene for my 3D Pixel Art Game</a>. Record selected clips and timestamps in the renderer and art reference comparisons, then validate adopted techniques in the pinned Godot build. The channel supports ongoing visual research; production decisions require the project’s own scene and performance evidence.</p>
+<p><strong>Project acceptance criteria:</strong> Establish the camera, internal resolution, scaling policy, asset proportions and material conventions through a representative playable scene before producing the full art roster. Validate every asset in that scene, including animation, equipped items and alternate forms. Choose and test a supported Godot version, renderer and any fallback against the visual target; adopting an engine fork requires a demonstrated unmet requirement and a maintenance decision. The <a href="interface.html#rendering-and-camera">rendering and camera requirements</a> and <a href="testing.html#rendering-verification">rendering verification checks</a> govern gameplay readability.</p>
+<p><strong>Outline acceptance:</strong> Target silhouettes one pixel wide at the internal render resolution, with selective convex-edge highlights controlled separately from general normal discontinuities. Verify slopes, distance changes, near/far clipping, thin and overlapping geometry, and camera motion. Select antialiasing through those tests to preserve crisp, stable pixel widths; the tutorial’s SMAA setting is not a project default.</p>
+<p>3D presentation leaves the existing continuous planar movement, floor identities, server-owned foot anchors, collision, line of sight and aim contracts unchanged. Convert those coordinates to scene transforms in the client. <code>SpriteDirection</code> keeps its existing name and eight serialized values as preview heading presets; it does not require sprite sheets or constrain animated models to eight headings. A rendering choice adds no wire fields, vertical-combat rules or new world-coordinate schema.</p>
+<h2 id="what-changed-from-v1">What changed from v1</h2>
+<p>The previous 50-point progression is retired. Giving 118 points to the old 18-node trees would remove meaningful scarcity and exceed their maximum selectable ranks. The new tree layout contains 36 nodes per tree, with 92 purchasable ranks in any legal fully expanded route and only 59 available points. Early exclusive transformations begin in tier II; capstones remain late-game choices.</p>
+<p>The former assumption that every faction receives every class is also retired. Mandatory encounter capabilities instead have shared providers. This is <strong>functional coverage</strong>, not a promise that faction-exclusive classes have identical mechanics or that faction populations will balance themselves.</p>
+<p>V1's original 330 ability identifiers are retained for traceability. Their unlock schedules, execution profiles and review status are documented in the ability catalog. The original 882 talent identifiers remain traceable in the revised catalog alongside 882 additional nodes. Generic or contradictory wording is corrected where detected; bespoke talent interactions that still need implementation binding are explicitly marked rather than silently treated as finished code.</p>
+<h2 id="decision-precedence">Decision precedence</h2>
+<ol>
+<li>These v2 global rules and explicit v2 overrides govern.</li>
+<li>A specific ability or talent contract may override a default only through a named field.</li>
+<li>A legacy intent sentence never overrides a resource cap, targeting permission, faction restriction, crowd-control rule or transaction invariant.</li>
+<li>Missing behavior is rejected by content validation; it is not guessed by a client or runtime AI.</li>
+</ol>
+<h2 id="recommended-boundaries">Recommended boundaries</h2>
+<p>Keep class changes disabled. A specialization switch changes role and selected tree, not class. Race changes and faction transfers are not a launch feature; character creation must validate the final race/faction/class combination. Do not quietly convert a faction-exclusive class during transfer.</p>
+<p>Keep the bazaar faction-local at first, including crafting orders. Both sides receive equivalent recipes, material access rules and NPC fallback services. Cross-faction listings, neutral exchanges and war logistics are deferred mechanics; no supply chain depends on them.</p>
+<p>Account-wide collections may be cosmetic. Do not add account-wide combat power, profession throughput boosts or unlimited prestige statistics in this baseline.</p>
+<h2 id="what-complete-means-here">What “complete” means here</h2>
+<p>All requested <strong>systems</strong> have a proposed policy, key numerical defaults, interactions, persistence rules and acceptance criteria. The inherited content inventory remains navigable. The numerical execution profiles are explicit starting points, but several named secondary effects and transformative talent bindings still require individual implementation work. The audit lists these as open content-engineering gates. No page claims all 330 abilities or all talent combinations have been simulated or balanced.</p>
+<!-- data-inventory:start -->
+<section class="data-inventory" aria-labelledby="data">
+<h2 id="data">Data</h2>
+<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
+<h3 id="data-enums">Enums</h3>
+<ul>
+<li data-inventory-id="sprite-direction"><code><a href="data-inventory.html#sprite-direction">SpriteDirection</a></code> — Proposed · Fully Defined</li>
+</ul>
+<h3 id="data-schemas">Schemas</h3>
+<ul>
+<li data-inventory-id="character-catalog"><code><a href="data-inventory.html#character-catalog">CharacterCatalog</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="character-class"><code><a href="data-inventory.html#character-class">CharacterClass</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="character-race"><code><a href="data-inventory.html#character-race">CharacterRace</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="content-package-manifest"><code><a href="data-inventory.html#content-package-manifest">ContentPackageManifest</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="cosmetic-collection-record"><code><a href="data-inventory.html#cosmetic-collection-record">CosmeticCollectionRecord</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cosmetic-variant-definition"><code><a href="data-inventory.html#cosmetic-variant-definition">CosmeticVariantDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="faction"><code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="specialization"><code><a href="data-inventory.html#specialization">Specialization</a></code> — Existing · Fully Defined</li>
+</ul>
+</section>
+<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#confirmed-direction">Confirmed direction</a><a href="#art-direction">Art direction</a><a href="#what-changed-from-v1">What changed from v1</a><a href="#decision-precedence">Decision precedence</a><a href="#recommended-boundaries">Recommended boundaries</a><a href="#what-complete-means-here">What “complete” means here</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>

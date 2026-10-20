@@ -22,8 +22,7 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-199 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-30 individual ticket pages, three retained visual review pages,
+166 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -60,10 +59,7 @@ No Godot client/server, production database, economy or load test is included.
 
 VALIDATION
 Run: python validation/run_checks.py
-Maintainer checks require Python 3.10+, Node.js 22+ and the pinned Prettier
-dependency installed with npm ci. Python code uses the standard library;
-generated-output checks also invoke the local HTML formatter.
-The script rewrites report.json
+Requires Python 3.10+; standard library only. The script rewrites report.json
 and allocation_examples.json. It does not regenerate HTML or run a game.
 The HTML evidence page records checks from package generation; report.json is
 the source of truth after a later rerun.
@@ -87,47 +83,6 @@ recommended sequence and actionable epics. Each phase has a separate
 guide/roadmap-*.html index. Each epic has its own guide/roadmap-bw-NNN.html page
 with prerequisites, downstream work, acceptance criteria, verification and ticket
 planning. Criterion links such as #BW-097-AC-1 support future ticket references.
-BW-001 has seven tickets in execution order, each with its own generated page,
-exact parent-criterion links, dependencies, scope and runnable manual test plan.
-BW-002 has eight completed tickets covering authority ownership, compatibility,
-intent and projection boundaries, staged validation, readiness, economic inputs,
-conversion loops and atomic server admission. BW-001 and BW-002 are Complete;
-current statuses and executed evidence live in the registry. BW-003 has five
-tickets for attributable fixture evidence, deterministic test context, redacted
-probe diagnostics, bounded measurements and integrated verification.
-Its test-only action probe uses logical clients; serialized payload bytes are
-reported separately from wire traffic. BW-003 and all five tickets are Complete.
-The --suite all command joins content evidence, deterministic context, redacted
-diagnostics and raw measurements twice in eight fresh isolated Godot projects.
-Two independent complete runs, aggregate failure controls and clean recovery are
-retained with 87 Python regressions, content admission, native/exported server
-smoke, client exclusion inspection and test-control launch rejection evidence.
-BW-095 and BW-097 are now Dependency-ready; BW-012 still requires its other hard
-prerequisites. BW-097 is In Progress: T01 is Complete with a source-only graphical probe,
-Forward+/Metal capability checks and retained diagnostic captures on Apple M2 Max.
-T02 is Complete: its fixed 384x216 orthographic viewport, native Retina 2x
-presentation, independently scaled HUD/pointer, resize/minimum/zoom checks and
-invalid-setting controls have retained execution evidence. T03 is Complete:
-the project owner approved the concept comparison baseline, current character
-readability, observable bounds, documented deviations and future measurement
-targets on 2026-10-20. Normal x1 (9m) native/pixel comparisons and annotated
-concept review remain retained; initial close x2 is diagnostic only.
-Approval and parent-criterion mapping are in BW-097-T03/approval-review.json
-and approval-parent-review.json. The separate 112-instance, seven-character
-market showcase is merged in Briarwake PR14. Approved targets are not measured
-compliance; unavailable GPU timing remains unavailable. T04 is Complete: its fresh
-140-sequence / 8,960-sample camera run passes all eight checks, with continuous
-scoped anchors, guarded native presentation, reproducible stepping/reversal/resize
-and all T02 window/zoom presets. The owner approved a T04-only stationary PBR
-color exception (at most 2 RGB8 levels / 32 pixels in two scenery regions); the
-fresh run observes at most 1 level / 25 pixels. Initial strict failures, approval,
-current lossless playback and parent review are retained under BW-097-T04. T05–T10
-remain Not Started and cover outlines/toon lighting, pass composition, water,
-contact depth, combined motion and packaged measured feasibility. BW-097 remains
-In Progress; T05 is now prerequisite-ready. Other physical displays/OS
-scaling and exports remain unverified. BW-098 still awaits BW-097 completion.
-Foundations and milestones remain In Progress. The completed BW-003 bounded probe
-certifies no connected-client, gameplay, durability, wire-network or capacity work.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
 the containing phase. Dedicated reference pages
 cover milestones, architectural decisions, feature coverage and progress upkeep.
@@ -151,18 +106,7 @@ Edit an existing epic's status and verified_evidence there. Use exactly Not
 Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
 evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
 adding an epic, then update relevant dependencies, milestones and coverage.
-Store tickets in the same registry's tickets list. Preserve BW-NNN-TNN IDs,
-parent_epic, exact epic_criteria anchors and dependency order; new tickets begin
-Not Started with no verified evidence. Include scope, out_of_scope, observable
-acceptance_criteria, completion_evidence and related_docs. manual_test requires
-launch, setup, actions, expected_results and reset, or a not_applicable rationale.
-Include every required test scene, control and fixture in implementation scope.
-Tickets for a split epic must collectively cover all of its criteria. Ticket
-statuses do not automatically promote epic or milestone progress; completion
-requires actual evidence and completed dependencies. Ticket blockers and
-verified_evidence follow the same rules and record shape as epics.
 Do not edit the generated pages or search records. Rebuild and validate with:
-npm ci
 python3 scripts/build_development_roadmap.py
 python3 scripts/build_data_inventory.py --review-roadmap
 python3 scripts/build_development_roadmap.py --check
@@ -170,23 +114,13 @@ python3 scripts/build_data_inventory.py --check
 python3 -m unittest discover -s validation -p 'test_*.py'
 python3 validation/run_checks.py
 
-The roadmap builder owns the hub, phase indexes, individual epic/ticket pages and
+The roadmap builder owns the hub, phase indexes, individual epic pages and
 roadmap reference pages. The
 inventory builder's --review-roadmap option registers and refreshes all of these
 as planning references, without adding gameplay data associations. It refreshes
 navigation, direct detail-page search links, page review metadata and manifest counts.
 Generated dashboards, phase progress and milestone states derive from the same
 epic statuses. Every page remains readable offline and with JavaScript disabled.
-
-HTML FORMATTING
-Prettier is pinned in package-lock.json and configured in .prettierrc.json.
-Both Python builders format their HTML output automatically, including in
---check mode, so rebuilding preserves readable diffs. After npm ci, use:
-npm run format:html
-npm run check:html
-These commands cover published HTML and leave retained validation evidence alone.
-The first formatting pass is a mechanical baseline; later changes stay localized.
-Opening the published site still requires no Node.js or package installation.
 
 DATA INVENTORY AND CANONICAL CONTRACTS
 Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.
@@ -260,8 +194,7 @@ Focused consistency check: python3 validation/check_data_inventory.py
 Regression tests: python3 -m unittest discover -s validation -p 'test_*.py'
 Full existing checks, including inventory: python3 validation/run_checks.py
 Optional rendered checks: node validation/check_inventory_browser.mjs
-Python commands require Python 3.10+; HTML generation and generated-output
-checks also require Node.js 22+ and npm ci for the pinned formatter.
+All Python commands require Python 3.10+ and the standard library only.
 The browser check uses Node 22+ and installed Chrome/Chromium without downloads.
 Set BRIARWAKE_CHROME_BIN if needed. Its evidence is stored separately from the
 historical rendering-only record in validation/data-inventory-browser-checks.json.

@@ -1,553 +1,112 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Mechanics, governing rules, edge cases and acceptance criteria."
-    />
-    <title>Races &amp; faction rules · MMORPG Reference v2</title>
-    <link rel="stylesheet" href="../assets/styles.css" />
-    <script defer src="../assets/search-index.js"></script>
-    <script defer src="../assets/app.js"></script>
-  </head>
-  <body data-root="../">
-    <a class="skip-link" href="#main">Skip to content</a>
-    <aside class="sidebar" id="navigation">
-      <a class="brand" href="../index.html"
-        ><span class="brand-mark">M</span
-        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
-      >
-      <div class="version">v2.0 · Mechanics only</div>
-      <nav aria-label="Reference navigation">
-        <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
-        <div class="nav-group">
-          <p>Foundation</p>
-          <a href="../guide/decisions.html">Design decisions</a
-          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
-          ><a aria-current="page" href="../guide/races-factions.html">Races & faction rules</a
-          ><a href="../guide/progression.html">Levels & talent points</a
-          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
-        </div>
-        <div class="nav-group">
-          <p>Combat</p>
-          <a href="../guide/attributes.html">Attributes & formulas</a
-          ><a href="../guide/combat.html">Combat mechanics</a
-          ><a href="../guide/status-effects.html">Statuses, control & summons</a
-          ><a href="../guide/execution.html">Ability execution contracts</a
-          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
-        </div>
-        <div class="nav-group">
-          <p>Economy</p>
-          <a href="../guide/items.html">Equipment & itemization</a
-          ><a href="../guide/professions.html">Profession system</a
-          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
-          ><a href="../guide/economy.html">Bazaar & economy</a>
-        </div>
-        <div class="nav-group">
-          <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
-          ><a href="../guide/interface.html">Interface & accessibility</a
-          ><a href="../guide/operations.html">Supporting gameplay</a>
-        </div>
-        <div class="nav-group">
-          <p>Validation</p>
-          <a href="../guide/audit.html">Audit & open gates</a
-          ><a href="../guide/testing.html">Validation & test plan</a
-          ><a href="../guide/sources.html">Sources & provenance</a
-          ><a href="../guide/glossary.html">Mechanics glossary</a>
-        </div>
-        <details class="nav-list">
-          <summary>Classes <span>12</span></summary>
-          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
-          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
-          ><a href="../classes/necromancer.html">Necromancer</a
-          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
-          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
-          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
-          ><a href="../classes/warlock.html">Warlock</a>
-        </details>
-        <details class="nav-list">
-          <summary>Professions <span>16</span></summary>
-          <a href="../professions/blacksmithing.html">Blacksmithing</a
-          ><a href="../professions/leatherworking.html">Leatherworking</a
-          ><a href="../professions/tailoring.html">Tailoring</a
-          ><a href="../professions/alchemy.html">Alchemy</a
-          ><a href="../professions/enchanting.html">Enchanting</a
-          ><a href="../professions/engineering.html">Engineering</a
-          ><a href="../professions/woodworking.html">Woodworking</a
-          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
-          ><a href="../professions/inscription.html">Inscription</a
-          ><a href="../professions/mining.html">Mining</a
-          ><a href="../professions/herbalism.html">Herbalism</a
-          ><a href="../professions/skinning.html">Skinning</a
-          ><a href="../professions/forestry.html">Forestry</a
-          ><a href="../professions/cooking.html">Cooking</a
-          ><a href="../professions/fishing.html">Fishing</a
-          ><a href="../professions/first_aid.html">First Aid</a>
-        </details>
-        <div class="nav-group">
-          <p>Catalogs</p>
-          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
-          <a href="../catalog/abilities.html">Abilities</a
-          ><a href="../catalog/talents.html">Talents</a
-          ><a href="../catalog/recipes.html">Recipes</a>
-        </div>
-      </nav>
-      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
-    </aside>
-    <div class="workspace">
-      <header class="topbar">
-        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
-        ><span class="section-label">Foundation</span>
-        <div class="search-wrap">
-          <label for="site-search" class="visually-hidden">Search all reference content</label
-          ><input
-            id="site-search"
-            type="search"
-            placeholder="Search rules, abilities, recipes…"
-            autocomplete="off"
-            aria-controls="search-results"
-            aria-expanded="false"
-          />
-          <div id="search-results" class="search-results" hidden></div>
-        </div>
-        <button class="print-button" type="button">Print</button>
-      </header>
-      <div class="page-layout">
-        <main id="main" tabindex="-1">
-          <div class="breadcrumb">
-            <a href="../index.html">Reference</a><span>/</span>Foundation
-          </div>
-          <h1>Races &amp; faction rules</h1>
-          <p class="page-description">
-            Mechanics, governing rules, edge cases and acceptance criteria.
-          </p>
-          <div class="article-body">
-            <h2 id="revised-roster">Revised roster</h2>
-            <p>
-              Ogres are removed. Human is a single race definition available to either side, not two
-              mechanically different races. There are
-              <strong>eleven distinct races and twelve race/faction selections</strong>, with six
-              selections per faction.
-            </p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Good-aligned side</th>
-                  <th>Evil-aligned side</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Human</td>
-                  <td>Human</td>
-                </tr>
-                <tr>
-                  <td>High Elf</td>
-                  <td>Orc</td>
-                </tr>
-                <tr>
-                  <td>Wood Elf</td>
-                  <td>Goblin</td>
-                </tr>
-                <tr>
-                  <td>Dwarf</td>
-                  <td>Troll</td>
-                </tr>
-                <tr>
-                  <td>Halfling</td>
-                  <td>Dusk Elf</td>
-                </tr>
-                <tr>
-                  <td>Gnome</td>
-                  <td>Graveborn</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              These labels specify character creation and hostility rules only. Names, history,
-              culture and reasons for conflict are deliberately not included.
-            </p>
-            <h2 id="class-exclusivity">Class exclusivity</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Access</th>
-                  <th>Classes</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Good-aligned only</td>
-                  <td>Paladin, Cleric</td>
-                </tr>
-                <tr>
-                  <td>Evil-aligned only</td>
-                  <td>Necromancer, Warlock</td>
-                </tr>
-                <tr>
-                  <td>Both sides</td>
-                  <td>Warrior, Mage, Bard, Rogue, Ranger, Druid, Shaman, Monk</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Within an eligible faction, allow every listed race to select every available class.
-              Do not add a second layer of race/class exclusions before there is a concrete gameplay
-              reason. A Human Paladin is legal on the good side; a Human Necromancer is legal on the
-              evil side. The inverse selections are rejected. Human starting statistics are
-              identical on both sides.
-            </p>
-            <p>
-              This preserves all twelve established classes without adding a mirror class or
-              changing existing specialization roles. It intentionally creates asymmetric choices.
-              The good side has four tank, seven healer and twenty damage specializations; the evil
-              side has three tank, four healer and twenty-four damage specializations. Each side has
-              ten classes and 31 specializations.
-            </p>
-            <p>
-              <strong>Equal numbers of specializations are not equal role diversity.</strong> This
-              asymmetry is a real design cost. Preserve common-role coverage, avoid
-              faction-exclusive mandatory buffs, and measure actual healer/tank availability. If
-              this harms group formation, first change exclusive access or add an alternative
-              specialization through a separate decision; do not silently give a damage
-              specialization a second full role.
-            </p>
-            <h2 id="capability-parity-not-identical-classes">
-              Capability parity, not identical classes
-            </h2>
-            <p>
-              Both sides must be able to field reliable single-target threat, group threat, physical
-              and magical mitigation, direct healing, group recovery, preventive healing, cleanses,
-              revival, interrupts and soft control using common classes. Bard, Druid, Shaman and
-              Monk supply healing on both sides. Warrior, Druid and Monk supply tanking. No boss is
-              designed to require a Paladin, Cleric, Necromancer or Warlock by name.
-            </p>
-            <p>
-              Battle revival is a role service available to all healer specializations with a shared
-              encounter charge pool. Removing harmful magic is available through healer role
-              training; disease/poison/curse coverage is provided through selectable cleanse
-              modules. A group can inspect missing capability categories before entering an
-              instance. Professions may provide slower out-of-combat substitutes, not mandatory
-              superior versions.
-            </p>
-            <p>
-              PvP retains opposing faction teams. Human models must never be the only
-              faction-identification cue: nameplate badges, target outlines and party/enemy coloring
-              use authoritative allegiance. Color is accompanied by an icon.
-            </p>
-            <h2 id="small-fixed-starting-attributes">Small, fixed starting attributes</h2>
-            <p>
-              All five starting attributes begin at ten before the following offsets. Each row sums
-              to zero. Equal total points do <strong>not</strong> imply identical early combat
-              value; the actual formulas and class choices still need testing.
-            </p>
-            <div
-              aria-label="Scrollable reference table"
-              class="table-scroll"
-              role="region"
-              tabindex="0"
-            >
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Race</th>
-                    <th scope="col">Eligibility</th>
-                    <th scope="col">STR</th>
-                    <th scope="col">AGI</th>
-                    <th scope="col">INT</th>
-                    <th scope="col">STA</th>
-                    <th scope="col">SPI</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Human</td>
-                    <td>Both sides</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>High Elf</td>
-                    <td>Good side only</td>
-                    <td>-2</td>
-                    <td>0</td>
-                    <td>2</td>
-                    <td>-1</td>
-                    <td>1</td>
-                  </tr>
-                  <tr>
-                    <td>Wood Elf</td>
-                    <td>Good side only</td>
-                    <td>-1</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>-2</td>
-                    <td>1</td>
-                  </tr>
-                  <tr>
-                    <td>Dwarf</td>
-                    <td>Good side only</td>
-                    <td>1</td>
-                    <td>-1</td>
-                    <td>-2</td>
-                    <td>2</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>Halfling</td>
-                    <td>Good side only</td>
-                    <td>-2</td>
-                    <td>2</td>
-                    <td>-1</td>
-                    <td>1</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>Gnome</td>
-                    <td>Good side only</td>
-                    <td>-2</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>-1</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>Orc</td>
-                    <td>Evil side only</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>-2</td>
-                    <td>1</td>
-                    <td>-1</td>
-                  </tr>
-                  <tr>
-                    <td>Goblin</td>
-                    <td>Evil side only</td>
-                    <td>-2</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>-1</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>Troll</td>
-                    <td>Evil side only</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>-1</td>
-                    <td>-2</td>
-                    <td>2</td>
-                  </tr>
-                  <tr>
-                    <td>Dusk Elf</td>
-                    <td>Evil side only</td>
-                    <td>-1</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>-2</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>Graveborn</td>
-                    <td>Evil side only</td>
-                    <td>-2</td>
-                    <td>-1</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>2</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p>
-              Apply the racial offset <strong>after</strong> class, gear and buff percentage
-              scaling. It never grows with level and never multiplies with equipment. Avoid
-              permanent racial critical chance, profession yield, movement speed, exclusive combat
-              buttons or immunity bonuses; those can stay dominant despite small starting-stat
-              offsets.
-            </p>
-            <p>
-              Primary attribute growth is +3 per level, stamina +2, and other attributes +1, with
-              the primary attribute selected by specialization. At level 60 the primary attribute is
-              187 before gear and racial offsets. With +180 primary from equipment, it is 367 before
-              race; a +2 offset adds only 0.55% of that attribute. Under the defined power formula,
-              that is +3 power against a 750.5 baseline, approximately 0.40%. This is an
-              illustrative power difference, not a universal DPS guarantee.
-            </p>
-            <p>
-              The level-60 comparison target is less than 1% sustained role-output difference
-              between races under identical normal equipment and builds. It is an acceptance target,
-              not a measured result. Check healers, tanks, resource breakpoints and both the highest
-              and lowest racial offsets—not only a caster's primary statistic.
-            </p>
-            <p>
-              All races use the same combat capsule radius, reach rules, interaction distance and
-              line-of-sight origin. Rendered model size does not change hitability. Appearance does
-              not determine collision, attack timing or gathering speed.
-            </p>
-            <h2 id="changes-alts-and-faction-transfers">Changes, alts and faction transfers</h2>
-            <p>
-              Faction is selected at character creation and fixed in the first release.
-              Opposing-faction alts may exist on an account, but cannot directly move currency,
-              bound items or crafting-order escrow between economies. Neutral account cosmetics do
-              not bypass this rule.
-            </p>
-            <p>
-              A later faction-transfer feature must reject an incompatible class or provide a
-              separately designed conversion flow. It cannot simply change the faction field. Race
-              changes cannot create a resource refill or modify item ownership.
-            </p>
-            <h2 id="originality-boundary">Originality boundary</h2>
-            <p>
-              Traditional archetypes and broad gameplay structures are inspiration, not permission
-              to copy another game's character designs, wording, artwork, logos or distinctive lore.
-              This package contains no commercial-game artwork and uses faction placeholders. Names
-              remain working content labels, not trademark-cleared branding. Copyright and trademark
-              are different issues; the sources page records the official references and the
-              remaining need for professional clearance before publication.
-            </p>
-            <!-- data-inventory:start -->
-            <section class="data-inventory" aria-labelledby="data">
-              <h2 id="data">Data</h2>
-              <p>
-                Follow a type name to its canonical members, properties, constraints and review
-                decisions. Definitions are generated from one shared registry.
-              </p>
-              <h3 id="data-enums">Enums</h3>
-              <ul>
-                <li data-inventory-id="attribute-type">
-                  <code><a href="data-inventory.html#attribute-type">AttributeType</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="combat-role">
-                  <code><a href="data-inventory.html#combat-role">CombatRole</a></code> — Existing ·
-                  Fully Defined
-                </li>
-              </ul>
-              <h3 id="data-interfaces">Interfaces</h3>
-              <ul>
-                <li data-inventory-id="battle-revival-pool">
-                  <code
-                    ><a href="data-inventory.html#battle-revival-pool">BattleRevivalPool</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="character-eligibility">
-                  <code
-                    ><a href="data-inventory.html#character-eligibility"
-                      >CharacterEligibility</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="cleanse-module-selection">
-                  <code
-                    ><a href="data-inventory.html#cleanse-module-selection"
-                      >CleanseModuleSelection</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="group-capability-summary">
-                  <code
-                    ><a href="data-inventory.html#group-capability-summary"
-                      >GroupCapabilitySummary</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="role-capability-set">
-                  <code
-                    ><a href="data-inventory.html#role-capability-set">RoleCapabilitySet</a></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-              </ul>
-              <h3 id="data-schemas">Schemas</h3>
-              <ul>
-                <li data-inventory-id="character-class">
-                  <code><a href="data-inventory.html#character-class">CharacterClass</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="character-race">
-                  <code><a href="data-inventory.html#character-race">CharacterRace</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="class-definition">
-                  <code><a href="data-inventory.html#class-definition">ClassDefinition</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="cleanse-module-definition">
-                  <code
-                    ><a href="data-inventory.html#cleanse-module-definition"
-                      >CleanseModuleDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="faction">
-                  <code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully
-                  Defined
-                </li>
-                <li data-inventory-id="faction-definition">
-                  <code
-                    ><a href="data-inventory.html#faction-definition">FactionDefinition</a></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-                <li data-inventory-id="race-definition">
-                  <code><a href="data-inventory.html#race-definition">RaceDefinition</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="role-training-definition">
-                  <code
-                    ><a href="data-inventory.html#role-training-definition"
-                      >RoleTrainingDefinition</a
-                    ></code
-                  >
-                  — Proposed · Fully Defined
-                </li>
-                <li data-inventory-id="specialization">
-                  <code><a href="data-inventory.html#specialization">Specialization</a></code> —
-                  Existing · Fully Defined
-                </li>
-                <li data-inventory-id="specialization-definition">
-                  <code
-                    ><a href="data-inventory.html#specialization-definition"
-                      >SpecializationDefinition</a
-                    ></code
-                  >
-                  — Existing · Fully Defined
-                </li>
-              </ul>
-            </section>
-            <!-- data-inventory:end -->
-          </div>
-          <footer class="page-footer">
-            <a href="../guide/audit.html">Readiness and open gates</a
-            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
-            ><a href="#main">Back to top ↑</a>
-          </footer>
-        </main>
-        <aside class="page-toc" aria-label="On this page">
-          <p>ON THIS PAGE</p>
-          <a href="#revised-roster">Revised roster</a
-          ><a href="#class-exclusivity">Class exclusivity</a
-          ><a href="#capability-parity-not-identical-classes"
-            >Capability parity, not identical classes</a
-          ><a href="#small-fixed-starting-attributes">Small, fixed starting attributes</a
-          ><a href="#changes-alts-and-faction-transfers">Changes, alts and faction transfers</a
-          ><a href="#originality-boundary">Originality boundary</a>
-          <a data-inventory-toc href="#data">Data</a>
-        </aside>
-      </div>
-    </div>
-  </body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Races &amp; faction rules · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a aria-current=page href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Godot & networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Foundation</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Foundation</div><h1>Races &amp; faction rules</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
+<h2 id="revised-roster">Revised roster</h2>
+<p>Ogres are removed. Human is a single race definition available to either side, not two mechanically different races. There are <strong>eleven distinct races and twelve race/faction selections</strong>, with six selections per faction.</p>
+<table>
+<thead>
+<tr>
+<th>Good-aligned side</th>
+<th>Evil-aligned side</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Human</td>
+<td>Human</td>
+</tr>
+<tr>
+<td>High Elf</td>
+<td>Orc</td>
+</tr>
+<tr>
+<td>Wood Elf</td>
+<td>Goblin</td>
+</tr>
+<tr>
+<td>Dwarf</td>
+<td>Troll</td>
+</tr>
+<tr>
+<td>Halfling</td>
+<td>Dusk Elf</td>
+</tr>
+<tr>
+<td>Gnome</td>
+<td>Graveborn</td>
+</tr>
+</tbody>
+</table>
+<p>These labels specify character creation and hostility rules only. Names, history, culture and reasons for conflict are deliberately not included.</p>
+<h2 id="class-exclusivity">Class exclusivity</h2>
+<table>
+<thead>
+<tr>
+<th>Access</th>
+<th>Classes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Good-aligned only</td>
+<td>Paladin, Cleric</td>
+</tr>
+<tr>
+<td>Evil-aligned only</td>
+<td>Necromancer, Warlock</td>
+</tr>
+<tr>
+<td>Both sides</td>
+<td>Warrior, Mage, Bard, Rogue, Ranger, Druid, Shaman, Monk</td>
+</tr>
+</tbody>
+</table>
+<p>Within an eligible faction, allow every listed race to select every available class. Do not add a second layer of race/class exclusions before there is a concrete gameplay reason. A Human Paladin is legal on the good side; a Human Necromancer is legal on the evil side. The inverse selections are rejected. Human starting statistics are identical on both sides.</p>
+<p>This preserves all twelve established classes without adding a mirror class or changing existing specialization roles. It intentionally creates asymmetric choices. The good side has four tank, seven healer and twenty damage specializations; the evil side has three tank, four healer and twenty-four damage specializations. Each side has ten classes and 31 specializations.</p>
+<p><strong>Equal numbers of specializations are not equal role diversity.</strong> This asymmetry is a real design cost. Preserve common-role coverage, avoid faction-exclusive mandatory buffs, and measure actual healer/tank availability. If this harms group formation, first change exclusive access or add an alternative specialization through a separate decision; do not silently give a damage specialization a second full role.</p>
+<h2 id="capability-parity-not-identical-classes">Capability parity, not identical classes</h2>
+<p>Both sides must be able to field reliable single-target threat, group threat, physical and magical mitigation, direct healing, group recovery, preventive healing, cleanses, revival, interrupts and soft control using common classes. Bard, Druid, Shaman and Monk supply healing on both sides. Warrior, Druid and Monk supply tanking. No boss is designed to require a Paladin, Cleric, Necromancer or Warlock by name.</p>
+<p>Battle revival is a role service available to all healer specializations with a shared encounter charge pool. Removing harmful magic is available through healer role training; disease/poison/curse coverage is provided through selectable cleanse modules. A group can inspect missing capability categories before entering an instance. Professions may provide slower out-of-combat substitutes, not mandatory superior versions.</p>
+<p>PvP retains opposing faction teams. Human models must never be the only faction-identification cue: nameplate badges, target outlines and party/enemy coloring use authoritative allegiance. Color is accompanied by an icon.</p>
+<h2 id="small-fixed-starting-attributes">Small, fixed starting attributes</h2>
+<p>All five starting attributes begin at ten before the following offsets. Each row sums to zero. Equal total points do <strong>not</strong> imply identical early combat value; the actual formulas and class choices still need testing.</p>
+<div aria-label="Scrollable reference table" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th scope="col">Race</th><th scope="col">Eligibility</th><th scope="col">STR</th><th scope="col">AGI</th><th scope="col">INT</th><th scope="col">STA</th><th scope="col">SPI</th></tr></thead><tbody><tr><td>Human</td><td>Both sides</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>High Elf</td><td>Good side only</td><td>-2</td><td>0</td><td>2</td><td>-1</td><td>1</td></tr><tr><td>Wood Elf</td><td>Good side only</td><td>-1</td><td>2</td><td>0</td><td>-2</td><td>1</td></tr><tr><td>Dwarf</td><td>Good side only</td><td>1</td><td>-1</td><td>-2</td><td>2</td><td>0</td></tr><tr><td>Halfling</td><td>Good side only</td><td>-2</td><td>2</td><td>-1</td><td>1</td><td>0</td></tr><tr><td>Gnome</td><td>Good side only</td><td>-2</td><td>1</td><td>2</td><td>-1</td><td>0</td></tr><tr><td>Orc</td><td>Evil side only</td><td>2</td><td>0</td><td>-2</td><td>1</td><td>-1</td></tr><tr><td>Goblin</td><td>Evil side only</td><td>-2</td><td>2</td><td>1</td><td>-1</td><td>0</td></tr><tr><td>Troll</td><td>Evil side only</td><td>0</td><td>1</td><td>-1</td><td>-2</td><td>2</td></tr><tr><td>Dusk Elf</td><td>Evil side only</td><td>-1</td><td>1</td><td>2</td><td>-2</td><td>0</td></tr><tr><td>Graveborn</td><td>Evil side only</td><td>-2</td><td>-1</td><td>1</td><td>0</td><td>2</td></tr></tbody></table></div>
+<p>Apply the racial offset <strong>after</strong> class, gear and buff percentage scaling. It never grows with level and never multiplies with equipment. Avoid permanent racial critical chance, profession yield, movement speed, exclusive combat buttons or immunity bonuses; those can stay dominant despite small starting-stat offsets.</p>
+<p>Primary attribute growth is +3 per level, stamina +2, and other attributes +1, with the primary attribute selected by specialization. At level 60 the primary attribute is 187 before gear and racial offsets. With +180 primary from equipment, it is 367 before race; a +2 offset adds only 0.55% of that attribute. Under the defined power formula, that is +3 power against a 750.5 baseline, approximately 0.40%. This is an illustrative power difference, not a universal DPS guarantee.</p>
+<p>The level-60 comparison target is less than 1% sustained role-output difference between races under identical normal equipment and builds. It is an acceptance target, not a measured result. Check healers, tanks, resource breakpoints and both the highest and lowest racial offsets—not only a caster's primary statistic.</p>
+<p>All races use the same combat capsule radius, reach rules, interaction distance and line-of-sight origin. Rendered model size does not change hitability. Appearance does not determine collision, attack timing or gathering speed.</p>
+<h2 id="changes-alts-and-faction-transfers">Changes, alts and faction transfers</h2>
+<p>Faction is selected at character creation and fixed in the first release. Opposing-faction alts may exist on an account, but cannot directly move currency, bound items or crafting-order escrow between economies. Neutral account cosmetics do not bypass this rule.</p>
+<p>A later faction-transfer feature must reject an incompatible class or provide a separately designed conversion flow. It cannot simply change the faction field. Race changes cannot create a resource refill or modify item ownership.</p>
+<h2 id="originality-boundary">Originality boundary</h2>
+<p>Traditional archetypes and broad gameplay structures are inspiration, not permission to copy another game's character designs, wording, artwork, logos or distinctive lore. This package contains no commercial-game artwork and uses faction placeholders. Names remain working content labels, not trademark-cleared branding. Copyright and trademark are different issues; the sources page records the official references and the remaining need for professional clearance before publication.</p>
+<!-- data-inventory:start -->
+<section class="data-inventory" aria-labelledby="data">
+<h2 id="data">Data</h2>
+<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
+<h3 id="data-enums">Enums</h3>
+<ul>
+<li data-inventory-id="attribute-type"><code><a href="data-inventory.html#attribute-type">AttributeType</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="combat-role"><code><a href="data-inventory.html#combat-role">CombatRole</a></code> — Existing · Fully Defined</li>
+</ul>
+<h3 id="data-interfaces">Interfaces</h3>
+<ul>
+<li data-inventory-id="battle-revival-pool"><code><a href="data-inventory.html#battle-revival-pool">BattleRevivalPool</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="character-eligibility"><code><a href="data-inventory.html#character-eligibility">CharacterEligibility</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="cleanse-module-selection"><code><a href="data-inventory.html#cleanse-module-selection">CleanseModuleSelection</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="group-capability-summary"><code><a href="data-inventory.html#group-capability-summary">GroupCapabilitySummary</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="role-capability-set"><code><a href="data-inventory.html#role-capability-set">RoleCapabilitySet</a></code> — Proposed · Fully Defined</li>
+</ul>
+<h3 id="data-schemas">Schemas</h3>
+<ul>
+<li data-inventory-id="character-class"><code><a href="data-inventory.html#character-class">CharacterClass</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="character-race"><code><a href="data-inventory.html#character-race">CharacterRace</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="class-definition"><code><a href="data-inventory.html#class-definition">ClassDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="cleanse-module-definition"><code><a href="data-inventory.html#cleanse-module-definition">CleanseModuleDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="faction"><code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="faction-definition"><code><a href="data-inventory.html#faction-definition">FactionDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="race-definition"><code><a href="data-inventory.html#race-definition">RaceDefinition</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="role-training-definition"><code><a href="data-inventory.html#role-training-definition">RoleTrainingDefinition</a></code> — Proposed · Fully Defined</li>
+<li data-inventory-id="specialization"><code><a href="data-inventory.html#specialization">Specialization</a></code> — Existing · Fully Defined</li>
+<li data-inventory-id="specialization-definition"><code><a href="data-inventory.html#specialization-definition">SpecializationDefinition</a></code> — Existing · Fully Defined</li>
+</ul>
+</section>
+<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#revised-roster">Revised roster</a><a href="#class-exclusivity">Class exclusivity</a><a href="#capability-parity-not-identical-classes">Capability parity, not identical classes</a><a href="#small-fixed-starting-attributes">Small, fixed starting attributes</a><a href="#changes-alts-and-faction-transfers">Changes, alts and faction transfers</a><a href="#originality-boundary">Originality boundary</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>

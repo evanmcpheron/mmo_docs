@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:briarwake:data-model",
-  "x-content-version": "2.2.1-design",
+  "x-content-version": "2.2.0-design",
   "description": "Generated from data-inventory.json. Select a named $defs contract. Needs Decision contracts validate only the documented portion; x-members are symbolic identifiers with no assigned wire encoding.",
   "$defs": {
     "AbilityCostPolicy": {
@@ -14470,10 +14470,6 @@
             "stack_limit": {
               "type": "integer",
               "description": "Existing stack limit."
-            },
-            "starter_assistance": {
-              "type": "boolean",
-              "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
             }
           },
           "required": [
@@ -14538,10 +14534,6 @@
             "stack_limit": {
               "type": "integer",
               "description": "Existing stack limit."
-            },
-            "starter_assistance": {
-              "type": "boolean",
-              "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
             }
           },
           "required": [
@@ -14603,10 +14595,6 @@
             "stack_limit": {
               "type": "integer",
               "description": "Existing stack limit."
-            },
-            "starter_assistance": {
-              "type": "boolean",
-              "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
             }
           },
           "required": [
@@ -14667,10 +14655,6 @@
             "stack_limit": {
               "type": "integer",
               "description": "Existing stack limit."
-            },
-            "starter_assistance": {
-              "type": "boolean",
-              "description": "Explicit starter-assistance provenance. Optional for legacy catalogs; required for economic admission. True requires character/account binding, zero sellback and no salvage output; crafting must preserve the restriction on its outputs."
             }
           },
           "required": [
@@ -14689,9 +14673,7 @@
         }
       ],
       "description": "Existing ItemDefinition record format, preserving every field in the shipped corpus.",
-      "x-invariants": [
-        "Economic admission requires starter_assistance on every economically referenced item. Starter assistance is bound/nonexportable, cannot return currency or salvage materials, and may only feed equally restricted crafting outputs. Missing provenance is not false. Starter inputs cannot feed commissions to another owner."
-      ],
+      "x-invariants": [],
       "x-category": "Schema",
       "x-definition-status": "Fully Defined"
     },
@@ -17758,23 +17740,6 @@
         "stack_limit": {
           "type": "integer",
           "description": "Existing stack limit."
-        },
-        "item_definition_id": {
-          "$ref": "#/$defs/Id",
-          "x-reference": {
-            "target": "ItemDefinition",
-            "kind": "content"
-          },
-          "description": "Explicit inventory-item representation of this material. Optional for legacy catalogs; economic admission requires it and matching binding. No display-name mapping."
-        },
-        "salvage_class": {
-          "type": "string",
-          "enum": [
-            "common",
-            "rare_core",
-            "progression_component"
-          ],
-          "description": "Explicit common-material eligibility or excluded core classification. Optional for legacy catalogs; economic admission requires it. Bound materials never qualify for returns."
         }
       },
       "required": [
@@ -17788,9 +17753,6 @@
       ],
       "additionalProperties": false,
       "description": "Existing MaterialDefinition record format, preserving every field in the shipped corpus.",
-      "x-invariants": [
-        "Economic admission requires an explicit item_definition_id and salvage_class. Material/item binding must agree; only unbound common materials can be returned. Item identity maps to at most one material in an enabled set."
-      ],
       "x-category": "Schema",
       "x-definition-status": "Fully Defined"
     },
