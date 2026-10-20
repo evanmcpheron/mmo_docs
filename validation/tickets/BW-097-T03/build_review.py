@@ -9,7 +9,8 @@ from build_data_inventory import navigation
 from html_format import format_html_documents
 
 review = json.loads((ROOT / 'visual-review.json').read_text())
-run = json.loads((ROOT / 'source-run/run.json').read_text())
+capture_directory = review['capture_directory']
+run = json.loads((ROOT / capture_directory / 'run.json').read_text())
 observations = {row['label']: row for row in run['actual']['observations']}
 concept = '../../../assets/graphics_concept.png'
 
@@ -27,7 +28,7 @@ for region in review['comparison_regions']:
     rows.append(f'<article><h3>{escape(label.capitalize())}</h3><div class="crops"><figure>'
                 + crop(concept, region['concept_rectangle'], 'Concept ' + label)
                 + '<figcaption>Principal concept · native source crop</figcaption></figure><figure>'
-                + crop('source-run/day-zoom-0-internal.png', observations['day-zoom-0']['regions'][label],
+                + crop(capture_directory + '/day-zoom-0-internal.png', observations['day-zoom-0']['regions'][label],
                        'Probe ' + label)
                 + '<figcaption>Probe · projected region at zoom ×1</figcaption></figure></div><p>'
                 + escape(region['observation']) + '</p></article>')
@@ -46,12 +47,14 @@ references = ''.join(f'<li><a href="{escape(ref["url"])}">'
                      + (f' <a href="{escape(ref["capture"])}">Inspected frame</a>' if ref.get('capture') else '')
                      + '</li>'
                      for ref in review['supplementary_references'])
-lighting = ''.join(f'<figure><img src="source-run/{light}-zoom-0-internal.png" '
+lighting = ''.join(f'<figure><img src="{capture_directory}/{light}-zoom-0-internal.png" '
                     f'width="384" height="216" alt="{light} lighting at native gameplay scale">'
                     f'<figcaption>{light.capitalize()} · 384×216 native pixels</figcaption></figure>'
                     for light in ('day', 'warm', 'cool'))
 findings = ''.join(f'<li>{escape(finding)}</li>' for finding in review['blocking_findings'])
 deviations = ''.join(f'<li>{escape(item)}</li>' for item in review['proposed_deviations'])
+provenance = review['asset_provenance']
+limitations = ''.join(f'<li>{escape(item)}</li>' for item in provenance['limitations'])
 budget = review['proposed_budgets']
 html = f'''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BW-097-T03 · visual baseline review</title><style>
@@ -70,12 +73,14 @@ code{{font-size:12px;overflow-wrap:anywhere}}.notice{{border-left:3px solid #dfb
 @media print{{body{{background:white;color:black}}p,figcaption{{color:#333}}article,.notice{{background:#eee}}a{{color:#13435e}}}}
 </style><nav aria-label="Reference navigation"><a class="nav-home" href="../../../index.html">Overview</a><p>Catalogs</p></nav><main><div class="eyebrow">Briarwake · BW-097-T03 · {escape(review['version'])} · {escape(review['date'])}</div>
 <h1>Concept → gameplay-scale comparison</h1><div class="badge">{escape(review['status'])}</div>
-<p>Principal concept at left. Original source probe at right. 384×216 world, ortho height 9, −35° / −45°, nearest integer presentation. Enlarged images are diagnostic; review native pixels below.</p>
+<p>Principal concept at left. Imported Moore RPG probe at right. 384×216 world, ortho height 9, −35° / −45°, nearest integer presentation. Enlarged images are diagnostic; review native pixels below.</p>
 <div class="hero"><figure><svg viewBox="0 0 1672 941" role="img" aria-label="Principal concept with numbered comparison regions"><image href="{concept}" width="1672" height="941"/>{annotations}</svg><figcaption>Principal concept · boxes identify the source crops below. SHA-256 <code>{review['principal_reference']['sha256']}</code></figcaption></figure>
-<figure><img src="source-run/day-zoom-0-internal.png" width="384" height="216" alt="Original detailed character with simpler props, corner, palette"><figcaption>Original probe · day / zoom ×1. Character is larger and more angular than the concept; environment lacks the concept’s texture density and final effects. Approval is pending.</figcaption></figure></div>
+<figure><img src="{capture_directory}/day-zoom-0-internal.png" width="384" height="216" alt="Imported armored knight, timber hut, tree and barrel"><figcaption>Moore RPG probe · day / zoom ×1. Larger upright knight with repaired source armor textures and frontal fill. Native zoom ×1 is the readability test; the ×2 view is diagnostic. Character readability and art approval remain pending.</figcaption></figure></div>
 <h2>Character, props, depth and lighting</h2><div class="cards">{''.join(rows)}</div>
 <h2>Native gameplay pixels</h2><p>Each image below has 384×216 source pixels, displayed 1:1 when room permits. Compare part separation and warm/cool light here before inspecting the ×2 diagnostic.</p><div class="native">{lighting}</div>
-<p><a href="source-run/day-zoom-1-internal.png">Day zoom ×2 diagnostic</a> · <a href="source-run/day-zoom-0-output.png">Native Retina output with independent HUD</a> · <a href="source-run/run.json">Actual execution and capture hashes</a></p>
+<p><a href="{capture_directory}/day-zoom-1-internal.png">Day zoom ×2 diagnostic</a> · <a href="{capture_directory}/day-zoom-0-output.png">Native Retina output with independent HUD</a> · <a href="{capture_directory}/run.json">Actual execution and capture hashes</a></p>
+<h2>Imported fixture provenance</h2><p>The user-selected Moore RPG library supplies the knight, hut, tree and barrel. Source and converted models/textures remain local; the recipe and rendered evidence are retained. The original Unreal project is read-only. Reproduction requires an authorized local copy of that library.</p>
+<p><a href="{provenance['recipe']}">Selected asset recipe</a> · <a href="{provenance['manifest']}">Engine, source/dependency and converted hashes</a> · <a href="{provenance['export_log']}">Unreal export log</a></p><ul>{limitations}</ul>
 <h2>Proposed observable bounds</h2><table><thead><tr><th>Area</th><th>Review proposal</th><th>Decision</th></tr></thead><tbody>{bounds}</tbody></table>
 <h2>Provisional measurement budgets — approval required</h2><p>Proposal for this source probe on Apple M2 Max / Metal: {budget['target_fps']} FPS; CPU frame p95 ≤{budget['cpu_frame_p95_ms']:g} ms; GPU frame p95 ≤{budget['gpu_frame_p95_ms']:g} ms; peak process RSS ≤{budget['process_rss_peak_mib']:,} MiB; peak engine rendering allocations ≤{budget['rendering_allocations_peak_mib']:,} MiB. Use 384×216 internal and 960×640 logical output on actual Retina ×2. These are proposals, with no measured compliance claim. T10 must retain warmup, raw samples, percentiles and separate process/engine memory accounting; unavailable GPU timings cannot pass.</p>
 <h2>Proposed deviations</h2><ul>{deviations}</ul>

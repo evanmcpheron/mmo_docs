@@ -1,0 +1,115 @@
+[
+  {
+    "label": "black-albedo",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "reference",
+      "--output",
+      "artifacts/moores-readable-controls/black-albedo",
+      "--assets",
+      "artifacts/moores-readable-controls/blank-albedo-assets"
+    ],
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "result": "Failed",
+    "execution_state": "Executed",
+    "failure": "Blank or missing transferred character albedo: ReferencePlateTorso",
+    "automated_evidence": null
+  },
+  {
+    "label": "invalid-settings",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "reference",
+      "--output",
+      "artifacts/moores-readable-controls/invalid-settings",
+      "--control",
+      "invalid-settings"
+    ],
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "result": "Failed",
+    "execution_state": "Not Executed",
+    "failure": "Invalid settings: use the checked-in bounded reference settings.",
+    "automated_evidence": null
+  },
+  {
+    "label": "missing-report",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "reference",
+      "--output",
+      "artifacts/moores-readable-controls/missing-report",
+      "--control",
+      "missing-report"
+    ],
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "result": "Failed",
+    "execution_state": "Executed",
+    "failure": "Missing or duplicate runtime start/report; no complete assertion evidence.",
+    "automated_evidence": null
+  },
+  {
+    "label": "check-failure",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "reference",
+      "--output",
+      "artifacts/moores-readable-controls/check-failure",
+      "--control",
+      "check-failure"
+    ],
+    "expected_exit": 1,
+    "actual_exit": 1,
+    "result": "Failed",
+    "execution_state": "Executed",
+    "failure": "Executed graphical checks failed; retain findings and captures.",
+    "automated_evidence": {
+      "status": "failed",
+      "runner_id": "briarwake.rendering-reference-v1",
+      "completed_at": "2026-10-20T03:14:50.845172Z",
+      "content_version": "moores-reference-fixtures-v2",
+      "rules_version": "reference-comparison-v3",
+      "findings": [
+        {
+          "code": "deliberate-failure",
+          "path": "rendering.reference",
+          "message": "Requested failure control actually executed."
+        }
+      ]
+    }
+  },
+  {
+    "label": "pass",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/run_rendering_probe.py",
+      "--case",
+      "reference",
+      "--output",
+      "artifacts/moores-readable-controls/pass"
+    ],
+    "expected_exit": 0,
+    "actual_exit": 0,
+    "result": "Passed",
+    "execution_state": "Executed",
+    "failure": null,
+    "automated_evidence": {
+      "status": "passed",
+      "runner_id": "briarwake.rendering-reference-v1",
+      "completed_at": "2026-10-20T03:14:59.760688Z",
+      "content_version": "moores-reference-fixtures-v2",
+      "rules_version": "reference-comparison-v3",
+      "findings": []
+    }
+  }
+]
