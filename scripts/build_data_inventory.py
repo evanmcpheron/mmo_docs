@@ -534,8 +534,10 @@ def expected_outputs(registry, root=ROOT):
                     content = content[:len(heading.group()) + next_heading.start()]
         plain = html.unescape(re.sub(r'<[^>]*>', ' ', content))
         record['text'] = ' '.join(plain.split())[:10000]
-        if path == 'guide/networking.html' and not fragment:
-            record['title'] = 'Unreal C++ & networking'
+        if path == 'guide/networking.html':
+            record['section'] = 'Unreal C++ & networking'
+            if not fragment:
+                record['title'] = 'Unreal C++ & networking'
     records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Fully Defined design decisions future Briarwake implementation work'}]
     for entry in sorted(registry['entries'], key=lambda e: e['name'].casefold()):
         records.append({'title': entry['name'], 'section': 'Data Inventory · ' + entry['category'], 'url': INVENTORY_PAGE + '#' + entry['id'],
