@@ -57,13 +57,23 @@ lighting = ''.join(f'<figure><img src="{capture_directory}/{light}-zoom-0-intern
                     f'<figcaption>{light.capitalize()} · 384×216 native pixels</figcaption></figure>'
                     for light in ('day', 'warm', 'cool'))
 findings = ''.join(f'<li>{escape(finding)}</li>' for finding in review['blocking_findings'])
-deviations = ''.join(f'<li>{escape(item)}</li>' for item in review['proposed_deviations'])
+approved = review['approved_at'] is not None
+deviations = ''.join(f'<li>{escape(item)}</li>' for item in
+                     (review['approved_deviations'] if approved else review['proposed_deviations']))
 provenance = review['asset_provenance']
 limitations = ''.join(f'<li>{escape(item)}</li>' for item in provenance['limitations'])
 readability = review['readability_comparison']
 deferred = ''.join(f'<tr><td>{escape(item["ticket"])}</td><td>{escape(item["symptom"])}</td></tr>'
                    for item in review['deferred_findings'])
 budget = review['proposed_budgets']
+bounds_heading = 'Approved observable bounds' if approved else 'Proposed observable bounds'
+budget_heading = 'Approved future measurement targets' if approved else 'Provisional measurement budgets — approval required'
+deviations_heading = 'Approved prototype deviations' if approved else 'Proposed deviations'
+appearance_decision = ('The project owner approved this prototype baseline and its documented limitations.'
+                       if approved else 'Artistic acceptance remains pending.')
+budget_decision = ('The project owner approved these future targets; measured compliance remains unverified.'
+                   if approved else 'These are proposals, with no measured compliance claim.')
+decision = review['decision'] if approved else 'Confirm or revise the visual bounds, budgets and deviations.'
 html = f'''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BW-097-T03 · visual baseline review</title><style>
 *{{box-sizing:border-box}}body{{margin:0;background:#10191e;color:#e1e5df;font:16px/1.6 system-ui,sans-serif}}
@@ -90,7 +100,7 @@ code{{font-size:12px;overflow-wrap:anywhere}}.notice{{border-left:3px solid #dfb
 <div class="hero comparison"><figure><a href="{comparison_directory}/{comparison['before']}"><img class="native-pbr" src="{comparison_directory}/{comparison['before']}" width="{native_width}" height="{native_height}" alt="Before: native-resolution PBR render with pixel presentation disabled"></a><figcaption>Before · native-resolution PBR · pixel presentation off</figcaption></figure>
 <figure><a href="{comparison_directory}/{comparison['after']}"><img src="{comparison_directory}/{comparison['after']}" width="{native_width}" height="{native_height}" alt="After: matching scene rendered at 384 by 216 and enlarged with nearest sampling"></a><figcaption>After · 384×216 with nearest integer upscale · current prototype</figcaption></figure></div>
 <p>{escape(comparison['verification'])} <a href="{comparison_directory}/run.json">Comparison execution and image hashes</a>. The high-resolution image is diagnostic; gameplay readability still needs review at 384×216.</p>
-<h2>Principal concept and gameplay pixels</h2><p>The original concept remains the appearance reference. The bounded courtyard uses the same Titan assets and fourteen placements. Its PBR-only treatment does not reproduce the concept's painted detail, selective lighting, dense village or missing effects. Artistic acceptance remains pending.</p>
+<h2>Principal concept and gameplay pixels</h2><p>The original concept remains the appearance reference. The bounded courtyard uses the same Titan assets and fourteen placements. Its PBR-only treatment does not reproduce the concept's painted detail, selective lighting, dense village or missing effects. {escape(appearance_decision)}</p>
 <div class="hero"><figure><svg viewBox="0 0 1672 941" role="img" aria-label="Principal concept with numbered comparison regions"><image href="{concept}" width="1672" height="941"/>{annotations}</svg><figcaption>Principal concept · unchanged SHA-256 <code>{review['principal_reference']['sha256']}</code></figcaption></figure><figure><img src="{capture_directory}/day-zoom-0-internal.png" width="384" height="216" alt="Titan courtyard at normal gameplay scale"><figcaption>Normal ×1 · 384×216 gameplay pixels · day / 9m height. This enlarged comparison is diagnostic; use the 1:1 images above for readability.</figcaption></figure></div>
 <h2>Character, props, depth and lighting</h2><div class="cards">{''.join(rows)}</div>
 <h2>Normal ×1 lighting matrix</h2><p>Each image below has 384×216 source pixels, displayed 1:1 when room permits. Compare head, torso, arms, boots and warm/cool separation here. Fine facial and armor detail remains limited.</p><div class="native">{lighting}</div>
@@ -100,11 +110,11 @@ code{{font-size:12px;overflow-wrap:anywhere}}.notice{{border-left:3px solid #dfb
 <h2>Rendering diagnosis and deferred findings</h2><p>Captured world output matches exact nearest 4× enlargement, with no intermediate smoothing. High-frequency source textures, shading gradients and specular detail lose definition inside 384×216. Pixel presentation cannot restore subpixel features. Early capture-resize trials also exposed one-level live-frame variation on a crate; the revised capture preserves the source frame and restores updates, without claiming a live stability fix. No speculative sky/material changes were retained.</p><table><thead><tr><th>Owner</th><th>Visible limitation / required verification</th></tr></thead><tbody>{deferred}</tbody></table>
 <h2>Imported fixture provenance</h2><p>The user-selected Project Titan library supplies the character and courtyard assets. Source and converted models/textures remain local; the recipe and rendered evidence are retained. The original Unreal project is read-only. Reproduction requires an authorized local copy of that library.</p>
 <p><a href="{provenance['recipe']}">Selected asset recipe</a> · <a href="{provenance['manifest']}">Engine, source/dependency and converted hashes</a> · <a href="{provenance['export_log']}">Unreal export log</a></p><ul>{limitations}</ul>
-<h2>Proposed observable bounds</h2><table><thead><tr><th>Area</th><th>Review proposal</th><th>Decision</th></tr></thead><tbody>{bounds}</tbody></table>
-<h2>Provisional measurement budgets — approval required</h2><p>Proposal for this source probe on Apple M2 Max / Metal: {budget['target_fps']} FPS; CPU frame p95 ≤{budget['cpu_frame_p95_ms']:g} ms; GPU frame p95 ≤{budget['gpu_frame_p95_ms']:g} ms; peak process RSS ≤{budget['process_rss_peak_mib']:,} MiB; peak engine rendering allocations ≤{budget['rendering_allocations_peak_mib']:,} MiB. Use 384×216 internal and 960×640 logical output on actual Retina ×2. These are proposals, with no measured compliance claim. T10 must retain warmup, raw samples, percentiles and separate process/engine memory accounting; unavailable GPU timings cannot pass.</p>
-<h2>Proposed deviations</h2><ul>{deviations}</ul>
+<h2>{bounds_heading}</h2><table><thead><tr><th>Area</th><th>Acceptance bound</th><th>Decision</th></tr></thead><tbody>{bounds}</tbody></table>
+<h2>{budget_heading}</h2><p>Source probe on Apple M2 Max / Metal: {budget['target_fps']} FPS; CPU frame p95 ≤{budget['cpu_frame_p95_ms']:g} ms; GPU frame p95 ≤{budget['gpu_frame_p95_ms']:g} ms; peak process RSS ≤{budget['process_rss_peak_mib']:,} MiB; peak engine rendering allocations ≤{budget['rendering_allocations_peak_mib']:,} MiB. Use 384×216 internal and 960×640 logical output on actual Retina ×2. {escape(budget_decision)} T10 must retain warmup, raw samples, percentiles and separate process/engine memory accounting; unavailable GPU timings cannot pass.</p>
+<h2>{deviations_heading}</h2><ul>{deviations}</ul>
 <h2>Supplementary research</h2><ul>{references}</ul>
-<h2>Review decision</h2><div class="notice"><strong>Reviewer: {escape(str(review['reviewer']))} · approval: {escape(str(review['approved_at']))}</strong><ul>{findings}</ul><p>Confirm or revise the visual bounds, budgets and deviations. Supplementary frames at 00:03 and 00:30 have been inspected separately; the original 00:00/04:40 proposals are superseded. Human approval establishes a comparison baseline only. Later motion/effect/package tests remain required.</p></div>
+<h2>Review decision</h2><div class="notice"><strong>Reviewer: {escape(str(review['reviewer']))} · approval: {escape(str(review['approved_at']))}</strong><ul>{findings}</ul><p>{escape(decision)} Supplementary frames at 00:03 and 00:30 have been inspected separately; the original 00:00/04:40 proposals are superseded. Human approval establishes a comparison baseline only. Later motion/effect/package tests remain required.</p></div>
 <p>Source of review decisions: <a href="visual-review.json">visual-review.json</a>. Regenerate this sheet with <code>python3 validation/tickets/BW-097-T03/build_review.py</code> from mmo_docs/. The concept remains unchanged, comparison crops use SVG view boxes, and no reference art is imported into the game.</p><footer>BW-097-T03 retained comparison evidence · acceptance decisions remain in visual-review.json.</footer></main></html>'''
 relative = 'validation/tickets/BW-097-T03/review.html'
 html = navigation(html, relative)

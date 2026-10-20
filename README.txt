@@ -107,16 +107,19 @@ prerequisites. BW-097 is In Progress: T01 is Complete with a source-only graphic
 Forward+/Metal capability checks and retained diagnostic captures on Apple M2 Max.
 T02 is Complete: its fixed 384x216 orthographic viewport, native Retina 2x
 presentation, independently scaled HUD/pointer, resize/minimum/zoom checks and
-invalid-setting controls have retained execution evidence. T03 is In Progress
-with a bounded Project Titan courtyard, complete 1.8m Adventurer and small/large
-props. Normal x1 (9m) before/after, native/pixel lighting pairs and an annotated
-concept review sheet are retained. Initial close x2 is diagnostic only. Human
-approval of proposed bounds, CPU/GPU/memory budgets and deviations remains
-required. Supplementary video frames at 00:03 and 00:30 have been inspected. T04–T10 remain Not Started and
-cover camera stability, outlines/toon lighting, pass composition, water, contact
-depth, combined motion and packaged measured feasibility. Human art approval,
-alternate physical displays/OS scaling and
-exports remain unverified. BW-098 still awaits BW-097 completion.
+invalid-setting controls have retained execution evidence. T03 is Complete:
+the project owner approved the concept comparison baseline, current character
+readability, observable bounds, documented deviations and future measurement
+targets on 2026-10-20. Normal x1 (9m) native/pixel comparisons and annotated
+concept review remain retained; initial close x2 is diagnostic only.
+Approval and parent-criterion mapping are in BW-097-T03/approval-review.json
+and approval-parent-review.json. The separate 112-instance, seven-character
+market showcase is merged in Briarwake PR14. Approved targets are not measured
+compliance; unavailable GPU timing remains unavailable. T04–T10 remain Not Started
+and cover camera stability, outlines/toon lighting, pass composition, water,
+contact depth, combined motion and packaged measured feasibility. BW-097 remains
+In Progress; T04's T03 prerequisite is now Complete. Other physical displays/OS
+scaling and exports remain unverified. BW-098 still awaits BW-097 completion.
 Foundations and milestones remain In Progress. The completed BW-003 bounded probe
 certifies no connected-client, gameplay, durability, wire-network or capacity work.
 Previous/next links follow the recommended sequence, and breadcrumbs return to
