@@ -1,0 +1,36 @@
+{
+  "ticket": "BW-097-T04",
+  "date": "2026-10-20",
+  "recorded_at_utc": "2026-10-20T16:13:46.130562+00:00",
+  "reviewer": "Project owner (user)",
+  "status": "Approved bounded prototype deviation",
+  "approval_source": {
+    "method": "Explicit user answer in this chat",
+    "question": "May I record a T04-only prototype deviation allowing stationary PBR color changes of at most 2 RGB levels (out of 255) on at most 32 pixels, confined to the two measured scenery regions? The full run observed at most 29 pixels. Silhouette position, source anchors, camera continuity and all other regions would retain their current bounds.",
+    "answer": "Approve this bounded prototype deviation (Recommended)"
+  },
+  "reviewed_execution": "initial-full-run/run.json",
+  "measurements": "initial-full-run/stationary-analysis.json",
+  "scope": "T04 prototype stationary PBR scenery color only. No relaxation of silhouette position, continuous source anchors, camera continuity or any other image region. T09/composite effects and other hardware/exports require their own verification.",
+  "bound": {
+    "max_rgb_delta": 2,
+    "max_changed_pixels": 32,
+    "zoom_index": 0,
+    "regions": [
+      [
+        115,
+        128,
+        13,
+        9
+      ],
+      [
+        225,
+        115,
+        13,
+        12
+      ]
+    ],
+    "approval": "mmo_docs/validation/tickets/BW-097-T04/deviation-approval.json"
+  },
+  "interpretation": "RGB8 differences must satisfy both the first stationary reference frame and each adjacent frame; at most 32 changed pixels and no differences outside the union of the two rectangles. Rectangles are x,y,width,height in the guarded 386x218 image at normal zoom index 0. Other zooms retain exact identity. The initial failed execution remains historical; approval alone does not establish a fresh runtime pass."
+}

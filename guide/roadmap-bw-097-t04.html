@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T04">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">Complete</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                 >
@@ -237,66 +237,125 @@
                 test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.
+              <pre><code>Working directory: GAME_ROOT (briarwake/). The pinned macOS graphical desktop and matching local Titan exports are required.
 python3 tools/verify_toolchain.py
-python3 tools/run_rendering_probe.py --case camera</code></pre>
+python3 tools/run_rendering_probe.py --case camera
+For interactive inspection after the automatic first-window/zoom smoke run:
+python3 tools/run_rendering_probe.py --case camera --camera-profile smoke --interactive</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use T03 approved comparison fixtures, viewport settings and still/motion bounds.
-                  This ticket supplies the deterministic paths, frame stepping, comparison and
-                  capture controls.
+                  Use the approved T03 Titan courtyard, 9m normal / 4.5m diagnostic view, focus
+                  height 1m and T02 five window presets with actual native display scale.
+                  Missing/changed exports fail; tools/export_titan_reference.py recreates the
+                  existing bounded local exports without modifying the source sample.
+                </li>
+                <li>
+                  The default full profile runs all 140 paired sequences (8,960 consecutive source
+                  samples). Smoke covers one window/zoom and cannot establish full acceptance.
+                  Capture filenames, source hashes, engine/device/backend, exact scope/anchors and
+                  actual projection/time indices are in run.json.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run camera, record each path with correction off and on, and step through pixel
-                  crossings and tracking reversals. Repeat actor-only motion and a stationary
-                  camera.
+                  Open the launcher output review.html offline. Play and step every
+                  corrected/unsnapped pair for stationary, slow-axis, diagonal, boundary, reversal,
+                  actor-only and resize. Review frames 0–63; 63 to 0 is a restart and carries no
+                  continuity claim.
                 </li>
                 <li>
-                  Repeat at approved zooms/window presets and resize while tracking. Compare source
-                  anchor/time logs and the approved visual bounds; retain failing clips rather than
-                  only selected good frames.
+                  In the interactive window select a path/window/zoom, toggle Grid + residual,
+                  Play/Pause, Step, Restart and Capture. Step pauses and advances exactly one 1/30s
+                  source sample. Capture pauses and writes internal/native output images plus a JSON
+                  observation. Resize the real window, including below/at the 640x480 logical
+                  minimum.
+                </li>
+                <li>
+                  Compare the whole-world residual with logged camera transforms and projected
+                  origin/actor. Every sample must retain identical finite WorldPoint-compatible
+                  source anchors with correction enabled/disabled. The upper-floor fixture identity
+                  remains unchanged; only the first local fixture actor moves.
+                </li>
+                <li>
+                  Exercise invalid-settings, missing-report and check-failure controls using
+                  --camera-profile smoke for runtime controls; expect nonzero exit and retained
+                  diagnostics. Follow with a fresh full run.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Frame sequences satisfy the approved continuity/stability bounds and name their
-                  exact path/settings/frame range.
+                  The guarded 386x218 render crops to the approved visible 384x216 field with
+                  unchanged units per pixel; nearest integer blocks, residual correction and native
+                  HUD remain consistent through resize/zoom. Every actual framebuffer world pixel
+                  equals the expected guarded presentation.
                 </li>
                 <li>
-                  Underlying anchors/scopes do not change with camera correction; any visual failure
-                  is attributable and blocks acceptance until resolved or explicitly approved.
+                  Actual source anchor logs remain continuous and fully scoped while visual
+                  camera/actor alignment stays in presentation. Seeking/reversal repeats the same
+                  frame/time/anchor/camera/residual; no physics, collision, aim or network state is
+                  created.
+                </li>
+                <li>
+                  Stationary pixels remain identical outside the two approved normal-view scenery
+                  regions. The T04-only prototype deviation permits at most 2 RGB8 levels on at most
+                  32 pixels inside those rectangles; compare both first-frame and adjacent samples.
+                  Close zoom retains exact identity. Any excess, outside-region change, silhouette
+                  shift, disappearance or timing/presentation failure blocks acceptance. See
+                  validation/tickets/BW-097-T04/deviation-approval.json.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Use the probe Reset control to restore the checked-in case settings, camera, actor
-                  path and effect toggles; quit the graphical process normally. No persistent
-                  gameplay state is created.
+                  Reset restores frame zero, stationary/corrected, the first window and normal zoom.
+                  Quit normally. No persistent gameplay state is created.
                 </li>
                 <li>
-                  Keep prior captures, failed results and reports intact. Repeat into a fresh
-                  launcher-owned artifacts directory; restore only deliberately modified disposable
-                  inputs, leaving source assets, canonical registries and existing user files
-                  intact.
+                  Repeat in a new launcher-owned output directory. Preserve prior logs and all
+                  failing sequences; original assets and canonical contracts remain unchanged.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain the alignment/correction implementation
-                settings, time-indexed anchor/camera logs, paired corrected/uncorrected clips, frame
-                annotations and reviewed still/motion results.
+                <strong>Required evidence:</strong> Complete source camera feasibility proof: 140
+                corrected/unsnapped 64-frame sequences at 30 Hz, actual native output readbacks and
+                lossless frame atlases, exact anchor/camera/residual/projection/time logs, offline
+                playback and bounded-policy rejection tests. The initial strict stationary failure
+                and all ten stationary pairs are retained in initial-full-run; explicit owner
+                approval is in deviation-approval.json. The fresh approved-full-run passes all eight
+                checks. See visual-review.json and parent-review.json for measured continuity,
+                acceptance limits and remaining epic work. No export, performance,
+                outline/composite-effect, other-display or gameplay-picking acceptance is claimed.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-097-T04/approved-full-run/run.json"
+                    >Fresh post-control full execution passed eight checks across 140 paired
+                    sequences / 8,960 samples on pinned Godot 4.7.2, Forward+/Metal, Apple M2 Max,
+                    actual Retina 2x. Exact framebuffer presentation, finite unchanged scoped source
+                    anchors, grid alignment, seek/step/reset and approved stationary bounds pass.
+                    Runtime differences peak at 1 RGB8 level / 25 scenery pixels; no differences
+                    outside approved regions. Initial strict failures remain historical.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 689ef75103f298fddd10be32093fd87ad89d5aca-dirty;
+                  exact captured runtime/source hashes in approved-full-run/run.json
+                </li>
+                <li>
+                  <a href="../validation/tickets/BW-097-T04/visual-review.json"
+                    >Complete sequence and measured projection review retains all seven paths at
+                    every T02 window/zoom. Maximum world correction error is 0.499777 physical
+                    pixels. Explicit owner approval allows only the recorded T04 stationary
+                    PBR-color exception; source anchors, silhouettes, continuity, other regions and
+                    close zoom retain their bounds.</a
+                  >
+                  — AC 1, 3; Passed; revision 689ef75103f298fddd10be32093fd87ad89d5aca-dirty; exact
+                  captured runtime/source hashes in approved-full-run/run.json
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and exact criteria</a>;
@@ -307,7 +366,10 @@ python3 tools/run_rendering_probe.py --case camera</code></pre>
                 <a href="../guide/testing.html#rendering-verification">Rendering verification</a>;
                 <a href="../guide/data-inventory.html#shared-WorldPoint">WorldPoint</a>;
                 <a href="../guide/sources.html#s12">Camera projection reference</a>;
-                <a href="../guide/sources.html#s9">Holland camera reference</a>
+                <a href="../guide/sources.html#s9">Holland camera reference</a>;
+                <a href="../validation/tickets/BW-097-T04/deviation-approval.json"
+                  >Approved T04-only stationary PBR-color deviation</a
+                >
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
