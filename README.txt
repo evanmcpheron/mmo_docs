@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-199 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-30 individual ticket pages, three retained visual review pages,
+202 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+30 individual ticket pages, six retained visual review pages,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -121,10 +121,12 @@ scoped anchors, guarded native presentation, reproducible stepping/reversal/resi
 and all T02 window/zoom presets. The owner approved a T04-only stationary PBR
 color exception (at most 2 RGB8 levels / 32 pixels in two scenery regions); the
 fresh run observes at most 1 level / 25 pixels. Initial strict failures, approval,
-current lossless playback and parent review are retained under BW-097-T04. T05–T10
-remain Not Started and cover outlines/toon lighting, pass composition, water,
-contact depth, combined motion and packaged measured feasibility. BW-097 remains
-In Progress; T05 is now prerequisite-ready. Other physical displays/OS
+current lossless playback and parent review are retained under BW-097-T04. T05 is In Progress: its outline/toon probe supplies 88 still settings, 74
+consecutive-frame sequences, clipping/geometry fixtures and touching/overlapping
+imported characters. Appearance and stationary-color review remain unfinished.
+T06–T10 remain Not Started and cover pass composition, water, contact depth,
+combined motion and packaged measured feasibility. BW-097 remains
+In Progress; T05 implementation is active; T06/T08 await its completion. Other physical displays/OS
 scaling and exports remain unverified. BW-098 still awaits BW-097 completion.
 Foundations and milestones remain In Progress. The completed BW-003 bounded probe
 certifies no connected-client, gameplay, durability, wire-network or capacity work.

@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T05">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                 >
@@ -238,59 +238,100 @@
                 test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.
-python3 tools/verify_toolchain.py
-python3 tools/run_rendering_probe.py --case outlines</code></pre>
+              <pre><code>Working directory: GAME_ROOT (briarwake/). Verify local Titan exports at artifacts/titan-export-work/exports/manifest.json; if absent, use the existing python3 tools/export_titan_reference.py workflow with the owner-provided source assets. Run python3 tools/verify_toolchain.py, then python3 tools/run_rendering_probe.py --case outlines. Add --interactive for controls; --output must name a fresh launcher-owned directory. Open the resulting review.html for still/motion comparisons. res:// paths resolve under GAME_ROOT.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the T01 capability path, T03 approved appearance bounds and T04 camera paths.
-                  This ticket supplies the geometry/clipping placements, diagnostic views, lighting
-                  and antialiasing comparisons.
+                  Pinned Godot 4.7.2 / Forward+ / measured desktop device. The launcher validates
+                  exact source export hashes, canonical evidence definitions and bounded settings,
+                  creates an isolated project and imports/checks it before graphical execution.
+                </li>
+                <li>
+                  The case supplies 13 geometry/clipping fixtures, imported T03 courtyard/terrain,
+                  independent source/toon and outline/highlight controls, 88 still settings and 74
+                  lossless 32-frame sequences at 30Hz. Internal 384x216 plus T04 guard; normal/close
+                  zooms; day/warm/cool; no-AA/FXAA.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run outlines; capture raw buffers, silhouettes, highlights and the combined result
-                  for each near/far, slope, thin, concave/convex and overlap fixture.
+                  Run the full case. Inspect run.json checks/measurements, raw/reconstructed depth,
+                  view normals, independent coverage and separate silhouette/highlight masks.
+                  Compare near/middle/far, clipping, grazing, thin, convex/concave/flat normal seam,
+                  touching/overlap and bright/dark swatches.
                 </li>
                 <li>
-                  Count silhouette width in internal pixels; toggle antialiasing and highlight
-                  controls, then run slow/diagonal camera and actor paths in bright/dark settings.
-                  Review the complete case matrix against T03 bounds.
+                  Use review.html to select geometry, zoom, light and antialiasing. Enable the
+                  one-internal-pixel grid/character bounds. Compare PBR/source with selected
+                  diagnostic/combined. Examine disabled/FXAA variants; no SMAA capability is
+                  claimed.
+                </li>
+                <li>
+                  Play and step all selected-AA sequences: geometry diagonal paths at both zooms,
+                  courtyard stationary/slow-axis/diagonal/actor-only paths at both zooms in all
+                  lighting states. Inspect rigid edges for crawl/width pumping, character part
+                  separation and concave/flat false highlights. Loop wrap is a restart, not a
+                  continuity claim.
+                </li>
+                <li>
+                  In the interactive case, toggle Toon, Silhouettes and Convex highlights
+                  independently, select raw buffers/fixtures/path/zoom/light/AA,
+                  play/pause/step/capture, then Reset. Record project-owner decisions for current
+                  colors/bands/no-AA and any deviation against T03 approved bounds.
+                </li>
+                <li>
+                  Run python3 -m unittest discover -s tools -p &#x27;test_*probe.py&#x27; -v. Run
+                  --control invalid-settings and confirm rejection before graphical launch.
+                  Missing-report and deliberate-failure controls must fail without fabricated pass
+                  evidence.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  One-pixel silhouettes and separate convex highlights remain stable and readable
-                  without filled surfaces or false edges.
+                  Selected no-AA exterior silhouettes measure one cardinal texel. Thin foreground
+                  geometry remains visible; measured overlap/clipped-side depth edges require visual
+                  acceptance. Convex highlights reject flat normal seams, concavity and ordinary
+                  slopes and remain independently controllable.
                 </li>
                 <li>
-                  Toon transitions and antialiasing choices have actual still/motion approval;
-                  unsupported or failing candidate paths are recorded explicitly.
+                  Every matrix combination and consecutive frame is retained and attributable.
+                  Stationary masks are exactly identical. Toon preserves gameplay-scale
+                  character/terrain readability subject to explicit project-owner review; automated
+                  checks and T03 approval do not approve new visual choices.
+                </li>
+                <li>
+                  Invalid evidence/settings, missing reports, incomplete matrices and explicit
+                  failure remain observable failures; no gameplay authority or source asset mutation
+                  occurs.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Use the probe Reset control to restore the checked-in case settings, camera, actor
-                  path and effect toggles; quit the graphical process normally. No persistent
-                  gameplay state is created.
+                  Reset restores courtyard/day/normal zoom/toon/both edges/no AA/frame zero, then
+                  quit normally. No persistent gameplay state is created.
                 </li>
                 <li>
-                  Keep prior captures, failed results and reports intact. Repeat into a fresh
-                  launcher-owned artifacts directory; restore only deliberately modified disposable
-                  inputs, leaving source assets, canonical registries and existing user files
-                  intact.
+                  Keep prior runs and failures. Repeat into a fresh output directory. Do not modify
+                  canonical definitions, source assets, retained evidence or unrelated files to
+                  obtain a pass.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain shader/settings identities, pixel-width
-                annotations, raw-buffer diagnostics, geometry/distance/antialiasing matrix,
-                still/motion captures and reviewed outline/highlight/toon choices.
+                <strong>Required evidence:</strong> Implemented source probe and 60 passing probe
+                regressions. Strict full execution at game cf0b6bed057ad713fac4a6a9cea297d766435089
+                retains 88 still settings and 74 × 32-frame color/mask sequences; 12/13 checks pass,
+                with exact stationary color identity failed. Normal day/warm/cool maxima are
+                22/36/48 changed pixels and 1/2/2 RGB8 levels, all in two scenery regions; close
+                zoom and all edge masks are exact. Original actor-pair spacing was too wide and has
+                fresh corrected still/diagonal previews with explicit offsets. Current corrected
+                full matrix and project-owner appearance/color-deviation decision remain pending. No
+                T04 exception is inherited. See validation/tickets/BW-097-T05/candidate-review.html,
+                strict-full-run/run.json and corrected-pairs-preview/identity.json. Rejected
+                palettes, geometry/harness failures and investigative logs remain retained.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
@@ -306,7 +347,16 @@ python3 tools/run_rendering_probe.py --case outlines</code></pre>
                 >;
                 <a href="../guide/testing.html#rendering-verification">Rendering verification</a>;
                 <a href="../guide/sources.html#s15">Outline adaptation reference</a>;
-                <a href="../guide/sources.html#s14">Spatial shader reference</a>
+                <a href="../guide/sources.html#s14">Spatial shader reference</a>;
+                <a href="../guide/data-inventory.html#shared-WorldPoint">WorldPoint</a>;
+                <a href="../guide/data-inventory.html#shared-FixtureRunEvidence"
+                  >FixtureRunEvidence</a
+                >;
+                <a href="../guide/data-inventory.html#shared-ValidationFinding">ValidationFinding</a
+                >; <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>;
+                <a href="../validation/tickets/BW-097-T05/candidate-review.html"
+                  >T05 candidate visual review and pending decision</a
+                >
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
