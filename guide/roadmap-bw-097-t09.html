@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-097." />
     <title>
-      BW-097-T09 · Verify combined effects during stationary and continuous motion · Briarwake
-      Development Roadmap
+      BW-097-T09 · Verify combined pixel-art effects in motion · Briarwake Development Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
@@ -25,7 +24,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +50,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -124,10 +123,11 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-097.html#BW-097">BW-097</a><span>/</span>BW-097-T09
           </div>
-          <h1>BW-097-T09 · Verify combined effects during stationary and continuous motion</h1>
+          <h1>BW-097-T09 · Verify combined pixel-art effects in motion</h1>
           <p class="page-description">Implementation ticket for BW-097.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -140,7 +140,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -175,33 +176,23 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Add --case combined by assembling the already-owned fixtures in the same
-                  controllable scene: water, toon lighting/shadows, contact/AO, outlines/highlights,
-                  foliage/transparency, animated actors and atmosphere. Include effect toggles,
-                  selected/fallback presets, deterministic stationary/slow/diagonal camera and actor
-                  paths, frame stepping and Reset; do not construct a second scene-specific rule
-                  implementation.
+                  Join camera, materials/outlines, water, contact depth, light/shadow, foliage and
+                  atmosphere in one controllable real-3D level using the fresh appearance baseline.
                 </li>
                 <li>
-                  Reuse the T03 comparison sheet, T04 unrounded anchors, T06 authorized-view
-                  boundary and T07/T08 methods. Record the actual combined pass order and per-stage
-                  samples; test all claimed supported paths, including fallback combinations, rather
-                  than inferring success from isolated effects.
-                </li>
-                <li>
-                  Review annotated stills and continuous frame sequences for
-                  silhouette/detail/palette/depth/lighting, water visibility, false/missing
-                  outlines, contact halos, stale buffers, transparency ordering and excluded-view
-                  leakage. Retain failing cases and their fixes; a single attractive still or
-                  isolated-effect pass cannot close a combined motion finding.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  A production playable zone, 30-player combat/telegraph workload, full
-                  accessibility/environment tiers, network security certification or BW-098/BW-099
-                  asset volume.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
+                </li>
+                <li>
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -215,94 +206,84 @@
                 <li id="BW-097-T09-AC-1">
                   <a href="#BW-097-T09-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    One reproducible combined scene exercises every required candidate together
-                    through stationary, continuous slow and diagonal camera/actor motion on the
-                    selected and supported fallback configurations.
+                    Repeatable stationary and slow/diagonal actor/camera paths satisfy the approved
+                    silhouette, depth, lighting and stability bounds together.
                   </p>
                 </li>
                 <li id="BW-097-T09-AC-2">
                   <a href="#BW-097-T09-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Pass-order captures and reviewed frame sequences meet T03-approved pixel
-                    stability, silhouette and visual comparison bounds; all blocking composition,
-                    transparency, outline, water and contact findings are resolved or have
-                    explicitly approved alternatives.
-                  </p>
-                </li>
-                <li id="BW-097-T09-AC-3">
-                  <a href="#BW-097-T09-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    Synthetic excluded-view cases contribute no indirect effect output during motion
-                    and view changes. Underlying continuous anchors remain unchanged. The review
-                    identifies exact settings, frame ranges, reviewer/date and accepted deviations
-                    for each supported path.
+                    Combined pass-order, transparency, reflection and unauthorized-view cases reveal
+                    any regressions; isolated effect passes cannot replace integrated proof.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Run from the Briarwake implementation repository. The commands, scenes and fixtures
-                below are deliverables of this ticket and its prerequisites; these are unexecuted
-                test instructions.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.
-python3 tools/verify_toolchain.py
-python3 tools/run_rendering_probe.py --case combined</code></pre>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use all completed predecessor fixtures, methods and the current approved T03
-                  sheet. This ticket supplies the combined preset, effect toggles and complete
-                  motion replay without requiring a game server.
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
+                </li>
+                <li>
+                  Join camera, materials/outlines, water, contact depth, light/shadow, foliage and
+                  atmosphere in one controllable real-3D level using the fresh appearance baseline.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run combined; capture a stationary view then replay slow axis-aligned and diagonal
-                  camera/actor paths. Step artifact frames, isolate suspect passes, then restore all
-                  required effects.
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
                 </li>
                 <li>
-                  Repeat selected and supported fallback combinations, water off-screen transitions,
-                  animated contact and transparent overlap. Switch synthetic view authorization and
-                  compare source anchors. Review complete clips and annotate every blocking/accepted
-                  finding.
+                  Repeatable stationary and slow/diagonal actor/camera paths satisfy the approved
+                  silhouette, depth, lighting and stability bounds together.
+                </li>
+                <li>
+                  Combined pass-order, transparency, reflection and unauthorized-view cases reveal
+                  any regressions; isolated effect passes cannot replace integrated proof.
+                </li>
+                <li>
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  All required effects coexist within the approved visual/stability bounds on every
-                  claimed path, with complete frame-indexed evidence and no unresolved blocking
-                  findings.
+                  Repeatable stationary and slow/diagonal actor/camera paths satisfy the approved
+                  silhouette, depth, lighting and stability bounds together.
                 </li>
                 <li>
-                  Isolation controls explain composition failures, excluded information remains
-                  absent and source anchors are invariant. Untested combinations remain explicitly
-                  unverified.
+                  Combined pass-order, transparency, reflection and unauthorized-view cases reveal
+                  any regressions; isolated effect passes cannot replace integrated proof.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Use the probe Reset control to restore the checked-in case settings, camera, actor
-                  path and effect toggles; quit the graphical process normally. No persistent
-                  gameplay state is created.
-                </li>
-                <li>
-                  Keep prior captures, failed results and reports intact. Repeat into a fresh
-                  launcher-owned artifacts directory; restore only deliberately modified disposable
-                  inputs, leaving source assets, canonical registries and existing user files
-                  intact.
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain combined scene/settings hashes, actual
-                pass-order diagrams/stage captures, full still/motion matrix, synthetic exclusion
-                and anchor checks, dated visual approval and resolved-finding history.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-097-T09: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
@@ -311,15 +292,17 @@ python3 tools/run_rendering_probe.py --case combined</code></pre>
               </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and exact criteria</a>;
-                <a href="../guide/decisions.html#art-direction">Selected art direction</a>;
+                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and criteria</a>;
+                <a href="../guide/decisions.html#art-direction">Selected 3D pixel-art direction</a>;
                 <a href="../guide/interface.html#rendering-and-camera"
-                  >Rendering and camera boundaries</a
+                  >Rendering, camera and input</a
                 >;
                 <a href="../guide/testing.html#rendering-verification">Rendering verification</a>;
-                <a href="../assets/graphics_concept.png">Principal graphics concept</a>;
-                <a href="../guide/data-inventory.html#shared-WorldPoint">WorldPoint</a>;
-                <a href="../guide/data-inventory.html#entity-snapshot">EntitySnapshot</a>
+                <a href="../guide/sources.html#s9">Holland visual reference</a>;
+                <a href="../guide/sources.html#s15"
+                  >Roystan outline tutorial and adaptation boundary</a
+                >; <a href="../guide/sources.html#s16">t3ssel8r visual research channel</a>;
+                <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

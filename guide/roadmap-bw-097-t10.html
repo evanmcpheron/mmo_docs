@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-097." />
     <title>
-      BW-097-T10 · Package the reproducible proof and approve measured renderer defaults · Briarwake
+      BW-097-T10 · Package the Unreal feasibility proof and choose measured defaults · Briarwake
       Development Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -124,12 +124,11 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-097.html#BW-097">BW-097</a><span>/</span>BW-097-T10
           </div>
-          <h1>
-            BW-097-T10 · Package the reproducible proof and approve measured renderer defaults
-          </h1>
+          <h1>BW-097-T10 · Package the Unreal feasibility proof and choose measured defaults</h1>
           <p class="page-description">Implementation ticket for BW-097.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -142,7 +141,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -180,49 +180,24 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Add --case profile and a documented isolated prototype export/replay path to the
-                  existing rendering launcher. Reuse tools/build_baseline.py staging/provenance
-                  helpers where applicable, but supply a dedicated disposable prototype export
-                  preset/staging layout because normal exports intentionally exclude tests. Do not
-                  weaken normal client/server content or credential exclusions to package the probe.
+                  Package the reproducible source level and record exact native build, settings,
+                  graphics backend, hardware and source/license provenance. Review all parent
+                  criteria, measured costs and unresolved platform/maintenance risks.
                 </li>
                 <li>
-                  Package the same source scene, fixtures, shaders and versioned settings with
-                  pinned export templates. Reproduce the accepted cases from a fresh source snapshot
-                  and the graphical package, recording source/asset/settings hashes, engine/export
-                  revision, actual renderer/backend, hardware/OS and commands. Preserve existing
-                  source client/headless smoke behavior and test-input exclusion.
-                </li>
-                <li>
-                  Collect attributable raw CPU/GPU frame times and memory at declared
-                  resolutions/settings for stationary/motion and incremental outline, lighting,
-                  foliage/transparency, water, contact and combined workloads. Declare
-                  warm-up/sample counts, repeats, timing source/units and percentile method; record
-                  draw calls/overdraw when measurable. GPU timing unavailability is an evidence gap,
-                  never inferred from FPS or CPU samples.
-                </li>
-                <li>
-                  Review results against T03-approved prototype budgets and the completed visual
-                  matrix. Record chosen defaults, tested fallback support, platform exclusions and
-                  all remaining findings. An unmet stock-engine requirement requires a documented
-                  implementation/maintenance decision with measured evidence before a fork is
-                  adopted; no engine patch or platform exclusion is silently assumed.
-                </li>
-                <li>
-                  Perform explicit epic review mapping retained evidence to all nine exact criteria
-                  and hard prerequisites. FixtureRunEvidence/TestCheck remain automated execution
-                  records, not substitutes for human appearance approval. Keep canonical records
-                  compatible through the existing extraction; record reproducibility and measurement
-                  envelopes as tool-local data, without creating a new gameplay schema. Update
-                  relevant tracking/generated views only when real evidence supports their status.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  A completed production renderer, full art roster/environment pipeline,
-                  connected-client/load/capacity certification, new platform support, automatic
-                  engine upgrades or automatic approval of visual deviations.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
+                </li>
+                <li>
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -235,116 +210,85 @@
                 <li id="BW-097-T10-AC-1">
                   <a href="#BW-097-T10-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    A fresh source snapshot and independently launched packaged prototype reproduce
-                    the accepted scene/settings and relevant still/motion/fallback matrix with
-                    matching attributable identities. Packaging does not expose server/test data
-                    through the ordinary client or break the existing headless baseline.
+                    A clean build/launch reproduces the combined level; the review maps every
+                    criterion to fresh evidence and approves only actually supported defaults/tiers.
                   </p>
                 </li>
                 <li id="BW-097-T10-AC-2">
                   <a href="#BW-097-T10-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Raw CPU/GPU frame-time and memory reports identify settings/hardware, warm-up,
-                    sample count, repeats, units, percentile calculation and incremental/combined
-                    costs. Approved budgets are met or revised through explicit review; missing
-                    measurements or failed budgets cannot be labeled a pass.
-                  </p>
-                </li>
-                <li id="BW-097-T10-AC-3">
-                  <a href="#BW-097-T10-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    The implementation decision records selected
-                    renderer/backend/camera/material/pass defaults, tested fallbacks, visual
-                    acceptance and platform limits, plus any justified custom-engine maintenance
-                    decision. Every blocking finding is resolved before epic acceptance.
-                  </p>
-                </li>
-                <li id="BW-097-T10-AC-4">
-                  <a href="#BW-097-T10-AC-4" class="roadmap-criterion-link">AC 4</a>
-                  <p>
-                    The final review maps all nine epic criteria to actual
-                    package/capture/measurement/review artifacts, confirms BW-001/BW-003 evidence
-                    still applies, preserves historical failures and makes no gameplay or
-                    production-capacity claim.
+                    Unavailable GPU/memory observations or untested platforms remain explicit gaps;
+                    documentation checks or a still image cannot certify runtime feasibility.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Run from the Briarwake implementation repository. The commands, scenes and fixtures
-                below are deliverables of this ticket and its prerequisites; these are unexecuted
-                test instructions.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.
-python3 tools/verify_toolchain.py
-python3 tools/run_rendering_probe.py --case profile</code></pre>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use pinned engine/templates, approved T03 budgets and all T09 accepted
-                  settings/captures. This ticket supplies prototype export/replay commands and
-                  staging assets; start from a fresh snapshot without relying on an existing import
-                  cache.
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
                 </li>
                 <li>
-                  Use the same declared graphics hardware for comparable profiling and available
-                  engine/platform GPU profiling support. Record unavailable measurements as gaps
-                  requiring resolution, not successful verification.
+                  Package the reproducible source level and record exact native build, settings,
+                  graphics backend, hardware and source/license provenance. Review all parent
+                  criteria, measured costs and unresolved platform/maintenance risks.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run profile through the documented warm-up/sample/repeat procedure for baseline,
-                  individual effects, combined motion and fallbacks. Inspect raw samples and
-                  independently recompute reported percentiles.
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
                 </li>
                 <li>
-                  Follow the supplied isolated export instructions, launch the produced graphical
-                  package, and replay the accepted cases. Run the existing baseline/content/runtime
-                  and normal-client exclusion checks appropriate to any shared tooling changed;
-                  retain the commands/results.
+                  A clean build/launch reproduces the combined level; the review maps every
+                  criterion to fresh evidence and approves only actually supported defaults/tiers.
                 </li>
                 <li>
-                  Review package reproducibility, visual findings, budgets, platform/fork choices
-                  and each epic criterion with the user. Recheck prerequisite evidence applicability
-                  and regenerate tracking only for behavior actually accepted.
+                  Unavailable GPU/memory observations or untested platforms remain explicit gaps;
+                  documentation checks or a still image cannot certify runtime feasibility.
+                </li>
+                <li>
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  The package reproduces the approved source scene/settings; normal exports/headless
-                  behavior remain valid and their exclusions remain enforced.
+                  A clean build/launch reproduces the combined level; the review maps every
+                  criterion to fresh evidence and approves only actually supported defaults/tiers.
                 </li>
                 <li>
-                  Measured costs and approved decisions support each chosen default/fallback with no
-                  missing GPU/memory evidence or unresolved visual blockers. The explicit epic
-                  review alone determines readiness for BW-098, without claiming production
-                  rendering or gameplay completion.
+                  Unavailable GPU/memory observations or untested platforms remain explicit gaps;
+                  documentation checks or a still image cannot certify runtime feasibility.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Use the probe Reset control to restore the checked-in case settings, camera, actor
-                  path and effect toggles; quit the graphical process normally. No persistent
-                  gameplay state is created.
-                </li>
-                <li>
-                  Keep prior captures, failed results and reports intact. Repeat into a fresh
-                  launcher-owned artifacts directory; restore only deliberately modified disposable
-                  inputs, leaving source assets, canonical registries and existing user files
-                  intact.
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain reproducible source/export manifests and
-                commands, package hashes, source-versus-package captures, raw CPU/GPU/memory samples
-                and percentiles, fallback/capability matrix, prerequisite/regression evidence and
-                dated defaults/visual/maintenance decisions with exact nine-criterion epic review.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-097-T10: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
@@ -353,17 +297,17 @@ python3 tools/run_rendering_probe.py --case profile</code></pre>
               </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and exact criteria</a>;
-                <a href="../guide/decisions.html#art-direction">Selected art direction</a>;
+                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and criteria</a>;
+                <a href="../guide/decisions.html#art-direction">Selected 3D pixel-art direction</a>;
                 <a href="../guide/interface.html#rendering-and-camera"
-                  >Rendering and camera boundaries</a
+                  >Rendering, camera and input</a
                 >;
                 <a href="../guide/testing.html#rendering-verification">Rendering verification</a>;
-                <a href="../guide/data-inventory.html#shared-FixtureRunEvidence"
-                  >FixtureRunEvidence</a
-                >; <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>;
-                <a href="../guide/roadmap-bw-001.html#BW-001">Verified prerequisite BW-001</a>;
-                <a href="../guide/roadmap-bw-003.html#BW-003">Verified prerequisite BW-003</a>
+                <a href="../guide/sources.html#s9">Holland visual reference</a>;
+                <a href="../guide/sources.html#s15"
+                  >Roystan outline tutorial and adaptation boundary</a
+                >; <a href="../guide/sources.html#s16">t3ssel8r visual research channel</a>;
+                <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

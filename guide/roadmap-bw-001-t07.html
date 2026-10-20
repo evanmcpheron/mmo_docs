@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-001." />
     <title>
-      BW-001-T07 · Record clean build and executed runtime smoke outcomes separately · Briarwake
-      Development Roadmap
+      BW-001-T07 · Separate build, startup and executed automation outcomes · Briarwake Development
+      Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -124,10 +124,11 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-001.html#BW-001">BW-001</a><span>/</span>BW-001-T07
           </div>
-          <h1>BW-001-T07 · Record clean build and executed runtime smoke outcomes separately</h1>
+          <h1>BW-001-T07 · Separate build, startup and executed automation outcomes</h1>
           <p class="page-description">Implementation ticket for BW-001.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -140,7 +141,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -158,9 +160,9 @@
             </nav>
             <article class="roadmap-ticket" id="BW-001-T07">
               <p>
-                <span class="badge">Complete</span> · Parent epic:
+                <span class="badge">Not Started</span> · Parent epic:
                 <a href="roadmap-bw-001.html#BW-001"
-                  >BW-001 · Reproducible client and headless project</a
+                  >BW-001 · Reproducible native Unreal C++ client and dedicated server</a
                 >
               </p>
               <p>
@@ -170,45 +172,24 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Add tools/check_baseline.py as the single automated clean verification entry
-                  point. It verifies the lock, builds in an isolated workspace, inspects the client
-                  artifact, launches the exported headless smoke mode, and checks ready identity, no
-                  client/player scene and bounded heartbeat assertions.
+                  Establish one bounded automation route for clean native build/cook and
+                  client/server startup checks with attributable input/artifact identities. Add
+                  explicit build, startup, missing-report, executed-assertion and timeout controls.
                 </li>
                 <li>
-                  Write a machine-readable run record with source/toolchain/fixture revisions,
-                  runner environment, artifact hashes, commands/stages, process exit statuses,
-                  timeout information and redacted log paths. Keep build outcome, runtime execution
-                  state and assertion outcome separate; Not Executed has no passing assertion
-                  result.
-                </li>
-                <li>
-                  Provide isolated --case pass, build-failure, assertion-failure, startup-failure
-                  and timeout controls. Inject failures only in disposable copies: an actual failed
-                  import/export, a deliberately false smoke assertion, invalid startup config, and a
-                  bounded hung process. Include the fixture controls and cleanup so each case is
-                  ready to run.
-                </li>
-                <li>
-                  Document a clean macOS automation invocation, prerequisites and where run evidence
-                  is retained. Use the same command locally and in any configured automation runner,
-                  with no provider/deployment dependency.
-                </li>
-                <li>
-                  Include packaged-client launch as a required manual evidence item alongside
-                  automation. A headless run cannot claim the GUI was visually verified, and
-                  bootstrap smoke evidence cannot substitute for BW-003 gameplay/runtime fixtures.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Gameplay fixture framework, seeded world simulation, throughput/capacity
-                  benchmarks, database tests or full release/deployment pipelines.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
                 </li>
                 <li>
-                  Marking BW-001 or any ticket Complete from planning, schema validation, an
-                  unexecuted test specification or a started process without executed assertions.
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -221,182 +202,98 @@
                 <li id="BW-001-T07-AC-1">
                   <a href="#BW-001-T07-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    A clean macOS pass run records a successful build and client inspection, an
-                    actually executed exported-server assertion run with a passing result, and
-                    returns zero.
+                    A clean run records actual executed startup assertions with exact commands and
+                    revisions; artifact hashes match the inspected builds.
                   </p>
                 </li>
                 <li id="BW-001-T07-AC-2">
                   <a href="#BW-001-T07-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    The build-failure case records build Failed and runtime Not Executed with no
-                    runtime pass; the assertion-failure case records build Passed, runtime
-                    Executed/Failed and nonzero exit.
-                  </p>
-                </li>
-                <li id="BW-001-T07-AC-3">
-                  <a href="#BW-001-T07-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    Startup failure and timeout return nonzero with their stage and reason,
-                    terminate owned processes, and cannot be reported as passing executed smoke
-                    checks. Assertion execution state reflects whether the assertion runner was
-                    actually reached.
-                  </p>
-                </li>
-                <li id="BW-001-T07-AC-4">
-                  <a href="#BW-001-T07-AC-4" class="roadmap-criterion-link">AC 4</a>
-                  <p>
-                    Every run retains actual commands, revisions, artifact identities when produced
-                    and redacted logs; failed-stage output remains available and a fresh pass after
-                    failure is independent of prior output.
-                  </p>
-                </li>
-                <li id="BW-001-T07-AC-5">
-                  <a href="#BW-001-T07-AC-5" class="roadmap-criterion-link">AC 5</a>
-                  <p>
-                    Evidence instructions require the packaged macOS client capture and actual
-                    headless run before proposing epic completion; Linux/Windows and gameplay checks
-                    remain explicitly unverified.
+                    Each failure stage returns failure with its actual execution state; missing
+                    reports and timeouts never pass, and a subsequent fresh run recovers.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Run from the Briarwake implementation repository. The commands, scenes and fixtures
-                below are deliverables of this ticket and its prerequisites; these are unexecuted
-                test instructions.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: briarwake (game repository root).
-python3 tools/check_baseline.py --case pass --output artifacts/check-pass
-python3 tools/check_baseline.py --case build-failure --output artifacts/check-build-failure
-python3 tools/check_baseline.py --case assertion-failure --output artifacts/check-assertion-failure
-python3 tools/check_baseline.py --case startup-failure --output artifacts/check-startup-failure
-python3 tools/check_baseline.py --case timeout --output artifacts/check-timeout
-python3 tools/check_baseline.py --case pass --output artifacts/check-pass-after-failures
-python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27; -v</code></pre>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Complete T06. Use native macOS ARM64, Python 3.10+, pinned Godot/editor export
-                  templates and stock arch/lipo. Follow briarwake/tools/README.md; no provider,
-                  deployment, account or network service is required. Use the same command in a
-                  macOS automation runner; none is configured in this repository.
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
                 </li>
                 <li>
-                  Give every run a new output directory. Only committed synthetic configuration
-                  fixtures are used. Each build takes an isolated source snapshot with no import
-                  cache; current uncommitted inputs are hashed and the source revision is marked
-                  dirty. Preserve existing tools, cache, outputs and user edits.
+                  Establish one bounded automation route for clean native build/cook and
+                  client/server startup checks with attributable input/artifact identities. Add
+                  explicit build, startup, missing-report, executed-assertion and timeout controls.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Execute all five cases, retain actual command exits and inspect run.json,
-                  client-inspection.json when produced, build/manifest.json and both logs/ trees.
-                  Only pass returns zero; all four failure controls return one.
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
                 </li>
                 <li>
-                  Verify build-failure retains the invalid-script import diagnostics, build Failed
-                  and runtime Not Executed with null assertion_result. Verify assertion-failure
-                  builds/inspects successfully, reaches exported assertions and records
-                  Executed/Failed; the deliberately false heartbeat assertion fails even though the
-                  server itself exits zero.
+                  A clean run records actual executed startup assertions with exact commands and
+                  revisions; artifact hashes match the inspected builds.
                 </li>
                 <li>
-                  Verify startup-failure uses server.missing-rules.json and exits before bootstrap
-                  assertions. Verify timeout reaches bootstrap/readiness but cannot complete smoke,
-                  records the ten-second runtime deadline and nonzero killed exit, and reaps the
-                  owned process group. Confirm recorded process IDs and child processes are no
-                  longer active.
+                  Each failure stage returns failure with its actual execution state; missing
+                  reports and timeouts never pass, and a subsequent fresh run recovers.
                 </li>
                 <li>
-                  Run pass again with fresh output after all failures. Compare input/artifact
-                  identities, current record timestamps, independent output paths and removed build
-                  snapshots. Existing output must be rejected rather than reused.
-                </li>
-                <li>
-                  Read manual_client.launch_command in the final pass run.json. Execute that exact
-                  command from /private/tmp using absolute paths. Capture the visible Briarwake
-                  client baseline window and Quit control, click Quit and retain exit zero. Record
-                  the source manifest, client bundle hash, capture path and post-launch hash in
-                  separate manual evidence; automation leaves its own GUI state Not Executed.
-                </li>
-                <li>
-                  Archive every run JSON, manifests, redacted logs, case exits, regression results
-                  and packaged-client evidence under mmo_docs/validation/tickets/BW-001-T07/; game
-                  applications may remain in local artifacts/ identified by their hashes.
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  A pass proves a clean isolated macOS build, matching client inspection and actual
-                  exported-server identity, headless/Dummy drivers, server-only scene, no
-                  client/player, ordered bounded heartbeats and completed passing smoke assertions.
+                  A clean run records actual executed startup assertions with exact commands and
+                  revisions; artifact hashes match the inspected builds.
                 </li>
                 <li>
-                  Build failure, executed assertion failure, startup failure and timeout remain
-                  distinguishable by stage, reason, process exit and assertion execution state. Not
-                  Executed has no passing assertion result. Failed-stage output is retained.
-                </li>
-                <li>
-                  Timeout terminates owned processes; failure fixtures never alter the source
-                  checkout or installed toolchain. A fresh pass after failure is independent of
-                  prior output.
-                </li>
-                <li>
-                  The manual capture identifies the same final pass client build. Both actual
-                  headless execution and packaged-client capture are required before proposing epic
-                  completion; Linux/Windows, Intel macOS, gameplay/BW-003, multiplayer and capacity
-                  remain unverified.
+                  Each failure stage returns failure with its actual execution state; missing
+                  reports and timeouts never pass, and a subsequent fresh run recovers.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Quit the owned client and confirm recorded headless process IDs/descendants
-                  exited. Archive evidence first; remove only disposable output/workspaces created
-                  for these runs. Retain failure evidence and preserve source, installed tools,
-                  pre-existing cache and unrelated output.
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Actual clean pass, build failure, executed
-                assertion failure, startup failure and timeout records/logs, plus final artifact
-                identifiers and a packaged-client launch capture.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-001-T07: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <ul>
-                <li>
-                  <a href="../validation/tickets/BW-001-T07/verification.json"
-                    >Native macOS ARM64 clean build/client inspection and actual exported assertions
-                    passed after four isolated failure controls: actual bootstrap import failure
-                    (runtime Not Executed), deliberately false executed heartbeat assertion, invalid
-                    startup config (Not Executed), and ten-second hung-server termination with
-                    observable Executed/Failed state. All expected exits, process cleanup,
-                    independent fresh pass, retained redacted logs/revisions/hashes, 31 regressions
-                    and final packaged-client capture/Quit with unchanged bundle hash verified.
-                    Corrected development attempts are retained separately. Linux/Windows/gameplay
-                    and hosted automation remain unverified.</a
-                  >
-                  — AC 1, 2, 3, 4, 5; Passed; revision
-                  85b656d5d98deec7d502b9d2f987e2474b5d6303-dirty (uncommitted BW-001-T07
-                  implementation; source manifest SHA-256
-                  d3259f9dfda1ad037840017a1157fc15477086d5d0275202aa83c83e870712cc; per-source
-                  hashes in evidence)
-                </li>
-              </ul>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/networking.html#practical-initial-architecture"
-                  >Authority and networking</a
-                >;
-                <a href="../guide/testing.html#test-evidence-retained"
-                  >Verification and evidence boundaries</a
-                >
+                <a href="../guide/roadmap-bw-001.html#BW-001">Parent epic and criteria</a>;
+                <a href="../guide/networking.html">Authority and networking</a>;
+                <a href="../guide/testing.html">Verification requirements</a>;
+                <a href="../guide/decisions.html#art-direction">Selected 3D pixel-art direction</a>;
+                <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

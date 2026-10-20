@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-002." />
     <title>
-      BW-002-T01 · Record authority owners and state lifecycles · Briarwake Development Roadmap
+      BW-002-T01 · Define C++ authority owners and state lifetimes · Briarwake Development Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
@@ -24,7 +24,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -50,7 +50,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -123,10 +123,11 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T01
           </div>
-          <h1>BW-002-T01 · Record authority owners and state lifecycles</h1>
+          <h1>BW-002-T01 · Define C++ authority owners and state lifetimes</h1>
           <p class="page-description">Implementation ticket for BW-002.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -139,7 +140,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -157,7 +159,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-002-T01">
               <p>
-                <span class="badge">Complete</span> · Parent epic:
+                <span class="badge">Not Started</span> · Parent epic:
                 <a href="roadmap-bw-002.html#BW-002"
                   >BW-002 · Authority boundaries and content admission</a
                 >
@@ -169,148 +171,131 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Create docs/architecture/authority-boundaries.md in GAME_ROOT. Inspect the current
-                  scenes/bootstrap.gd, scenes/server/server_root.gd,
-                  scenes/server/server_configuration.gd and tools/run_baseline.py; distinguish these
-                  implemented bootstrap owners from future world, session and durable owners.
+                  Record and exercise the native ownership boundary for simulation, durable
+                  assets/builds, recipient views and client presentation. Evaluate Unreal
+                  gameplay-framework roles and explicit lifecycle teardown without creating a
+                  placeholder class per schema.
                 </li>
                 <li>
-                  Map movement/collision and combat resources, casts, cooldowns, statuses, summons
-                  and debt to the owning world process; map items, currency, applied builds and
-                  progression to their canonical durable records; map interpolation, animation,
-                  rendering and audio to client presentation. Record command entry, authoritative
-                  mutation, recipient projection and teardown/recovery responsibility for each.
-                </li>
-                <li>
-                  Name the one-session-epoch invariant, durable acknowledgement boundary,
-                  transfer/reconnect fencing, and build-change preservation of
-                  resources/cooldowns/debt. Describe required future lifecycle behavior without
-                  implementing those systems or claiming a database exists.
-                </li>
-                <li>
-                  Link the canonical contracts and identify the narrow admission/serialization
-                  owners to be added by this epic. Keep bootstrap build_revision and configuration
-                  rules_version/content_version ownership intact; document database revision as a
-                  distinct future storage compatibility domain, not an invented ServerConfiguration
-                  field.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Gameplay simulation, authentication/RPCs, session claiming, persistence
-                  provider/schema selection, transfer/reconnect implementation and deployment.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
                 </li>
                 <li>
-                  Editing protected AGENTS.md or docs/ai/**, or redefining canonical contracts in
-                  mmo_docs.
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
-              <p><strong>Hard prerequisites:</strong> None</p>
+              <p>
+                <strong>Hard prerequisites:</strong> <a href="roadmap-bw-001.html#BW-001">BW-001</a>
+              </p>
               <h2 id="acceptance-criteria">Acceptance criteria</h2>
               <ol class="roadmap-acceptance">
                 <li id="BW-002-T01-AC-1">
                   <a href="#BW-002-T01-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    The map names exactly one authoritative owner and lifecycle for every domain in
-                    BW-002-AC-1, including creation, mutation, build changes, disconnect/reconnect,
-                    transfer, death and recovery where applicable.
+                    Boundary fixtures identify one rule owner, command path and teardown behavior
+                    for each enabled state family.
                   </p>
                 </li>
                 <li id="BW-002-T01-AC-2">
                   <a href="#BW-002-T01-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Each implemented owner links to the actual game file; each missing owner is
-                    explicitly future work. No client presentation or transport adapter is
-                    authorized to commit gameplay or economic outcomes.
-                  </p>
-                </li>
-                <li id="BW-002-T01-AC-3">
-                  <a href="#BW-002-T01-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    A review traces client intent through world validation, durable mutation where
-                    needed and filtered presentation; it records epoch fencing and preserved
-                    cooldown/resource/debt and economic ownership invariants without introducing
-                    competing mutable state.
+                    A client or presentation path cannot commit authoritative state; destroyed
+                    owners and stale references reject rather than mutating replacement objects.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Documentation-only responsibility review; no scene/runtime setup or reset applies.
-                Working directory: GAME_ROOT (briarwake/). Read
-                docs/architecture/authority-boundaries.md beside its linked current scripts and
-                sibling mmo_docs canonical contracts; verify every domain, lifecycle transition,
-                intent/durable trace and implemented/future label. Run python3
-                ../mmo_docs/validation/tickets/BW-002-T01/check_links.py and expect result Passed,
-                54 links and no failures. The executed criterion review, exact document
-                snapshot/digest and link-check output are retained in
-                mmo_docs/validation/tickets/BW-002-T01/. Gameplay, multi-peer, transfer, persistence
-                and browser checks are not executed by this documentation review.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
+                </li>
+                <li>
+                  Record and exercise the native ownership boundary for simulation, durable
+                  assets/builds, recipient views and client presentation. Evaluate Unreal
+                  gameplay-framework roles and explicit lifecycle teardown without creating a
+                  placeholder class per schema.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
+                </li>
+                <li>
+                  Boundary fixtures identify one rule owner, command path and teardown behavior for
+                  each enabled state family.
+                </li>
+                <li>
+                  A client or presentation path cannot commit authoritative state; destroyed owners
+                  and stale references reject rather than mutating replacement objects.
+                </li>
+                <li>
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Boundary fixtures identify one rule owner, command path and teardown behavior for
+                  each enabled state family.
+                </li>
+                <li>
+                  A client or presentation path cannot commit authoritative state; destroyed owners
+                  and stale references reject rather than mutating replacement objects.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
+                </li>
+              </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Reviewed responsibility/lifecycle map,
-                link-check output and a review record identifying implemented versus future owners;
-                no gameplay execution claim.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-002-T01: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <ul>
-                <li>
-                  <a href="../validation/tickets/BW-002-T01/review.json"
-                    >Executed source/design responsibility review: all domain/lifecycle rows, actual
-                    bootstrap owners, future-owner labels, world/durable/client traces and canonical
-                    fencing/build/economic invariants reviewed. Exact map snapshot retained; 54
-                    local file/HTML-fragment links pass. Documentation review only; no gameplay,
-                    networking, database or browser execution. Review snapshot is unchanged at this
-                    committed game revision; supplementary manual launch/Quit evidence and
-                    platform/browser limitations are retained in manual-verification.json.</a
-                  >
-                  — AC 1, 2, 3; Passed; revision f4d5c84d42cafc4c014a059d46bcf321b446ff7b; authority
-                  document SHA-256 2626252d36eaa74b64b94e6fdedb7d10f1bd247ebe0a96fb06e77aab5b6f8bec
-                </li>
-              </ul>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a
-                >;
-                <a href="../guide/networking.html#practical-initial-architecture"
-                  >Documented ownership</a
-                >;
-                <a href="../guide/data-inventory.html#character-state"
-                  >CharacterState — world-owned live state</a
-                >;
-                <a href="../guide/data-inventory.html#session-ownership-record"
-                  >SessionOwnershipRecord — epoch fencing</a
-                >;
-                <a href="../guide/data-inventory.html#item-ownership-record"
-                  >ItemOwnershipRecord — durable items</a
-                >;
-                <a href="../guide/data-inventory.html#wallet-record"
-                  >WalletRecord — durable currency</a
-                >;
-                <a href="../guide/data-inventory.html#talent-build-record"
-                  >TalentBuildRecord — applied build</a
-                >; <a href="../guide/data-inventory.html#movement-state">MovementState</a>;
-                <a href="../guide/data-inventory.html#resource-pool-state">ResourcePoolState</a>;
-                <a href="../guide/data-inventory.html#cast-state">CastState</a>;
-                <a href="../guide/data-inventory.html#cooldown-state">CooldownState</a>;
-                <a href="../guide/data-inventory.html#status-instance">StatusInstance</a>;
-                <a href="../guide/data-inventory.html#summon-capacity-state">SummonCapacityState</a
-                >; <a href="../guide/data-inventory.html#damage-ledger">DamageLedger</a>;
-                <a href="../guide/data-inventory.html#character-progress-record"
-                  >CharacterProgressRecord</a
-                >; <a href="../guide/data-inventory.html#reconnect-snapshot">ReconnectSnapshot</a>;
-                <a href="../guide/data-inventory.html#transfer-checkpoint">TransferCheckpoint</a>;
-                <a href="../guide/data-inventory.html#transfer-token">TransferToken</a>;
-                <a href="../guide/data-inventory.html#ability-command-v2">ability_command_v2</a>;
-                <a href="../guide/data-inventory.html#command-response">CommandResponse</a>;
-                <a href="../guide/data-inventory.html#combat-result-event">CombatResultEvent</a>;
-                <a href="../guide/data-inventory.html#server-configuration">ServerConfiguration</a>;
-                <a href="../guide/data-inventory.html#shared-PublicCombatResult"
-                  >PublicCombatResult — recipient-filtered outcome</a
-                >
+                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and criteria</a>;
+                <a href="../guide/decisions.html">Design constraints</a>;
+                <a href="../guide/execution.html">Execution contracts</a>;
+                <a href="../guide/data-inventory.html">Canonical definitions</a>;
+                <a href="../guide/items.html#durability-salvage-and-demand"
+                  >Economic content admission</a
+                >; <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

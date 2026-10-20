@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -142,7 +142,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -510,6 +511,23 @@
                       <a href="roadmap-bw-074.html#BW-074">BW-074</a>
                     </td>
                   </tr>
+                  <tr>
+                    <td>
+                      Native Unreal C++ project and supplied replication integration<br /><a
+                        href="../guide/unreal-cpp.html"
+                        >C++ foundation and future setup</a
+                      >;
+                      <a href="../guide/networking.html#replication-plugins"
+                        >Supplied replication verification</a
+                      >
+                    </td>
+                    <td>
+                      <a href="roadmap-bw-001.html#BW-001">BW-001</a>,
+                      <a href="roadmap-bw-002.html#BW-002">BW-002</a>,
+                      <a href="roadmap-bw-003.html#BW-003">BW-003</a>,
+                      <a href="roadmap-bw-100.html#BW-100">BW-100</a>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -522,11 +540,11 @@
             <section aria-labelledby="open-platform">
               <h3 id="open-platform">Engine, platform and deployment candidates</h3>
               <p>
-                <strong>Open decision:</strong> Select tested Godot/export-template and Unicode-data
-                revisions, supported client platforms, trusted identity provider, persistence
-                implementation and initial hosting. The documented headless/small modular relational
-                approach is a defensible starting recommendation; vendors and capacity are
-                unspecified.
+                <strong>Open decision:</strong> Select a compatible UE5 source/distribution revision
+                and compiler/SDK, verified client/server platforms and Unicode-data revision,
+                trusted identity provider, durable store and initial hosting. Dedicated-server
+                build/cook/launch procedures and supplied plugin compatibility require executed
+                evidence; vendors, installed tools and capacity remain unspecified.
               </p>
               <p>
                 <strong>Resolve by:</strong> BW-001/BW-018 choose and demonstrate tested candidates;
@@ -534,6 +552,7 @@
               </p>
               <p>
                 Affects <a href="roadmap-bw-001.html#BW-001">BW-001</a>,
+                <a href="roadmap-bw-100.html#BW-100">BW-100</a>,
                 <a href="roadmap-bw-018.html#BW-018">BW-018</a>,
                 <a href="roadmap-bw-020.html#BW-020">BW-020</a>,
                 <a href="roadmap-bw-086.html#BW-086">BW-086</a>,
@@ -788,6 +807,33 @@
                 >; <a href="../guide/testing.html#rendering-verification">Rendering verification</a>
               </p>
             </section>
+            <section aria-labelledby="open-replication-plugins">
+              <h3 id="open-replication-plugins">
+                Supplied replication plugin identity and capabilities
+              </h3>
+              <p>
+                <strong>Unresolved technical input:</strong> Plugins are already acquired. Exact
+                identities/versions, licenses, engine/platform/source/binary constraints,
+                dedicated-server support, native replication interaction, relevancy, serialization
+                and authority/security limitations require vendor evidence and executable
+                verification. Persistence, authentication and scaling are not presumed capabilities.
+              </p>
+              <p>
+                <strong>Resolve by:</strong> BW-100 must pass on the chosen native baseline before
+                BW-004/BW-005 and dependent replicated gameplay can be verified.
+              </p>
+              <p>
+                Affects <a href="roadmap-bw-001.html#BW-001">BW-001</a>,
+                <a href="roadmap-bw-100.html#BW-100">BW-100</a>,
+                <a href="roadmap-bw-004.html#BW-004">BW-004</a>,
+                <a href="roadmap-bw-005.html#BW-005">BW-005</a>,
+                <a href="roadmap-bw-007.html#BW-007">BW-007</a>,
+                <a href="roadmap-bw-013.html#BW-013">BW-013</a> ·
+                <a href="../guide/networking.html#replication-plugins"
+                  >Replication verification and boundaries</a
+                >; <a href="../guide/unreal-cpp.html">Unreal C++ setup and standards</a>
+              </p>
+            </section>
             <h2 id="deferred-scope">Explicitly deferred or optional scope</h2>
             <ul>
               <li>
@@ -836,6 +882,8 @@
           ><a href="#open-item-use">Concrete item-use timing bindings</a
           ><a href="#open-rated-entry">Rated entry eligibility and normalized build selection</a
           ><a href="#open-rendering">Render configuration and supported quality envelope</a
+          ><a href="#open-replication-plugins"
+            >Supplied replication plugin identity and capabilities</a
           ><a href="#deferred-scope">Deferred scope</a>
         </aside>
       </div>

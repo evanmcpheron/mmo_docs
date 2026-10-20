@@ -424,7 +424,7 @@ def review_report(registry):
                   'The standard-library checker validates the exact JSON Schema vocabulary used here and all bound shipped records.',
                   'It is not a general-purpose JSON Schema implementation; unsupported keywords fail closed.',
                   'x-members are symbolic, x-invariants require semantic/runtime checks, and Needs Decision shapes are partial.',
-                  'Baseline before this task: 241 checks passed, zero failed; 11 inventory regression tests passed.',
+                  'Consult current reports for executed counts; documentation validation never certifies gameplay.',
                   '', 'G. FILE OWNERSHIP',
                   'sources/data-inventory.json: canonical definitions, shared types, evidence, ownership, dependencies, decisions.',
                   SCHEMA_PATH + ': generated JSON Schema 2020-12 $defs bundle; do not edit.',

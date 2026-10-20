@@ -46,6 +46,7 @@ class HTMLFormatTests(unittest.TestCase):
         links = Links(first['guide/example.html']).links
         self.assertEqual(['development-roadmap.html'], [a['href'] for a in links if 'data-roadmap-nav' in a])
         self.assertEqual(['data-inventory.html'], [a['href'] for a in links if 'data-inventory-nav' in a])
+        self.assertEqual(['unreal-cpp.html'], [a['href'] for a in links if 'data-foundation-nav' in a])
 
     def test_wrapped_heading_text_has_stable_review_metadata(self):
         document = Document('<main><h1>Long\n  heading</h1><h2 id="section">Another\n heading</h2></main>')

@@ -299,6 +299,12 @@ def navigation(source, page):
     source, count = re.subn(r'(<a\s+class="nav-home\b[^>]*>.*?</a\s*>)', r'\1' + link, source, flags=re.S)
     if count != 1:
         raise ValueError(f'{page}: expected one Overview navigation link')
+    source = re.sub(r'\s*<a\s+data-foundation-nav\b[^>]*>.*?</a\s*>', '', source, flags=re.S)
+    foundation = 'guide/unreal-cpp.html'
+    address = posixpath.relpath(foundation, posixpath.dirname(page) or '.')
+    current = ' aria-current="page"' if page == foundation else ''
+    foundation_link = f'<a data-foundation-nav href="{address}"{current}>Unreal C++ foundation</a>'
+    source = source.replace(link, link + foundation_link, 1)
     return source
 
 
@@ -492,6 +498,75 @@ def inventory_page(registry, template):
     return navigation(prefix + main + toc + '</div></div></body></html>\n', INVENTORY_PAGE)
 
 
+class SearchSections(HTMLParser):
+    def __init__(self, source, include_rows=True):
+        super().__init__()
+        self.active = False
+        self.heading = None
+        self.sections = []
+        self.current = None
+        self.include_rows = include_rows
+        self.row = None
+        self.row_cells = 0
+        self.row_title = False
+        self.feed(source)
+
+    def handle_starttag(self, tag, attrs):
+        values = dict(attrs)
+        if tag == 'main':
+            self.active = True
+        if tag == 'footer':
+            self.active = False
+        if self.active and tag in ('h1', 'h2', 'h3', 'h4'):
+            self.heading = tag
+            self.current = {'anchor': values.get('id', ''), 'title': '', 'text': []}
+            self.sections.append(self.current)
+        if self.active and self.include_rows and tag == 'tr' and values.get('id'):
+            self.row = {'anchor': values['id'], 'title': '', 'text': []}
+            self.row_cells = 0
+            self.sections.append(self.row)
+        if self.row is not None and tag == 'td':
+            self.row_cells += 1
+            self.row_title = self.row_cells == 1
+        if self.row_title and tag == 'br':
+            self.row['title'] += ' '
+
+    def handle_endtag(self, tag):
+        if tag == self.heading:
+            self.heading = None
+        if tag == 'main':
+            self.active = False
+        if tag == 'td':
+            self.row_title = False
+        if tag == 'tr':
+            self.row = None
+
+    def handle_data(self, value):
+        if self.active and self.current is not None:
+            if self.heading:
+                self.current['title'] += value
+            else:
+                self.current['text'].append(value)
+        if self.active and self.row is not None:
+            self.row['text'].append(value)
+            if self.row_title:
+                self.row['title'] += value
+
+
+def feature_search(registry, root=ROOT):
+    records = []
+    for reviewed in sorted(registry['pages'], key=lambda p: p['page']):
+        page = reviewed['page']
+        if page == ROADMAP_PAGE or page.startswith('guide/roadmap-'):
+            continue
+        source = strip_data((root / page).read_text(encoding='utf-8'))
+        for section in SearchSections(source, include_rows=not page.startswith('catalog/')).sections:
+            records.append({'title': ' '.join(section['title'].split()), 'section': reviewed['title'],
+                            'url': page + ('#' + section['anchor'] if section['anchor'] else ''),
+                            'text': ' '.join(' '.join(section['text']).split()), 'source': 'feature'})
+    return records
+
+
 def expected_outputs(registry, root=ROOT):
     outputs = {}
     for reviewed in registry['pages']:
@@ -510,9 +585,7 @@ def expected_outputs(registry, root=ROOT):
                 raise ValueError(f'{page}: expected one page contents navigation')
         outputs[page] = navigation(source, page)
     outputs[INVENTORY_PAGE] = inventory_page(registry, (root / 'guide/networking.html').read_text(encoding='utf-8'))
-    search_path = root / 'assets/search-index.js'
-    search = json.loads(search_path.read_text(encoding='utf-8').removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
-    search = [r for r in search if r.get('source') not in ('data-inventory', 'development-roadmap')]
+    search = feature_search(registry, root)
     records = [{'title': 'Data Inventory', 'section': 'Catalogs', 'url': INVENTORY_PAGE, 'text': 'Enums interfaces schemas Fully Defined design decisions future Briarwake implementation work'}]
     for entry in sorted(registry['entries'], key=lambda e: e['name'].casefold()):
         records.append({'title': entry['name'], 'section': 'Data Inventory · ' + entry['category'], 'url': INVENTORY_PAGE + '#' + entry['id'],

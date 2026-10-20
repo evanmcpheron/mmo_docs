@@ -86,6 +86,8 @@ class RoadmapTests(unittest.TestCase):
         self.assertEqual([f'{epic["id"]}-AC-{n}' for n in range(1, len(original) + 2)], anchors)
         for criterion in original:
             self.assertIn(escape(criterion), ' '.join(source.split()))
+        for identifier in prerequisite_closure(self.data, epic['hard_dependencies']):
+            self.complete(identifier)
         self.complete(epic['id'])
         epic['verified_evidence'][0]['criteria'].pop()
         self.assertTrue(any('passing evidence for every AC' in error for error in self.errors()))
@@ -189,6 +191,20 @@ class RoadmapTests(unittest.TestCase):
         self.assertEqual(before, progress(self.data['epics']))
         self.assertEqual('Not Started', self.by_id['BW-001']['status'])
         self.assertEqual([], self.errors())
+
+    def test_dashboard_shows_ticket_status_counts_independently_from_epics(self):
+        from build_development_roadmap import render
+
+        self.reset_epic_progress()
+        self.reset_ticket_progress()
+        self.data['tickets'][0]['status'] = 'Complete'
+        self.data['tickets'][1]['status'] = 'In Progress'
+        source = render(self.data)
+        epic_metrics, ticket_metrics = source.split('<h3 id="ticket-progress">', 1)
+        self.assertIn('<strong>0</strong><span>Complete</span>', epic_metrics)
+        self.assertIn('<strong>1</strong><span>Complete</span>', ticket_metrics)
+        self.assertIn('<strong>1</strong><span>In Progress</span>', ticket_metrics)
+        self.assertIn(f'<strong>{len(self.data["tickets"])}</strong><span>Tickets</span>', ticket_metrics)
 
     def test_epic_previous_and_next_follow_the_recommended_sequence(self):
         outputs = generated_pages(self.data)

@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -142,7 +142,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -162,12 +163,11 @@
             <div class="callout">
               <strong>Evidence baseline</strong>
               <p>
-                At the initial roadmap review on 2026-10-17, this repository contained design
-                documents, canonical contracts and documentation validation, with no implemented
-                Godot game or verified game-repository completion evidence. Every epic was
-                initialized as Not Started. Later progress must come from the recorded epic
-                evidence; a complete schema, passing arithmetic check or authored fixture is not
-                completed gameplay.
+                Game implementation is 0% complete. Every implementation epic and ticket is Not
+                Started; phase and milestone progress derive from those records. No gameplay system,
+                client, server, build pipeline, rendering pipeline, character, map, database, plugin
+                integration or operational infrastructure is implemented or verified. Completed
+                design contracts and passing documentation checks are not implementation evidence.
               </p>
             </div>
             <p>
@@ -214,10 +214,10 @@
               scope.
             </p>
             <p>
-              The selected presentation is low-resolution 3D pixel art inspired by David Holland.
-              Rendering feasibility and production work have their own evidence gates; continuous
-              planar/floor simulation remains authoritative. Historical references to eight sprite
-              directions now mean compatible preview headings, not a required spritesheet pipeline.
+              Presentation uses actual 3D characters and environments, Unreal materials and
+              post-processing with a pixel-stable angled orthographic camera. SpriteDirection
+              preserves canonical preview-heading values; no sprite-sheet production mandate
+              follows. Every render setting and acceptance bound awaits fresh prototype evidence.
             </p>
             <dl class="roadmap-terms">
               <dt>Documented requirement</dt>
@@ -253,19 +253,20 @@
             </dl>
             <h2 id="analysis">Dependency analysis and research</h2>
             <p>
-              First inventory capabilities across feature prose, 501 canonical structures,
-              class/specification catalogs, professions, content-readiness flags and existing
-              audits. Separate simulation, durable ownership, recipient views and content-production
-              responsibilities. Establish prerequisites from observable behavior and failure cases,
-              then identify parallel branches and small experiments that expose costly assumptions.
-              Compare alternatives on rework, security, testability, operational recovery and
-              unnecessary complexity. Only then topologically order the capabilities and group them
-              into the phases below. A final reverse review traces every documented family to the
-              full-game gate and challenges unnecessary edges.
+              Review all epic objectives, scopes, acceptance criteria and dependencies against the
+              canonical gameplay reference, complete catalog families and Unreal Engine 5 C++
+              authority/lifetime boundaries. Preserve engine-independent responsibilities and stable
+              IDs. Establish a blank native project, then verify the already acquired replication
+              plugins before dependent transport and movement. Keep renderer feasibility, content
+              production and real-store recovery probes independently schedulable. Trace every
+              feature family through initial integrated play, full-roster certification and
+              production evidence; distinguish hard technical prerequisites from risk-reducing
+              recommendations.
             </p>
             <p>
               <strong>Research basis:</strong>
               <a href="../guide/decisions.html">Governing design decisions</a>;
+              <a href="../guide/unreal-cpp.html">Unreal Engine 5 C++ foundation</a>;
               <a href="../guide/networking.html">Authority and networking</a>;
               <a href="../guide/execution.html">Execution contracts</a>;
               <a href="../guide/status-effects.html">Statuses and summons</a>;
@@ -295,15 +296,16 @@
             <section aria-labelledby="decision-authority">
               <h3 id="decision-authority">Authority and the first network proof</h3>
               <p>
-                <strong>Chosen sequence:</strong> Establish server-owned intent/outcome boundaries,
-                then validate two clients with movement and one direct action before the complete
+                <strong>Chosen sequence:</strong> Create the native C++ project, establish
+                rule/connection ownership, verify the supplied plugins, then validate two
+                independent clients with authoritative movement and a direct action before the full
                 combat roster or persistent journey.
               </p>
               <p>
-                <strong>Alternatives and tradeoff:</strong> A client-owned local prototype gives
-                fast visual feedback but cannot test the required concurrent authority. A complete
-                offline combat kernel first is viable, but defers Godot lifecycle/protocol/latency
-                risks. Headless combat fixtures can still develop in parallel with the transport.
+                <strong>Alternatives and tradeoff:</strong> A local rules experiment can help
+                numerical work but cannot expose connection ownership, recipient disclosure or
+                actual dedicated-server lifecycle and latency. Headless rule fixtures can proceed
+                alongside transport once the native baseline exists.
               </p>
               <p>
                 <strong>Basis:</strong> Server authority is documented. The size and placement of
@@ -311,7 +313,9 @@
                 at low content cost.
               </p>
               <p>
+                <a href="roadmap-bw-001.html#BW-001">BW-001</a>,
                 <a href="roadmap-bw-002.html#BW-002">BW-002</a>,
+                <a href="roadmap-bw-100.html#BW-100">BW-100</a>,
                 <a href="roadmap-bw-004.html#BW-004">BW-004</a>,
                 <a href="roadmap-bw-005.html#BW-005">BW-005</a>,
                 <a href="roadmap-bw-012.html#BW-012">BW-012</a> ·
@@ -323,9 +327,10 @@
             <section aria-labelledby="decision-replication">
               <h3 id="decision-replication">Replication grows with executable semantics</h3>
               <p>
-                <strong>Chosen sequence:</strong> Begin with movement/lifecycle revisions and
-                owner/public projections; add casts, statuses, projectiles and recovery state as
-                their rules become executable. Enforce disclosure from the first snapshot.
+                <strong>Chosen sequence:</strong> Verify the acquired plugin/native replication
+                relationship first. Reuse the validated facilities for movement/lifecycle and
+                owner/public views, then extend executable state families with recipient-safe
+                reconstruction.
               </p>
               <p>
                 <strong>Alternatives and tradeoff:</strong> A universal final replication layer
@@ -334,12 +339,13 @@
                 while privacy and hazard relevance cannot.
               </p>
               <p>
-                <strong>Basis:</strong> Godot provides building blocks, including visibility
-                filtering and value constraints, rather than an MMO authorization policy.
-                Recipient-specific disclosure and correct current-state reconstruction are
-                documented invariants.
+                <strong>Basis:</strong> Epic documents native replication and owning-connection
+                mechanisms. The supplied plugins’ actual APIs, platforms, authority limits and
+                relevancy behavior remain unknown until BW-100; replication never substitutes for
+                authorization or durable ownership.
               </p>
               <p>
+                <a href="roadmap-bw-100.html#BW-100">BW-100</a>,
                 <a href="roadmap-bw-007.html#BW-007">BW-007</a>,
                 <a href="roadmap-bw-013.html#BW-013">BW-013</a>,
                 <a href="roadmap-bw-014.html#BW-014">BW-014</a>,
@@ -607,18 +613,18 @@
                 before final presentation and capacity.
               </p>
               <p>
-                <strong>Alternatives and tradeoff:</strong> Deferring rendering until final polish
-                risks incompatible assets, input projection and platform assumptions. A custom
-                engine fork may be justified by measured gaps, but the reference implementation does
-                not make it mandatory; a stock-build solution or reviewed visual alternative must
-                first be tested.
+                <strong>Alternatives and tradeoff:</strong> A bounded Unreal material/camera probe
+                before asset-volume production reduces import, pass-order and input-projection risk.
+                Use stock-engine mechanisms first; engine modifications require a measured unmet
+                requirement and a maintenance decision. No earlier visual or performance result is
+                credited.
               </p>
               <p>
-                <strong>Basis:</strong> The user selected David Holland’s 3D pixel-art aesthetic on
-                2026-10-17. The article documents a custom Godot 4.3 implementation; project
-                settings, current renderer support and acceptable equivalents require
-                revision-specific evidence. This changes presentation, not authoritative movement,
-                targeting or wire encodings.
+                <strong>Basis:</strong> The established visual target uses real-time 3D models, a
+                pixel-stable angled orthographic camera, toon materials, outlines, water and
+                atmosphere. Unreal rendering-path, post-process/translucency and platform
+                feasibility require fresh revision-specific evidence. Canonical simulation and wire
+                values remain unchanged.
               </p>
               <p>
                 <a href="roadmap-bw-097.html#BW-097">BW-097</a>,
@@ -635,22 +641,28 @@
               </p>
             </section>
             <p>
-              <strong>Independent technical checks.</strong> Official Godot documentation was
-              checked on 2026-10-17:
+              <strong>Independent technical checks.</strong> Epic documentation was reviewed on
+              2026-10-20:
               <a
-                href="https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html"
-                >dedicated headless exports</a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine"
+                >dedicated-server build/cook workflow</a
               >,
               <a
-                href="https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html"
-                >RPC authority and independent traffic channels</a
-              >, and
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-overview-for-unreal-engine"
+                >native replication</a
+              >,
               <a
-                href="https://docs.godotengine.org/en/stable/classes/class_multiplayersynchronizer.html"
-                >synchronizer visibility and unsupported Object/Resource values</a
-              >. These establish building blocks, not an MMO architecture or capacity guarantee. The
-              early boundary proof is our inference from those limits and Briarwake’s requirements.
-              External references need internet; the roadmap pages do not.
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine"
+                >object lifetime</a
+              >
+              and
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine"
+                >C++ automation</a
+              >. These establish candidate facilities, not verified Briarwake capabilities or MMO
+              capacity. The supplied-plugin/native relationship must be verified before dependent
+              work. External sources require internet; local roadmap reading and documentation
+              validation do not.
             </p>
             <h2 id="critical-review">Final dependency review</h2>
             <ul>
@@ -702,16 +714,34 @@
                 optimum.
               </li>
               <li>
-                Independent audit: retain the initial network/replication order, add explicit
-                content production and a combined-family probe, enforce only demonstrated hard
-                prerequisites, and leave rated entry/build selection as an explicit unresolved
-                policy. See the Roadmap Audit for baseline evidence and per-epic dispositions.
+                All retained epic responsibilities were reviewed as future Unreal C++ capabilities.
+                Engine-independent gameplay, content and failure criteria retain stable IDs. Core
+                rules stay in C++; Blueprints and editor assets must not create a second authority.
+                Explicit exclusions keep adjacent families and later certification separate.
               </li>
               <li>
-                Art-direction revision: replaced the former 2D sprite mandate with the user-selected
-                3D pixel-art reference. Added BW-097/BW-098/BW-099 for early renderer feasibility,
-                reusable art production and environment integration, retaining independent headless
-                work and requiring complete visual/performance evidence at existing release gates.
+                BW-001 creates the blank native project, targets and reproducible build route;
+                BW-002 now requires that executable baseline. BW-100 verifies already acquired
+                plugins before BW-004/BW-005. Renderer, content and real-store probes do not depend
+                on unverified network capabilities.
+              </li>
+              <li>
+                Character/Pawn movement and native prediction are evaluated before custom systems;
+                plugin interaction is verified first. Unreal relevancy and supplied capabilities
+                serve canonical recipient policy without assuming automatic privacy, database
+                persistence, authentication or MMO scale.
+              </li>
+              <li>
+                Initial connectivity includes loss, stale-session rejection and fresh-session
+                re-entry. Durable reconnect remains BW-027 after ownership, inventory and build
+                prerequisites. All nine milestones derive status from epic closure; documentation
+                checks do not advance them.
+              </li>
+              <li>
+                The independent audit retains the rated-entry/build-selection decision as open and
+                preserves the content production, economic conservation and combined-family
+                integration gates. Every current epic has a generated assessment linked to its
+                objective, criteria and verification obligations.
               </li>
             </ul>
           </div>

@@ -27,7 +27,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -53,7 +53,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -126,7 +126,8 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span>BW-002
           </div>
           <h1>BW-002 · Authority boundaries and content admission</h1>
@@ -145,7 +146,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -163,24 +165,24 @@
             </nav>
             <nav class="roadmap-epic-nav" aria-label="Epics in recommended sequence (top)">
               <a href="roadmap-bw-001.html#BW-001" rel="prev"
-                >Previous: BW-001 · Reproducible client and headless project</a
-              ><a href="roadmap-bw-003.html#BW-003" rel="next"
-                >Next: BW-003 · Repeatable runtime fixtures and diagnostics</a
+                >Previous: BW-001 · Reproducible native Unreal C++ client and dedicated server</a
+              ><a href="roadmap-bw-100.html#BW-100" rel="next"
+                >Next: BW-100 · Verify owner-supplied replication plugins</a
               >
             </nav>
             <article class="roadmap-epic" id="BW-002">
               <div class="roadmap-epic-body">
                 <p class="roadmap-epic-meta">
-                  <span class="badge">Complete</span> Recommended position 2 of 97
+                  <span class="badge">Not Started</span> Recommended position 2 of 98
                 </p>
                 <p>
                   <strong>Phase:</strong>
                   <a href="roadmap-foundations.html#BW-002"
-                    >1. Executable boundaries and risk probes</a
+                    >1. Native C++ foundation and technical risk verification</a
                   >
                   · <strong>Completion milestone:</strong>
                   <a href="roadmap-milestones.html#milestone-foundations"
-                    >Executable ownership proof</a
+                    >Verified Unreal C++ foundation and ownership proof</a
                   >
                 </p>
                 <h2 id="objective">Objective and scope</h2>
@@ -189,9 +191,11 @@
                   boundaries.
                 </p>
                 <p>
-                  <strong>Scope:</strong> Stable IDs, version domains, command/result contracts,
-                  public/private projections and package admission; evolve only the contracts needed
-                  by enabled features, without freezing every future message.
+                  <strong>Scope:</strong> C++ ownership and lifecycle boundaries, stable IDs and
+                  units, version domains, intent/result contracts, public/private projections and
+                  validated content admission. Use reflection or Data Assets only where required;
+                  existing canonical contracts remain the source of truth. Excludes gameplay
+                  implementation, database deployment and competing Blueprint rules.
                 </p>
                 <h2 id="dependencies">Dependencies and downstream work</h2>
                 <h3>Hard prerequisites</h3>
@@ -199,7 +203,14 @@
                   These epics must be Complete before this epic can be completed or meaningfully
                   verified.
                 </p>
-                <p>None.</p>
+                <ul class="roadmap-contents">
+                  <li>
+                    <a href="roadmap-bw-001.html#BW-001"
+                      >BW-001 · Reproducible native Unreal C++ client and dedicated server</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                </ul>
                 <h3>Recommended predecessors</h3>
                 <p>Scheduling guidance; these are not completion gates.</p>
                 <p>None.</p>
@@ -207,10 +218,16 @@
                 <p>These epics directly depend on this capability.</p>
                 <ul class="roadmap-contents">
                   <li>
+                    <a href="roadmap-bw-100.html#BW-100"
+                      >BW-100 · Verify owner-supplied replication plugins</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
                     <a href="roadmap-bw-003.html#BW-003"
                       >BW-003 · Repeatable runtime fixtures and diagnostics</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-095.html#BW-095"
@@ -248,8 +265,10 @@
                   <li id="BW-002-AC-1">
                     <a href="#BW-002-AC-1" class="roadmap-criterion-link">AC 1</a>
                     <p>
-                      The boundary review names an owner and lifecycle for movement, combat, durable
-                      assets, builds and client presentation, preserving documented invariants.
+                      The C++ boundary review and executable boundary fixtures identify
+                      authoritative owners and lifetimes for movement, combat, durable assets,
+                      builds and client presentation; no Blueprint or transport handler duplicates
+                      rule ownership.
                     </p>
                   </li>
                   <li id="BW-002-AC-2">
@@ -289,127 +308,10 @@
                   <strong>Completion evidence required:</strong> Reviewed responsibility map plus
                   positive and negative content/compatibility validation results.
                 </p>
-                <p><strong>Recorded evidence:</strong></p>
-                <ul>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T01/epic-review.json"
-                      >BW-002-AC-1 passes the executed T01 owner/lifecycle review. Parent remains In
-                      Progress: AC2 staged package validation, AC3 unbound-behavior denial, AC4
-                      executed compatibility fixtures and AC5 complete economic graph admission
-                      still require BW-002-T02–T08; those behaviors were not executed in this
-                      ticket. Review snapshot is unchanged at this committed game revision;
-                      supplementary manual launch/Quit evidence and platform/browser limitations are
-                      retained in manual-verification.json.</a
-                    >
-                    — AC 1; Passed; revision f4d5c84d42cafc4c014a059d46bcf321b446ff7b; authority
-                    document SHA-256
-                    2626252d36eaa74b64b94e6fdedb7d10f1bd247ebe0a96fb06e77aab5b6f8bec
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T02/epic-review.json"
-                      >Explicit parent review: AC4 passes the executed T02 compatibility/revision
-                      corpus. AC1 retains applicable T01 evidence because its authority
-                      map/bootstrap owners are unchanged. BW-002 remains In Progress: AC2
-                      staged/atomic admission, AC3 binding/readiness refusal and AC5 complete
-                      economic graph gate require T03–T08. T03 prerequisites are satisfied;
-                      downstream epics remain gated by BW-002.</a
-                    >
-                    — AC 4; Passed; revision f4d5c84d42cafc4c014a059d46bcf321b446ff7b-dirty
-                    (uncommitted BW-002-T02 implementation; per-source and executed-input SHA-256
-                    hashes retained in the reports)
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T03/epic-review.json"
-                      >Explicit parent review retains AC1 owner/lifecycle mapping and AC4
-                      compatibility evidence, with executed T03 intent/projection behavior and a
-                      fresh compatibility regression. T01 authority/lifecycle requirements and
-                      existing bootstrap owners are preserved. BW-002 remains In Progress: AC2
-                      atomic staged admission, AC3 binding/readiness refusal and AC5 complete
-                      economic graph validation require T04–T08. T04 is now ticket-dependency-ready;
-                      BW-002-dependent epics remain gated.</a
-                    >
-                    — AC 1, 4; Passed; revision Exact tested game Git revision and per-source/input
-                    SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T04/epic-review.json"
-                      >Parent review retains AC1 owner/lifecycle requirements and AC4 compatibility
-                      encodings/revision separation, with fresh compatibility and boundary
-                      regressions. T04 adds executed staging coverage toward AC2. BW-002 remains In
-                      Progress: AC2 real atomic startup admission, AC3 actual capability/readiness
-                      refusal and AC5 economic graph certification still require T05–T08. T05 and
-                      T06 now have complete ticket prerequisites; downstream epics remain gated on
-                      BW-002.</a
-                    >
-                    — AC 1, 4; Passed; revision Exact tested revisions and source/input hashes
-                    retained in the T04 verification and suite reports.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T05/epic-review.json"
-                      >Parent review retains AC1 ownership/lifecycle and AC4 compatibility evidence;
-                      direct compatibility, boundary and structure regressions pass with unchanged
-                      applicable sources/inputs. T05 direct refusal cases contribute to AC3 but its
-                      normal pipeline remains blocked by sandbox access. BW-002 stays In Progress:
-                      real startup atomic admission and economic graph gates require T06–T08.</a
-                    >
-                    — AC 1, 4; Passed; revision Exact tested game revisions and unchanged-source
-                    applicability retained in validation/tickets/BW-002-T05/verification.json.
-                  </li>
-                  <li>
-                    <a
-                      href="../validation/tickets/BW-002-T05/standard-verification-2026-10-19/epic-review.json"
-                      >T05 normal import/readiness and Python regressions pass, clearing its
-                      environment blocker and completing AC3 refusal coverage. Retained T01
-                      ownership/lifecycle evidence remains applicable; fresh compatibility, boundary
-                      and structure suites preserve AC1/AC4 and support staged validation. BW-002
-                      remains In Progress: AC2 real atomic startup admission needs T08, and AC5
-                      economic input/loop certification needs T06/T07. T06 is dependency-ready; T08
-                      still requires T07; downstream epics remain gated on BW-002.</a
-                    >
-                    — AC 1, 3, 4; Passed; revision Exact tested game revision, retained-evidence
-                    applicability and fresh standard regression reports recorded in the linked
-                    parent review.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T06/epic-review.json"
-                      >T06 completes economic input/constraint coverage toward AC5. Retain AC1
-                      ownership/lifecycle evidence and AC3 readiness refusal; executed
-                      compatibility/boundary/structure/readiness regressions preserve AC4. Parent
-                      remains In Progress: AC5 still requires T07 complete-graph loop certification;
-                      AC2 still requires T08 real atomic startup admission. T07 is now
-                      ticket-dependency-ready; downstream epics remain gated on BW-002.</a
-                    >
-                    — AC 1, 3, 4; Passed; revision Tested game revisions and retained-evidence
-                    applicability recorded in the linked parent review and suite source/input
-                    manifests.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T07/epic-review.json"
-                      >T07 completes AC5 with exact complete-graph value conservation and strict
-                      crafted sellback, 26 executed graph cases, independent witness replay and
-                      fresh T06 constraints. AC1 ownership/lifecycle and AC3 readiness refusal
-                      remain applicable; fresh compatibility/boundary/structure/readiness
-                      regressions retain AC4. BW-002 remains In Progress solely for AC2: T08 real
-                      atomic startup publication/rejection. T08 now has all ticket prerequisites
-                      Complete; dependent epics remain gated on unfinished BW-002.</a
-                    >
-                    — AC 1, 3, 4, 5; Passed; revision Exact suite revisions/source hashes and
-                    documentation-only delivery applicability are retained in the linked review and
-                    verification.json.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-002-T08/epic-review.json"
-                      >Explicit parent review maps current evidence to all five epic criteria. T01
-                      owner/lifecycle/intent bodies are unchanged; current map links pass. Fresh
-                      compatibility/boundary/structure/readiness/economic suites and real atomic
-                      startup close AC2 while preserving AC1/3/4/5. All eight tickets and
-                      prerequisites are Complete with no blockers.
-                      BW-003/BW-004/BW-005/BW-006/BW-018 become dependency-ready; BW-095 still needs
-                      BW-003. Foundations/milestones remain In Progress.</a
-                    >
-                    — AC 1, 2, 3, 4, 5; Passed; revision 9b282e2e502b452003e8f227d2bc232e90c7325d
-                  </li>
-                </ul>
+                <p>
+                  <strong>Recorded evidence:</strong> None. Required evidence above describes future
+                  verification.
+                </p>
                 <p><strong>Blockers:</strong> None recorded; see hard prerequisites.</p>
                 <h2 id="ticket-planning">Ticket planning</h2>
                 <p>
@@ -420,53 +322,51 @@
                 <ol class="roadmap-contents">
                   <li>
                     <a href="roadmap-bw-002-t01.html#BW-002-T01"
-                      >BW-002-T01 · Record authority owners and state lifecycles</a
+                      >BW-002-T01 · Define C++ authority owners and state lifetimes</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002-t02.html#BW-002-T02"
-                      >BW-002-T02 · Preserve canonical identifiers, encodings and revision
-                      domains</a
+                      >BW-002-T02 · Preserve canonical IDs, units and version domains</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002-t03.html#BW-002-T03"
-                      >BW-002-T03 · Validate intent contracts and filter public projections</a
+                      >BW-002-T03 · Validate intent contracts and recipient projections</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002-t04.html#BW-002-T04"
-                      >BW-002-T04 · Stage content and reject invalid references, targets and
-                      resources</a
+                      >BW-002-T04 · Stage content and reject invalid references and fields</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002-t05.html#BW-002-T05"
                       >BW-002-T05 · Keep unbound or unverified behavior disabled</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002-t06.html#BW-002-T06"
-                      >BW-002-T06 · Require complete economic inputs before route admission</a
+                      >BW-002-T06 · Require complete economic inputs before admission</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002-t07.html#BW-002-T07"
-                      >BW-002-T07 · Reject unlimited guaranteed price and conversion loops</a
+                      >BW-002-T07 · Reject unlimited guaranteed economic conversion loops</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002-t08.html#BW-002-T08"
-                      >BW-002-T08 · Admit validated content atomically at the server boundary</a
+                      >BW-002-T08 · Commit validated content atomically at server startup</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                 </ol>
                 <div class="table-scroll">
@@ -525,9 +425,9 @@
                   </table>
                 </div>
                 <p>
-                  <strong>Ordering rationale:</strong> Broad ownership and identity contracts
-                  constrain later systems. Full future payloads need not be frozen before gameplay
-                  proves their needs.
+                  <strong>Ordering rationale:</strong> The blank C++ project must exist before
+                  ownership/admission boundaries can be executed. Contract review can begin earlier;
+                  documentary review alone cannot complete this implementation epic.
                 </p>
                 <h2 id="documentation">Related documentation</h2>
                 <p>
@@ -545,25 +445,31 @@
               <ul class="roadmap-contents">
                 <li>
                   <a href="roadmap-bw-001.html#BW-001"
-                    >BW-001 · Reproducible client and headless project</a
+                    >BW-001 · Reproducible native Unreal C++ client and dedicated server</a
                   >
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="#BW-002">BW-002 · Authority boundaries and content admission</a>
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
+                </li>
+                <li>
+                  <a href="roadmap-bw-100.html#BW-100"
+                    >BW-100 · Verify owner-supplied replication plugins</a
+                  >
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-003.html#BW-003"
                     >BW-003 · Repeatable runtime fixtures and diagnostics</a
                   >
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-097.html#BW-097"
                     >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                   >
-                  <span class="badge">In Progress</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-095.html#BW-095"
@@ -581,9 +487,9 @@
             </details>
             <nav class="roadmap-epic-nav" aria-label="Epics in recommended sequence (bottom)">
               <a href="roadmap-bw-001.html#BW-001" rel="prev"
-                >Previous: BW-001 · Reproducible client and headless project</a
-              ><a href="roadmap-bw-003.html#BW-003" rel="next"
-                >Next: BW-003 · Repeatable runtime fixtures and diagnostics</a
+                >Previous: BW-001 · Reproducible native Unreal C++ client and dedicated server</a
+              ><a href="roadmap-bw-100.html#BW-100" rel="next"
+                >Next: BW-100 · Verify owner-supplied replication plugins</a
               >
             </nav>
           </div>

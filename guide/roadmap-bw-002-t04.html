@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-002." />
     <title>
-      BW-002-T04 · Stage content and reject invalid references, targets and resources · Briarwake
-      Development Roadmap
+      BW-002-T04 · Stage content and reject invalid references and fields · Briarwake Development
+      Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -124,10 +124,11 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T04
           </div>
-          <h1>BW-002-T04 · Stage content and reject invalid references, targets and resources</h1>
+          <h1>BW-002-T04 · Stage content and reject invalid references and fields</h1>
           <p class="page-description">Implementation ticket for BW-002.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -140,7 +141,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -158,7 +160,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-002-T04">
               <p>
-                <span class="badge">Complete</span> · Parent epic:
+                <span class="badge">Not Started</span> · Parent epic:
                 <a href="roadmap-bw-002.html#BW-002"
                   >BW-002 · Authority boundaries and content admission</a
                 >
@@ -171,45 +173,24 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Add the missing server-side admission owner, proposed
-                  content/content_admission.gd, as a small non-scene boundary with explicit
-                  canonical record collections and compatibility context. Parse into an isolated
-                  candidate; no active record is exposed by structural validation. Reuse T02
-                  compatibility support and T03 targeting checks rather than copying policy into the
-                  loader.
+                  Stage a candidate content package, validate its complete referenced graph and
+                  enabled targeting/resource contracts, then expose one validated package to the
+                  runtime owner.
                 </li>
                 <li>
-                  Support only the canonical fixture families needed here: AbilityDefinition with
-                  optional shared AbilityRuntimeBinding, its targeting/timing/finite operation
-                  dependencies, ResourceDefinition/ResourceGainRule and the referenced static
-                  catalogs. Resolve the selected $ref and content-reference closure, distinguish
-                  instance from definition namespaces, and reject duplicate IDs, unknown references,
-                  unsupported families/fields and incompatible content/rules context.
-                </li>
-                <li>
-                  Validate documented target-mode/input-kind compatibility, relation, positive cap,
-                  finite nonnegative geometry, allowlisted floor/line-of-sight/revalidation
-                  policies, explicit resolved resource identity/cost and timing/commit constraints.
-                  Preserve shared resource aliases and null-derived maximum semantics; never infer
-                  costs from ability prose, profile percent conversions or display labels.
-                </li>
-                <li>
-                  Add --suite structure with canonical ContentValidationFixture expectations and
-                  ContentValidationResult/ValidationFinding outputs. Include a compatible
-                  nonbehavioral static package and one-mutation invalid candidates for references,
-                  target/resource fields, timing, duplicates and versions. Required fixtures/catalog
-                  dependencies are implementation scope, not assumed production content.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Enabling gameplay records at structural validation, importing every catalog
-                  family, inventing missing domain types or changing mmo_docs canonical schemas.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
                 </li>
                 <li>
-                  Content authoring/export tooling (BW-095), actual target geometry simulation,
-                  resource spending, build resolution and storage/provider selection.
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -223,168 +204,100 @@
                 <li id="BW-002-T04-AC-1">
                   <a href="#BW-002-T04-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    A compatible supported fixture stages successfully with unchanged IDs and no
-                    active-record mutation. Unknown/duplicate references, invalid
-                    target/resource/timing fields and mismatched revisions each produce a stable
-                    finding code, record/property path and actionable message.
+                    A compatible representative package passes graph checks and becomes available as
+                    one version.
                   </p>
                 </li>
                 <li id="BW-002-T04-AC-2">
                   <a href="#BW-002-T04-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    References are checked in their declared namespaces; malformed unused fields,
-                    nonfinite/negative amounts, illegal policy combinations and unknown handlers are
-                    not converted into defaults.
-                  </p>
-                </li>
-                <li id="BW-002-T04-AC-3">
-                  <a href="#BW-002-T04-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    A mixed candidate containing a valid record and an invalid record exposes
-                    neither as active; prior accepted state, if supplied by a fixture, remains
-                    unchanged.
+                    Missing IDs, invalid targeting/resources, incompatible revisions and partial
+                    packages produce attributable findings and retain the prior valid package.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Run from the Briarwake implementation repository. The commands, scenes and fixtures
-                below are deliverables of this ticket and its prerequisites; these are unexecuted
-                test instructions.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.
-python3 tools/verify_toolchain.py
-python3 tools/extract_content_contracts.py --check
-python3 tools/check_content_admission.py --suite structure
-python3 tools/check_content_admission.py --suite compatibility
-python3 tools/check_content_admission.py --suite boundaries
-python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27; -v</code></pre>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the pinned native macOS ARM64 Godot 4.7.2 executable and Python environment
-                  from tools/toolchain.lock.json. All named commands, scripts and fixture catalogs
-                  now exist in GAME_ROOT.
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
                 </li>
                 <li>
-                  fixtures/content_admission/structure.json supplies canonical static collections,
-                  explicit compatibility context, trusted policy vocabulary, disabled
-                  prototype/binding examples and caller-authored resolved probes. No database,
-                  account, peer, scene control or build resolver is needed.
+                  Stage a candidate content package, validate its complete referenced graph and
+                  enabled targeting/resource contracts, then expose one validated package to the
+                  runtime owner.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the structure suite and inspect the ContentValidationResult records in the new
-                  artifacts/structure-*/run.json report; use --output PATH for another new evidence
-                  directory.
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
                 </li>
                 <li>
-                  Inspect the compatible static/prototype cases, one-mutation invalid cases,
-                  21-mode/four-input matrix, mixed-valid-invalid and same-id-distinct-namespaces
-                  controls. Every case repeats with record arrays reversed and compares finding
-                  signatures.
+                  A compatible representative package passes graph checks and becomes available as
+                  one version.
                 </li>
                 <li>
-                  Confirm all rejections return no candidate, prior valid candidate snapshots stay
-                  unchanged, valid input IDs/null maxima/aliases are preserved, and caller/snapshot
-                  mutations cannot affect staged records.
+                  Missing IDs, invalid targeting/resources, incompatible revisions and partial
+                  packages produce attributable findings and retain the prior valid package.
                 </li>
                 <li>
-                  Exercise --control import-failure, startup-failure, missing-report,
-                  assertion-failure and unsupported-schema with --suite structure and separate new
-                  output directories; all must exit 1. Rerun the clean suite afterward.
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  All 174 authored structure cases pass their expected acceptance/rejection
-                  assertions. Findings contain stable codes, record/property paths and actionable
-                  messages. Explicit zero/null and separate ID namespaces remain distinct; malformed
-                  fields, nonfinite/negative numbers and unsupported policies/references/operations
-                  reject.
+                  A compatible representative package passes graph checks and becomes available as
+                  one version.
                 </li>
                 <li>
-                  Only complete supported candidates are returned. Staging owns no active selection
-                  and cannot enable behavior; authored readiness flags/fixture run_evidence remain
-                  unchanged. Runtime capability/readiness, economic gates and real
-                  startup/active-state integration remain T05–T08.
-                </li>
-                <li>
-                  Compatibility/boundary suites and all 43 Python tool tests pass separately.
-                  Import/startup/absent-report failures remain unexecuted; an intentionally false
-                  expectation is Executed/Failed.
+                  Missing IDs, invalid targeting/resources, incompatible revisions and partial
+                  packages produce attributable findings and retain the prior valid package.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Let each bounded runner exit; its disposable copied Godot project and in-memory
-                  candidate state are removed automatically. Leave canonical snapshots, tracked
-                  fixtures and bootstrap configuration unchanged.
-                </li>
-                <li>
-                  Retain run.json and logs from the chosen new evidence directory. Repeating a clean
-                  suite needs no persistent-state reset.
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Executed staging/structural/reference matrix,
-                unchanged-active-state assertions and actual canonical validation results with
-                source/content/rules identities.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-002-T04: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <ul>
-                <li>
-                  <a href="../validation/tickets/BW-002-T04/verification.json"
-                    >174 executed staging cases cover compatible static/prototype content,
-                    namespace/reference/target/resource/timing/version failures, canonical
-                    validation outputs, reversed record order and retained-candidate/copy isolation.
-                    Compatibility/boundary regressions and 43 Python tool tests pass. Staging
-                    exposes no active selection; readiness, economic admission and startup
-                    publication remain later tickets.</a
-                  >
-                  — AC 1, 2, 3; Passed; revision Per-run game revision and source/input SHA-256
-                  hashes retained in the verification report and engine run artifacts.
-                </li>
-              </ul>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a
-                >; <a href="../guide/execution.html#definition-fields">Definition requirements</a>;
-                <a href="../guide/data-inventory.html#ability-definition"
-                  >Ability and shared runtime binding</a
-                >;
-                <a href="../guide/data-inventory.html#ability-targeting-policy">Targeting policy</a
-                >;
-                <a href="../guide/data-inventory.html#ability-timing-policy">Timing/commit policy</a
-                >;
-                <a href="../guide/data-inventory.html#effect-operation-definition"
-                  >Finite operations</a
-                >;
-                <a href="../guide/data-inventory.html#resource-definition">Resource definitions</a>;
-                <a href="../guide/data-inventory.html#resource-gain-rule">Resource hooks</a>;
-                <a href="../guide/data-inventory.html#content-validation-fixture"
-                  >Validation expectations</a
-                >;
-                <a href="../guide/data-inventory.html#content-validation-result">Actual findings</a
-                >;
-                <a href="../guide/data-inventory.html#resolved-ability-definition"
-                  >Resolved ability and explicit ResolvedResourceCost probes</a
-                >;
-                <a href="../guide/data-inventory.html#class-definition">Class catalog namespace</a>;
-                <a href="../guide/data-inventory.html#faction-definition"
-                  >Faction catalog namespace</a
-                >;
-                <a href="../guide/data-inventory.html#cooldown-definition">Cooldown family policy</a
-                >;
-                <a href="../guide/data-inventory.html#visual-presentation-definition"
-                  >Presentation references</a
-                >
+                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and criteria</a>;
+                <a href="../guide/decisions.html">Design constraints</a>;
+                <a href="../guide/execution.html">Execution contracts</a>;
+                <a href="../guide/data-inventory.html">Canonical definitions</a>;
+                <a href="../guide/items.html#durability-salvage-and-demand"
+                  >Economic content admission</a
+                >; <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-097." />
     <title>
-      BW-097-T05 · Prove one-pixel silhouettes, convex highlights and toon lighting · Briarwake
-      Development Roadmap
+      BW-097-T05 · Verify silhouettes, convex highlights and toon materials · Briarwake Development
+      Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -124,10 +124,11 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-097.html#BW-097">BW-097</a><span>/</span>BW-097-T05
           </div>
-          <h1>BW-097-T05 · Prove one-pixel silhouettes, convex highlights and toon lighting</h1>
+          <h1>BW-097-T05 · Verify silhouettes, convex highlights and toon materials</h1>
           <p class="page-description">Implementation ticket for BW-097.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -140,7 +141,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -170,32 +172,24 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Extend the probe with --case outlines, using T01 measured buffers and T04 camera.
-                  Implement candidate silhouette detection, separately controlled convex-edge
-                  highlights and toon material/lighting on T03 character/terrain assets. Adapt depth
-                  conventions, normal space, orthographic reconstruction, integer texel sampling and
-                  alpha composition explicitly; Roystan’s Unity technique and SMAA choice are
-                  references, not untested defaults.
+                  Evaluate Unreal materials and post-process depth/normal outlines against fresh
+                  approved bounds at internal resolution. Keep convex highlight selection distinct
+                  from silhouette detection.
                 </li>
                 <li>
-                  Supply near/far and clipping-boundary placements, grazing/sloped terrain, thin
-                  geometry, touching/overlapping characters, concave versus convex edges and
-                  bright/dark material swatches. Include raw depth/normal, silhouette-only,
-                  highlights-only, combined and antialiasing comparison controls plus
-                  one-internal-pixel measurement overlays.
-                </li>
-                <li>
-                  Select lighting bands, value separation, outline/highlight colors and antialiasing
-                  through T03 review. Keep shader/material configuration local to the probe: no
-                  canonical gameplay type defines these visual parameters and no renderer change may
-                  alter domain authority.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Full art production, all character forms, final world lighting/environment presets
-                  or unproven engine modifications.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
+                </li>
+                <li>
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -208,89 +202,88 @@
                 <li id="BW-097-T05-AC-1">
                   <a href="#BW-097-T05-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    Measured silhouettes are one pixel wide at internal resolution across the
-                    representative distance/geometry matrix. Convex highlights are independently
-                    selected and controlled; ordinary normal discontinuities do not automatically
-                    become highlights.
+                    Representative meshes, grazing/thin/clipped surfaces and touching/overlapping
+                    characters show intended one-pixel silhouettes, selected highlights and toon
+                    transitions.
                   </p>
                 </li>
                 <li id="BW-097-T05-AC-2">
                   <a href="#BW-097-T05-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Near/far clipping, grazing surfaces, thin geometry and overlapping actors show
-                    no filled surfaces or distracting false edges beyond approved bounds. Captures
-                    and motion sequences cover each case and selected antialiasing configuration.
-                  </p>
-                </li>
-                <li id="BW-097-T05-AC-3">
-                  <a href="#BW-097-T05-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    Toon lighting preserves approved gameplay-scale silhouette and palette/value
-                    separation on the character and terrain. Rejected candidates and any approved
-                    deviation remain linked to the visual baseline and exact settings.
+                    Still/motion cases expose false edges, missing contours, filled surfaces and
+                    temporal instability; unresolved blocking artifacts fail review.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Run from the Briarwake implementation repository. The commands, scenes and fixtures
-                below are deliverables of this ticket and its prerequisites; these are unexecuted
-                test instructions.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; every res:// path uses that project root. The rendering launcher/case below is a deliverable of these tickets, not an existing command.
-python3 tools/verify_toolchain.py
-python3 tools/run_rendering_probe.py --case outlines</code></pre>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the T01 capability path, T03 approved appearance bounds and T04 camera paths.
-                  This ticket supplies the geometry/clipping placements, diagnostic views, lighting
-                  and antialiasing comparisons.
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
+                </li>
+                <li>
+                  Evaluate Unreal materials and post-process depth/normal outlines against fresh
+                  approved bounds at internal resolution. Keep convex highlight selection distinct
+                  from silhouette detection.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run outlines; capture raw buffers, silhouettes, highlights and the combined result
-                  for each near/far, slope, thin, concave/convex and overlap fixture.
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
                 </li>
                 <li>
-                  Count silhouette width in internal pixels; toggle antialiasing and highlight
-                  controls, then run slow/diagonal camera and actor paths in bright/dark settings.
-                  Review the complete case matrix against T03 bounds.
+                  Representative meshes, grazing/thin/clipped surfaces and touching/overlapping
+                  characters show intended one-pixel silhouettes, selected highlights and toon
+                  transitions.
+                </li>
+                <li>
+                  Still/motion cases expose false edges, missing contours, filled surfaces and
+                  temporal instability; unresolved blocking artifacts fail review.
+                </li>
+                <li>
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  One-pixel silhouettes and separate convex highlights remain stable and readable
-                  without filled surfaces or false edges.
+                  Representative meshes, grazing/thin/clipped surfaces and touching/overlapping
+                  characters show intended one-pixel silhouettes, selected highlights and toon
+                  transitions.
                 </li>
                 <li>
-                  Toon transitions and antialiasing choices have actual still/motion approval;
-                  unsupported or failing candidate paths are recorded explicitly.
+                  Still/motion cases expose false edges, missing contours, filled surfaces and
+                  temporal instability; unresolved blocking artifacts fail review.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Use the probe Reset control to restore the checked-in case settings, camera, actor
-                  path and effect toggles; quit the graphical process normally. No persistent
-                  gameplay state is created.
-                </li>
-                <li>
-                  Keep prior captures, failed results and reports intact. Repeat into a fresh
-                  launcher-owned artifacts directory; restore only deliberately modified disposable
-                  inputs, leaving source assets, canonical registries and existing user files
-                  intact.
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain shader/settings identities, pixel-width
-                annotations, raw-buffer diagnostics, geometry/distance/antialiasing matrix,
-                still/motion captures and reviewed outline/highlight/toon choices.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-097-T05: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
@@ -299,14 +292,17 @@ python3 tools/run_rendering_probe.py --case outlines</code></pre>
               </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and exact criteria</a>;
-                <a href="../guide/decisions.html#art-direction">Selected art direction</a>;
+                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and criteria</a>;
+                <a href="../guide/decisions.html#art-direction">Selected 3D pixel-art direction</a>;
                 <a href="../guide/interface.html#rendering-and-camera"
-                  >Rendering and camera boundaries</a
+                  >Rendering, camera and input</a
                 >;
                 <a href="../guide/testing.html#rendering-verification">Rendering verification</a>;
-                <a href="../guide/sources.html#s15">Outline adaptation reference</a>;
-                <a href="../guide/sources.html#s14">Spatial shader reference</a>
+                <a href="../guide/sources.html#s9">Holland visual reference</a>;
+                <a href="../guide/sources.html#s15"
+                  >Roystan outline tutorial and adaptation boundary</a
+                >; <a href="../guide/sources.html#s16">t3ssel8r visual research channel</a>;
+                <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

@@ -1,192 +1,121 @@
-MMORPG GAMEPLAY REFERENCE — VERSION 2.2
-Mechanics design, not a playable Godot project
+BRIARWAKE — UNREAL ENGINE 5 C++ GAMEPLAY AND ENGINEERING REFERENCE
 
-OPEN THE REFERENCE
-1. Extract the entire ZIP, keeping the folder structure intact.
-2. Open index.html in a desktop web browser.
-3. Start with Character creation & beginner area, then Design decisions,
-   Levels & talent points, and Specializations & playstyles.
+PROJECT BASELINE
+Briarwake is a new MMORPG designed for Unreal Engine 5, native C++ and
+server-authoritative dedicated servers. Game implementation is 0% complete.
+Every implementation epic and ticket is Not Started with no verified runtime
+evidence. No gameplay system, server, build pipeline, renderer, character, map,
+database or operations infrastructure is implemented or verified. Completed
+contracts and passing documentation checks are design work only.
 
-All reading content, styles and search data are included locally. No account,
-package installation, API key, build step or external CDN is required.
-External source links require internet access. Keep assets/ beside the HTML.
-Do not open index.html inside a ZIP preview without extracting the other files.
+This is the only repository needed for this documentation. The future game
+implementation location is unspecified and will be established separately.
+Do not create an Unreal project here or require a game checkout to build or
+validate the reference. Native Unreal setup is future work described in
+guide/unreal-cpp.html, not runnable game setup in this repository.
 
-NAVIGATION
-The sidebar opens Development Roadmap prominently, then groups system rules,
-classes, professions and catalogs.
-Search the full reference from the top bar (Ctrl+K or Cmd+K).
-Catalog pages also have local table filters. Page headings have stable anchors.
-Use the browser Print command or the Print button for the current page.
-The documentation remains readable with JavaScript disabled; live search and
-filters require JavaScript. Dense tables scroll horizontally on small screens.
+READ OFFLINE
+Keep the complete directory structure and open index.html in a browser. All
+reading content, styles and search records are local; no login, build or CDN is
+needed to read. JavaScript enables full-site search (Ctrl/Cmd+K), table filters
+and responsive navigation; content and links remain readable without it.
+External references require internet. Extract ZIP packages before opening.
 
-PACKAGE CONTENTS
-199 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-30 individual ticket pages, three retained visual review pages,
-12 class pages, 16 profession pages, 3 full catalogs, and the main index.
-Versioned JSON: 330 named abilities, 1,764 character talent nodes,
-37 specialization playstyle contracts, 11 races / 12 faction-race selections,
-16 professions, 240 profession mastery nodes, 257 representative recipes,
-55 material definitions, 63 numerical execution profiles and 98 sample allocations.
+Use Development Roadmap for the dashboard, phases, epics, tickets, milestones,
+sequence decisions, coverage and audit. Use Data Inventory for canonical enums,
+interfaces, schemas and source relationships. Class/profession pages and full
+catalogs remain accessible from the sidebar. Existing styles, print behavior,
+responsive tables and stable anchors are preserved.
 
-MAIN CHANGES
-World of Warcraft-style character creation and a guided level 1–10 beginner area.
-The opening journey is also the first complete playable testing ground.
-See guide/character-creation.html for the player-facing feature flow.
-The visual target is low-resolution 3D pixel art with an angled orthographic
-camera, following the user-selected David Holland article. Roystan’s outline tutorial
-and the t3ssel8r channel supplement that reference. The art direction in
-guide/decisions.html and the rendering/camera and acceptance-test sections define
-project requirements. Continuous planar/floor gameplay contracts and existing
-SpriteDirection values remain compatible; the renderer does not mandate sprites.
-Godot version/renderer selection and any engine-fork decision require prototype
-evidence before full asset production.
-Two points on each level-up from 2 through 60: 59 class + 59 specialization.
-Specialization points are banked before level 10. Level 1 starts at zero.
-Humans can choose either faction with identical racial attributes; Ogres removed.
-Paladin/Cleric: good side only. Necromancer/Warlock: evil side only.
-Other classes are shared. No fictional geography, history or cultures included.
-Two manufacturing professions plus two gathering professions; Cooking, Fishing
-and First Aid are available to everyone. Profession skill is independent of
-character talent points. Six bands provide useful leveling output.
+TECHNICAL FOUNDATION
+C++ owns authoritative gameplay rules and state commits. Actors/components,
+Pawns/Characters/controllers and framework state classes are candidate owners
+according to actual lifetime and recipient requirements. Blueprints may expose
+editor assets, presentation and configuration through narrow interfaces.
+Enhanced Input, Gameplay Tags, Data Assets, subsystems and automation facilities
+are evaluated where needed; no speculative framework or backend is mandated.
 
-READINESS
-Numerical coefficients, progression pacing, item budgets and recipes are
-prototype proposals, not verified game balance. Named secondary ability effects
-and many inherited talent behaviors still require explicit runtime binding.
-Read guide/audit.html before treating this as implementation-ready game content.
-No Godot client/server, production database, economy or load test is included.
+The owner already acquired the intended replication plugins. BW-100 verifies
+identities, versions, license/distribution, UE/platform/source/binary constraints,
+dedicated-server build/load, synchronization/serialization/relevancy, native
+replication/movement interaction, security limitations and deployment/conflicts
+before dependent networking work. No plugin installation or integration is
+complete. Do not invent product details, buy replacements or presume persistence,
+authentication, scaling or gameplay authority from replication support.
 
-VALIDATION
-Run: python validation/run_checks.py
-Maintainer checks require Python 3.10+, Node.js 22+ and the pinned Prettier
-dependency installed with npm ci. Python code uses the standard library;
-generated-output checks also invoke the local HTML formatter.
-The script rewrites report.json
-and allocation_examples.json. It does not regenerate HTML or run a game.
-The HTML evidence page records checks from package generation; report.json is
-the source of truth after a later rerun.
+Rendering uses real-time 3D meshes, Unreal materials and post-processing, an
+angled orthographic pixel-stable camera, readable silhouettes and independently
+scaled UI. BW-097 verifies the fresh camera/material/pass/appearance/performance
+baseline; BW-098/BW-099 cover art production and environment integration.
+The concept image and selected visual references are appearance inputs only.
 
-validation/browser-checks.json preserves the original rendering-only evidence
-and its navigation limitations. Current inventory and roadmap browser evidence is recorded
-in validation/data-inventory-browser-checks.json: actual offline file navigation,
-canonical definitions, filters/search, feature links, roadmap epics, mobile layout,
-print visibility and reading with JavaScript disabled, using an isolated installed
-Chrome profile.
+DESIGN PRESERVATION
+Established races/factions, classes/specifications, progression/talents,
+combat/status/summon rules, PvP/PvE, equipment/inventory, professions/crafting,
+trade/economy, NPC/quests/world, UI/accessibility, authority/security/persistence
+and engine-independent contracts remain the gameplay specification. Prototype
+numbers and content readiness flags remain proposals, not balance certification.
+Manifest counts are generated in data/manifest.json; do not maintain progress
+or package totals independently in this README.
 
-DATA EDITING
-HTML is a static published snapshot. Editing JSON does not automatically update
-HTML tables or search data. Change matching reference pages and regenerate the
-search index before distributing an edited version. Preserve stable IDs and
-increment content versions when meanings change.
+ROADMAP AND PROGRESS OWNERSHIP
+sources/development-roadmap.json is the sole editable registry. Stable BW IDs
+and criterion anchors identify responsibilities, not numeric priority. Hard
+prerequisites gate execution/completion; recommended predecessors express useful
+ordering. Every retained epic/ticket is Not Started with empty verified_evidence
+and no carried completion claims. Milestone/phase status and dashboards derive
+from records and transitive prerequisites. All later gameplay families and
+separate full-game/production gates remain represented.
 
-DEVELOPMENT ROADMAP AND PROGRESS
-Open guide/development-roadmap.html for the roadmap overview, progress dashboard,
-recommended sequence and actionable epics. Each phase has a separate
-guide/roadmap-*.html index. Each epic has its own guide/roadmap-bw-NNN.html page
-with prerequisites, downstream work, acceptance criteria, verification and ticket
-planning. Criterion links such as #BW-097-AC-1 support future ticket references.
-BW-001 has seven tickets in execution order, each with its own generated page,
-exact parent-criterion links, dependencies, scope and runnable manual test plan.
-BW-002 has eight completed tickets covering authority ownership, compatibility,
-intent and projection boundaries, staged validation, readiness, economic inputs,
-conversion loops and atomic server admission. BW-001 and BW-002 are Complete;
-current statuses and executed evidence live in the registry. BW-003 has five
-tickets for attributable fixture evidence, deterministic test context, redacted
-probe diagnostics, bounded measurements and integrated verification.
-Its test-only action probe uses logical clients; serialized payload bytes are
-reported separately from wire traffic. BW-003 and all five tickets are Complete.
-The --suite all command joins content evidence, deterministic context, redacted
-diagnostics and raw measurements twice in eight fresh isolated Godot projects.
-Two independent complete runs, aggregate failure controls and clean recovery are
-retained with 87 Python regressions, content admission, native/exported server
-smoke, client exclusion inspection and test-control launch rejection evidence.
-BW-095 and BW-097 are now Dependency-ready; BW-012 still requires its other hard
-prerequisites. BW-097 is In Progress: T01 is Complete with a source-only graphical probe,
-Forward+/Metal capability checks and retained diagnostic captures on Apple M2 Max.
-T02 is Complete: its fixed 384x216 orthographic viewport, native Retina 2x
-presentation, independently scaled HUD/pointer, resize/minimum/zoom checks and
-invalid-setting controls have retained execution evidence. T03 is Complete:
-the project owner approved the concept comparison baseline, current character
-readability, observable bounds, documented deviations and future measurement
-targets on 2026-10-20. Normal x1 (9m) native/pixel comparisons and annotated
-concept review remain retained; initial close x2 is diagnostic only.
-Approval and parent-criterion mapping are in BW-097-T03/approval-review.json
-and approval-parent-review.json. The separate 112-instance, seven-character
-market showcase is merged in Briarwake PR14. Approved targets are not measured
-compliance; unavailable GPU timing remains unavailable. T04 is Complete: its fresh
-140-sequence / 8,960-sample camera run passes all eight checks, with continuous
-scoped anchors, guarded native presentation, reproducible stepping/reversal/resize
-and all T02 window/zoom presets. The owner approved a T04-only stationary PBR
-color exception (at most 2 RGB8 levels / 32 pixels in two scenery regions); the
-fresh run observes at most 1 level / 25 pixels. Initial strict failures, approval,
-current lossless playback and parent review are retained under BW-097-T04. T05–T10
-remain Not Started and cover outlines/toon lighting, pass composition, water,
-contact depth, combined motion and packaged measured feasibility. BW-097 remains
-In Progress; T05 is now prerequisite-ready. Other physical displays/OS
-scaling and exports remain unverified. BW-098 still awaits BW-097 completion.
-Foundations and milestones remain In Progress. The completed BW-003 bounded probe
-certifies no connected-client, gameplay, durability, wire-network or capacity work.
-Previous/next links follow the recommended sequence, and breadcrumbs return to
-the containing phase. Dedicated reference pages
-cover milestones, architectural decisions, feature coverage and progress upkeep.
-Use the roadmap navigation on any of these pages to move between them. Existing
-overview- and phase-page epic anchors remain links to the corresponding epic pages.
-It is planning/reference documentation; it adds no canonical gameplay contracts.
-All epic statuses begin Not Started because this repository contains design
-evidence, not verified game implementation.
+Tickets define scope, exclusions, exact parent criteria, dependencies, objective
+checks and future setup/action/result/reset procedures. Exact native commands
+are established only once the actual UE revision and target environment exist;
+no nonexistent script is presented as already runnable. Later bounded epics can
+be split when their prerequisites make detailed implementation planning useful.
+Planning and fixture specifications never advance implementation status.
 
-Open guide/roadmap-audit.html for the independent 17 October 2026 audit of all
-92 original epics, ten findings, applied corrections and the remaining rated-entry
-policy decision. The corrected audit baseline had 94 epics; the current roadmap
-has 97, including three subsequent rendering and art-production epics (BW-097,
-BW-098 and BW-099). The dated report's editable source is
-sources/roadmap-audit.html.inc; the roadmap builder publishes it using
-the same template/navigation and the inventory builder indexes its findings.
-The report is a planning snapshot, separate from live implementation progress.
+Future status updates use exactly Not Started, In Progress, Blocked or Complete.
+Ordinary future dependencies are not blockers. Complete requires actual passing
+evidence for every criterion on compatible tested revisions, no current failure
+or blocker and completed prerequisites. Store revisions, actual artifact paths,
+results and scope limits; never put documentation reports in gameplay evidence.
 
-sources/development-roadmap.json is the sole editable roadmap/progress source.
-Edit an existing epic's status and verified_evidence there. Use exactly Not
-Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
-evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
-adding an epic, then update relevant dependencies, milestones and coverage.
-Store tickets in the same registry's tickets list. Preserve BW-NNN-TNN IDs,
-parent_epic, exact epic_criteria anchors and dependency order; new tickets begin
-Not Started with no verified evidence. Include scope, out_of_scope, observable
-acceptance_criteria, completion_evidence and related_docs. manual_test requires
-launch, setup, actions, expected_results and reset, or a not_applicable rationale.
-Include every required test scene, control and fixture in implementation scope.
-Tickets for a split epic must collectively cover all of its criteria. Ticket
-statuses do not automatically promote epic or milestone progress; completion
-requires actual evidence and completed dependencies. Ticket blockers and
-verified_evidence follow the same rules and record shape as epics.
-Do not edit the generated pages or search records. Rebuild and validate with:
+GENERATE AND VALIDATE DOCUMENTATION
+Inspect scripts before running. Use Python 3.10+, Node.js 22+ and the pinned
+formatter (npm ci). Python code uses the standard library. No Unreal engine,
+plugin, game code, provider or database is required.
+
 npm ci
 python3 scripts/build_development_roadmap.py
 python3 scripts/build_data_inventory.py --review-roadmap
 python3 scripts/build_development_roadmap.py --check
 python3 scripts/build_data_inventory.py --check
+python3 validation/check_development_roadmap.py
+python3 validation/check_data_inventory.py
+python3 validation/check_foundation.py --baseline
 python3 -m unittest discover -s validation -p 'test_*.py'
 python3 validation/run_checks.py
-
-The roadmap builder owns the hub, phase indexes, individual epic/ticket pages and
-roadmap reference pages. The
-inventory builder's --review-roadmap option registers and refreshes all of these
-as planning references, without adding gameplay data associations. It refreshes
-navigation, direct detail-page search links, page review metadata and manifest counts.
-Generated dashboards, phase progress and milestone states derive from the same
-epic statuses. Every page remains readable offline and with JavaScript disabled.
-
-HTML FORMATTING
-Prettier is pinned in package-lock.json and configured in .prettierrc.json.
-Both Python builders format their HTML output automatically, including in
---check mode, so rebuilding preserves readable diffs. After npm ci, use:
-npm run format:html
 npm run check:html
-These commands cover published HTML and leave retained validation evidence alone.
-The first formatting pass is a mechanical baseline; later changes stay localized.
-Opening the published site still requires no Node.js or package installation.
+node validation/check_inventory_browser.mjs
+
+For feature changes, review the related canonical graph first and use repeated
+--review-page guide/example.html options to record the reviewed content and
+regenerate its Data associations. Both builders apply pinned Prettier formatting.
+npm run format:html formats published HTML; it is not a game build.
+
+The full validator rewrites validation/report.json and the deterministic sample
+allocations. The browser checker uses installed Chrome/Chromium with an isolated
+temporary profile, offline file URLs, mobile/desktop, search/navigation, print
+and JavaScript-disabled checks. Set BRIARWAKE_CHROME_BIN if needed. Actual browser
+results are in validation/data-inventory-browser-checks.json. No runtime game
+evidence is retained or credited. check_foundation.py --baseline checks the
+zero-progress snapshot; its normal mode permits future evidenced development.
+
+The tracked site is published through the repository's existing GitHub Pages
+configuration. Generated HTML/assets are the deployable site; this task changes
+no hosting setting and performs no deployment. There is no checked-in release
+pipeline or game build. Successful documentation checks do not verify an external
+Pages deployment or an Unreal build.
 
 DATA INVENTORY AND CANONICAL CONTRACTS
 Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.
@@ -264,13 +193,13 @@ Python commands require Python 3.10+; HTML generation and generated-output
 checks also require Node.js 22+ and npm ci for the pinned formatter.
 The browser check uses Node 22+ and installed Chrome/Chromium without downloads.
 Set BRIARWAKE_CHROME_BIN if needed. Its evidence is stored separately from the
-historical rendering-only record in validation/data-inventory-browser-checks.json.
+current documentation/browser record in validation/data-inventory-browser-checks.json.
 
 The builder owns guide/data-inventory.html, marked Data blocks, Data contents
 links, the Data Inventory and Development Roadmap sidebar links, inventory- and
 roadmap-tagged search records,
 documentation counts in data/manifest.json, the schema bundle and the generated
-review report. It preserves original feature content and noninventory search.
+review report. It preserves feature mechanics and regenerates feature-section search from current HTML.
 Existing feature HTML remains authoritative for mechanics; the original full-site
 generator is not included. Rebuilds are deterministic and never duplicate Data.
 

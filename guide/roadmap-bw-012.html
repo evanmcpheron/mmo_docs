@@ -27,7 +27,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -53,7 +53,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -144,7 +144,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -170,7 +171,7 @@
             <article class="roadmap-epic" id="BW-012">
               <div class="roadmap-epic-body">
                 <p class="roadmap-epic-meta">
-                  <span class="badge">Not Started</span> Recommended position 17 of 97
+                  <span class="badge">Not Started</span> Recommended position 18 of 98
                 </p>
                 <p>
                   <strong>Phase:</strong>
@@ -190,6 +191,8 @@
                 <p>
                   <strong>Scope:</strong> Two test clients, one controlled target, authoritative
                   direct action and visible rejection; temporary non-economic state is sufficient.
+                  Excludes adjacent gameplay families and production certification beyond this
+                  epic’s stated acceptance criteria.
                 </p>
                 <h2 id="dependencies">Dependencies and downstream work</h2>
                 <h3>Hard prerequisites</h3>
@@ -202,7 +205,7 @@
                     <a href="roadmap-bw-003.html#BW-003"
                       >BW-003 · Repeatable runtime fixtures and diagnostics</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-011.html#BW-011"
@@ -293,11 +296,56 @@
                 <p><strong>Blockers:</strong> None recorded; see hard prerequisites.</p>
                 <h2 id="ticket-planning">Ticket planning</h2>
                 <p>
-                  Use <strong>BW-012</strong> as the parent epic. Link each future ticket to the AC
-                  links above and state the evidence it will produce. Split work into demonstrable
-                  behaviors; one criterion may require several tickets. Epic completion still
-                  requires every criterion, verified evidence and completed hard prerequisites.
+                  Execute these tickets in dependency order. Ticket statuses are tracked separately;
+                  epic completion still requires every criterion, verified evidence and completed
+                  hard prerequisites.
                 </p>
+                <ol class="roadmap-contents">
+                  <li>
+                    <a href="roadmap-bw-012-t01.html#BW-012-T01"
+                      >BW-012-T01 · Prove the first server-authoritative action with two clients</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-012-t02.html#BW-012-T02"
+                      >BW-012-T02 · Verify action recovery and attributable multiplayer
+                      measurements</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                </ol>
+                <div class="table-scroll">
+                  <table>
+                    <caption>
+                      Ticket coverage of epic acceptance criteria
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th>Epic criterion</th>
+                        <th>Tickets</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><a href="#BW-012-AC-1">BW-012-AC-1</a></td>
+                        <td><a href="roadmap-bw-012-t01.html#BW-012-T01">BW-012-T01</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-012-AC-2">BW-012-AC-2</a></td>
+                        <td><a href="roadmap-bw-012-t01.html#BW-012-T01">BW-012-T01</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-012-AC-3">BW-012-AC-3</a></td>
+                        <td><a href="roadmap-bw-012-t02.html#BW-012-T02">BW-012-T02</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-012-AC-4">BW-012-AC-4</a></td>
+                        <td><a href="roadmap-bw-012-t02.html#BW-012-T02">BW-012-T02</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
                 <p>
                   <strong>Ordering rationale:</strong> This narrow proof reduces the cost of
                   discovering an incompatible command/simulation/projection boundary. A full offline

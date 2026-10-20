@@ -138,6 +138,11 @@ try {
     await new Promise(resolve => setTimeout(resolve, 250));
     return [...document.querySelectorAll('#search-results a')].some(link => link.textContent.includes('QuestProgressRecord') && link.href.endsWith('data-inventory.html#quest-progress-record'));
   })()`));
+  check('Offline search retains direct ability entry links', await evaluate(`(async () => {
+    const input = document.querySelector('#site-search'); input.value = 'Iron Cut'; input.dispatchEvent(new Event('input'));
+    await new Promise(resolve => setTimeout(resolve, 250));
+    return [...document.querySelectorAll('#search-results a')].some(link => link.href.endsWith('classes/warrior.html#ability.warrior.iron_cut'));
+  })()`));
   await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))`);
   check('Desktop inventory has no body overflow', await evaluate('document.documentElement.scrollWidth <= innerWidth'));
   await navigate('guide/character-creation.html#data');
@@ -194,6 +199,26 @@ try {
   await command('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1100, deviceScaleFactor: 1, mobile: false });
   await navigate('guide/development-roadmap.html');
   check('Desktop roadmap hub has no body overflow', await evaluate('document.documentElement.scrollWidth <= innerWidth'));
+  check('Dashboard shows exact registry-derived epic and ticket status counts', await evaluate(`(() => {
+    const read = selector => Object.fromEntries([...document.querySelectorAll(selector + ' > div')].map(node => [node.querySelector('span').textContent.trim(), node.querySelector('strong').textContent.trim()]));
+    const epics = read('.roadmap-metrics:not(.roadmap-ticket-metrics)');
+    const tickets = read('.roadmap-ticket-metrics');
+    const expectedEpics = ${JSON.stringify(Object.fromEntries(['Not Started','In Progress','Blocked','Complete'].map(status => [status,String(roadmap.epics.filter(e => e.status === status).length)])))};
+    const expectedTickets = ${JSON.stringify(Object.fromEntries(['Not Started','In Progress','Blocked','Complete'].map(status => [status,String(roadmap.tickets.filter(t => t.status === status).length)])))};
+    return epics.Epics === ${JSON.stringify(String(roadmap.epics.length))} && tickets.Tickets === ${JSON.stringify(String(roadmap.tickets.length))}
+      && Object.entries(expectedEpics).every(([key,value]) => epics[key] === value)
+      && Object.entries(expectedTickets).every(([key,value]) => tickets[key] === value)
+      && epics['Overall completion'] === ${JSON.stringify(String(Math.round(1000 * roadmap.epics.filter(e => e.status === 'Complete').length / roadmap.epics.length) / 10) + '%')};
+  })()`));
+  await navigate('guide/unreal-cpp.html');
+  check('Unreal C++ foundation renders offline with current navigation and setup gates', await evaluate(`document.querySelector('h1').textContent.includes('Unreal Engine 5 C++') && document.querySelector('[data-foundation-nav]').getAttribute('aria-current') === 'page' && document.getElementById('setup') && document.getElementById('open-inputs')`));
+  check('Offline search finds the new native foundation', await evaluate(`(async () => {
+    const input = document.querySelector('#site-search'); input.value = 'Future project setup'; input.dispatchEvent(new Event('input'));
+    await new Promise(resolve => setTimeout(resolve, 250));
+    return [...document.querySelectorAll('#search-results a')].some(link => link.href.endsWith('guide/unreal-cpp.html#setup'));
+  })()`));
+  await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))`);
+  await navigate('guide/development-roadmap.html');
   await captureRoadmap('desktop');
   await scrollRoadmap('progress');
   await captureRoadmap('progress');

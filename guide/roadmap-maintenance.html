@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -142,7 +142,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -187,11 +188,12 @@
               classify planning documentation.
             </p>
             <p>
-              Each epic is published at guide/roadmap-bw-NNN.html with a stable BW identifier and
-              BW-NNN-AC-N criterion links. Use the epic as the parent for future tickets and link
-              each ticket to its covered criteria and verification evidence. Keep criterion
-              numbering aligned with recorded evidence; introduce actual ticket records only when
-              ticket planning is performed.
+              Each epic has a stable BW identifier and BW-NNN-AC-N criterion anchors. Preserve IDs
+              when responsibility remains equivalent. Tickets use exact parent criteria and cover
+              the whole split epic; later epics may remain bounded unsplit work until their
+              prerequisites justify detailed planning. Future procedures must state that exact
+              build/run commands are established during implementation, never imply an existing
+              project or invent executed evidence.
             </p>
             <p>
               Run the commands below after a status or evidence edit. The first rebuilds all derived
@@ -210,6 +212,13 @@
               ticket status, blockers and verified evidence separately; planning or ticket progress
               never automatically completes an epic. Complete tickets require actual passing
               evidence for every ticket criterion and completed dependencies.
+            </p>
+            <p>
+              Keep the future implementation location unspecified until the owner establishes it in
+              a separate task. This documentation never depends on a game checkout. During the
+              zero-progress baseline all records remain Not Started with no runtime evidence; fresh
+              implementation requires compatible native UE5 C++ and supplied-plugin verification,
+              not inherited documentary credit.
             </p>
             <h2 id="commands">Rebuild and validate</h2>
             <pre><code>python3 scripts/build_development_roadmap.py

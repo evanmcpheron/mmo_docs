@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Unreal Engine 5 C++ foundation · Briarwake</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a
+        ><a data-foundation-nav href="unreal-cpp.html" aria-current="page">Unreal C++ foundation</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal & networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a>
+          <a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Engineering</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span>Engineering
+          </div>
+          <h1>Unreal Engine 5 C++ foundation</h1>
+          <p class="page-description">
+            Native C++ ownership, dedicated servers, setup gates and future verification.
+          </p>
+          <div class="article-body">
+            <h2 id="baseline">Project baseline and repository boundary</h2>
+            <p>
+              Briarwake is a server-authoritative MMORPG designed for Unreal Engine 5, native C++
+              and dedicated servers. Game implementation is 0% complete: no gameplay, server,
+              rendering, database, infrastructure or plugin integration is verified. Completed
+              design contracts and documentation checks describe requirements only. The
+              implementation location is unspecified and will be established in a separate task.
+              This documentation builds and validates on its own. Do not create a game project here.
+            </p>
+            <h2 id="ownership">C++ ownership and Unreal mechanisms</h2>
+            <p>
+              Authoritative rules, boundary validation and state commits belong to C++. Blueprints
+              may compose editor-facing assets, presentation and configuration through narrow C++
+              interfaces. Do not duplicate an authoritative rule in Blueprint. Choose an Unreal
+              mechanism for its actual responsibility rather than mapping every schema to a class.
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Mechanism</th>
+                  <th>Intended use and limit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Native modules, classes and value types</td>
+                  <td>
+                    Small cohesive rule and integration owners. Use plain C++ values for
+                    calculations where reflection is unnecessary; introduce module boundaries only
+                    for demonstrated dependencies.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Actors and Actor Components</td>
+                  <td>
+                    World entities and composable behavior with explicit lifecycle and
+                    replicated-state ownership. Do not create one Actor per catalog row.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Pawns / Characters and Controllers</td>
+                  <td>
+                    Possession, input intent and movement integration. Evaluate
+                    CharacterMovementComponent before building prediction; verify planar/floor
+                    rules, equal collision bodies and plugin compatibility.
+                  </td>
+                </tr>
+                <tr>
+                  <td>GameMode, GameState, PlayerState</td>
+                  <td>
+                    Server session rules, permitted shared session views and permitted player views
+                    respectively. Public state must exclude private ledgers, resources and hidden
+                    entities. None is a persistence solution.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Subsystems</td>
+                  <td>
+                    Only a cohesive responsibility matching an engine-managed lifetime. Avoid global
+                    mutable state and unrestricted subsystem lookup as dependency injection.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Enhanced Input</td>
+                  <td>
+                    Candidate for remapping and contextual input in BW-028; emits intent through the
+                    controller boundary and grants no authority.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Gameplay Tags</td>
+                  <td>
+                    Candidate for hierarchical classifications where needed. Preserve canonical
+                    identifiers and closed enum encodings; do not replace every existing enum or
+                    invent gameplay categories.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Data Assets</td>
+                  <td>
+                    Candidate editor-facing content route in BW-095. Canonical JSON contracts remain
+                    authoritative; validate import/export, stable identity, units and runtime
+                    admission without a competing rule definition.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Unreal's
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine"
+                >Gameplay Framework</a
+              >,
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine"
+                >Enhanced Input</a
+              >,
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/using-gameplay-tags-in-unreal-engine"
+                >Gameplay Tags</a
+              >,
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/data-assets-in-unreal-engine"
+                >Data Assets</a
+              >
+              and
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine"
+                >networked character movement</a
+              >
+              describe candidate facilities. The table states Briarwake engineering choices and
+              verification obligations, not implemented features. No Gameplay Ability System,
+              backend vendor or scaling framework is selected by implication.
+            </p>
+            <h2 id="standards">Engineering standards</h2>
+            <ul>
+              <li>
+                Use descriptive Unreal C++ names and standard type prefixes (U, A, F, E, I, T and b
+                for booleans). Follow the selected engine's coding standard and compiler
+                requirements. Keep functions short enough to expose intent, explicitly typed and
+                narrow in responsibility. Comments explain only otherwise non-obvious intent,
+                constraints or edge cases.
+              </li>
+              <li>
+                Apply Clean Code and SOLID where they clarify responsibilities and substitutable
+                behavior. DRY means one authoritative definition of each rule, identifier and
+                validation policy; similar syntax alone does not justify an abstraction. Avoid
+                speculative frameworks and generic managers.
+              </li>
+              <li>
+                Keep includes and public interfaces minimal, declare module dependencies in
+                Build.cs, and keep editor-only modules/assets out of dedicated-server runtime
+                dependencies. Do not let presentation or transport handlers own gameplay rules.
+              </li>
+              <li>
+                Use UCLASS, USTRUCT, UENUM, UPROPERTY and UFUNCTION only where reflection,
+                serialization, editor exposure or networking requires them. Specify allowed
+                edits/calls deliberately. Reflection or replication exposure is not an authorization
+                check.
+              </li>
+              <li>
+                Document object lifetime and ownership. For UObject references, select reflected
+                strong references such as UPROPERTY with TObjectPtr where ownership requires
+                retention, TWeakObjectPtr for non-owning observations, and soft references for
+                deferred asset loading as appropriate. A raw UObject pointer does not itself keep
+                its object alive. Use RAII and appropriate smart ownership for non-UObject
+                resources; do not manage UObjects with ordinary shared ownership.
+              </li>
+              <li>
+                Check references across destruction, unpossession, world teardown, travel and
+                asynchronous callbacks. Cancel or detach work on owner teardown, avoid capturing
+                expired objects, and specify thread access. Replication and persistence lifetimes
+                must not be inferred from an object's memory address.
+              </li>
+              <li>
+                Maintain explicit C++ authority and recipient boundaries. Derive identity from the
+                authenticated connection; validate sequence, size, timing, ownership, visibility,
+                range and current state before committing. Clients submit intent. Never trust
+                client-authored outcomes, inventory, currency or positions.
+              </li>
+              <li>
+                Keep rejection observable with bounded actionable diagnostics and no secrets. Tests
+                must cover invalid, stale, duplicate, conflicting and failure-injection cases. Do
+                not suppress checks, manufacture fallback success or turn authored tests into
+                executed evidence.
+              </li>
+              <li>
+                Measure hot paths and resource budgets with representative workloads before
+                optimizing. Any new abstraction must have a cohesive owner and make the current
+                implementation simpler to understand and test.
+              </li>
+            </ul>
+            <p>
+              Verify details against Epic's
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine"
+                >C++ coding standard</a
+              >,
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine"
+                >object pointer guide</a
+              >
+              and
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-build-tool-in-unreal-engine"
+                >UnrealBuildTool</a
+              >. These standards guide future work; this repository contains no placeholder C++
+              implementation.
+            </p>
+            <h2 id="setup">Future project setup and reproducible builds</h2>
+            <ol>
+              <li>
+                BW-001-T01 selects a compatible UE5 revision and records engine source/distribution
+                identity, compiler, SDK, host and target platform requirements using Epic's
+                version-specific
+                <a
+                  href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-your-development-environment-for-cplusplus-in-unreal-engine"
+                  >development setup</a
+                >. No particular minor version, installed IDE, OS or hardware is assumed.
+              </li>
+              <li>
+                BW-001-T02 creates a blank native C++ project when implementation is commissioned,
+                outside this documentation. Pin runtime module dependencies and Game/Editor targets.
+                Verify a clean editor/client launch before gameplay or bulk content.
+              </li>
+              <li>
+                BW-001-T03 defines a dedicated Server target via Target.cs and verifies a
+                player-free startup. Epic's
+                <a
+                  href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine"
+                  >server tutorial</a
+                >
+                requires a source build and C++ project. Its sample content and Windows commands are
+                examples; establish exact build, cook, stage and launch commands for each chosen
+                platform.
+              </li>
+              <li>
+                BW-001-T04–T07 verify required configuration rejection, reproducible UBT/UAT build
+                and cooked artifacts, client secret exclusion and automation outcomes. Record actual
+                engine/toolchain revisions, source identity, commands, logs and artifact hashes.
+                Reproducible means declared inputs and repeatable outcomes; bit-for-bit identity
+                requires separate evidence.
+              </li>
+              <li>
+                BW-100 inventories and validates the already acquired replication plugins on the
+                compatible baseline before BW-004 connectivity and BW-005 movement. Publish a
+                compatibility/capability matrix with unsupported and unresolved entries. Do not
+                purchase alternatives or assume capabilities.
+              </li>
+              <li>
+                BW-004–BW-013 establish two independent clients, authoritative movement and
+                recipient-safe state; BW-012 proves a minimal action. Transport loss and re-entry
+                are tested early; durable reconnection/checkpoint recovery follows BW-027 and the
+                persistence prerequisites.
+              </li>
+            </ol>
+            <h2 id="verification">Future automation and evidence</h2>
+            <p>
+              Use Unreal's
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine"
+                >Automation Test Framework</a
+              >
+              for appropriate rule/feature tests and Functional Testing for world-level behavior.
+              Evaluate
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/gauntlet-automation-framework-overview-in-unreal-engine"
+                >Gauntlet</a
+              >
+              for unattended server/client sessions when needed. First establish a bounded C++
+              fixture runner with separate build, startup, timeout and executed assertion outcomes.
+              A missing executable, missing report or unrun fixture is not a pass. Multi-process
+              tests must use a dedicated server and two independent clients; local editor previews
+              and logical recipients do not prove networking.
+            </p>
+            <p>
+              Keep seeded rule outcomes separate from nondeterministic timing observations; retain
+              raw metrics, revisions and negative controls. Test-only controls are excluded or
+              inaccessible in production artifacts. Documentation commands validate documents,
+              schemas, links, search and generated output only. No Unreal build, plugin test or
+              multiplayer run occurs as part of this documentation reset.
+            </p>
+            <h2 id="open-inputs">Unresolved technical inputs</h2>
+            <p>
+              Exact supplied plugin identities/versions and licenses; compatible UE5 revision and
+              engine source access; host/client/server platforms and compiler/SDK matrix;
+              plugin/native replication interaction; actual authorization and serialization limits;
+              unit/axis mapping for canonical planar coordinates; identity provider, durable store
+              and hosting; target capacity, latency/recovery budgets; renderer, graphics backend and
+              measured pixel-art settings. Existing gameplay decisions remain in
+              <a href="roadmap-coverage.html#open-decisions">open decisions</a>. No assumption here
+              resolves them silently.
+            </p>
+          </div>
+          <footer class="page-footer">
+            <a href="networking.html">Authority and networking</a
+            ><span>Design requirements · 0% implementation complete</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#baseline">Project baseline and repository boundary</a
+          ><a href="#ownership">C++ ownership and Unreal mechanisms</a
+          ><a href="#standards">Engineering standards</a
+          ><a href="#setup">Future project setup and reproducible builds</a
+          ><a href="#verification">Future automation and evidence</a
+          ><a href="#open-inputs">Unresolved technical inputs</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

@@ -22,7 +22,8 @@
       <div class="version">v2.0 · Mechanics only</div>
       <nav aria-label="Reference navigation">
         <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -48,7 +49,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -131,15 +132,15 @@
               External sources inform the visual direction, engine capabilities, database
               guarantees, intellectual-property caution and the profession reference. The rules,
               formulas, faction exclusivity, talent structure and profession recommendations in this
-              package are original design proposals, not claims that Blizzard or Godot recommends
+              package are original design proposals, not claims that Blizzard or Epic recommends
               these exact mechanics.
             </p>
             <p>
               Sources S1–S8 were checked on <strong>October 16, 2026</strong>; the user-selected art
               reference and rendering documentation S9–S16 were checked on
               <strong>October 17, 2026</strong>. Documentation under <code>stable</code> or
-              <code>current</code> may change; pin a specific tested Godot and PostgreSQL release
-              during implementation.
+              <code>current</code> may change; pin a specific tested Unreal Engine 5 and database
+              release during implementation.
             </p>
             <table>
               <thead>
@@ -167,26 +168,26 @@
                   <td><span id="s2">S2</span></td>
                   <td>
                     <a
-                      href="https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html"
-                      >Godot — High-level multiplayer</a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-overview-for-unreal-engine"
+                      >Unreal Engine — Networking overview</a
                     >
                   </td>
                   <td>
-                    Authority, remote procedure calls, transport modes and multiplayer building
-                    blocks
+                    Native replication concepts and recipient state; the supplied plugins must be
+                    verified against these mechanisms.
                   </td>
                 </tr>
                 <tr>
                   <td><span id="s3">S3</span></td>
                   <td>
                     <a
-                      href="https://docs.godotengine.org/en/stable/classes/class_multiplayersynchronizer.html"
-                      >Godot — MultiplayerSynchronizer</a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-owner-and-owning-connection-in-unreal-engine"
+                      >Unreal Engine — Actor owner and owning connection</a
                     >
                   </td>
                   <td>
-                    Property synchronization/visibility support and limitations on Object/Resource
-                    synchronization
+                    Connection ownership informs RPC routing and recipient conditions; ownership
+                    alone does not authorize an action.
                   </td>
                 </tr>
                 <tr>
@@ -217,12 +218,13 @@
                   <td><span id="s6">S6</span></td>
                   <td>
                     <a
-                      href="https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html"
-                      >Godot — Dedicated-server export</a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine"
+                      >Unreal Engine — Dedicated servers</a
                     >
                   </td>
                   <td>
-                    Headless/dedicated-server execution as an engine-supported deployment option
+                    C++ and source-build prerequisites, separate server/client targets, building,
+                    cooking and launching; platform-specific examples require verification.
                   </td>
                 </tr>
                 <tr>
@@ -261,64 +263,65 @@
                   <td><span id="s10">S10</span></td>
                   <td>
                     <a
-                      href="https://docs.godotengine.org/en/stable/tutorials/rendering/renderers.html"
-                      >Godot — Overview of renderers</a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/designing-visuals-rendering-and-graphics-with-unreal-engine"
+                      >Unreal Engine — Rendering and graphics</a
                     >
                   </td>
                   <td>
-                    Renderer/platform tradeoffs and feature availability; verify the chosen build
-                    and supported targets
+                    Evaluate rendering path, graphics backend and supported platform features
+                    against the pixel-art prototype.
                   </td>
                 </tr>
                 <tr>
                   <td><span id="s11">S11</span></td>
                   <td>
                     <a
-                      href="https://docs.godotengine.org/en/stable/tutorials/shaders/screen-reading_shaders.html"
-                      >Godot — Screen-reading shaders</a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/post-process-materials-in-unreal-engine"
+                      >Unreal Engine — Post-process materials</a
                     >
                   </td>
                   <td>
-                    Screen, depth and normal/roughness textures, buffer timing and transparency
-                    limitations relevant to compositing
+                    Scene textures, blendable locations and post-process composition; validate
+                    normal/depth access and translucency on the selected path.
                   </td>
                 </tr>
                 <tr>
                   <td><span id="s12">S12</span></td>
                   <td>
-                    <a href="https://docs.godotengine.org/en/stable/classes/class_camera3d.html"
-                      >Godot — Camera3D</a
+                    <a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/orthographic-camera-in-unreal-engine"
+                      >Unreal Engine — Orthographic camera</a
                     >
                   </td>
                   <td>
-                    Orthographic projection and screen/world projection methods used by camera and
-                    picking prototypes
+                    Orthographic projection, view width and clipping; verify pixel stability and
+                    pointer projection in the prototype.
                   </td>
                 </tr>
                 <tr>
                   <td><span id="s13">S13</span></td>
                   <td>
                     <a
-                      href="https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html"
-                      >Godot — Multiple resolutions</a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/dpi-scaling-in-unreal-engine"
+                      >Unreal Engine — DPI scaling</a
                     >
                   </td>
                   <td>
-                    Viewport scaling, aspect handling and integer scaling; keep world resolution and
-                    readable UI behavior explicit
+                    Independent readable UI scaling; world resolution, letterboxing, pixel scale and
+                    pointer mapping remain project acceptance requirements.
                   </td>
                 </tr>
                 <tr>
                   <td><span id="s14">S14</span></td>
                   <td>
                     <a
-                      href="https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/spatial_shader.html"
-                      >Godot — Spatial shaders</a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-materials"
+                      >Unreal Engine — Materials</a
                     >
                   </td>
                   <td>
-                    Material, lighting and transparency interfaces, including LIGHT_VERTEX; test
-                    historical article techniques against the pinned engine
+                    Material authoring, lighting and transparency; evaluate supported shader and
+                    post-process behavior on the pinned build.
                   </td>
                 </tr>
                 <tr>
@@ -330,8 +333,8 @@
                   </td>
                   <td>
                     Unity 2018.3 technique reference for depth/normal outline detection and
-                    surface-artifact thresholds; requires Godot adaptation and separate
-                    convex-highlight design
+                    surface-artifact thresholds; requires Unreal buffer/pass verification and
+                    separate convex-highlight design
                   </td>
                 </tr>
                 <tr>
@@ -347,7 +350,8 @@
                   <td>
                     User-selected supplementary visual research. Channel identity and scene-video
                     title were checked; select and annotate relevant clips during rendering/art
-                    work, and verify adopted techniques against the project’s pinned Godot build.
+                    work, and verify adopted techniques against the project’s pinned Unreal Engine 5
+                    build.
                   </td>
                 </tr>
               </tbody>

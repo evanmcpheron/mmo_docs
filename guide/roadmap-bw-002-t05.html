@@ -24,7 +24,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -50,7 +50,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -123,7 +123,8 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T05
           </div>
           <h1>BW-002-T05 · Keep unbound or unverified behavior disabled</h1>
@@ -139,7 +140,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -157,7 +159,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-002-T05">
               <p>
-                <span class="badge">Complete</span> · Parent epic:
+                <span class="badge">Not Started</span> · Parent epic:
                 <a href="roadmap-bw-002.html#BW-002"
                   >BW-002 · Authority boundaries and content admission</a
                 >
@@ -170,42 +172,23 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Extend the same admission owner with a closed capability/readiness check using
-                  canonical AbilityRuntimeBinding and ResolvedAbilityDefinition semantics. A known
-                  operation token is not proof that its handler exists; capabilities come from
-                  actual server-owned implementations, never candidate-authored claims.
+                  Gate enabled behavior through explicit supported runtime bindings and readiness.
+                  Free-text descriptions and schema completeness do not create handlers.
                 </li>
                 <li>
-                  Require complete rules-matching bindings, finite supported operation
-                  parameters/policies, presentation references, supported talent field
-                  paths/operation indices and cleanup rules before behavior eligibility. Missing or
-                  unsupported named secondary behavior produces explicit record findings; do not
-                  parse effect/review_note prose or execute arbitrary expressions/scripts.
-                </li>
-                <li>
-                  Keep bindings_resolved, data_tests_passed and runtime_tests_passed independent and
-                  attributable to the exact binding/build/content/rules tuple. Unexecuted fixture
-                  specifications, forged candidate flags, copied evidence from another revision and
-                  schema success cannot establish readiness. Trusted evidence ownership follows T01;
-                  this ticket does not invent a cryptographic evidence service.
-                </li>
-                <li>
-                  Add --suite readiness using existing prototype records as negative controls,
-                  missing binding/handler/presentation/talent-policy examples, stale/unexecuted
-                  evidence and caller-supplied true flags. Current Briarwake has no combat handlers:
-                  preserve this fact and keep ability execution disabled. A safe nonbehavioral
-                  resource fixture can still pass its applicable admission checks.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Implementing damage, class mechanics, arbitrary scripts, all talent transforms,
-                  presentation assets or gameplay fixtures merely to manufacture a ready ability.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
                 </li>
                 <li>
-                  Promoting shipped prototype readiness labels, importing documentation validation
-                  as gameplay execution evidence, or weakening unsupported-behavior rejection.
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -218,165 +201,99 @@
                 <li id="BW-002-T05-AC-1">
                   <a href="#BW-002-T05-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    An ability with a valid numerical profile and descriptive effect but no binding
-                    stays disabled with a specific finding; adding a binding with an absent handler,
-                    unknown parameter/path/policy or presentation reference also cannot enable it.
+                    Known supported bindings enable only the tested records; disabled content
+                    reports actionable reasons.
                   </p>
                 </li>
                 <li id="BW-002-T05-AC-2">
                   <a href="#BW-002-T05-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Authored all-true readiness flags, unexecuted/failed evidence or evidence for
-                    another binding/build/content/rules tuple do not bypass server-owned readiness.
-                    Structural/data tests never count as runtime execution.
-                  </p>
-                </li>
-                <li id="BW-002-T05-AC-3">
-                  <a href="#BW-002-T05-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    Safe supported static content remains admissible while unsupported behavior is
-                    rejected or explicitly retained disabled according to the declared candidate
-                    selection; findings identify every requested unsupported record. No free-text
-                    interpretation or client-supplied handler capability is used.
+                    Unknown bindings, missing presentation requirements and unverified named effects
+                    remain disabled without fallback success.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Run from the Briarwake implementation repository. The commands, scenes and fixtures
-                below are deliverables of this ticket and its prerequisites; these are unexecuted
-                test instructions.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root. Use a normal macOS Terminal with Godot editor-data access.
-python3 tools/verify_toolchain.py
-python3 tools/extract_content_contracts.py --check
-python3 tools/check_content_admission.py --suite readiness
-python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27; -v</code></pre>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the pinned macOS arm64 Godot 4.7.2 editor and Python environment in
-                  tools/toolchain.lock.json. No gameplay scene, database, account or network peer is
-                  required.
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
                 </li>
                 <li>
-                  The tracked fixtures/content_admission/readiness.json includes 47 cases with
-                  unchanged shipped prototypes, synthetic bindings, exact findings and unexecuted
-                  authored specifications. The canonical snapshot includes TalentModifierDefinition;
-                  it adds no editable domain definition.
-                </li>
-                <li>
-                  The standard driver imports and checks a disposable project, then invokes
-                  tests/content_admission/readiness_runner.gd against the production
-                  ContentAdmission owner. Import errors or missing reports never become an assertion
-                  pass.
+                  Gate enabled behavior through explicit supported runtime bindings and readiness.
+                  Free-text descriptions and schema completeness do not create handlers.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the readiness suite and inspect run.json, logs/, each selection_accepted
-                  result, per-ability eligibility/gates, tuple identities and explicit finding
-                  paths.
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
                 </li>
                 <li>
-                  Run --suite readiness --control assertion-failure with a new --output directory;
-                  expect exit 1 and Executed/Failed. Import/startup/missing-report controls must not
-                  pass.
+                  Known supported bindings enable only the tested records; disabled content reports
+                  actionable reasons.
                 </li>
                 <li>
-                  Compare effect-prose/all-true/individual-readiness cases with the missing-handler
-                  baseline: tuple identity and false gates remain unchanged. Changed
-                  applied-build/binding cases have different identities. The static-resource and
-                  retained-disabled controls remain admissible.
+                  Unknown bindings, missing presentation requirements and unverified named effects
+                  remain disabled without fallback success.
+                </li>
+                <li>
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Every unsupported or unverified requested behavior is rejected before activation,
-                  with explicit findings; safe static positive controls still pass.
+                  Known supported bindings enable only the tested records; disabled content reports
+                  actionable reasons.
                 </li>
                 <li>
-                  No ability becomes executable, no canonical readiness label changes, and actual
-                  admission-test evidence is kept separate from absent gameplay evidence.
+                  Unknown bindings, missing presentation requirements and unverified named effects
+                  remain disabled without fallback success.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Let each bounded checker process exit and discard its in-memory candidate/active
-                  registries. Use runner-owned temporary copies for negative mutations; leave
-                  tracked canonical snapshots, fixtures and bootstrap configuration unchanged.
-                </li>
-                <li>
-                  Retain the attributable run report and logs in the chosen evidence location. A
-                  subsequent clean suite run must reproduce the original outcomes without a
-                  database, account, network peer or gameplay scene.
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Executed unsupported-binding/readiness rejection
-                matrix, disabled-record assertions, safe static positive control and exact
-                evidence/capability provenance.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-002-T05: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <ul>
-                <li>
-                  <a href="../validation/tickets/BW-002-T05/direct-readiness-final/run.json"
-                    >Executed 47 direct Godot admission cases with all three readiness gates false
-                    and every ability disabled. Safe static and retained-disabled controls pass;
-                    unsupported bindings/capabilities/presentation/talent/cleanup and forged/stale
-                    evidence refuse selection. Same production owner/runner as the standard suite;
-                    this direct procedure does not claim editor import or gameplay execution.
-                    Standard pipeline remains blocked by sandbox permissions.</a
-                  >
-                  — AC 1, 2, 3; Passed; revision Exact tested game revision and per-source/input
-                  hashes retained in the linked run report and verification.json.
-                </li>
-                <li>
-                  <a
-                    href="../validation/tickets/BW-002-T05/standard-verification-2026-10-19/verification.json"
-                    >Standard pinned-engine readiness suite executes all 47 cases after successful
-                    editor import and script checks. Missing
-                    binding/handler/presentation/talent/cleanup capabilities and
-                    forged/stale/unexecuted evidence remain disabled; safe static and
-                    retained-disabled controls pass. Full 45-test Python regressions pass. The
-                    previous sandbox blocker is resolved; no gameplay capability or readiness label
-                    is promoted.</a
-                  >
-                  — AC 1, 2, 3; Passed; revision Exact committed game revision, main bases and
-                  per-source/input hashes retained in the verification record and standard suite
-                  reports.
-                </li>
-              </ul>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a
-                >;
-                <a href="../guide/execution.html#data-and-runtime-gates"
-                  >Readiness and execution gates</a
-                >; <a href="../guide/operations.html#content-tools">Required content fixtures</a>;
-                <a href="../guide/data-inventory.html#ability-definition"
-                  >Optional shared AbilityRuntimeBinding</a
-                >;
-                <a href="../guide/data-inventory.html#resolved-ability-definition"
-                  >Independent readiness gates</a
-                >;
-                <a href="../guide/data-inventory.html#effect-operation-definition"
-                  >Finite operation parameters</a
-                >;
-                <a href="../guide/data-inventory.html#talent-modifier-definition"
-                  >Talent modifier allowlist</a
-                >;
-                <a href="../guide/data-inventory.html#visual-presentation-definition"
-                  >Presentation references</a
-                >;
-                <a href="../guide/data-inventory.html#content-validation-fixture"
-                  >Validation run evidence</a
-                >
+                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and criteria</a>;
+                <a href="../guide/decisions.html">Design constraints</a>;
+                <a href="../guide/execution.html">Execution contracts</a>;
+                <a href="../guide/data-inventory.html">Canonical definitions</a>;
+                <a href="../guide/items.html#durability-salvage-and-demand"
+                  >Economic content admission</a
+                >; <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

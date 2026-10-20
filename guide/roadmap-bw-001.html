@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Establish a blank Godot implementation that can be built and exercised independently of presentation."
+      content="Create a blank native Unreal Engine 5 C++ project and prove reproducible client/server build and startup outcomes."
     />
-    <title>BW-001 · Reproducible client and headless project · Briarwake Development Roadmap</title>
+    <title>
+      BW-001 · Reproducible native Unreal C++ client and dedicated server · Briarwake Development
+      Roadmap
+    </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
     <script defer src="../assets/search-index.js"></script>
@@ -25,7 +28,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +54,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -124,13 +127,14 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span>BW-001
           </div>
-          <h1>BW-001 · Reproducible client and headless project</h1>
+          <h1>BW-001 · Reproducible native Unreal C++ client and dedicated server</h1>
           <p class="page-description">
-            Establish a blank Godot implementation that can be built and exercised independently of
-            presentation.
+            Create a blank native Unreal Engine 5 C++ project and prove reproducible client/server
+            build and startup outcomes.
           </p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -143,7 +147,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -167,27 +172,30 @@
             <article class="roadmap-epic" id="BW-001">
               <div class="roadmap-epic-body">
                 <p class="roadmap-epic-meta">
-                  <span class="badge">Complete</span> Recommended position 1 of 97
+                  <span class="badge">Not Started</span>
+                  <span class="badge success">Dependency-ready</span> Recommended position 1 of 98
                 </p>
                 <p>
                   <strong>Phase:</strong>
                   <a href="roadmap-foundations.html#BW-001"
-                    >1. Executable boundaries and risk probes</a
+                    >1. Native C++ foundation and technical risk verification</a
                   >
                   · <strong>Completion milestone:</strong>
                   <a href="roadmap-milestones.html#milestone-foundations"
-                    >Executable ownership proof</a
+                    >Verified Unreal C++ foundation and ownership proof</a
                   >
                 </p>
                 <h2 id="objective">Objective and scope</h2>
                 <p>
-                  Establish a blank Godot implementation that can be built and exercised
-                  independently of presentation.
+                  Create a blank native Unreal Engine 5 C++ project and prove reproducible
+                  client/server build and startup outcomes.
                 </p>
                 <p>
-                  <strong>Scope:</strong> Pinned engine/export revision, client and dedicated
-                  headless builds, versioned configuration and repeatable foundational checks; no
-                  gameplay content.
+                  <strong>Scope:</strong> Pin a compatible UE5 engine source/distribution revision,
+                  compiler/SDK and host/target matrix; create the blank C++ runtime module and
+                  Game/Editor/Server targets, then build, cook, stage and launch isolated client and
+                  dedicated server artifacts. Excludes gameplay, replication-plugin integration,
+                  bulk assets and production hosting.
                 </p>
                 <h2 id="dependencies">Dependencies and downstream work</h2>
                 <h3>Hard prerequisites</h3>
@@ -203,16 +211,28 @@
                 <p>These epics directly depend on this capability.</p>
                 <ul class="roadmap-contents">
                   <li>
+                    <a href="roadmap-bw-002.html#BW-002"
+                      >BW-002 · Authority boundaries and content admission</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-100.html#BW-100"
+                      >BW-100 · Verify owner-supplied replication plugins</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
                     <a href="roadmap-bw-003.html#BW-003"
                       >BW-003 · Repeatable runtime fixtures and diagnostics</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-097.html#BW-097"
                       >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                     >
-                    <span class="badge">In Progress</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-095.html#BW-095"
@@ -250,10 +270,10 @@
                   <li id="BW-001-AC-1">
                     <a href="#BW-001-AC-1" class="roadmap-criterion-link">AC 1</a>
                     <p>
-                      A clean checkout produces a launchable client and a headless server using the
-                      recorded engine and export-template revisions; client rendering choices and
-                      any engine patches are pinned separately from headless simulation
-                      requirements.
+                      A clean environment creates and builds the blank native UE5 C++ client and
+                      dedicated Server target using recorded engine source/distribution,
+                      compiler/SDK and target-platform revisions; build/cook/stage steps and
+                      input/artifact identities are reproducible without copied caches.
                     </p>
                   </li>
                   <li id="BW-001-AC-2">
@@ -280,82 +300,15 @@
                 </ol>
                 <h2 id="verification">Verification and blockers</h2>
                 <p>
-                  <strong>Completion evidence required:</strong> Clean-build logs, artifact
-                  identifiers and an actual headless smoke-test run.
+                  <strong>Completion evidence required:</strong> Exact engine/toolchain/target
+                  matrix, C++ module/target configuration, clean build/cook/stage logs, artifact
+                  hashes, actual client launch and player-free dedicated-server smoke, plus
+                  configuration/secret-exclusion and automation failure controls.
                 </p>
-                <p><strong>Recorded evidence:</strong></p>
-                <ul>
-                  <li>
-                    <a href="../validation/tickets/BW-001-T03/verification.json"
-                      >BW-001-T03 executed the source-project headless server with no local
-                      player/client scene, independent build/rules/content revision identity and
-                      actual normal/smoke heartbeat checks on pinned native macOS ARM64. Exported
-                      build identity and remaining epic criteria belong to subsequent tickets; this
-                      does not complete BW-001.</a
-                    >
-                    — AC 2; Passed; revision cc69ed7cfafe65a1f1e79ade94fb5ebff6198f81 + uncommitted
-                    BW-001-T03 changes (SHA-256 manifest in artifact)
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-001-T05/verification.json"
-                      >BW-001-T05 executed two isolated native macOS ARM64 client/server exports
-                      from identical current-source snapshots, actual visible packaged-client close
-                      paths and packaged headless smoke with embedded build identity plus separate
-                      rules/content labels. Exact lock, template derivation, source/artifact hashes,
-                      manifests, logs and captures are retained. Remaining epic
-                      configuration/credential and automated-outcome requirements are not promoted;
-                      BW-001 remains In Progress.</a
-                    >
-                    — AC 1, 2; Passed; revision bdb6b63c66783a0f6f941682321e9d34b886986e +
-                    uncommitted BW-001-T05 changes (SHA-256 source manifest
-                    71b1a909edd06604b7ac0778b8dbdcc9d110fa98f279fd7a39bb4d2c4172163c in evidence)
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-001-T06/verification.json"
-                      >T06 verified credential exclusion using full bundle/mounted PCK inspection,
-                      synthetic private inputs and deliberately leaking PCK/ZIP/loose controls.
-                      Exact inspected client launched and quit; the current packaged server also
-                      rejected missing external configuration with actionable --config diagnostics
-                      before readiness. Actual logs, artifact/source hashes and cleanup evidence
-                      retained. BW-001 remains In Progress pending its remaining criteria and
-                      tickets.</a
-                    >
-                    — AC 3; Passed; revision fc10cb437900e38d858f64da43b16a5553ccabe8 + uncommitted
-                    BW-001-T06 changes (SHA-256 source manifest
-                    125c34bab9aa45bca61ff120069bdd139eea50fb8759fd69e41e67d436e63b1f including
-                    synthetic inputs; per-source hashes in build-manifest.json)
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-001-T07/verification.json"
-                      >T07 executed clean macOS automation and all failure controls, distinctly
-                      recording failed build, unexecuted startup assertions, executed assertion
-                      failure, killed timeout and a fresh executed passing smoke. Packaged-client
-                      capture, current source/artifact identities and logs retained. Ticket
-                      completion does not automatically complete the epic; BW-001 remains In
-                      Progress pending explicit epic review.</a
-                    >
-                    — AC 4; Passed; revision 85b656d5d98deec7d502b9d2f987e2474b5d6303-dirty
-                    (uncommitted BW-001-T07 implementation; source manifest SHA-256
-                    d3259f9dfda1ad037840017a1157fc15477086d5d0275202aa83c83e870712cc; per-source
-                    hashes in evidence)
-                  </li>
-                  <li>
-                    <a href="../validation/epics/BW-001/completion-review.json"
-                      >Explicit epic review confirms all four criteria and all seven tickets
-                      complete for macOS ARM64: pinned clean client/server exports, visible
-                      packaged-client capture and Quit, actual isolated headless smoke with
-                      build/rules/content identity, rejected missing configuration, credential
-                      exclusion with active negative controls, and distinct automated build/runtime
-                      outcomes. Current source set and every hash match the final executed T07
-                      build. Retained execution evidence was reviewed; no new runtime run or
-                      other-platform/gameplay claim.</a
-                    >
-                    — AC 1, 2, 3, 4; Passed; revision 5a6b7a702faf963344b4bc9496c6fa2152b86057 (all
-                    36 source inputs match executed T07 manifest SHA-256
-                    d3259f9dfda1ad037840017a1157fc15477086d5d0275202aa83c83e870712cc; tested build
-                    identity retained in review)
-                  </li>
-                </ul>
+                <p>
+                  <strong>Recorded evidence:</strong> None. Required evidence above describes future
+                  verification.
+                </p>
                 <p><strong>Blockers:</strong> None recorded; see hard prerequisites.</p>
                 <h2 id="ticket-planning">Ticket planning</h2>
                 <p>
@@ -366,46 +319,45 @@
                 <ol class="roadmap-contents">
                   <li>
                     <a href="roadmap-bw-001-t01.html#BW-001-T01"
-                      >BW-001-T01 · Pin the Godot 4.7 toolchain and macOS baseline</a
+                      >BW-001-T01 · Select and verify the native Unreal C++ toolchain</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-001-t02.html#BW-001-T02"
-                      >BW-001-T02 · Launch a minimal macOS client scene</a
+                      >BW-001-T02 · Create and launch a blank native C++ project</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-001-t03.html#BW-001-T03"
-                      >BW-001-T03 · Start a player-free headless server with revision identity</a
+                      >BW-001-T03 · Build and start a player-free dedicated Server target</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-001-t04.html#BW-001-T04"
                       >BW-001-T04 · Reject missing or invalid bootstrap configuration</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-001-t05.html#BW-001-T05"
-                      >BW-001-T05 · Export and launch clean macOS client and server artifacts</a
+                      >BW-001-T05 · Build, cook, stage and launch clean client/server artifacts</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-001-t06.html#BW-001-T06"
-                      >BW-001-T06 · Keep server credentials out of distributed client artifacts</a
+                      >BW-001-T06 · Exclude credentials and private data from client artifacts</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-001-t07.html#BW-001-T07"
-                      >BW-001-T07 · Record clean build and executed runtime smoke outcomes
-                      separately</a
+                      >BW-001-T07 · Separate build, startup and executed automation outcomes</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                 </ol>
                 <div class="table-scroll">
@@ -450,14 +402,18 @@
                   </table>
                 </div>
                 <p>
-                  <strong>Ordering rationale:</strong> An executable baseline is required for
-                  runtime evidence; engine version is selected here rather than inferred from
-                  changing stable documentation.
+                  <strong>Ordering rationale:</strong> Select and verify the native C++ toolchain
+                  before runtime-dependent work. The engine minor revision, supported platforms and
+                  workstation configuration remain unverified inputs; the dedicated-server tutorial
+                  requires a source build.
                 </p>
                 <p>
                   <strong>Related open decisions:</strong>
                   <a href="roadmap-coverage.html#open-platform"
                     >Engine, platform and deployment candidates</a
+                  >;
+                  <a href="roadmap-coverage.html#open-replication-plugins"
+                    >Supplied replication plugin identity and capabilities</a
                   >
                 </p>
                 <h2 id="documentation">Related documentation</h2>
@@ -474,26 +430,34 @@
               <summary>All epics in this phase</summary>
               <ul class="roadmap-contents">
                 <li>
-                  <a href="#BW-001">BW-001 · Reproducible client and headless project</a>
-                  <span class="badge">Complete</span>
+                  <a href="#BW-001"
+                    >BW-001 · Reproducible native Unreal C++ client and dedicated server</a
+                  >
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-002.html#BW-002"
                     >BW-002 · Authority boundaries and content admission</a
                   >
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
+                </li>
+                <li>
+                  <a href="roadmap-bw-100.html#BW-100"
+                    >BW-100 · Verify owner-supplied replication plugins</a
+                  >
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-003.html#BW-003"
                     >BW-003 · Repeatable runtime fixtures and diagnostics</a
                   >
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-097.html#BW-097"
                     >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                   >
-                  <span class="badge">In Progress</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-095.html#BW-095"

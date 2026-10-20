@@ -7,7 +7,7 @@
       name="description"
       content="Mechanics, governing rules, edge cases and acceptance criteria."
     />
-    <title>Godot &amp; networking · MMORPG Reference v2</title>
+    <title>Unreal &amp; networking · MMORPG Reference v2</title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <script defer src="../assets/search-index.js"></script>
     <script defer src="../assets/app.js"></script>
@@ -22,7 +22,8 @@
       <div class="version">v2.0 · Mechanics only</div>
       <nav aria-label="Reference navigation">
         <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -48,7 +49,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a aria-current="page" href="../guide/networking.html">Godot & networking</a
+          <a aria-current="page" href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -121,31 +122,69 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span>Engineering
           </div>
-          <h1>Godot &amp; networking</h1>
+          <h1>Unreal &amp; networking</h1>
           <p class="page-description">
             Mechanics, governing rules, edge cases and acceptance criteria.
           </p>
           <div class="article-body">
             <h2 id="practical-initial-architecture">Practical initial architecture</h2>
             <p>
-              Use Godot clients and authoritative headless Godot world/instance processes, with a
-              conventional service and relational database for accounts, inventory, bazaar and
-              durable progression. Keep backend responsibilities modular inside a small deployment
-              before creating independent microservices.
+              Briarwake is a new Unreal Engine 5 MMORPG with a native C++ foundation, dedicated
+              servers and server-authoritative gameplay. Implementation is 0% complete. No client,
+              server, plugin integration, database or operational environment is implemented or
+              verified. This repository contains the independently usable design reference; the
+              future implementation location is unspecified.
             </p>
             <p>
-              Godot supports dedicated headless exports. Its high-level multiplayer APIs provide RPC
-              and transfer-mode building blocks, and MultiplayerSynchronizer supports visibility
-              filtering but does not synchronize arbitrary Resource/Object values. These
-              capabilities do not themselves provide an MMO economy or seamless cross-server
-              ownership. See <a href="sources.html">Sources S2</a>(sources.html#s2),
-              <a href="sources.html">Sources S3</a>(sources.html#s3) and
-              <a href="sources.html">Sources S6</a>(sources.html#s6).
+              Separate client presentation/input, authoritative simulation, replication, durable
+              player/economic state, authentication/authorization, and operations/recovery by
+              responsibility. These boundaries do not require separate executables. Begin with the
+              smallest deployment that can enforce ownership, consistency and failure isolation;
+              split services only when measured needs justify them. A transactional relational store
+              is a candidate for durable state, not an installed dependency.
             </p>
             <p>
-              Pin a tested Godot minor version and export-template version during implementation. Do
-              not assume documentation marked “stable” remains unchanged after this reference's
-              access date. No specific player-capacity claim is made here.
+              Use Unreal Actors and Actor Components for world behavior where appropriate; C++ owns
+              authoritative validation and commits. GameMode can own server-only session rules,
+              GameState recipient-safe shared session state, PlayerController the owning
+              connection's intent entry, and PlayerState permitted player state. Neither replication
+              nor PlayerState provides database persistence. Lifetime, ownership and recipient
+              access must be explicit. See the
+              <a href="unreal-cpp.html">Unreal C++ foundation</a> for engineering and setup gates.
+            </p>
+            <p>
+              Epic documents
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine"
+                >dedicated server targets, builds and cooking</a
+              >
+              and
+              <a
+                href="https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-overview-for-unreal-engine"
+                >native replication mechanisms</a
+              >. Its server tutorial requires an engine source build and a C++ project; the sample's
+              Windows paths and Lyra setup are not Briarwake prerequisites. Pin a compatible UE5
+              revision, compiler/SDK, engine distribution and supported platforms during future
+              setup; no installed workstation configuration is assumed.
+            </p>
+            <h3 id="replication-plugins">Owner-supplied replication plugins</h3>
+            <p>
+              The owner already holds the intended replication plugins. Exact identities, versions,
+              licenses, engine/platform support, distribution, source/build constraints and
+              capabilities are unresolved technical inputs.
+              <a href="roadmap-bw-100.html#BW-100">BW-100</a> verifies them before dependent network
+              systems. No purchase, replacement product or custom replication framework is planned
+              by default.
+            </p>
+            <p>
+              Verify dedicated-server compilation and launch, supported targets, serialization,
+              synchronization, relevancy/interest behavior, native replication integration and
+              compatibility conflicts. Record authority/security limitations and build/deployment
+              requirements. Do not infer authentication, persistence, scaling or gameplay authority
+              from replication support. Compare native replication, Replication Graph or Iris only
+              as required to establish the supplied plugins' actual relationship; select no
+              conflicting stack without evidence. A blocked capability keeps dependent
+              implementation unverified.
             </p>
             <h2 id="ownership">Ownership</h2>
             <table>
@@ -182,7 +221,7 @@
                 </tr>
                 <tr>
                   <td>Items, money, recipes and profession progress</td>
-                  <td>Durable transactional service</td>
+                  <td>Durable transactional owner (deployment boundary to be verified)</td>
                 </tr>
                 <tr>
                   <td>Model animation, pixel-art rendering, particles and local audio</td>
@@ -200,9 +239,9 @@
               Prototype simulation at 30 Hz, nearby movement snapshots at 10–20 Hz, lower-priority
               distant state at 2–5 Hz, and event-driven static objects. These are measurement
               starting points. Client rendering is independent. Map continuous planar/floor
-              coordinates to 3D scene transforms locally; camera snapping, animation and cosmetic
-              height do not change server position, aim or collision, and require no new network
-              fields.
+              coordinates through an explicit units/axes conversion to Unreal world transforms;
+              camera snapping, animation and cosmetic height do not change server position, aim or
+              collision, and require no new network fields.
             </p>
             <p>
               Send sequenced movement intent. The server simulates movement and acknowledges input
@@ -211,10 +250,11 @@
               server collision.
             </p>
             <p>
-              Use separate traffic channels for movement snapshots, combat/control events and
-              reliable state operations. Frequent replaceable snapshots need not queue behind chat
-              or an inventory acknowledgment. Reliable transport delivery is not durable transaction
-              completion.
+              Define separate traffic priorities and delivery requirements for movement snapshots,
+              combat/control events and reliable state operations. Verify how the selected
+              Unreal/plugin path provides them; do not assume independently scheduled channels.
+              Frequent replaceable snapshots need not queue behind chat or an inventory
+              acknowledgment. Reliable transport delivery is not durable transaction completion.
             </p>
             <h2 id="area-of-interest-and-hidden-information">
               Area of interest and hidden information
@@ -236,11 +276,12 @@
               owner-private restored state.
             </p>
             <p>
-              Track nearby entities using a spatial grid and floor/instance identity. Add explicit
-              interest for relevant projectiles and hazards whose effects can reach the player.
-              Limit update frequency by relevance, not by silently removing a real boss hazard.
-              Bound maximum nameplates, cosmetic effects and redundant pet updates separately from
-              gameplay outcomes.
+              Filter relevant entities by floor/instance identity and spatial bounds, using the
+              verified plugin or Unreal relevancy mechanism where it fits. A spatial grid is a
+              candidate, not a required competing implementation. Add explicit interest for relevant
+              projectiles and hazards whose effects can reach the player. Limit update frequency by
+              relevance, not by silently removing a real boss hazard. Bound maximum nameplates,
+              cosmetic effects and redundant pet updates separately from gameplay outcomes.
             </p>
             <p>
               Do not replicate hidden enemy information merely because the client promises not to

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-002." />
     <title>
-      BW-002-T03 · Validate intent contracts and filter public projections · Briarwake Development
+      BW-002-T03 · Validate intent contracts and recipient projections · Briarwake Development
       Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
@@ -25,7 +25,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -51,7 +51,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -124,10 +124,11 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span><a href="roadmap-bw-002.html#BW-002">BW-002</a><span>/</span>BW-002-T03
           </div>
-          <h1>BW-002-T03 · Validate intent contracts and filter public projections</h1>
+          <h1>BW-002-T03 · Validate intent contracts and recipient projections</h1>
           <p class="page-description">Implementation ticket for BW-002.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -140,7 +141,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -158,7 +160,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-002-T03">
               <p>
-                <span class="badge">Complete</span> · Parent epic:
+                <span class="badge">Not Started</span> · Parent epic:
                 <a href="roadmap-bw-002.html#BW-002"
                   >BW-002 · Authority boundaries and content admission</a
                 >
@@ -171,46 +173,24 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Add only the typed ability-command reader and pure recipient-filtered
-                  combat-result projection needed for boundary fixtures, with explicit trusted
-                  session/visibility context. Keep these at the intent/projection boundary
-                  identified in T01, reusable by later transport; do not add a network endpoint or
-                  combat executor.
+                  Validate canonical command shape at the C++ boundary and construct allowlisted
+                  public/owner projections without duplicating gameplay rules in transport or
+                  Blueprints.
                 </li>
                 <li>
-                  Preserve ability_command_v2 and its three always-present targeting keys. Validate
-                  entity/point/direction/none against resolved AbilityTargetingPolicy, finite
-                  nonzero direction, optional checked character_id and current-session coordinate
-                  scope. Reject client-authored outcome fields rather than ignoring them. Reject
-                  client activation of passive definitions even when all three targeting inputs are
-                  null. Runtime visibility/range/collision and actual session authentication remain
-                  future authoritative checks, not facts proven by shape validation.
-                </li>
-                <li>
-                  Project internal CombatResult to the canonical shared PublicCombatResult inside
-                  CombatResultEvent using explicit recipient entitlement. Hidden source IDs become
-                  null; hidden-source correlation IDs are recipient-scoped and cannot reveal private
-                  action/ledger identity. Exclude raw/mitigation/debt/resource internals. Use
-                  EntitySnapshot as the related public-state allowlist without implementing a full
-                  snapshot producer.
-                </li>
-                <li>
-                  Add --suite boundaries fixtures and Python-driver behavioral regression coverage.
-                  Include canonical CommandResponse accepted/rejected examples without claiming
-                  command execution, replay storage or durable success. No second mutable
-                  CharacterState or private result store is created.
+                  Include the minimal positive, rejection and lifecycle/failure fixtures needed for
+                  this objective; reuse the canonical C++ rule or integration owner.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Authentication, actual RPC transport, movement/combat simulation,
-                  idempotency/replay storage, interest management and full EntitySnapshot
-                  production.
+                  Adjacent gameplay families and production certification beyond the mapped parent
+                  criteria.
                 </li>
                 <li>
-                  Inferring a target/facing fallback, client-selected authority, or serializing a
-                  Godot Object/Resource or raw internal CombatResult to observers.
+                  New gameplay values, competing authoritative definitions and unverified
+                  engine/plugin capabilities.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -223,171 +203,100 @@
                 <li id="BW-002-T03-AC-1">
                   <a href="#BW-002-T03-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    Resolved policies for all 21 documented TargetMode branches obey their allowed
-                    input kinds; passive definitions cannot be activated by client commands.
-                    Ambiguous summon/pet bindings, missing/extra aim inputs, zero/nonfinite
-                    direction, mismatched optional character_id and injected outcome fields are
-                    rejected.
+                    Valid intent narrows to typed fields and owner/public views contain exactly
+                    their authorized state.
                   </p>
                 </li>
                 <li id="BW-002-T03-AC-2">
                   <a href="#BW-002-T03-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Authorized owner/observer fixtures receive only the canonical public result
-                    fields. A hidden source produces null source identity and safe correlation; an
-                    unauthorized target/recipient receives no result. Private identifiers and
-                    numeric breakdowns are absent from serialized output.
-                  </p>
-                </li>
-                <li id="BW-002-T03-AC-3">
-                  <a href="#BW-002-T03-AC-3" class="roadmap-criterion-link">AC 3</a>
-                  <p>
-                    The same boundary functions are invoked by fixtures and are available for future
-                    authoritative callers; no shape-check result is presented as permission to
-                    execute gameplay or as a durable acknowledgement.
+                    Hidden-source correlation, private resources and unused target fields cannot
+                    leak or grant authority; malformed commands reject without mutation.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                Run from the Briarwake implementation repository. The commands, scenes and fixtures
-                below are deliverables of this ticket and its prerequisites; these are unexecuted
-                test instructions.
+                Future execution requires an implementation workspace established separately by the
+                owner. The procedures below describe this ticket’s deliverables; exact commands and
+                fixtures are established with the selected native toolchain. These are unexecuted
+                instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT, the briarwake/ repository root; all res:// paths use that project root.
-python3 tools/verify_toolchain.py
-python3 tools/extract_content_contracts.py --check
-python3 tools/check_content_admission.py --suite boundaries
-python3 tools/check_content_admission.py --suite compatibility
-python3 -m unittest discover -s tools -p &#x27;test_*.py&#x27;
-python3 tools/run_baseline.py --role server --headless --config &quot;$PWD/fixtures/config/server.valid.json&quot; --smoke</code></pre>
+              <pre><code>Future execution procedure: after the native C++ baseline exists, use its recorded platform-specific build/cook/launch or automation invocation for this objective. Establish and retain the exact command when implementing this ticket; no runnable game project or command is present in this documentation.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the pinned native macOS Godot 4.7.2 editor and Python 3.10+ from
-                  tools/toolchain.lock.json, with sibling mmo_docs canonical sources available. No
-                  dependencies or network peers are needed.
+                  Complete the listed ticket and inherited parent hard prerequisites on compatible
+                  revisions. Use a fresh disposable fixture/run with the selected UE5
+                  engine/compiler/SDK and synthetic credentials where required.
                 </li>
                 <li>
-                  Use fixtures/content_admission/boundaries.json and contracts.snapshot.json
-                  unchanged. The corpus contains trusted synthetic SessionContext/RecipientContext
-                  inputs, all 21 resolved TargetMode branches, command overrides and recognizable
-                  private-result sentinels. The fixed HMAC fixture key is synthetic; production
-                  session wiring/key lifecycle is future work.
-                </li>
-                <li>
-                  Each checker invocation creates a fresh artifacts/&lt;suite&gt;-&lt;timestamp&gt;/
-                  directory, or use --output with a new absolute directory. run.json retains exact
-                  source/input SHA-256 hashes, Git revision, engine identity, per-case assertions
-                  and logs.
+                  Validate canonical command shape at the C++ boundary and construct allowlisted
+                  public/owner projections without duplicating gameplay rules in transport or
+                  Blueprints.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the launch commands. Inspect the 121 command cases, 14 recipient projection
-                  cases and 2 CommandResponse shape examples in the boundaries run report. Verify
-                  the passive-none case rejects activation, every allowed summon/pet alternative is
-                  explicit, and malformed/injected/ambiguous cases produce the expected field
-                  findings.
+                  Build and launch the scoped target or fixture; record exact invocations,
+                  environment, input identities and actual reports. Execute the following
+                  observations:
                 </li>
                 <li>
-                  Compare owner-hidden-source, observer-visible, observer-hidden-source,
-                  hidden-another-recipient, hidden-new-key, entitlement-revoked and
-                  observer-target-hidden outputs. Hidden sources must be null; action/event
-                  references must match independent HMAC expectations and differ by recipient/key.
-                  Search serialized public output for private source/action/event IDs and
-                  raw/mitigation/debt/resource fields.
+                  Valid intent narrows to typed fields and owner/public views contain exactly their
+                  authorized state.
                 </li>
                 <li>
-                  Run disposable failure controls by adding --control import-failure,
-                  startup-failure, missing-report, assertion-failure or unsupported-schema to the
-                  boundary command, using a new output directory each time. All exit 1; an executed
-                  false expectation is Executed/Failed while import/startup/missing-report paths
-                  cannot be passing assertions. Rerun boundaries cleanly afterwards.
+                  Hidden-source correlation, private resources and unused target fields cannot leak
+                  or grant authority; malformed commands reject without mutation.
+                </li>
+                <li>
+                  Repeat after the failure case using a fresh output location; inspect resulting
+                  state and raw logs, not only the process exit status.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  All 137 clean boundary cases pass in the pinned engine; compatibility and Python
-                  regression checks pass without engine errors or warnings. Negative expectations
-                  are actual rejections, with no returned intent/event and unchanged input state.
+                  Valid intent narrows to typed fields and owner/public views contain exactly their
+                  authorized state.
                 </li>
                 <li>
-                  Typed intents use the trusted actor/current session epoch and zone/instance/floor.
-                  Direction is normalized; coordinates remain intent. Public events have only
-                  canonical CombatResultEvent/PublicCombatResult fields; unauthorized recipients or
-                  hidden observer targets receive no event.
-                </li>
-                <li>
-                  The direct fixture runner invokes content/ability_command_reader.gd and
-                  content/combat_result_projection.gd, available to later authoritative callers.
-                  CommandResponse examples are schema-compatible examples only. No authentication,
-                  RPC, gameplay execution, replay storage, durable success, full EntitySnapshot
-                  producer or content readiness is claimed.
+                  Hidden-source correlation, private resources and unused target fields cannot leak
+                  or grant authority; malformed commands reject without mutation.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Allow each bounded checker/engine process to exit; disposable harness projects are
-                  removed automatically. No database, account, world state or network session exists
-                  to reset.
-                </li>
-                <li>
-                  Preserve run.json and logs before removing only runner-owned artifact directories.
-                  Leave tracked fixtures, canonical definitions and bootstrap configuration
-                  unchanged; a subsequent clean run must reproduce the results.
+                  Stop only the processes started by this run, release synthetic sessions and
+                  discard only disposable fixture state. Preserve source inputs, user data and
+                  earlier evidence. Start the repeat in a fresh isolated context.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Executed command compatibility and
-                recipient-projection matrix, retained redacted payloads and negative findings tied
-                to exact canonical definitions.
+                <strong>Required evidence:</strong> Fresh executed evidence for BW-002-T03: exact
+                source/content/toolchain identities, supported platform/settings, actual commands
+                and logs, positive and failure results, and mappings to the listed parent criteria.
+                Missing observations remain unverified.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <ul>
-                <li>
-                  <a href="../validation/tickets/BW-002-T03/boundaries/run.json"
-                    >Pinned-engine execution passes 137 boundary cases: the complete
-                    21-mode/input-kind matrix, passive and malformed/injected intent refusal,
-                    trusted session scope, canonical recipient projection, hidden-source HMAC
-                    known-answer/isolation checks and accepted/rejected response examples. The
-                    functions are the reusable production boundary owners; no command execution or
-                    durable acknowledgement occurs.</a
-                  >
-                  — AC 1, 2, 3; Passed; revision Exact tested game Git revision and per-source/input
-                  SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json
-                </li>
-                <li>
-                  <a href="../validation/tickets/BW-002-T03/verification.json"
-                    >Executed compatibility, Python-driver behavioral regressions, baseline smoke
-                    and failure controls support the boundary run; source/link/ownership review
-                    preserves the existing server bootstrap and canonical contracts. This is
-                    pure-boundary evidence, not authenticated RPC, gameplay, multi-peer or full
-                    snapshot evidence.</a
-                  >
-                  — AC 1, 2, 3; Passed; revision Exact tested game Git revision and per-source/input
-                  SHA-256 hashes retained in validation/tickets/BW-002-T03/boundaries/run.json
-                </li>
-              </ul>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and acceptance criteria</a
-                >; <a href="../guide/execution.html#ability-command">Command input-kind matrix</a>;
-                <a href="../guide/networking.html#area-of-interest-and-hidden-information"
-                  >Hidden-information boundary</a
-                >; <a href="../guide/data-inventory.html#ability-command-v2">Ability intent</a>;
-                <a href="../guide/data-inventory.html#ability-targeting-policy"
-                  >Resolved input policy</a
-                >; <a href="../guide/data-inventory.html#command-response">Command response</a>;
-                <a href="../guide/data-inventory.html#combat-result">Private result</a>;
-                <a href="../guide/data-inventory.html#combat-result-event"
-                  >Public result event and shared PublicCombatResult</a
-                >; <a href="../guide/data-inventory.html#entity-snapshot">Public state allowlist</a>
+                <a href="../guide/roadmap-bw-002.html#BW-002">Parent epic and criteria</a>;
+                <a href="../guide/decisions.html">Design constraints</a>;
+                <a href="../guide/execution.html">Execution contracts</a>;
+                <a href="../guide/data-inventory.html">Canonical definitions</a>;
+                <a href="../guide/items.html#durability-salvage-and-demand"
+                  >Economic content admission</a
+                >; <a href="../guide/unreal-cpp.html">Unreal C++ standards and setup</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

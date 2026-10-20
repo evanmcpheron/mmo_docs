@@ -12,7 +12,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_development_roadmap import (PAGE, SECTIONS, STATUSES, address, anchor_page, generated_page_paths,
-                                      generated_pages, load, phase_page, prerequisite_closure, progress, ticket_page)
+                                      epic_page, generated_pages, load, phase_page, prerequisite_closure, progress, ticket_page)
 
 
 class Anchors(HTMLParser):
@@ -98,6 +98,14 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 errors.append(f'{context}: invalid documentation path')
                 continue
             parsed = urlsplit(href)
+            planned_epic = next((e for e in data['epics'] if epic_page(data, e['id']) == parsed.path), None)
+            if not parsed.scheme and not parsed.netloc and planned_epic is not None:
+                criteria = planned_epic['acceptance_criteria']
+                planned_anchors = {planned_epic['id']}
+                if isinstance(criteria, list):
+                    planned_anchors.update(f'{planned_epic["id"]}-AC-{n}' for n in range(1, len(criteria) + 1))
+                if not parsed.fragment or unquote(parsed.fragment) in planned_anchors:
+                    continue
             path = (root / unquote(parsed.path)).resolve()
             if parsed.scheme or parsed.netloc or not path.is_relative_to(root.resolve()) or not path.is_file():
                 errors.append(f'{context}: missing/nonlocal documentation {href}')

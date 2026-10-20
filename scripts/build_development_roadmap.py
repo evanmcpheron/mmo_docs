@@ -322,8 +322,9 @@ def render_ticket(data, ticket, root=ROOT):
     if 'not_applicable' in test:
         parts.append('<p>' + escape(test['not_applicable']) + '</p>')
     else:
-        parts.append('<p>Run from the Briarwake implementation repository. The commands, scenes and fixtures below '
-                     'are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p>')
+        parts.append('<p>Future execution requires an implementation workspace established separately by the owner. '
+                     'The procedures below describe this ticket’s deliverables; exact commands and fixtures '
+                     'are established with the selected native toolchain. These are unexecuted instructions.</p>')
         parts.append('<h3>Launch command or scene</h3><pre><code>' + escape(test['launch']) + '</code></pre>')
         for key, title in [('setup', 'Setup'), ('actions', 'Actions'), ('expected_results', 'Expected results'), ('reset', 'Reset')]:
             parts.extend([f'<h3>{title}</h3>', bullets(test[key], ordered=True)])
@@ -365,6 +366,14 @@ def render(data, root=ROOT):
     metrics += [('Overall completion', f'{value["percentage"]:g}%'), ('Dependency-ready epics', len(ready_epics(data)))]
     parts.append('<div class="metrics roadmap-metrics">' + ''.join(
         f'<div><strong>{escape(str(number))}</strong><span>{escape(label)}</span></div>' for label, number in metrics) + '</div>')
+    ticket_value = progress(data['tickets'])
+    ticket_metrics = [('Tickets', ticket_value['total'])]
+    ticket_metrics += [(status, ticket_value['counts'][status]) for status in STATUSES]
+    ticket_metrics.append(('Ticket completion', f'{ticket_value["percentage"]:g}%'))
+    parts.append('<h3 id="ticket-progress">Implementation tickets</h3>'
+                 '<div class="metrics roadmap-metrics roadmap-ticket-metrics">' + ''.join(
+                     f'<div><strong>{escape(str(number))}</strong><span>{escape(label)}</span></div>'
+                     for label, number in ticket_metrics) + '</div>')
     parts.append('<p>Counts, phase progress and milestone states share one ' +
                  '<a href="../sources/development-roadmap.json">Git-tracked registry</a>. Completion counts verified epics equally, not time or effort.</p>')
     ready = ready_epics(data)
@@ -474,12 +483,14 @@ def render_decisions(data, root=ROOT):
         parts.append(f'<section aria-labelledby="{decision["id"]}"><h3 id="{decision["id"]}">{escape(decision["title"])}</h3>'
                      f'<p><strong>Chosen sequence:</strong> {escape(decision["choice"])}</p><p><strong>Alternatives and tradeoff:</strong> {escape(decision["alternatives"])}</p>'
                      f'<p><strong>Basis:</strong> {escape(decision["basis"])}</p><p>{links(data, decision["epics"], page)} · {doclinks(decision["related_docs"])}</p></section>')
-    parts.append('<p><strong>Independent technical checks.</strong> Official Godot documentation was checked on ' + escape(data['research_date']) +
-                 ': <a href="https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html">dedicated headless exports</a>, '
-                 '<a href="https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html">RPC authority and independent traffic channels</a>, and '
-                 '<a href="https://docs.godotengine.org/en/stable/classes/class_multiplayersynchronizer.html">synchronizer visibility and unsupported Object/Resource values</a>. '
-                 'These establish building blocks, not an MMO architecture or capacity guarantee. The early boundary proof is our inference from those limits and Briarwake’s requirements. '
-                 'External references need internet; the roadmap pages do not.</p>')
+    parts.append('<p><strong>Independent technical checks.</strong> Epic documentation was reviewed on ' + escape(data['research_date']) +
+                 ': <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine">dedicated-server build/cook workflow</a>, '
+                 '<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-overview-for-unreal-engine">native replication</a>, '
+                 '<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine">object lifetime</a> and '
+                 '<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/automation-test-framework-in-unreal-engine">C++ automation</a>. '
+                 'These establish candidate facilities, not verified Briarwake capabilities or MMO capacity. '
+                 'The supplied-plugin/native relationship must be verified before dependent work. '
+                 'External sources require internet; local roadmap reading and documentation validation do not.</p>')
     parts.append('<h2 id="critical-review">Final dependency review</h2>' + bullets(data['critical_review']))
     return shell(data, page, 'Roadmap sequencing decisions', 'The analysis method, important alternatives and architectural reasons behind the recommended development sequence.',
                  parts, [('reading-guide', 'How to read'), ('analysis', 'Analysis and research'), ('sequencing-decisions', 'Ordering decisions')] +
@@ -516,6 +527,22 @@ def render_maintenance(data, root=ROOT):
 def render_audit(data, root=ROOT):
     page = REFERENCE_PAGES['audit'][0]
     body = (root / 'sources/roadmap-audit.html.inc').read_text(encoding='utf-8')
+    state = progress(data['epics'])
+    tickets = progress(data['tickets'])
+    body += ('<h2 id="epic-assessment">Current per-epic assessment</h2>'
+             f'<p>{state["total"]} epics and {tickets["total"]} tickets; '
+             f'{state["complete"]} completed epics and {tickets["complete"]} completed tickets. '
+             f'Epic completion: {state["percentage"]:g}%. Current statuses derive from the registry.</p>'
+             '<div class="table-scroll"><table><caption>Responsibility, prerequisites and verification obligations</caption>'
+             '<thead><tr><th scope="col">Epic</th><th scope="col">Scope and objective</th>'
+             '<th scope="col">Dependencies and required evidence</th><th scope="col">Status</th></tr></thead><tbody>')
+    for epic in data['epics']:
+        body += ('<tr><td>' + link(epic_page(data, epic['id']), page, epic['id'] + ' · ' + epic['title'], epic['id']) +
+                 '</td><td>' + escape(epic['objective']) + '<p>' + escape(epic['scope']) + '</p></td><td>' +
+                 '<p>Hard: ' + links(data, epic['hard_dependencies'], page) + '</p><p>Recommended: ' +
+                 links(data, epic['recommended_predecessors'], page) + '</p>' + escape(epic['completion_evidence']) +
+                 '</td><td>' + escape(epic['status']) + '</td></tr>')
+    body += '</tbody></table></div>'
     toc = [(anchor, title) for tag, anchor, title in Document('<main>' + body + '</main>').headings
            if tag == 'h2' and anchor]
     return shell(data, page, 'Roadmap Audit',

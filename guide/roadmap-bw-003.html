@@ -27,7 +27,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -53,7 +53,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -126,7 +126,8 @@
           <div class="breadcrumb">
             <a href="../index.html">Reference</a><span>/</span
             ><a href="development-roadmap.html">Development roadmap</a><span>/</span
-            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><a href="roadmap-foundations.html"
+              >1. Native C++ foundation and technical risk verification</a
             ><span>/</span>BW-003
           </div>
           <h1>BW-003 · Repeatable runtime fixtures and diagnostics</h1>
@@ -144,7 +145,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -161,8 +163,8 @@
               </details>
             </nav>
             <nav class="roadmap-epic-nav" aria-label="Epics in recommended sequence (top)">
-              <a href="roadmap-bw-002.html#BW-002" rel="prev"
-                >Previous: BW-002 · Authority boundaries and content admission</a
+              <a href="roadmap-bw-100.html#BW-100" rel="prev"
+                >Previous: BW-100 · Verify owner-supplied replication plugins</a
               ><a href="roadmap-bw-097.html#BW-097" rel="next"
                 >Next: BW-097 · 3D pixel-art renderer and camera feasibility proof</a
               >
@@ -170,26 +172,26 @@
             <article class="roadmap-epic" id="BW-003">
               <div class="roadmap-epic-body">
                 <p class="roadmap-epic-meta">
-                  <span class="badge">Complete</span> Recommended position 3 of 97
+                  <span class="badge">Not Started</span> Recommended position 4 of 98
                 </p>
                 <p>
                   <strong>Phase:</strong>
                   <a href="roadmap-foundations.html#BW-003"
-                    >1. Executable boundaries and risk probes</a
+                    >1. Native C++ foundation and technical risk verification</a
                   >
                   · <strong>Completion milestone:</strong>
                   <a href="roadmap-milestones.html#milestone-foundations"
-                    >Executable ownership proof</a
+                    >Verified Unreal C++ foundation and ownership proof</a
                   >
                 </p>
                 <h2 id="objective">Objective and scope</h2>
                 <p>Produce attributable runtime evidence from the first experiments.</p>
                 <p>
-                  <strong>Scope:</strong> Pinned fixture world/time/content context, bounded test
-                  control, action-correlated diagnostics and baseline tick/traffic/queue
-                  measurements; no claim of launch capacity. This early proof uses a bounded
-                  test-only action probe with logical clients; serialized payload bytes are measured
-                  separately from wire traffic.
+                  <strong>Scope:</strong> Unreal C++ automation for pinned fixture
+                  world/time/content context, bounded test controls, action-correlated diagnostics
+                  and raw tick/payload/queue measurements. A test-only probe with logical recipients
+                  is sufficient here; no connected-client, wire-traffic, production gameplay or
+                  capacity claim.
                 </p>
                 <h2 id="dependencies">Dependencies and downstream work</h2>
                 <h3>Hard prerequisites</h3>
@@ -200,15 +202,15 @@
                 <ul class="roadmap-contents">
                   <li>
                     <a href="roadmap-bw-001.html#BW-001"
-                      >BW-001 · Reproducible client and headless project</a
+                      >BW-001 · Reproducible native Unreal C++ client and dedicated server</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002.html#BW-002"
                       >BW-002 · Authority boundaries and content admission</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                 </ul>
                 <h3>Recommended predecessors</h3>
@@ -221,7 +223,7 @@
                     <a href="roadmap-bw-097.html#BW-097"
                       >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                     >
-                    <span class="badge">In Progress</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-095.html#BW-095"
@@ -262,8 +264,10 @@
                   <li id="BW-003-AC-4">
                     <a href="#BW-003-AC-4" class="roadmap-criterion-link">AC 4</a>
                     <p>
-                      A test run captures tick duration, relevant entities, bytes per client and
-                      queue depth, including its workload and environment.
+                      A bounded C++ test run records raw processing durations, relevant probe
+                      entities, per-logical-recipient serialized payload bytes and actual queue
+                      depth with workload, window and environment; payload bytes are explicitly
+                      distinct from later wire-traffic measurements.
                     </p>
                   </li>
                 </ol>
@@ -272,72 +276,10 @@
                   <strong>Completion evidence required:</strong> Actual fixture run records and a
                   redacted diagnostic/measurement sample.
                 </p>
-                <p><strong>Recorded evidence:</strong></p>
-                <ul>
-                  <li>
-                    <a href="../validation/tickets/BW-003-T01/epic-review.json"
-                      >AC1 is verified by attributable content-validation execution with immutable
-                      authored expectations and separate actual assertions/results. Parent review
-                      leaves AC2 for T02/T03, AC3 for T04 and AC4 for T05. Prerequisites
-                      BW-001/BW-002 remain Complete; T02 is now ready. BW-003 and Foundations remain
-                      In Progress, and no downstream epic is newly dependency-ready.</a
-                    >
-                    — AC 1; Passed; revision BW-003-T01 actual Godot execution and source/input
-                    identities in the linked per-run reports; historical BW-001/BW-002 applicability
-                    reviewed.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-003-T02/epic-review.json"
-                      >AC2 is verified within the selected disposable probe scope: same-context
-                      reproduction, consumed changed seed, restoration, bounded scheduling and no
-                      gameplay test-control endpoint. BW-003 remains In Progress: action-correlated
-                      redacted diagnostics (T03), measured workloads (T04) and integrated
-                      orchestration (T05) remain unstarted. T03/T04 prerequisites are now complete;
-                      Foundations and milestones remain In Progress, with no newly ready downstream
-                      epic.</a
-                    >
-                    — AC 2; Passed; revision BW-003-T02 actual Godot run/source identities in linked
-                    reports; prior BW-001/BW-002/T01 evidence applicability reviewed.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-003-T03/epic-review.json"
-                      >AC3 is verified by attributed rejected/committed/repeated probe events, safe
-                      findings, secret-bearing malformed/failure controls and unchanged recipient
-                      projection. AC1/AC2 retained evidence remains applicable and regressions pass.
-                      BW-003 remains In Progress: AC4 measurements (T04) and T05 integration remain
-                      unstarted. T04 is eligible; T05 and downstream epics remain gated. Foundations
-                      and milestones stay In Progress.</a
-                    >
-                    — AC 3; Passed; revision 1e480f0aed5d31e87590dacd98fb14459f3ee950; actual probe
-                    diagnostics and retained runtime/failure evidence; prior prerequisite
-                    applicability reviewed.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-003-T04/epic-review.json"
-                      >AC4 is verified within the accepted bounded probe/payload scope; AC1/2/3
-                      evidence remains applicable with passing context/diagnostic/admission
-                      regressions. T04 is Complete and T05 is now dependency-eligible. BW-003 stays
-                      In Progress pending T05 integrated orchestration/verification. Downstream
-                      epics, Foundations and milestones retain their unfinished status.</a
-                    >
-                    — AC 4; Passed; revision 89ba873c7ff0e64539f5b312e2ab376abb0c751f; actual
-                    workload records and prior evidence applicability review.
-                  </li>
-                  <li>
-                    <a href="../validation/tickets/BW-003-T05/epic-review.json"
-                      >Explicit final review verifies all four epic criteria with actual integrated
-                      content evidence, deterministic context, redacted action diagnostics and
-                      bounded tick/entity/payload/queue measurements. All five tickets and
-                      BW-001/BW-002 are Complete; no blockers remain. BW-095 and BW-097 become
-                      dependency-ready. BW-012 still needs BW-011/BW-013/BW-028; Foundations and
-                      milestones remain In Progress. Scope excludes connected clients, gameplay,
-                      wire traffic, durability and production capacity.</a
-                    >
-                    — AC 1, 2, 3, 4; Passed; revision d8062a199a60ee4072dfe8ae5d018d67521028cd;
-                    integrated run identities and final provenance applicability retained in
-                    verification.json.
-                  </li>
-                </ul>
+                <p>
+                  <strong>Recorded evidence:</strong> None. Required evidence above describes future
+                  verification.
+                </p>
                 <p><strong>Blockers:</strong> None recorded; see hard prerequisites.</p>
                 <h2 id="ticket-planning">Ticket planning</h2>
                 <p>
@@ -348,34 +290,33 @@
                 <ol class="roadmap-contents">
                   <li>
                     <a href="roadmap-bw-003-t01.html#BW-003-T01"
-                      >BW-003-T01 · Record attributable fixture execution evidence</a
+                      >BW-003-T01 · Record attributable Unreal fixture execution</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-003-t02.html#BW-003-T02"
                       >BW-003-T02 · Reproduce seeded context behind isolated test controls</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-003-t03.html#BW-003-T03"
-                      >BW-003-T03 · Correlate and redact bounded probe action diagnostics</a
+                      >BW-003-T03 · Correlate and redact bounded action diagnostics</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-003-t04.html#BW-003-T04"
-                      >BW-003-T04 · Measure bounded probe ticks, payloads and queues</a
+                      >BW-003-T04 · Measure bounded probe processing and payloads</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-003-t05.html#BW-003-T05"
-                      >BW-003-T05 · Verify the complete fixture evidence path in one repeatable
-                      run</a
+                      >BW-003-T05 · Verify the complete fixture evidence path</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                 </ol>
                 <div class="table-scroll">
@@ -438,25 +379,31 @@
               <ul class="roadmap-contents">
                 <li>
                   <a href="roadmap-bw-001.html#BW-001"
-                    >BW-001 · Reproducible client and headless project</a
+                    >BW-001 · Reproducible native Unreal C++ client and dedicated server</a
                   >
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-002.html#BW-002"
                     >BW-002 · Authority boundaries and content admission</a
                   >
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
+                </li>
+                <li>
+                  <a href="roadmap-bw-100.html#BW-100"
+                    >BW-100 · Verify owner-supplied replication plugins</a
+                  >
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="#BW-003">BW-003 · Repeatable runtime fixtures and diagnostics</a>
-                  <span class="badge">Complete</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-097.html#BW-097"
                     >BW-097 · 3D pixel-art renderer and camera feasibility proof</a
                   >
-                  <span class="badge">In Progress</span>
+                  <span class="badge">Not Started</span>
                 </li>
                 <li>
                   <a href="roadmap-bw-095.html#BW-095"
@@ -473,8 +420,8 @@
               </ul>
             </details>
             <nav class="roadmap-epic-nav" aria-label="Epics in recommended sequence (bottom)">
-              <a href="roadmap-bw-002.html#BW-002" rel="prev"
-                >Previous: BW-002 · Authority boundaries and content admission</a
+              <a href="roadmap-bw-100.html#BW-100" rel="prev"
+                >Previous: BW-100 · Verify owner-supplied replication plugins</a
               ><a href="roadmap-bw-097.html#BW-097" rel="next"
                 >Next: BW-097 · 3D pixel-art renderer and camera feasibility proof</a
               >

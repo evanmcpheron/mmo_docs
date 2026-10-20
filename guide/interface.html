@@ -22,7 +22,8 @@
       <div class="version">v2.0 · Mechanics only</div>
       <nav aria-label="Reference navigation">
         <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -48,7 +49,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a aria-current="page" href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -184,8 +185,9 @@
               orthographic size and angle, upscale filter, aspect-ratio/letterbox policy and
               permitted zoom settings during the rendering prototype. Keep HUD text, controls and
               the pointer in independently scalable screen space so world pixelation preserves
-              readable interaction. See <a href="sources.html#s12">Camera3D</a> and
-              <a href="sources.html#s13">multiple resolutions</a>.
+              readable interaction. See
+              <a href="sources.html#s12">Unreal orthographic cameras</a> and
+              <a href="sources.html#s13">Unreal UI scaling</a>.
             </p>
             <p>
               Map pointer input through the displayed world content rectangle, rejecting letterbox
@@ -204,14 +206,17 @@
               required hazards, target feedback and readable contrast.
             </p>
             <p>
-              Pin and test the Godot version and renderer before committing the material pipeline.
-              Verify depth/normal and screen-texture availability, opaque/transparent ordering and
-              water composition against that build, with a tested fallback for every supported
-              renderer. Holland’s historical custom build does not automatically require a project
-              engine fork. Use the current <a href="sources.html#s10">renderer comparison</a>,
-              <a href="sources.html#s11">screen-reading guidance</a> and
-              <a href="sources.html#s14">spatial shader reference</a>, then record actual prototype
-              evidence.
+              Pin and test the Unreal Engine 5 revision, rendering path and graphics backend before
+              committing the material pipeline. Prototype real 3D meshes, materials and post-process
+              outlines with an orthographic camera. Verify SceneTexture depth/normal availability,
+              custom depth/stencil use where appropriate, post-process blendable location, temporal
+              effects, translucency and water composition on that build. Test pixel stability and a
+              readable lower-cost fallback per supported platform. Use
+              <a href="sources.html#s10">Unreal rendering guidance</a>,
+              <a href="sources.html#s11">post-process materials</a> and
+              <a href="sources.html#s14">materials</a>; source-code modifications require a
+              demonstrated gap and explicit maintenance decision. No rendering pipeline is
+              implemented.
             </p>
             <h2 id="combat-display">Combat display</h2>
             <p>
@@ -277,7 +282,7 @@
               Test creation with both Human factions; talent editing entirely by keyboard; expensive
               craft confirmation; inventory-full delivery; 30-player visual clutter; small-window
               text reflow; and a healer targeting allies without clicking their world models. These
-              are acceptance scenarios, not claims that the Godot UI already exists.
+              are acceptance scenarios, not claims that the Unreal UI already exists.
             </p>
             <!-- data-inventory:start -->
             <section class="data-inventory" aria-labelledby="data">

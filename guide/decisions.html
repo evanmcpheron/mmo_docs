@@ -22,7 +22,8 @@
       <div class="version">v2.0 · Mechanics only</div>
       <nav aria-label="Reference navigation">
         <a class="nav-home " href="../index.html">Overview</a
-        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a aria-current="page" href="../guide/decisions.html">Design decisions</a
@@ -48,7 +49,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -129,9 +130,9 @@
             <p>
               This revision supersedes the supplied v1 character pack. It is a
               <strong>gameplay-design reference and numerical prototype baseline</strong>, not a
-              shipping game, a balance certification, or a complete Godot implementation. Structural
-              checks and arithmetic tests are distinguished from tests that require a playable
-              server.
+              shipping game, a balance certification, or an implemented Unreal Engine 5 game.
+              Structural checks and arithmetic tests are distinguished from tests that require a
+              playable server.
             </p>
             <h2 id="confirmed-direction">Confirmed direction</h2>
             <table>
@@ -262,17 +263,18 @@
               <a href="https://www.davidhol.land/articles/3d-pixel-art-rendering/"
                 >David Holland’s 3D Pixel Art Rendering</a
               >. Holland describes depth/normal outlines, camera snapping with screen-space
-              correction, billboard foliage, stylized water and atmospheric lighting. His
-              implementation used a custom Godot 4.3 build; its patches describe that historical
-              setup.
+              correction, billboard foliage, stylized water and atmospheric lighting. These are
+              visual research inputs. Briarwake must establish its own Unreal materials,
+              post-processing and pixel-stable camera with real 3D characters and environments; the
+              reference does not certify any technical implementation.
             </p>
             <p>
               <a href="https://roystan.net/articles/outline-shader/">Roystan’s Outline Shader</a> is
               a technique reference for depth/normal edge detection with diagonal Roberts-cross
               samples, integer texel spacing, depth-relative and view-angle thresholds, and alpha
-              composition. It targets Unity 2018.3. A Godot implementation must adapt depth
-              conventions, normal space, orthographic projection and available textures. Convex-only
-              highlight selection remains a separate design.
+              composition. Validate depth conventions, normal space, orthographic projection,
+              texture sampling and compositing in Unreal Engine 5 rather than treating tutorial code
+              as an API contract. Convex-only highlight selection remains a separate design.
             </p>
             <p>
               The user-selected
@@ -283,18 +285,18 @@
               <a href="https://www.youtube.com/watch?v=ERA7-I5nPAU"
                 >Creating a Scene for my 3D Pixel Art Game</a
               >. Record selected clips and timestamps in the renderer and art reference comparisons,
-              then validate adopted techniques in the pinned Godot build. The channel supports
-              ongoing visual research; production decisions require the project’s own scene and
-              performance evidence.
+              then validate adopted techniques in the pinned Unreal Engine 5 build. The channel
+              supports ongoing visual research; production decisions require the project’s own scene
+              and performance evidence.
             </p>
             <p>
               <strong>Project acceptance criteria:</strong> Establish the camera, internal
               resolution, scaling policy, asset proportions and material conventions through a
               representative playable scene before producing the full art roster. Validate every
               asset in that scene, including animation, equipped items and alternate forms. Choose
-              and test a supported Godot version, renderer and any fallback against the visual
-              target; adopting an engine fork requires a demonstrated unmet requirement and a
-              maintenance decision. The
+              and test a supported Unreal Engine 5 revision, rendering path and any fallback against
+              the visual target; adopting an engine fork requires a demonstrated unmet requirement
+              and a maintenance decision. The
               <a href="interface.html#rendering-and-camera">rendering and camera requirements</a>
               and
               <a href="testing.html#rendering-verification">rendering verification checks</a> govern

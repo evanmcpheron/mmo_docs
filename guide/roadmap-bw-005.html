@@ -27,7 +27,7 @@
         <a class="nav-home " href="../index.html">Overview</a
         ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
           >Development Roadmap</a
-        >
+        ><a data-foundation-nav href="unreal-cpp.html">Unreal C++ foundation</a>
         <div class="nav-group">
           <p>Foundation</p>
           <a href="../guide/decisions.html">Design decisions</a
@@ -53,7 +53,7 @@
         </div>
         <div class="nav-group">
           <p>Engineering</p>
-          <a href="../guide/networking.html">Godot & networking</a
+          <a href="../guide/networking.html">Unreal & networking</a
           ><a href="../guide/interface.html">Interface & accessibility</a
           ><a href="../guide/operations.html">Supporting gameplay</a>
         </div>
@@ -144,7 +144,8 @@
               <details class="roadmap-phase-picker">
                 <summary>All phases</summary>
                 <div>
-                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  <a href="roadmap-foundations.html"
+                    >1. Native C++ foundation and technical risk verification</a
                   ><a href="roadmap-first-action.html"
                     >2. First authoritative multiplayer interaction</a
                   ><a href="roadmap-persistent-character.html"
@@ -170,8 +171,7 @@
             <article class="roadmap-epic" id="BW-005">
               <div class="roadmap-epic-body">
                 <p class="roadmap-epic-meta">
-                  <span class="badge">Not Started</span>
-                  <span class="badge success">Dependency-ready</span> Recommended position 8 of 97
+                  <span class="badge">Not Started</span> Recommended position 9 of 98
                 </p>
                 <p>
                   <strong>Phase:</strong>
@@ -186,9 +186,12 @@
                 <h2 id="objective">Objective and scope</h2>
                 <p>Resolve movement from client intent against authoritative geometry and time.</p>
                 <p>
-                  <strong>Scope:</strong> Continuous planar movement, floor identity, collision,
-                  path bounds and server clock; 3D scene placement maps to this geometry, while
-                  camera projection, visual elevation and prediction remain separate.
+                  <strong>Scope:</strong> C++ authoritative continuous planar movement, floor
+                  identity, collision, timing and acknowledgment. Evaluate Character/Pawn and
+                  CharacterMovementComponent against these rules and the verified plugins before
+                  choosing custom movement. Explicitly define canonical-to-Unreal units/axes;
+                  presentation pixel snapping and prediction do not own server position. Excludes
+                  client-authored transforms and duplicate prediction stacks.
                 </p>
                 <h2 id="dependencies">Dependencies and downstream work</h2>
                 <h3>Hard prerequisites</h3>
@@ -199,15 +202,21 @@
                 <ul class="roadmap-contents">
                   <li>
                     <a href="roadmap-bw-001.html#BW-001"
-                      >BW-001 · Reproducible client and headless project</a
+                      >BW-001 · Reproducible native Unreal C++ client and dedicated server</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-002.html#BW-002"
                       >BW-002 · Authority boundaries and content admission</a
                     >
-                    <span class="badge">Complete</span>
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-100.html#BW-100"
+                      >BW-100 · Verify owner-supplied replication plugins</a
+                    >
+                    <span class="badge">Not Started</span>
                   </li>
                 </ul>
                 <h3>Recommended predecessors</h3>
@@ -272,10 +281,71 @@
                 <p><strong>Blockers:</strong> None recorded; see hard prerequisites.</p>
                 <h2 id="ticket-planning">Ticket planning</h2>
                 <p>
-                  Use <strong>BW-005</strong> as the parent epic. Link each future ticket to the AC
-                  links above and state the evidence it will produce. Split work into demonstrable
-                  behaviors; one criterion may require several tickets. Epic completion still
-                  requires every criterion, verified evidence and completed hard prerequisites.
+                  Execute these tickets in dependency order. Ticket statuses are tracked separately;
+                  epic completion still requires every criterion, verified evidence and completed
+                  hard prerequisites.
+                </p>
+                <ol class="roadmap-contents">
+                  <li>
+                    <a href="roadmap-bw-005-t01.html#BW-005-T01"
+                      >BW-005-T01 · Choose and verify authoritative movement integration</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-005-t02.html#BW-005-T02"
+                      >BW-005-T02 · Reject illegal movement using authoritative geometry</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-005-t03.html#BW-005-T03"
+                      >BW-005-T03 · Acknowledge movement without duplicate application</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                </ol>
+                <div class="table-scroll">
+                  <table>
+                    <caption>
+                      Ticket coverage of epic acceptance criteria
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th>Epic criterion</th>
+                        <th>Tickets</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><a href="#BW-005-AC-1">BW-005-AC-1</a></td>
+                        <td><a href="roadmap-bw-005-t01.html#BW-005-T01">BW-005-T01</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-005-AC-2">BW-005-AC-2</a></td>
+                        <td><a href="roadmap-bw-005-t01.html#BW-005-T01">BW-005-T01</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-005-AC-3">BW-005-AC-3</a></td>
+                        <td><a href="roadmap-bw-005-t02.html#BW-005-T02">BW-005-T02</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-005-AC-4">BW-005-AC-4</a></td>
+                        <td><a href="roadmap-bw-005-t03.html#BW-005-T03">BW-005-T03</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p>
+                  <strong>Ordering rationale:</strong> The native baseline, C++ ownership and plugin
+                  compatibility must be verified first. Movement can be tested with fixtures
+                  alongside connectivity; two-client integration follows BW-007.
+                </p>
+                <p>
+                  <strong>Related open decisions:</strong>
+                  <a href="roadmap-coverage.html#open-replication-plugins"
+                    >Supplied replication plugin identity and capabilities</a
+                  >
                 </p>
                 <h2 id="documentation">Related documentation</h2>
                 <p>
