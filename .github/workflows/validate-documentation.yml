@@ -28,6 +28,7 @@ jobs:
           python3 validation/check_development_roadmap.py
           python3 validation/check_data_inventory.py
           python3 -m unittest discover -s validation -p 'test_*.py'
+          node --test validation/test_browser_cleanup.mjs
           python3 validation/run_checks.py
       - name: Verify offline navigation, search, layout and print
         run: node validation/check_inventory_browser.mjs
