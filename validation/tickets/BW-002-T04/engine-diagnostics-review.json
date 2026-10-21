@@ -1,0 +1,35 @@
+{
+  "result": "Passed baseline comparison",
+  "checks": {
+    "missing-config": true,
+    "invalid-config": true,
+    "normal-server-no-ensure": true
+  },
+  "proof": {
+    "missing-config": {
+      "baseline_sha256": "0da0a5caca2b1c48fb4dfe8f4702d2dfb78ea3c02ce464431c817f9fed124fc4",
+      "current_sha256": "e3c80803589f8a101e3408ff2718ce095b4a758da8196f44aeac8ae18b4fa8cd",
+      "baseline_excerpt": [
+        "[2026.10.21-21.37.37:909][  0]LogOutputDevice: Error: Ensure condition failed: ConverterRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 47]",
+        "[2026.10.21-21.37.37:966][  0]LogOutputDevice: Error: Ensure condition failed: PropertySelectorRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 23]"
+      ],
+      "current_excerpt": [
+        "[2026.10.21-22.40.01:164][  0]LogOutputDevice: Error: Ensure condition failed: ConverterRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 47]",
+        "[2026.10.21-22.40.01:223][  0]LogOutputDevice: Error: Ensure condition failed: PropertySelectorRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 23]"
+      ]
+    },
+    "invalid-config": {
+      "baseline_sha256": "431e0f4f88ee165274a09561f35c7b52ae0051fa7e85f38edb31070dfc97b25e",
+      "current_sha256": "56292752704f3f1130df4ac683647a574c63878470487487c362426690a0c155",
+      "baseline_excerpt": [
+        "[2026.10.21-21.37.38:662][  0]LogOutputDevice: Error: Ensure condition failed: ConverterRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 47]",
+        "[2026.10.21-21.37.38:723][  0]LogOutputDevice: Error: Ensure condition failed: PropertySelectorRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 23]"
+      ],
+      "current_excerpt": [
+        "[2026.10.21-22.40.02:014][  0]LogOutputDevice: Error: Ensure condition failed: ConverterRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 47]",
+        "[2026.10.21-22.40.02:079][  0]LogOutputDevice: Error: Ensure condition failed: PropertySelectorRegistry.Find(InDataClass)  [File:./../Plugins/PCG/Source/PCG/Private/Data/Registry/PCGDataViewRegistry.cpp] [Line: 23]"
+      ]
+    }
+  },
+  "scope": "Pre-existing PCG shutdown ensures remain visible in expected negative configuration controls; no PCG error appears in normal server-pass. No engine/plugin/warning change is in this ticket."
+}
