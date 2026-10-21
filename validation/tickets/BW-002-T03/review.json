@@ -1,0 +1,226 @@
+{
+  "ticket": "BW-002-T03",
+  "date": "2026-10-21",
+  "game_repository": "evanmcpheron/BriarwakeUnreal",
+  "game_pr": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/5",
+  "game_main_base": "7ff73b91ecda92dfadb136664e22d87e9882ccd1",
+  "game_main_rechecked": "7ff73b91ecda92dfadb136664e22d87e9882ccd1",
+  "game_revision": "dae6568df3d54bfae7d77ed21d94e9f92c00b08a",
+  "docs_main_base": "e578c2b463724287dcbf2309d8b36c20e4f2e155",
+  "docs_main_rechecked": "e578c2b463724287dcbf2309d8b36c20e4f2e155",
+  "source_sha256": "063f9d7a878ab5c6f5b69d9ce7fef20a7255ea6170bd4db47e3cf0d2bfad4a69",
+  "snapshot_sha256": "13ed1c4d837b47f879e76995a95e785fd5d1759efdef3ac6b677c27aaaaa9635",
+  "corpus_sha256": "e742a41ed846d635e2a08a776015b4e3dbc2df39efdfb73734f65ea1f1b997ac",
+  "semantic_sha256": "0f970d4acea275a64a4ef3f19f5fc254b5f4bcdb5aa9fd8ac4622b0f2afb36ef",
+  "selected_roots": [
+    "ability_command_v2",
+    "TargetMode",
+    "EffectOperation",
+    "ItemGrade",
+    "ItemRarity",
+    "Id",
+    "Version",
+    "Instant",
+    "CurrencyAmount",
+    "CombatAmount",
+    "ServerConfiguration",
+    "PublicCombatResult",
+    "CommandResponse",
+    "ValidationFinding",
+    "AbilityDefinition",
+    "AbilityTargetingPolicy",
+    "ResourceDefinition",
+    "ResourceGainRule",
+    "ResourceType",
+    "CooldownDefinition",
+    "ContentValidationFixture",
+    "ContentValidationResult"
+  ],
+  "definition_count": 48,
+  "revision_attribution": "Early build/admission/control/recovery reports retain game base 7ff73b9 plus uncommitted task changes. Compatibility executes at b06aa02; baseline and Game build execute at dae6568. source-equivalence.json proves all current committed input blobs match the passing native source identity. Subsequent game changes were ordinary documentation only. The final game head 612e8d25c3401ace90a83710a172201b994588a4 clarifies ordinary documentation only and matches the same tested source inputs.",
+  "environment": {
+    "engine": {
+      "MajorVersion": 5,
+      "MinorVersion": 8,
+      "PatchVersion": 3,
+      "Changelist": 58210709,
+      "CompatibleChangelist": 55116800,
+      "IsLicenseeVersion": 0,
+      "IsPromotedBuild": 1,
+      "BranchName": "++UE5+Release-5.8"
+    },
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "os": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.14.0",
+    "engine_root": "/Users/Shared/Epic Games/UE_5.8",
+    "installed_engine": true,
+    "engine_source_revision": null
+  },
+  "criteria": [
+    {
+      "criterion": 1,
+      "result": "Passed",
+      "artifacts": [
+        "pass/native/admission.json",
+        "recovery/native/admission.json"
+      ],
+      "summary": "Compatible complete supported package A and C publish exact IDs, full record data and content/rules/database identities. Forward resource/gain/cooldown references and reversed record/family order pass. All 84 targeting mode/input-kind combinations use the canonical 21-mode schema matrix."
+    },
+    {
+      "criterion": 2,
+      "result": "Passed",
+      "artifacts": [
+        "pass/native/admission.json",
+        "recovery/native/admission.json"
+      ],
+      "summary": "140 finite fixtures reject unknown/duplicate/empty/wrong-case/cross-namespace references, malformed fields, missing definitions, independent incompatible revisions and binding versions, unknown floor/LOS/revalidation/source policies, alias cycles/cap conflicts, invalid gains/timing/caps, unsupported operations/families and excessive records. Parser/file/token/member/string/depth limits reject. Actual canonical code/path/message findings remain separate from expected findings."
+    },
+    {
+      "criterion": 3,
+      "result": "Passed",
+      "artifacts": [
+        "pass/native/admission.json",
+        "recovery/native/admission.json"
+      ],
+      "summary": "Each fixture uses one owner for A, attempted B and C. Rejected B preserves every selected byte and revision/publication sequence. Accepted replacements match all candidate records and advance the publication sequence once. Authored specifications and expected findings remain unchanged; their run_evidence stays unexecuted."
+    },
+    {
+      "criterion": 4,
+      "result": "Passed",
+      "artifacts": [
+        "pass/native/admission.json",
+        "assertion-failure/run.json",
+        "missing-report/run.json",
+        "stale-report/run.json",
+        "stale-binary/run.json",
+        "recovery/run.json"
+      ],
+      "summary": "Unbound legacy catalog records stay disabled. All attempted ability/economic activation rejects. Native suite executes 1,284 exact checks in clean/recovery. Actual assertion failure is Executed/Failed; missing/stale reports reject; stale binary is Not Executed. Python verifies reports and identities, without reimplementing admission."
+    }
+  ],
+  "verification": [
+    {
+      "command": "python3 tools/extract_content_contracts.py --check",
+      "result": "Passed",
+      "summary": "48-definition closure reproduces from current canonical registry; no canonical definitions or encodings changed."
+    },
+    {
+      "command": "python3 tools/check_baseline.py build --target BriarwakeEditor --output artifacts/bw-002-t03-editor-build-2",
+      "result": "Passed",
+      "artifact": "editor-build/run.json"
+    },
+    {
+      "command": "python3 tools/check_content_admission.py --suite admission --output artifacts/bw-002-t03-admission-pass",
+      "result": "Passed",
+      "artifact": "pass/run.json",
+      "checks": 1284
+    },
+    {
+      "command": "python3 tools/check_content_admission.py --suite admission --output artifacts/bw-002-t03-admission-recovery",
+      "result": "Passed",
+      "artifact": "recovery/run.json",
+      "checks": 1284
+    },
+    {
+      "command": "python3 tools/check_content_admission.py --suite compatibility --output artifacts/bw-002-t03-compatibility",
+      "result": "Passed",
+      "artifact": "compatibility/run.json",
+      "checks": 747
+    },
+    {
+      "command": "python3 tools/check_baseline.py test --output artifacts/bw-002-t03-baseline",
+      "result": "Passed",
+      "artifact": "baseline/run.json",
+      "tests": [
+        "Briarwake.Baseline.Execution",
+        "Briarwake.Baseline.ServerConfiguration"
+      ]
+    },
+    {
+      "command": "python3 tools/check_baseline.py build --target Briarwake --output artifacts/bw-002-t03-game-build",
+      "result": "Passed",
+      "artifact": "game-build/run.json"
+    },
+    {
+      "command": "python3 -m unittest discover -s tools -p 'test_*.py' (TMPDIR under artifacts/tmp)",
+      "result": "Passed",
+      "artifact": "python-tests.log",
+      "tests": 16
+    },
+    {
+      "command": "Local Markdown/file/canonical HTML-anchor verification for four affected game documents",
+      "result": "Passed",
+      "artifact": "documentation-links.json",
+      "checks": 56
+    }
+  ],
+  "controls": [
+    {
+      "control": "assertion-failure",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "runtime": "Executed",
+      "assertions": "Failed",
+      "artifact": "assertion-failure/run.json"
+    },
+    {
+      "control": "missing-report",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "runtime": "Executed",
+      "assertions": "Unverified because the required native report is absent",
+      "artifact": "missing-report/run.json"
+    },
+    {
+      "control": "stale-report",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "runtime": "Executed",
+      "assertions": "Unverified because an earlier nonce is rejected",
+      "artifact": "stale-report/run.json"
+    },
+    {
+      "control": "stale-binary",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "runtime": "Not Executed",
+      "assertions": "Not run; marker changes source identity and binary preflight rejects",
+      "artifact": "stale-binary/run.json"
+    }
+  ],
+  "historical_failure": {
+    "artifact": "initial-diagnostic-failure/run.json",
+    "result": "Failed",
+    "summary": "Initial native run rejected invalid matrix inputs correctly but emitted an additional misleading empty-package finding by counting staged records. Fixed production counting to use requested records; unchanged original matrix expectations now pass. Retained as superseded historical execution, not current failing evidence."
+  },
+  "review_checklist": {
+    "scope_and_ownership": "Passed: FContentAdmission owns staging/publication; FContentContracts owns canonical shape and FContentCompatibility owns exact tuple support. No speculative gameplay service.",
+    "contracts": "Passed: source definitions and encodings preserved; only selected snapshot closure expanded. Canonical matrix/ranges/nullability reused; no policy defaults or economic fields invented.",
+    "cpp": "Passed: typed public value contracts, private JSON validation boundary, logic in .cpp, explicit exact IDs, copied trusted policy, bounded parser/file access, single value publication and no shared mutable JSON selection.",
+    "responsibility_review": "Passed: separate translation units group staging/publication, references/resources and ability/targeting/timing semantics. Long staging/test procedures remain cohesive finite boundary/fixture orchestration; no generic utility or redundant service was introduced.",
+    "security": "Passed within scope: only a trusted server caller supplies capabilities/dependencies/compatibility; candidate cannot change those inputs; no network invocation path or client-authored outcome. Unsupported activation fails and no handler executes.",
+    "lifecycle": "Passed: ordinary caller-owned native object with explicit decoder lifetime, serial calls and immutable value selection; no Actor/UObject/async lifetime or global state.",
+    "tests": "Passed: two clean/recovery native runs, all negative evidence controls, current-source compatibility, baseline tests, Editor/Game builds and Python verifier regressions.",
+    "network_assets_bridge": "N/A: no RPC/replication, Actor, widget, map/asset, provider, database or direct editor-bridge action changed.",
+    "git_storage": "Passed: new task branches from exact fetched main in existing checkouts; unrelated work preserved; no worktree/clone/project snapshot. Generated outputs remain bounded inside workspace.",
+    "delivery": "Game PR #5 is open and pushed. Delivery must verify the companion docs PR after its rebuild/checks and push; its URL is provided in the final report. No merge, release or deployment performed."
+  },
+  "observed_diagnostics": [
+    "Editor startup retains pre-existing bUseZenStore/bUseIoStore packaging and editor layout compatibility warnings. No warnings in executed automation totals.",
+    "Game build retains the pre-existing missing MetalShaderConverter include warning and staged-build reminder. Build completed successfully; configuration was not changed to hide diagnostics."
+  ],
+  "not_run_and_limits": [
+    "No current source-Server build, package/cook/client launch/headless packaged smoke or decoded-Pak inspection; those remain T07 integration checks, with historical BW-001 evidence preserved.",
+    "No gameplay ability/resource simulation, geometry/trigger runtime, economic graph analysis/activation, readiness-success gate, network peers, authentication, persistence, capacity, Shipping or other-platform claim.",
+    "Static operation support is limited to canonical DAMAGE/HEAL records; other operations/families explicitly reject. All activation remains disabled pending T04/T05/T06.",
+    "Documentation/browser behavior has no new template or interaction; generated content/status/link checks are performed separately. No new rendered browser execution is claimed."
+  ],
+  "delivery_game_revision": "612e8d25c3401ace90a83710a172201b994588a4",
+  "documentation_validation": {
+    "artifact": "documentation-delivery-checks.json",
+    "generated_view_inspection": "generated-view-review.json",
+    "historical_source_link_correction": "documentation-initial-link-failure.json records two incorrectly scoped canonical links; source links were corrected before passing rebuilds.",
+    "scope": "Generated local content/status validation, not new rendered browser evidence or deployed-site changes."
+  }
+}

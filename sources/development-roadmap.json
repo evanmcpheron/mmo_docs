@@ -3,7 +3,7 @@
   "title": "Briarwake Development Roadmap",
   "research_date": "2026-10-17",
   "purpose": "A dependency and evidence map for Briarwake, an Unreal Engine 5 native C++ MMORPG. This documentation owns gameplay contracts and progress; evanmcpheron/BriarwakeUnreal owns the newly versioned native bootstrap. Completion depends on scoped executed evidence rather than planning or historical engine results.",
-  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002/BW-003 and other gameplay epics remain Not Started. No connected Steam sessions, gameplay fixtures, persistence, capacity, Shipping or other-platform certification is implied. BW-002-T02 now has retained native canonical-compatibility and failure/recovery evidence at game 53370174224106a840f1a6fdc83f139804901fe9; parent AC2/AC3/AC5 and integrated admission remain open.",
+  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002 is In Progress; BW-003 and other gameplay epics remain Not Started. No connected Steam sessions, gameplay fixtures, persistence, capacity, Shipping or other-platform certification is implied. BW-002-T02 retains native canonical-compatibility and failure/recovery evidence at game 53370174224106a840f1a6fdc83f139804901fe9; T03 reruns compatibility against its expanded canonical closure. BW-002-T03 now has retained native static-admission and failure/recovery evidence at game dae6568df3d54bfae7d77ed21d94e9f92c00b08a; T01-T03 are Complete, while AC3/AC5 and T04-T07 readiness/economic/integration remain open.",
   "reading_guide": [
     "Each epic is one coherent, demonstrable capability with a permanent BW identifier, scope, hard prerequisites, acceptance criteria and required evidence. Phases group integration objectives derived from the dependency graph; they do not require every independent branch to wait for the previous phase.",
     "Navigate from the dashboard to a phase index, then open an individual epic page. Every epic has direct links to its prerequisites, downstream work, recommended sequence neighbors and numbered acceptance criteria. Existing dashboard and phase epic bookmarks lead to the same canonical epic page.",
@@ -277,7 +277,7 @@
       ],
       "status": "In Progress",
       "blockers": [],
-      "ordering_rationale": "2026-10-21: T01 and T02 are Complete. The retained responsibility map satisfies AC1; current canonical extraction, native encoding/round-trip/revision tests and failure/recovery controls satisfy AC4. T03-T07 remain Not Started: AC2 semantic/atomic content admission, AC3 unsupported binding/readiness rejection, AC5 owner-reviewed economic identity/provenance and full graph gate, plus integrated verification remain open. BW-002 stays Dependency-ready/In Progress and BW-003 remains ineligible.",
+      "ordering_rationale": "2026-10-21: T01-T03 are Complete. Authority review satisfies AC1, current native atomic semantic static admission satisfies AC2, and rerun compatibility preserves AC4. AC3 needs T04 readiness gates; AC5 needs T05 economic identity/provenance decisions and T06 full graph analysis. T07 integration remains unimplemented. Parent review is validation/tickets/BW-002-T03/parent-review.json. BW-002 stays In Progress/Dependency-ready; BW-003 remains ineligible.",
       "verified_evidence": [
         {
           "criteria": [
@@ -296,6 +296,15 @@
           "revision": "game 53370174224106a840f1a6fdc83f139804901fe9; source SHA-256 e2afc3d3fd9db3200d71fff708b0ab17ff7be665780ca187f9b453fd937281c6",
           "result": "Passed",
           "summary": "T02 native compatibility review: 22 canonical definitions reproduce; clean/recovery each execute 747 exact native checks preserving IDs, encodings, optional/null values and independent content/rules/synthetic-database revisions. Real assertion, missing/stale report and stale binary controls reject. AC2/AC3/AC5 and T07 integration remain unverified."
+        },
+        {
+          "criteria": [
+            2
+          ],
+          "artifact": "validation/tickets/BW-002-T03/review.json",
+          "revision": "game dae6568df3d54bfae7d77ed21d94e9f92c00b08a; tested source SHA-256 063f9d7a878ab5c6f5b69d9ce7fef20a7255ea6170bd4db47e3cf0d2bfad4a69",
+          "result": "Passed",
+          "summary": "T03 clean/recovery execute 1,284 native static-admission checks: complete candidate references, canonical targeting/resource/timing semantics, incompatible independent revision rejection and whole-selection A/reject-B/C publication. Unsupported activation stays disabled. Current compatibility (747) preserves AC4. AC3/AC5 and T07 integration remain open; this is not gameplay/economic execution."
         }
       ],
       "phase": "phase-foundations"
@@ -333,7 +342,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests. BW-002 T01/T02 now verify the authority review and canonical compatibility, but T03-T07 admission/binding/economic/integration gates remain unfinished. BW-003 and its tickets remain Not Started on this main-based task branch and are not Dependency-ready. Separate branch-specific native fixture work is preserved on docs/bw-003-t02-prerequisite-review; it is not imported or promoted by this T02 task.",
+      "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests. BW-002 T01/T02 verify the authority review and canonical compatibility; T03 adds static semantic/atomic admission. T04-T07 readiness, economic contracts/graph and integration remain unfinished. BW-003 and its tickets remain Not Started and not Dependency-ready. Historical branch-specific fixture work is preserved and is not imported or promoted by T03.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -6080,7 +6089,7 @@
       "id": "BW-002-T03",
       "parent_epic": "BW-002",
       "title": "Admit compatible packages atomically with semantic validation",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-2"
       ],
@@ -6156,33 +6165,59 @@
         {
           "label": "AbilityRuntimeBinding",
           "href": "guide/data-inventory.html#shared-AbilityRuntimeBinding"
+        },
+        {
+          "label": "TargetInputKind",
+          "href": "guide/data-inventory.html#shared-TargetInputKind"
+        },
+        {
+          "label": "AbilityTimingPolicy",
+          "href": "guide/data-inventory.html#ability-timing-policy"
+        },
+        {
+          "label": "EffectOperationDefinition",
+          "href": "guide/data-inventory.html#effect-operation-definition"
         }
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT. Planned and unverified until implementation:\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_content_admission.py --suite admission",
+        "launch": "Working directory: GAME_ROOT (the existing Git root containing Briarwake.uproject).\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_content_admission.py --suite admission",
         "setup": [
-          "All game commands run from GAME_ROOT: the verified Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal. DOCS_ROOT is its separate mmo_docs repository. Filesystem paths below are relative to their named repository; /Engine/Maps/Entry is an Unreal package reference, not a project filesystem map.",
-          "Inspection on 2026-10-21: game HEAD and fetched origin/main are 43998f9fcbcd76bc9f179a6bde2a43ef4994a962. The pinned UE 5.8.3 Launcher CL 58210709 and source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a are described by tools/toolchain.lock.json. Installed UnrealEditor-Cmd and source-engine Build.version exist; xcodebuild -version reports the pinned Xcode. No new native admission build or runtime test was run during planning.",
-          "Briarwake.Build.cs depends on Core/CoreUObject/Engine and private Json; Game/Editor/Client/Server targets exist. The supplied MultiplayerSessions project plugin declares OnlineSubsystem and OnlineSubsystemSteam enabled; it is not admission, authorization or persistence ownership. Content contains no project maps; bootstrap configuration uses /Engine/Maps/Entry. Pure admission tests require no authored world, Actor, widget, network provider or database.",
-          "Only FServerConfiguration and Briarwake.Baseline.ServerConfiguration/Execution are tracked baseline owners/tests. Untracked ContentAdmission/ContentContracts C++ files, tools/extract_content_contracts.py and fixtures/content_admission/contracts.snapshot.json are unfinished local drafts, not passing or published implementation. Preserve them, inspect applicability when executing, and transfer only task-scoped work onto a fresh main-based branch. Do not create duplicate owners or silently depend on another working tree.",
-          "Planned deliverables: editor/development-guarded Briarwake.ContentAdmission tests, committed synthetic fixture inputs outside Content, and tools/check_content_admission.py. Reuse existing check_baseline.py toolchain/source identity/process timeout support where suitable; its current test stage selects and verifies only Briarwake.Baseline, so it cannot certify the new suite unchanged. The new wrapper must verify exact discovered tests and real assertions/reports. Suite/control names below are proposed interfaces to implement and verify, not existing commands."
+          "Verified on 2026-10-21 with game dae6568df3d54bfae7d77ed21d94e9f92c00b08a, fetched/rechecked game main 7ff73b91ecda92dfadb136664e22d87e9882ccd1 and docs main e578c2b463724287dcbf2309d8b36c20e4f2e155. Tested source SHA-256 063f9d7a878ab5c6f5b69d9ce7fef20a7255ea6170bd4db47e3cf0d2bfad4a69. Early runs identify their original uncommitted changes; retained source-equivalence.json matches every tested source input to committed blobs.",
+          "Pinned installed UE 5.8.3 CL 58210709, Xcode 27.0 build 27A266a, macOS ARM64 Development. Game/Editor/Client/Server target rules exist; Editor/Game were built. Pure native tests use engine /Engine/Maps/Entry and need no authored map, editor MCP bridge, provider or database. Current source-Server/package/connected-peer checks were not run for T03.",
+          "Use only the existing game workspace and nested mmo_docs checkout. No worktrees, clones or whole-project test snapshots; do not use the historical verify_baseline.py runner. Keep generated outputs under artifacts and preserve existing outputs/user work.",
+          "FContentContracts extracts 22 roots/48 local definitions. FContentAdmission owns bounded staging and single static-selection publication; it reuses FContentCompatibility exact server-supported tuples and FromConfiguration content/rules values. Supported static families are AbilityDefinition, AbilityTargetingPolicy (keyed by mode), ResourceDefinition, ResourceGainRule and CooldownDefinition; DAMAGE/HEAL records only. External identities/policies are explicit server inputs; no candidate can grant itself support.",
+          "fixtures/content_admission/admission.json has 140 immutable ContentValidationFixture specifications and candidate inputs, including the canonical 21-mode/84-input matrix. Authored run_evidence remains unexecuted. Native actual ContentValidationResult records and admitted decisions are separately retained in native/admission.json. All runtime/economic activation is rejected pending T04-T06."
         ],
         "actions": [
-          "Run the launch block; inspect the positive static package and each expected/actual native finding. Shuffle family/record order in disposable candidate copies and rerun.",
-          "Exercise each committed unknown/duplicate/reference, targeting, resource and version mutation. Inspect selected IDs/revisions before and after A/reject-B/C without restarting the owner between those cases.",
-          "Try malformed/oversized/deep inputs and explicit unsupported ability/economic activation. Run --control assertion-failure and a clean recovery."
+          "Run the launch block into a fresh output. Inspect run.json, automation/index.json and native/admission.json. The exact test is Briarwake.ContentAdmission.Admission.AtomicPackages with 1,284 expected native checks. Successful static candidates match exact IDs/data/versions; reversed family/record order and forward references pass.",
+          "Review the executed unknown/duplicate/wrong-case/cross-namespace/missing reference, targeting, resource cap/alias/gain, timing, independent version and unsupported operation/family/activation cases. Each owner admits A, attempts B, checks complete state preservation on rejection, and publishes C once. Bounds cover file/payload, depth, tokens, strings, collection and total records.",
+          "Run python3 tools/check_content_admission.py --suite admission --control assertion-failure; then --control missing-report; then --control stale-report --prior-report <first-pass-output>/native/admission.json; then --control stale-binary. Each must return nonzero. The stale-binary control changes only its owned temporary marker and prevents runtime execution. Retained actual commands/paths/results are in validation/tickets/BW-002-T03/verification-pipeline.json and per-run records.",
+          "Run a new clean --suite admission for independent recovery. Run --suite compatibility (747 checks), python3 tools/check_baseline.py test, python3 tools/check_baseline.py build --target Briarwake and python3 -m unittest discover -s tools -p 'test_*.py'. Use TMPDIR under artifacts/tmp for Python temporary fixtures. Run all eight README documentation rebuild/check commands from DOCS_ROOT."
         ],
         "expected_results": [
-          "Compatible supported static content loads; all invalid cases reject before publication, independently of load order.",
-          "Rejected candidates preserve A exactly and controls cannot fabricate a pass; executable/economic routes remain gated."
+          "Both clean admission runs pass 1,284 actual checks; all invalid candidates reject before publication, leave the full prior selection/revisions unchanged, and produce inspectable canonical findings. No valid subset is published after a rejected request.",
+          "Actual assertion failure is Executed/Failed. Missing/stale reports fail verification, stale binaries stay Not Executed, and fresh recovery passes. Current compatibility/baseline/build/Python/docs checks pass without claiming gameplay handlers, economic safety, production readiness or new packaged-runtime evidence."
         ],
         "reset": [
-          "Run only against committed synthetic inputs and disposable negative-control copies. Each invocation uses a fresh output directory and rejects an existing output; preserve all prior reports, canonical definitions, user edits and assets.",
-          "Bound native child execution, stop only owned process groups on timeout and release candidate/test state after each case. A rejected candidate preserves the previous active selection. Recover by running clean into a new output, without resetting the checkout or changing shared engines."
+          "Each wrapper run creates a fresh output and rejects an existing directory. Preserve prior reports. Allow bounded owned child processes to exit; the wrappers terminate only their process groups on timeout.",
+          "Fixture owners are local to each case; no live world/database/assets are changed. Tests remove only their owned temporary admission file, and stale-binary removes only its unique marker. Never reset, clean, stash, overwrite user work, create another checkout or modify shared engines to recover."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T03/review.json",
+          "revision": "game dae6568df3d54bfae7d77ed21d94e9f92c00b08a; tested source SHA-256 063f9d7a878ab5c6f5b69d9ce7fef20a7255ea6170bd4db47e3cf0d2bfad4a69",
+          "result": "Passed",
+          "summary": "Clean and independent recovery each execute 1,284 native checks over 140 immutable fixtures, including all 84 canonical targeting branches, complete reference/resource/timing checks, bounded inputs/file ingestion and exact A/reject-B/C publication. Actual findings are separate from expectations; all activation stays disabled. Assertion failure, missing/stale reports and stale binaries reject; current compatibility (747), baseline tests, Editor/Game builds and 16 Python regressions pass. Early dirty-run identities match committed blobs; T04-T07 remain separate."
+        }
+      ]
     },
     {
       "id": "BW-002-T04",
@@ -6252,10 +6287,10 @@
         "launch": "Working directory: GAME_ROOT. Planned and unverified until implementation:\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_content_admission.py --suite bindings",
         "setup": [
           "All game commands run from GAME_ROOT: the verified Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal. DOCS_ROOT is its separate mmo_docs repository. Filesystem paths below are relative to their named repository; /Engine/Maps/Entry is an Unreal package reference, not a project filesystem map.",
-          "Inspection on 2026-10-21: game HEAD and fetched origin/main are 43998f9fcbcd76bc9f179a6bde2a43ef4994a962. The pinned UE 5.8.3 Launcher CL 58210709 and source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a are described by tools/toolchain.lock.json. Installed UnrealEditor-Cmd and source-engine Build.version exist; xcodebuild -version reports the pinned Xcode. No new native admission build or runtime test was run during planning.",
+          "T03 inspected game origin/main 7ff73b91ecda92dfadb136664e22d87e9882ccd1 and docs origin/main e578c2b463724287dcbf2309d8b36c20e4f2e155. The pinned installed UE 5.8.3 CL 58210709, source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a remain in tools/toolchain.lock.json. T03 retained its own native/build evidence; this ticket has not executed.",
           "Briarwake.Build.cs depends on Core/CoreUObject/Engine and private Json; Game/Editor/Client/Server targets exist. The supplied MultiplayerSessions project plugin declares OnlineSubsystem and OnlineSubsystemSteam enabled; it is not admission, authorization or persistence ownership. Content contains no project maps; bootstrap configuration uses /Engine/Maps/Entry. Pure admission tests require no authored world, Actor, widget, network provider or database.",
-          "Only FServerConfiguration and Briarwake.Baseline.ServerConfiguration/Execution are tracked baseline owners/tests. Untracked ContentAdmission/ContentContracts C++ files, tools/extract_content_contracts.py and fixtures/content_admission/contracts.snapshot.json are unfinished local drafts, not passing or published implementation. Preserve them, inspect applicability when executing, and transfer only task-scoped work onto a fresh main-based branch. Do not create duplicate owners or silently depend on another working tree.",
-          "Planned deliverables: editor/development-guarded Briarwake.ContentAdmission tests, committed synthetic fixture inputs outside Content, and tools/check_content_admission.py. Reuse existing check_baseline.py toolchain/source identity/process timeout support where suitable; its current test stage selects and verifies only Briarwake.Baseline, so it cannot certify the new suite unchanged. The new wrapper must verify exact discovered tests and real assertions/reports. Suite/control names below are proposed interfaces to implement and verify, not existing commands."
+          "Current main-based implementation now contains FServerConfiguration, FContentContracts/FContentRevisions and the T03 FContentAdmission static candidate/publication owner. Compatibility and admission suites use tools/check_content_admission.py with committed synthetic inputs outside Content. Gameplay handlers, readiness evidence and economic graph admission remain absent; unsupported activation rejects. Reuse these owners rather than introducing parallel definitions or importing historical drafts.",
+          "Reuse the Editor/development-guarded Briarwake.ContentAdmission tests, immutable fixtures and bounded tools/check_content_admission.py wrapper. --suite compatibility and --suite admission exist after T03; other suite names in this ticket remain planned until implemented. The wrapper verifies exact discovery, assertions and nonce/source/snapshot/corpus/module identities. The baseline runner independently selects Briarwake.Baseline. Never use the historical whole-project snapshot runner under the current workspace storage policy."
         ],
         "actions": [
           "Run the launch block with the committed legacy/unbound/unsupported and finite test-capability fixtures. Inspect exact rejection findings and active selection.",
@@ -6452,10 +6487,10 @@
         "launch": "Working directory: GAME_ROOT. Planned and unverified until implementation:\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_content_admission.py --suite economy",
         "setup": [
           "All game commands run from GAME_ROOT: the verified Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal. DOCS_ROOT is its separate mmo_docs repository. Filesystem paths below are relative to their named repository; /Engine/Maps/Entry is an Unreal package reference, not a project filesystem map.",
-          "Inspection on 2026-10-21: game HEAD and fetched origin/main are 43998f9fcbcd76bc9f179a6bde2a43ef4994a962. The pinned UE 5.8.3 Launcher CL 58210709 and source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a are described by tools/toolchain.lock.json. Installed UnrealEditor-Cmd and source-engine Build.version exist; xcodebuild -version reports the pinned Xcode. No new native admission build or runtime test was run during planning.",
+          "T03 inspected game origin/main 7ff73b91ecda92dfadb136664e22d87e9882ccd1 and docs origin/main e578c2b463724287dcbf2309d8b36c20e4f2e155. The pinned installed UE 5.8.3 CL 58210709, source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a remain in tools/toolchain.lock.json. T03 retained its own native/build evidence; this ticket has not executed.",
           "Briarwake.Build.cs depends on Core/CoreUObject/Engine and private Json; Game/Editor/Client/Server targets exist. The supplied MultiplayerSessions project plugin declares OnlineSubsystem and OnlineSubsystemSteam enabled; it is not admission, authorization or persistence ownership. Content contains no project maps; bootstrap configuration uses /Engine/Maps/Entry. Pure admission tests require no authored world, Actor, widget, network provider or database.",
-          "Only FServerConfiguration and Briarwake.Baseline.ServerConfiguration/Execution are tracked baseline owners/tests. Untracked ContentAdmission/ContentContracts C++ files, tools/extract_content_contracts.py and fixtures/content_admission/contracts.snapshot.json are unfinished local drafts, not passing or published implementation. Preserve them, inspect applicability when executing, and transfer only task-scoped work onto a fresh main-based branch. Do not create duplicate owners or silently depend on another working tree.",
-          "Planned deliverables: editor/development-guarded Briarwake.ContentAdmission tests, committed synthetic fixture inputs outside Content, and tools/check_content_admission.py. Reuse existing check_baseline.py toolchain/source identity/process timeout support where suitable; its current test stage selects and verifies only Briarwake.Baseline, so it cannot certify the new suite unchanged. The new wrapper must verify exact discovered tests and real assertions/reports. Suite/control names below are proposed interfaces to implement and verify, not existing commands."
+          "Current main-based implementation now contains FServerConfiguration, FContentContracts/FContentRevisions and the T03 FContentAdmission static candidate/publication owner. Compatibility and admission suites use tools/check_content_admission.py with committed synthetic inputs outside Content. Gameplay handlers, readiness evidence and economic graph admission remain absent; unsupported activation rejects. Reuse these owners rather than introducing parallel definitions or importing historical drafts.",
+          "Reuse the Editor/development-guarded Briarwake.ContentAdmission tests, immutable fixtures and bounded tools/check_content_admission.py wrapper. --suite compatibility and --suite admission exist after T03; other suite names in this ticket remain planned until implemented. The wrapper verifies exact discovery, assertions and nonce/source/snapshot/corpus/module identities. The baseline runner independently selects Briarwake.Baseline. Never use the historical whole-project snapshot runner under the current workspace storage policy."
         ],
         "actions": [
           "Confirm T05 decisions and canonical snapshots match; run the launch block against committed safe and unsafe full enabled graphs. Inspect actual native findings and implicated route identities.",
@@ -6557,10 +6592,10 @@
         "launch": "Working directory: GAME_ROOT. Planned and unverified until implementation:\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_content_admission.py --suite all",
         "setup": [
           "All game commands run from GAME_ROOT: the verified Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal. DOCS_ROOT is its separate mmo_docs repository. Filesystem paths below are relative to their named repository; /Engine/Maps/Entry is an Unreal package reference, not a project filesystem map.",
-          "Inspection on 2026-10-21: game HEAD and fetched origin/main are 43998f9fcbcd76bc9f179a6bde2a43ef4994a962. The pinned UE 5.8.3 Launcher CL 58210709 and source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a are described by tools/toolchain.lock.json. Installed UnrealEditor-Cmd and source-engine Build.version exist; xcodebuild -version reports the pinned Xcode. No new native admission build or runtime test was run during planning.",
+          "T03 inspected game origin/main 7ff73b91ecda92dfadb136664e22d87e9882ccd1 and docs origin/main e578c2b463724287dcbf2309d8b36c20e4f2e155. The pinned installed UE 5.8.3 CL 58210709, source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a remain in tools/toolchain.lock.json. T03 retained its own native/build evidence; this ticket has not executed.",
           "Briarwake.Build.cs depends on Core/CoreUObject/Engine and private Json; Game/Editor/Client/Server targets exist. The supplied MultiplayerSessions project plugin declares OnlineSubsystem and OnlineSubsystemSteam enabled; it is not admission, authorization or persistence ownership. Content contains no project maps; bootstrap configuration uses /Engine/Maps/Entry. Pure admission tests require no authored world, Actor, widget, network provider or database.",
-          "Only FServerConfiguration and Briarwake.Baseline.ServerConfiguration/Execution are tracked baseline owners/tests. Untracked ContentAdmission/ContentContracts C++ files, tools/extract_content_contracts.py and fixtures/content_admission/contracts.snapshot.json are unfinished local drafts, not passing or published implementation. Preserve them, inspect applicability when executing, and transfer only task-scoped work onto a fresh main-based branch. Do not create duplicate owners or silently depend on another working tree.",
-          "Planned deliverables: editor/development-guarded Briarwake.ContentAdmission tests, committed synthetic fixture inputs outside Content, and tools/check_content_admission.py. Reuse existing check_baseline.py toolchain/source identity/process timeout support where suitable; its current test stage selects and verifies only Briarwake.Baseline, so it cannot certify the new suite unchanged. The new wrapper must verify exact discovered tests and real assertions/reports. Suite/control names below are proposed interfaces to implement and verify, not existing commands."
+          "Current main-based implementation now contains FServerConfiguration, FContentContracts/FContentRevisions and the T03 FContentAdmission static candidate/publication owner. Compatibility and admission suites use tools/check_content_admission.py with committed synthetic inputs outside Content. Gameplay handlers, readiness evidence and economic graph admission remain absent; unsupported activation rejects. Reuse these owners rather than introducing parallel definitions or importing historical drafts.",
+          "Reuse the Editor/development-guarded Briarwake.ContentAdmission tests, immutable fixtures and bounded tools/check_content_admission.py wrapper. --suite compatibility and --suite admission exist after T03; other suite names in this ticket remain planned until implemented. The wrapper verifies exact discovery, assertions and nonce/source/snapshot/corpus/module identities. The baseline runner independently selects Briarwake.Baseline. Never use the historical whole-project snapshot runner under the current workspace storage policy."
         ],
         "actions": [
           "Run the launch block twice into fresh outputs. Inspect every discovered native suite/assertion, boundary-map revision, canonical fingerprints and active selection across good/rejected replacements.",
