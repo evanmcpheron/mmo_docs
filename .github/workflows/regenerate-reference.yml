@@ -15,6 +15,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Rebuild from canonical sources
         run: |
           python3 scripts/build_development_roadmap.py
@@ -34,6 +37,8 @@ jobs:
           python3 validation/check_data_inventory.py
           python3 -m unittest discover -s validation -p 'test_*.py'
           python3 validation/run_checks.py
+      - name: Validate offline browser navigation and rendering
+        run: node validation/check_inventory_browser.mjs
       - name: Commit generated pages and validation record
         run: |
           git config user.name "github-actions[bot]"
