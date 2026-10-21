@@ -340,22 +340,22 @@
     {
       "id": "BW-097",
       "title": "Orthographic camera and visual-readability proof",
-      "objective": "Verify angled orthographic framing, usable camera-to-world input and the selected 3D art direction in a small future Unreal Engine 5 reference scene before scaling art production.",
-      "scope": "A reproducible Unreal Engine 5 native C++ 3D reference scene with angled orthographic framing, camera movement, representative character/environment assets, world picking, readable independent UI and baseline visual-performance checks. Full art production follows separately.",
+      "objective": "Verify a character-following camera that starts in an elevated angled orthographic view, smoothly scrolls into a close third-person perspective, and orbits the character on middle-mouse drag, while preserving readable 3D gameplay and world picking.",
+      "scope": "A reproducible Unreal Engine 5 native C++ 3D reference scene with an elevated, angled orthographic default camera; scroll-wheel zoom that lowers and tilts toward a close, behind-character third-person view; reverse zoom back to the original overview; and held middle-mouse drag to orbit the camera around the controlled character. Include representative character/environment assets, camera-to-world picking, independently scaled UI and baseline visual-performance checks. This is camera presentation only; full art production and any changes to authoritative movement or aim are out of scope.",
       "hard_dependencies": [
         "BW-001",
         "BW-003"
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
-        "A reproducible Unreal Engine 5 native C++ reference scene records the tested engine/toolchain, camera configuration, target hardware and supported display settings; no previous game implementation is assumed.",
-        "Angled orthographic framing, zoom and aspect/window policies keep the playable floor, characters and separately scaled UI readable across supported window sizes and high-DPI displays.",
-        "Stationary, following and diagonally moving camera tests show continuous motion, readable characters and stable ground-target previews without changing authoritative movement or aim.",
-        "Representative models, equipment and terrain are reviewed at gameplay distances for consistent art proportions, legible silhouettes, clear target markers and hazards in bright and dark scenes.",
-        "Camera movement, zoom, resizing, occluding geometry and layered-floor views preserve valid world picking and targeting; hidden and cross-floor entities are never disclosed through the view.",
-        "Versioned reference scenes reproduce on declared target configurations; still/motion captures document readability and accessibility findings, CPU/GPU frame cost, memory and supported-quality decisions."
+        "A reproducible Unreal Engine 5 native C++ reference scene records the tested engine/toolchain, default and close-view camera settings, scroll and middle-mouse input mappings, target hardware and supported display settings; no previous game implementation is assumed.",
+        "At the default zoom, an angled top-down orthographic view follows the controlled character and keeps the playable floor, targets and independently scaled UI readable across supported window sizes and high-DPI displays. Scrolling inward moves toward a close, behind-character third-person perspective; scrolling outward returns to the elevated orthographic view with no abrupt camera jump or loss of focus.",
+        "Holding middle mouse and dragging horizontally orbits the camera around the controlled character; vertical dragging changes pitch within safe limits. Releasing middle mouse stops orbit. Stationary, following and diagonally moving tests confirm smooth yaw/pitch, continuous scroll transitions and stable character framing without rotating, moving or re-aiming the character through camera input.",
+        "Representative models, equipment and terrain are reviewed at elevated and third-person gameplay distances for consistent art proportions, legible silhouettes, clear target markers and hazards in bright and dark scenes.",
+        "Camera zoom, projection transition, orbit, resizing, occluding geometry, UI-captured pointer input and layered-floor views preserve valid world picking and ground-target previews. Hidden and cross-floor entities are never disclosed, and camera presentation never alters authoritative movement or aim.",
+        "Versioned reference scenes reproduce on declared target configurations; still/motion captures document both views, scroll/orbit behavior, readability and accessibility findings, CPU/GPU frame cost, memory and supported-quality decisions."
       ],
-      "completion_evidence": "Versioned reference scene and camera/display settings, representative visual comparisons, world-picking and readability test evidence, captured motion and measured performance. No finished game renderer or production asset library is implied.",
+      "completion_evidence": "Versioned reference scene and camera/input/display settings, captured scroll transitions and middle-mouse orbit in both viewpoints, representative visual comparisons, world-picking/occlusion and readability tests, and measured performance. No finished game renderer or production asset library is implied.",
       "related_docs": [
         {
           "label": "Selected 3D pixel-art direction",
@@ -380,7 +380,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "Verify orthographic framing, display behavior and camera-to-world input early while server development remains independent. Do not prescribe a specialized rendering technique.",
+      "ordering_rationale": "Verify zoomable orthographic-to-third-person framing, orbit controls, display behavior and camera-to-world input early while server development remains independent. Do not prescribe a specialized rendering technique.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -4472,9 +4472,9 @@
     {
       "id": "decision-rendering",
       "title": "Camera and art foundations before asset volume",
-      "choice": "Verify angled orthographic framing, world picking and visual readability alongside headless development; establish repeatable art import conventions before starter production and certify complete environments and assets before release.",
+      "choice": "Verify the elevated orthographic-to-third-person camera transition, middle-mouse orbit, world picking and visual readability alongside headless development; establish repeatable art import conventions before starter production and certify complete environments and assets before release.",
       "alternatives": "Deferring camera and artwork checks until final polish risks unusable input projection and inconsistent assets. The camera and art reviews should remain limited to observable readability, compatibility and performance rather than assuming a particular rendering technique.",
-      "basis": "The visual goal is low-resolution pixel-art-inspired 3D with an angled orthographic camera. Reference art is illustrative, not a prescribed technical implementation. Camera, asset and performance decisions do not change simulation authority, movement or wire encodings.",
+      "basis": "The visual goal is low-resolution pixel-art-inspired 3D with an elevated angled orthographic default view that zooms into behind-character third-person perspective. Middle-mouse drag orbits the camera without affecting the character's authoritative state. Reference art is illustrative, not a prescribed technical implementation; camera, asset and performance decisions do not change simulation authority, movement or wire encodings.",
       "epics": [
         "BW-097",
         "BW-098",
@@ -5200,7 +5200,7 @@
       "id": "open-rendering",
       "title": "Camera, asset conventions and supported visual quality",
       "kind": "Open decision",
-      "description": "Pin the tested Unreal Engine version and supported platforms, orthographic pitch/framing, zoom, aspect/minimum-window policy, model/material/animation conventions, environment presentation and client performance budgets. These choices require evidence; no fixed dimensions or special rendering technique is implied.",
+      "description": "Pin the tested Unreal Engine version and supported platforms, orthographic starting pitch/framing, third-person camera distance/pitch and projection-transition policy, scroll and middle-mouse orbit sensitivity/limits, aspect/minimum-window policy, model/material/animation conventions, environment presentation and client performance budgets. The camera behaviors are requirements; numerical tuning requires evidence, and no specialized rendering technique is implied.",
       "resolution_gate": "BW-097 verifies the camera/readability and display baseline; BW-098 establishes repeatable asset conventions; BW-099 reviews complete environments; BW-074/BW-090 approve release visual accessibility and performance across supported quality tiers.",
       "epics": [
         "BW-097",
