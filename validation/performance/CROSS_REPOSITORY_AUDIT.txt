@@ -56,3 +56,7 @@ that deliberate probe after the infrastructure commit, FAST passed in 24.305s
 (53.6% less than this audit's 52.374s FULL; 76.2% less than the retained 101.975s
 original workflow). Scope, commands, durations and explicit deferrals are in
 cross-repository-audit/fast.json. No comprehensive result is inferred from FAST.
+
+Concurrency groups use the PR number for PRs and a unique run ID otherwise.
+This preserves main/manual runs even when several commits queue concurrently;
+cancel-in-progress=false alone would still coalesce older pending runs.
