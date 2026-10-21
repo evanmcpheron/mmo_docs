@@ -1,13 +1,13 @@
 ---
 name: split-epic
-description: Split a Briarwake epic URL into tightly scoped tickets with acceptance criteria and manual tests, published in this documentation site.
+description: Split a Briarwake Unreal Engine 5 C++ roadmap epic into narrowly scoped, testable planning tickets without assuming a game repository exists.
 ---
 
 # Split an epic
 
-1. Read the supplied epic URL, its prerequisites, linked contracts and existing tickets. Use local sources when available. Inspect the Godot implementation in `../briarwake` so tickets reflect what actually exists.
-2. If any epic specifics are ambiguous, missing or conflicting, ask the user to clarify instead of assuming. Wait for the answer before finalizing affected tickets; continue planning the clear, independent parts meanwhile.
-3. Split the epic into small, independently verifiable behaviors in dependency order. Each ticket needs a title, parent epic link, exact epic AC links (`BW-NNN-AC-N`), scope boundaries, dependencies and observable acceptance criteria. Together, the tickets must cover every epic criterion. Preserve existing IDs and update existing tickets instead of duplicating them.
-4. Where manual testing applies, include the scene or launch command, setup, actions, expected results and reset steps. Include necessary scene objects, fixtures, test data or controls in the ticket's implementation scope so execution leaves the test ready to run. Reuse existing test scenes where practical. Otherwise, state briefly why manual testing does not apply.
-5. Store tickets in `sources/development-roadmap.json`, initially `Not Started`, using stable IDs such as `BW-001-T01`. Generate a page per ticket, linked both ways with its epic. Extend the existing builder and validator minimally if ticket support is missing; never hand-edit generated HTML.
-6. Rebuild and run the relevant checks from `README.txt`, then return the ticket links in execution order. Planning alone does not complete the epic.
+1. Read the supplied epic, linked gameplay and data contracts, hard prerequisites, existing tickets, and repository instructions. This is the planning/documentation repository. The Unreal project and its separate implementation repository do not currently exist; do not inspect or invent one.
+2. Clarify only decisions that materially change a ticket's contract. Distinguish confirmed requirements from future selections of the pinned Unreal Engine 5 revision, compiler/platform, and replication plugins.
+3. Split the epic into small, independently demonstrable behaviors in dependency order. Give each ticket a stable ID, parent epic, exact `BW-NNN-AC-N` links, boundaries, dependencies, observable acceptance criteria, and evidence expectations. Preserve existing ticket and epic IDs; cover all parent criteria without duplication.
+4. Where manual tests apply, specify their intended dedicated-server/client configuration, setup, actions, observations, negative cases and cleanup as **future instructions**. Do not invent build paths, engine commands, local environments or successful test results. Documentation-only tickets require documentation-appropriate verification.
+5. Store ticket planning in `sources/development-roadmap.json` with `Not Started` status and no claimed implementation evidence. Use the existing generator and validators; only extend them if ticket support is actually required.
+6. Rebuild, check links/search and report planning changes and generated ticket links. Splitting tickets is not implementation, and execution stays gated on the user providing a real game repository and verified project setup.
