@@ -8,7 +8,7 @@ This repository is the gameplay design, data-contract and development-roadmap re
 - `sources/development-roadmap.json` owns epics, dependencies, acceptance criteria, status and implementation evidence. `scripts/build_development_roadmap.py` owns its generated HTML.
 - `sources/data-inventory.json` owns canonical gameplay schemas, enums, interfaces and review fingerprints. `scripts/build_data_inventory.py` owns inventory sections, search, navigation, schema outputs and manifest.
 - Change canonical sources before rebuilding generated files; commit source and generated outputs together. Maintain existing IDs, AC anchors, links, gameplay semantics and approved visual direction.
-- This is a new engine foundation, never an engine-migration task. No prior implementation or runtime results may be treated as existing game work.
+- Unreal Engine 5 C++ is the initial technical foundation. No prior game implementation or runtime results may be treated as existing work.
 
 ## Future game implementation boundary
 
