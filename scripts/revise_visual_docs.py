@@ -109,7 +109,8 @@ write("guide/sources.html", sources)
 readme = read("README.txt")
 readme = replace_once(
     readme,
-    "Roystan’s outline tutorial and the t3ssel8r channel supplement that reference.",
+    "Roystan’s outline tutorial\n"
+    "and the t3ssel8r channel supplement that reference.",
     "The t3ssel8r channel supplies supplementary art-direction references.",
     "README art sources",
 )
