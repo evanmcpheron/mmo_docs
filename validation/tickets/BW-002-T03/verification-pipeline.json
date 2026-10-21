@@ -1,0 +1,101 @@
+[
+  {
+    "label": "admission-missing",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_content_admission.py",
+      "--suite",
+      "admission",
+      "--control",
+      "missing-report",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-002-t03-admission-missing"
+    ],
+    "exit_status": 1,
+    "expected_exit": 1
+  },
+  {
+    "label": "admission-stale",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_content_admission.py",
+      "--suite",
+      "admission",
+      "--control",
+      "stale-report",
+      "--prior-report",
+      "artifacts/bw-002-t03-admission-pass/native/admission.json",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-002-t03-admission-stale"
+    ],
+    "exit_status": 1,
+    "expected_exit": 1
+  },
+  {
+    "label": "admission-stale-binary",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_content_admission.py",
+      "--suite",
+      "admission",
+      "--control",
+      "stale-binary",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-002-t03-admission-stale-binary"
+    ],
+    "exit_status": 1,
+    "expected_exit": 1
+  },
+  {
+    "label": "admission-recovery",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_content_admission.py",
+      "--suite",
+      "admission",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-002-t03-admission-recovery"
+    ],
+    "exit_status": 0,
+    "expected_exit": 0
+  },
+  {
+    "label": "compatibility",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_content_admission.py",
+      "--suite",
+      "compatibility",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-002-t03-compatibility"
+    ],
+    "exit_status": 0,
+    "expected_exit": 0
+  },
+  {
+    "label": "baseline",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_baseline.py",
+      "test",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-002-t03-baseline"
+    ],
+    "exit_status": 0,
+    "expected_exit": 0
+  },
+  {
+    "label": "game-build",
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_baseline.py",
+      "build",
+      "--target",
+      "Briarwake",
+      "--output",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-002-t03-game-build"
+    ],
+    "exit_status": 0,
+    "expected_exit": 0
+  }
+]
