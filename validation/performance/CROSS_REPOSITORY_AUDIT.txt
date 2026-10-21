@@ -1,0 +1,50 @@
+CROSS-REPOSITORY VALIDATION AUDIT — 2026-10-21
+
+Documentation base: 0562b07108d1581df94e47eda988fef2697c9ec5.
+Game base: 21519157daddfd13f1eaf4f814b8c111d722ae42.
+Both existing checkouts were accessible and initially clean. Documentation was
+on the already merged perf/validation-workflow branch; the new task branch starts
+from fetched origin/main. The correct game is BriarwakeUnreal at the workspace
+root, not the older Briarwake repository.
+
+The existing RESULTS.txt, profiles, negative controls and scenario evidence record
+the 69.905s passing Python baseline, immutable content-keyed cache optimizations,
+101.975s original complete workflow and 47.292s optimized FULL. Roadmap, schema and
+shipped-data FAST scenarios already exceeded the 50% reduction target. No part of
+that implementation or its assertions is replaced by this follow-up.
+
+This audit re-executed default FULL before and after instruction/CI changes.
+The baseline was 56.274s; the final run was 52.374s. Both ran 92 Python regressions,
+243 aggregate checks, four browser process regressions and 296 browser assertions,
+plus tracked engine-artifact auditing. Stage times and exact commands/revisions
+are in cross-repository-audit/{baseline,final}.json. Concurrent native investigation
+ran during these measurements, so their difference is observational noise, not a
+claimed algorithmic improvement. Existing profiles and slow-test evidence remain
+in performance/; this task does not add a cache or change schema/test semantics.
+
+The standalone validators and builder freshness checks are already included in
+the read-only aggregate. CI still executes all five FULL stages, without path
+filters. The only CI execution change cancels superseded PR runs while retaining
+every main push. GitHub Actions 39673191754 passed the merged optimization's PR
+check (68s job; 59s FULL step). Main run 39673732565 also passed (75s job; 69s FULL
+step). Checkout/setup cost was about three seconds; native compilation, engine
+startup and cooking are not performed or claimed in documentation CI.
+
+Every existing mutation-based negative regression still executes in FULL. They
+cover malformed contracts/schemas, dependency cycles/unknown IDs, missing evidence,
+stale generated outputs, review fingerprints and missing anchors. Existing retained
+negative-controls/results.json additionally records actual FAST and FULL nonzero
+rejections of invalid combined repository states. Selection regressions still
+cover branch/index/worktree/untracked/rename/delete paths and shared-infrastructure
+fallback. No tests or assertions, canonical data, criteria or gameplay changed.
+
+The separate game PR updates the authoritative workspace skills to replace their
+obsolete duplicate documentation command chain with generation once, iterative
+FAST and final FULL. The documentation PR also clarifies reuse of unchanged
+successful evidence and keeps repository ownership accurate. The game runner is
+independent; its native checks do not depend on the documentation CI result.
+
+Python 3.14.0, Node 24.10.0 and installed Chrome ran locally on macOS 27 ARM64,
+Apple M2 Max, 32 GiB. Python 3.12/Node 22 remain the comprehensive CI environment.
+No engines, plugins or dependencies were installed or updated. Native multiplayer,
+replication and persistence are outside documentation verification.

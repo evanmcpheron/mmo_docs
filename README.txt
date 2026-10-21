@@ -352,3 +352,16 @@ The supplied MultiplayerSessions Steam plugin is included in the game repository
 and has compile/widget evidence. Its connected-session, provider and replication
 capabilities require separate verification; the documentation installs no plugin.
 An implementation ticket cannot be executed, tested, or marked Complete until a real game repository and reproducible runtime evidence exist.
+
+CROSS-REPOSITORY VALIDATION
+The workspace game checkout owns skills/execute-ticket and skills/split-epic.
+Those skills must use this repository's FAST/FULL entrypoint after explicit
+source generation; standalone validators remain useful for diagnosing failures.
+Documentation checks do not build or test the game. Run the game's own validation
+from its verified Git root when implementation changes require it.
+
+The documentation CI job always runs FULL. A newer commit to the same PR cancels
+its superseded validation run; main pushes and manual runs are retained. This
+removes duplicate work without selecting fewer checks on the latest revision.
+Native Unreal verification belongs on the pinned game toolchain, never on the
+strength of a successful documentation or Python-only CI job.
