@@ -56,8 +56,8 @@ prototype proposals, not verified game balance. Named secondary ability effects
 and many inherited talent behaviors still require explicit runtime binding.
 Read guide/audit.html before treating this as implementation-ready game content.
 The native Unreal C++ bootstrap is versioned in evanmcpheron/BriarwakeUnreal.
-BW-001-T08 records actual client/build/configuration/inspection evidence; dedicated
-server verification remains active. Gameplay fixtures, production database, economy,
+BW-001-T08 records completed native client/server bootstrap verification for the
+pinned macOS ARM64 Development matrix. Gameplay fixtures, production database, economy,
 connected Steam sessions and capacity remain unverified.
 
 VALIDATION
@@ -92,8 +92,8 @@ cover milestones, architectural decisions, feature coverage and progress upkeep.
 Use the roadmap navigation on any of these pages to move between them. Existing
 overview- and phase-page epic anchors remain links to the corresponding epic pages.
 It is planning/reference documentation; it adds no canonical gameplay contracts.
-All epic statuses begin Not Started because this repository contains design
-evidence, not verified game implementation.
+Epics begin Not Started. Live status changes require retained, scoped execution
+evidence from the separately versioned game implementation.
 
 Open guide/roadmap-audit.html for the independent 17 October 2026 audit of all
 92 original epics, ten findings, applied corrections and the remaining rated-entry
@@ -120,9 +120,12 @@ The owner selected evanmcpheron/BriarwakeUnreal; its task branch includes the su
 engineering docs and MultiplayerSessions Steam plugin. Actual Editor/Game builds,
 native configuration/execution tests, menu Blueprint compilation, packaged-client
 launch, decoded-Pak inspection and clean pass/failure/recovery controls are retained.
-The source-engine Server build and remaining package/smoke checks are still active,
-so BW-001/T08 remain In Progress. BW-002/BW-003 remain Not Started; BW-003 is not
-Dependency-ready. See the registry and BW-001 evidence for exact scope and revisions.
+BW-001/T08 are Complete: the final source Server package runs headlessly outside
+the source tree, checks three ticks and rejects missing/invalid configuration.
+Exact artifact/source identities, clean execution controls and limitations are in
+validation/tickets/BW-001-T08/final/review.json. BW-002/BW-003 remain Not Started.
+BW-002 is the sole Dependency-ready epic; BW-003 still requires BW-002. Generated
+views own readiness and milestone calculations.
 
 Store tickets in the registry's tickets list with stable IDs, parent_epic,
 exact epic_criteria anchors, dependencies, scope, out_of_scope, observable
@@ -282,7 +285,10 @@ No branding or name in this reference has received a legal clearance review.
 
 UNREAL ENGINE 5 PROJECT BOUNDARY
 This repository is the authoritative gameplay and planning reference, not the game source.
-Create a separate native C++ Unreal Engine 5 project and repository in a later task; do not invent or assume its location.
-Before implementation, select and pin the engine revision, supported C++ compiler/toolchain and platforms.
-The owner has replication plugins available, but names, licensing, supported engine revisions and capabilities require verification before design or integration; none is installed or configured here.
+The owner-selected native C++ implementation is evanmcpheron/BriarwakeUnreal,
+with its pinned engine/compiler/target matrix and executed BW-001 evidence.
+Reverify the actual Git root and current revision before later implementation.
+The supplied MultiplayerSessions Steam plugin is included in the game repository
+and has compile/widget evidence. Its connected-session, provider and replication
+capabilities require separate verification; the documentation installs no plugin.
 An implementation ticket cannot be executed, tested, or marked Complete until a real game repository and reproducible runtime evidence exist.
