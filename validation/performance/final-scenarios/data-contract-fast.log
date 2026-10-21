@@ -1,0 +1,1256 @@
+Requested FAST; executing FAST: Focused source/generator dependencies
+Changed files: ["assets/search-index.js", "guide/data-inventory.html", "sources/data-inventory.json", "sources/data-model.schema.json"]; merge base: 3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d
+Deferred to FULL: browser-cleanup, Python modules outside: test_data_inventory, test_data_model, test_reviewed_contracts, Allocation cases, capstone routes and allocation-example freshness (unchanged data inputs)
+aggregate: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/run_checks.py --read-only --report '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/final-scenarios/data-contract/report.json' --scope documentation
+python: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m unittest test_data_inventory test_data_model test_reviewed_contracts --durations 15
+browser: node validation/check_inventory_browser.mjs --read-only --report '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/final-scenarios/data-contract/data-inventory-browser-checks.json'
+engine-artifacts: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/check_engine_artifacts.py
+
+RUN aggregate
+{
+  "checks_passed": 143,
+  "checks_failed": 0,
+  "level_allocation_cases": 0,
+  "sample_capstone_allocations": 0,
+  "html_page_count": 179
+}
+PASS aggregate: 5.548s
+
+RUN python
+............................................
+Slowest test durations
+----------------------------------------------------------------------
+2.940s     test_unmanaged_entry_fields_and_invalid_categories_are_rejected (test_data_inventory.InventoryTests.test_unmanaged_entry_fields_and_invalid_categories_are_rejected)
+1.660s     test_feature_associations_require_section_evidence (test_data_inventory.InventoryTests.test_feature_associations_require_section_evidence)
+1.458s     test_owned_output_is_idempotent_and_stale_changes_are_detected (test_data_inventory.InventoryTests.test_owned_output_is_idempotent_and_stale_changes_are_detected)
+1.273s     test_contract_and_content_versions_cannot_disagree (test_reviewed_contracts.ReviewedContractTests.test_contract_and_content_versions_cannot_disagree)
+1.073s     test_registry_and_generated_output_are_current (test_data_inventory.InventoryTests.test_registry_and_generated_output_are_current)
+0.859s     test_planning_reference_navigation_search_and_counts (test_data_inventory.InventoryTests.test_planning_reference_navigation_search_and_counts)
+0.755s     test_definition_status_must_agree_with_open_decisions (test_data_inventory.InventoryTests.test_definition_status_must_agree_with_open_decisions)
+0.725s     test_removed_page_review_and_changed_content_are_rejected (test_data_inventory.InventoryTests.test_removed_page_review_and_changed_content_are_rejected)
+0.717s     test_missing_evidence_paths_and_anchors_are_rejected (test_data_inventory.InventoryTests.test_missing_evidence_paths_and_anchors_are_rejected)
+0.702s     test_duplicate_identifiers_and_case_insensitive_names_are_rejected (test_data_inventory.InventoryTests.test_duplicate_identifiers_and_case_insensitive_names_are_rejected)
+0.513s     test_exact_section_membership_hierarchy_and_bottom_placement (test_data_inventory.InventoryTests.test_exact_section_membership_hierarchy_and_bottom_placement)
+0.348s     test_review_issues_and_backlinks_are_required (test_data_inventory.InventoryTests.test_review_issues_and_backlinks_are_required)
+0.185s     test_inventory_categories_are_sorted_and_searchable (test_data_inventory.InventoryTests.test_inventory_categories_are_sorted_and_searchable)
+0.060s     test_value_cycles_and_orphaned_helpers_are_rejected (test_data_model.ModelTests.test_value_cycles_and_orphaned_helpers_are_rejected)
+0.049s     test_canonical_reference_and_dependency_drift_are_rejected (test_data_model.ModelTests.test_canonical_reference_and_dependency_drift_are_rejected)
+
+----------------------------------------------------------------------
+Ran 44 tests in 13.493s
+
+OK
+PASS python: 13.607s
+
+RUN browser
+{
+  "browser": "Chrome/155.0.8059.86",
+  "method": "Installed headless Chrome via DevTools pipe, actual local file navigation with network emulation offline; isolated temporary profile.",
+  "passed": 296,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Actual offline file URL navigation and inventory rendering",
+      "passed": true
+    },
+    {
+      "name": "All category tables render in alphabetical order",
+      "passed": true
+    },
+    {
+      "name": "Every rendered canonical schema matches the authoritative registry",
+      "passed": true
+    },
+    {
+      "name": "Existing local filter: enums",
+      "passed": true
+    },
+    {
+      "name": "Existing local filter: interfaces",
+      "passed": true
+    },
+    {
+      "name": "Existing local filter: schemas",
+      "passed": true
+    },
+    {
+      "name": "Offline global search finds the canonical inventory anchor",
+      "passed": true
+    },
+    {
+      "name": "Desktop inventory has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Feature Data section is last in the article and uses normal layout",
+      "passed": true
+    },
+    {
+      "name": "Feature link opens the correct canonical entry",
+      "passed": true
+    },
+    {
+      "name": "Inventory backlink opens feature Data",
+      "passed": true
+    },
+    {
+      "name": "Mobile inventory has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile navigation includes and opens Data Inventory",
+      "passed": true
+    },
+    {
+      "name": "Escape closes mobile navigation",
+      "passed": true
+    },
+    {
+      "name": "Offline roadmap hub is compact and links every phase instead of embedding epic details",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap hub has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Roadmap navigation is prominent and marks the hub current",
+      "passed": true
+    },
+    {
+      "name": "Offline global search points to the individual epic page",
+      "passed": true
+    },
+    {
+      "name": "Hub legacy epic anchor offers a direct canonical link",
+      "passed": true
+    },
+    {
+      "name": "Legacy hub epic navigation reaches its individual epic page",
+      "passed": true
+    },
+    {
+      "name": "Offline search finds a specific acceptance criterion",
+      "passed": true
+    },
+    {
+      "name": "Desktop roadmap hub has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 1 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "6 epics"
+    },
+    {
+      "name": "Phase 1 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 1 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 2 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "12 epics"
+    },
+    {
+      "name": "Phase 2 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 2 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 3 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "14 epics"
+    },
+    {
+      "name": "Phase 3 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 3 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 4 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "16 epics"
+    },
+    {
+      "name": "Phase 4 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 4 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 5 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "12 epics"
+    },
+    {
+      "name": "Phase 5 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 5 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 6 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "6 epics"
+    },
+    {
+      "name": "Phase 6 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 6 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 7 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "13 epics"
+    },
+    {
+      "name": "Phase 7 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 7 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 8 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "14 epics"
+    },
+    {
+      "name": "Phase 8 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 8 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 9 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "4 epics"
+    },
+    {
+      "name": "Phase 9 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 9 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Every epic has one phase index entry",
+      "passed": true,
+      "detail": "97 / 97"
+    },
+    {
+      "name": "BW-001 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-002 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-003 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-097 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-095 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-018 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-004 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-005 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-006 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-007 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-008 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-009 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-010 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-011 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-013 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-028 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-012 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-083 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-014 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-015 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-016 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-017 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-019 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-020 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-021 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-022 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-023 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-024 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-025 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-026 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-027 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-029 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-098 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-045 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-043 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-030 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-031 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-032 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-033 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-034 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-035 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-037 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-080 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-084 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-085 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-086 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-087 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-039 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-036 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-038 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-040 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-041 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-042 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-044 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-046 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-096 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-081 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-082 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-088 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-091 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-047 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-048 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-049 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-050 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-051 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-052 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-054 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-055 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-056 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-057 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-058 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-059 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-060 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-061 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-075 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-076 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-062 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-063 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-064 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-099 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-053 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-065 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-066 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-067 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-068 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-077 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-069 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-070 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-071 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-072 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-073 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-074 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-089 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-090 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-092 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-093 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-094 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "Cross-phase hard dependency links point directly to canonical targets",
+      "passed": true
+    },
+    {
+      "name": "Cross-phase dependency navigation lands on the referenced epic",
+      "passed": true
+    },
+    {
+      "name": "roadmap-milestones.html renders offline with current roadmap navigation",
+      "passed": true
+    },
+    {
+      "name": "roadmap-decisions.html renders offline with current roadmap navigation",
+      "passed": true
+    },
+    {
+      "name": "roadmap-coverage.html renders offline with current roadmap navigation",
+      "passed": true
+    },
+    {
+      "name": "roadmap-maintenance.html renders offline with current roadmap navigation",
+      "passed": true
+    },
+    {
+      "name": "roadmap-audit.html renders offline with current roadmap navigation",
+      "passed": true
+    },
+    {
+      "name": "Offline search finds the outstanding audit decision",
+      "passed": true
+    },
+    {
+      "name": "Audit search opens the finding and preserves all distinct finding sections",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-foundations.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-first-action.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-persistent-character.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-opening.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-extended-state.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-roster.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-services.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-full-experiences.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-release.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-milestones.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-decisions.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-coverage.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-maintenance.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap-audit.html has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-001 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-002 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-003 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-097 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-095 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-018 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-004 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-005 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-006 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-007 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-008 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-009 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-010 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-011 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-013 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-028 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-012 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-083 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-014 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-015 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-016 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-017 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-019 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-020 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-021 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-022 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-023 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-024 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-025 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-026 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-027 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-029 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-098 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-045 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-043 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-030 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-031 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-032 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-033 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-034 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-035 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-037 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-080 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-084 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-085 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-086 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-087 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-039 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-036 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-038 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-040 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-041 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-042 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-044 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-046 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-096 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-081 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-082 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-088 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-091 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-047 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-048 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-049 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-050 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-051 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-052 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-054 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-055 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-056 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-057 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-058 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-059 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-060 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-061 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-075 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-076 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-062 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-063 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-064 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-099 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-053 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-065 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-066 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-067 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-068 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-077 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-069 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-070 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-071 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-072 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-073 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-074 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-089 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-090 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-092 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-093 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile BW-094 has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase print keeps its article content and hides website navigation",
+      "passed": true
+    },
+    {
+      "name": "Individual epic criteria and ticket planning remain visible in print",
+      "passed": true
+    },
+    {
+      "name": "Audit findings and outstanding decisions remain visible in print",
+      "passed": true
+    },
+    {
+      "name": "Audit deep link and report remain readable without JavaScript",
+      "passed": true
+    },
+    {
+      "name": "Legacy hub epic anchors remain usable without JavaScript",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-foundations legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-foundations epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-first-action legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-first-action epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-persistent-character legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-persistent-character epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-opening legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-opening epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-extended-state legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-extended-state epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-roster legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-roster epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-services legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-services epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-full-experiences legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-full-experiences epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-release legacy bookmark links to its epic page",
+      "passed": true
+    },
+    {
+      "name": "No-JavaScript phase-release epic and criterion links remain usable",
+      "passed": true
+    },
+    {
+      "name": "Inventory entries remain readable with JavaScript disabled",
+      "passed": true
+    },
+    {
+      "name": "Canonical properties and enum members disclose without JavaScript",
+      "passed": true
+    },
+    {
+      "name": "Class Data remains readable with JavaScript disabled",
+      "passed": true
+    },
+    {
+      "name": "No page JavaScript exceptions",
+      "passed": true,
+      "detail": "[]"
+    },
+    {
+      "name": "No failed local requests or external page dependencies",
+      "passed": true,
+      "detail": "{\"failedRequests\":[],\"externalRequests\":[]}"
+    },
+    {
+      "name": "Browser process group stopped and temporary profile removed",
+      "passed": true
+    }
+  ]
+}
+PASS browser: 9.208s
+
+RUN engine-artifacts
+Legacy engine implementation artifact count: 0; documentation and evidence references are permitted
+PASS engine-artifacts: 0.055s
+
+FAST PASS: 28.419s; focused checks only; FULL still required

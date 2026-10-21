@@ -1,0 +1,48 @@
+Requested FAST; executing FAST: Focused source/generator dependencies
+Changed files: ["data/abilities.json"]; merge base: 3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d
+Deferred to FULL: browser-cleanup, browser, Python modules outside: test_data_inventory, test_data_model, test_reviewed_contracts
+aggregate: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/run_checks.py --read-only --report '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/final-scenarios/data-record/report.json'
+python: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m unittest test_data_inventory test_data_model test_reviewed_contracts --durations 15
+engine-artifacts: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/check_engine_artifacts.py
+
+RUN aggregate
+{
+  "checks_passed": 243,
+  "checks_failed": 0,
+  "level_allocation_cases": 2940,
+  "sample_capstone_allocations": 98,
+  "html_page_count": 179
+}
+PASS aggregate: 9.478s
+
+RUN python
+............................................
+Slowest test durations
+----------------------------------------------------------------------
+2.901s     test_unmanaged_entry_fields_and_invalid_categories_are_rejected (test_data_inventory.InventoryTests.test_unmanaged_entry_fields_and_invalid_categories_are_rejected)
+1.641s     test_feature_associations_require_section_evidence (test_data_inventory.InventoryTests.test_feature_associations_require_section_evidence)
+1.480s     test_owned_output_is_idempotent_and_stale_changes_are_detected (test_data_inventory.InventoryTests.test_owned_output_is_idempotent_and_stale_changes_are_detected)
+1.274s     test_contract_and_content_versions_cannot_disagree (test_reviewed_contracts.ReviewedContractTests.test_contract_and_content_versions_cannot_disagree)
+1.047s     test_registry_and_generated_output_are_current (test_data_inventory.InventoryTests.test_registry_and_generated_output_are_current)
+0.868s     test_planning_reference_navigation_search_and_counts (test_data_inventory.InventoryTests.test_planning_reference_navigation_search_and_counts)
+0.752s     test_definition_status_must_agree_with_open_decisions (test_data_inventory.InventoryTests.test_definition_status_must_agree_with_open_decisions)
+0.724s     test_removed_page_review_and_changed_content_are_rejected (test_data_inventory.InventoryTests.test_removed_page_review_and_changed_content_are_rejected)
+0.706s     test_missing_evidence_paths_and_anchors_are_rejected (test_data_inventory.InventoryTests.test_missing_evidence_paths_and_anchors_are_rejected)
+0.693s     test_duplicate_identifiers_and_case_insensitive_names_are_rejected (test_data_inventory.InventoryTests.test_duplicate_identifiers_and_case_insensitive_names_are_rejected)
+0.519s     test_exact_section_membership_hierarchy_and_bottom_placement (test_data_inventory.InventoryTests.test_exact_section_membership_hierarchy_and_bottom_placement)
+0.351s     test_review_issues_and_backlinks_are_required (test_data_inventory.InventoryTests.test_review_issues_and_backlinks_are_required)
+0.182s     test_inventory_categories_are_sorted_and_searchable (test_data_inventory.InventoryTests.test_inventory_categories_are_sorted_and_searchable)
+0.057s     test_value_cycles_and_orphaned_helpers_are_rejected (test_data_model.ModelTests.test_value_cycles_and_orphaned_helpers_are_rejected)
+0.049s     test_canonical_reference_and_dependency_drift_are_rejected (test_data_model.ModelTests.test_canonical_reference_and_dependency_drift_are_rejected)
+
+----------------------------------------------------------------------
+Ran 44 tests in 13.419s
+
+OK
+PASS python: 13.529s
+
+RUN engine-artifacts
+Legacy engine implementation artifact count: 0; documentation and evidence references are permitted
+PASS engine-artifacts: 0.054s
+
+FAST PASS: 23.061s; focused checks only; FULL still required

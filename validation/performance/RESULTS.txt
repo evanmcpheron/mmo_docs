@@ -113,3 +113,79 @@ Aggregate and unittest subprocesses start separate bounded caches. Whole-site li
 checking, sample validation and browser traversal remain comprehensive. FULL is
 still required after shared infrastructure edits, including this task. FAST is
 conservative for unsupported HTML/assets rather than guessing dependencies.
+
+FINAL MEASUREMENTS AND EXACT COVERAGE
+Tested implementation: 3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d.
+Final default FULL command (no --mode supplied):
+python3 validation/validate.py --report-dir .git/validation-evidence/final-full
+47.292s wall clock (47.045s internal stages), 53.6% faster than 101.975s original.
+All 92 Python tests passed, all 243 aggregate checks passed (including all 2,940
+allocation cases and 98 capstone examples), all four JS cleanup tests passed,
+all 296 browser assertions passed, and tracked engine auditing passed. FULL
+includes screenshot capture; it never receives the documentation scope flag.
+See final-full/measurement.json, validation-summary.json, report.json,
+data-inventory-browser-checks.json and full.log. The checkout was clean before
+and after FULL; tracked file contents AND mtimes were unchanged.
+
+Representative changes were performed sequentially on the same implementation
+and machine, using --base HEAD to isolate each deliberate uncommitted probe from
+this infrastructure branch. This explicit benchmark base does not change the
+normal origin/main default or CI's unconditional FULL policy. Every probe and
+generated change was restored to its committed contents before the next case.
+Full commands, mutation descriptions, changed files, per-stage timings, reports
+and deferrals are in final-scenarios/measurements.json and adjacent logs.
+
+Scenario                  FAST wall    Explicit regeneration   Combined   Reduction vs original FULL
+Roadmap purpose sentence    38.921s       3.347s (two builders)   42.268s    61.8% FAST; 58.6% including builds
+Contract description       28.612s       2.488s (inventory)      31.100s    71.9% FAST; 69.5% including build
+Shipped ability name       23.286s       none                   23.286s    77.2% FAST
+
+Each FAST command was:
+python3 validation/validate.py --mode fast --base HEAD --report-dir PATH
+PATH is the corresponding .git/validation-evidence/final-scenarios/<scenario>.
+Roadmap: aggregate --read-only --scope documentation, inventory/model/roadmap/
+reviewed-contract Python modules, browser --read-only, engine audit. Regenerating
+roadmap fingerprints changes the shared registry, so model tests conservatively
+remain selected. Contract: the same documentation aggregate, inventory/model/
+reviewed-contract modules, browser --read-only, engine audit. Data record: full
+read-only aggregate with allocations, inventory/model/reviewed-contract modules,
+engine audit; no browser. FAST defers other modules, JS cleanup, and allocation
+checks only where their shipped inputs are unchanged. All required roadmap,
+inventory, schema, link/anchor and search freshness checks remain active. No
+validation command regenerated output or refreshed a fingerprint. Hash/mtime
+checks confirmed FAST preserved the deliberate working-tree edits unchanged.
+
+The final slowest Python tests were unmanaged metadata 2.917s, feature association
+evidence 1.621s, stale epic detection 1.581s, output idempotence 1.439s and derived
+progress 1.354s. All 92 tests took 24.807s (unittest's duration, excluding startup).
+Original test bodies/assertions for all 76 tests are AST-identical; review.json
+records this check, matching legacy aggregate/browser reports and review gates.
+
+NEGATIVE CONTROLS
+negative-controls/results.json records individually rejected invalid dependencies,
+completion evidence/status, undefined contracts, invalid shipped record IDs, stale
+roadmap HTML, stale inventory HTML and stale generator-owned search. The actual
+aggregate documentation check rejected removed BW-001-AC-1, a missing required
+file link and a missing search anchor. Actual Git scope detection selected FULL
+for an unrecognized file and a validation-entrypoint change. Existing regression
+tests additionally retain malformed schema, enum, cycle, review, privacy/authority,
+nullable/optional and fixture-execution controls. No assertion was weakened.
+
+Both actual FAST and FULL commands were also run against a combined deliberately
+invalid repository. Each returned exit 1 and reported failed allocation freshness,
+local links/anchors, search destinations, inventory/contracts and roadmap checks.
+See negative-controls/{fast,full}.log and their full summary/report JSON files.
+The FULL negative run still executed all five stages; cleanup/audit successes did
+not hide other failures. All mutations were restored, then the clean default FULL
+run above passed. Historical evidence files were not rewritten or discarded.
+
+BOUNDARIES AND REMAINING LIMITATIONS
+The external workspace skills skills/execute-ticket/SKILL.md and
+skills/split-epic/SKILL.md (in the separate game repository) still prescribe the
+older documentation command chain. They were inspected read-only and left intact
+because game-repository changes are explicitly excluded. The instructions and
+skills owned by mmo_docs use FAST/FULL; external workspace instructions need a
+separate authorized update to remove their duplicate command list.
+Browser traversal and read-only whole-site consistency still cost material time;
+FAST chooses safety over speculative content-level impact analysis. Local Python
+3.12 execution is not claimed. GitHub Actions supplies the pinned 3.12/Node 22 gate.

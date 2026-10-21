@@ -1,0 +1,73 @@
+{
+  "revision": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+  "main_revision": "8c761215140d54bb1fd668c6653d9a77312262a3",
+  "requested_mode": "fast",
+  "executed_mode": "fast",
+  "reason": "Focused source/generator dependencies",
+  "merge_base": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+  "changed_files": [
+    "guide/development-roadmap.html",
+    "sources/data-inventory.json",
+    "sources/development-roadmap.json"
+  ],
+  "checks": [
+    {
+      "name": "aggregate",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/run_checks.py",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/final-scenarios/roadmap/report.json",
+        "--scope",
+        "documentation"
+      ],
+      "exit_code": 0,
+      "seconds": 5.442
+    },
+    {
+      "name": "python",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "-m",
+        "unittest",
+        "test_data_inventory",
+        "test_data_model",
+        "test_development_roadmap",
+        "test_reviewed_contracts",
+        "--durations",
+        "15"
+      ],
+      "exit_code": 0,
+      "seconds": 23.6
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "validation/check_inventory_browser.mjs",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/final-scenarios/roadmap/data-inventory-browser-checks.json"
+      ],
+      "exit_code": 0,
+      "seconds": 9.627
+    },
+    {
+      "name": "engine-artifacts",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/check_engine_artifacts.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.056
+    }
+  ],
+  "deferred": [
+    "browser-cleanup",
+    "Python modules outside: test_data_inventory, test_data_model, test_development_roadmap, test_reviewed_contracts",
+    "Allocation cases, capstone routes and allocation-example freshness (unchanged data inputs)"
+  ],
+  "passed": true,
+  "seconds": 38.725
+}
