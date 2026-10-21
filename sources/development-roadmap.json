@@ -3,7 +3,7 @@
   "title": "Briarwake Development Roadmap",
   "research_date": "2026-10-17",
   "purpose": "A dependency and evidence map for Briarwake, an Unreal Engine 5 native C++ MMORPG. This documentation owns gameplay contracts and progress; evanmcpheron/BriarwakeUnreal owns the newly versioned native bootstrap. Completion depends on scoped executed evidence rather than planning or historical engine results.",
-  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002/BW-003 and other gameplay epics remain Not Started. No connected Steam sessions, gameplay fixtures, persistence, capacity, Shipping or other-platform certification is implied.",
+  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002/BW-003 and other gameplay epics remain Not Started. No connected Steam sessions, gameplay fixtures, persistence, capacity, Shipping or other-platform certification is implied. BW-002-T02 now has retained native canonical-compatibility and failure/recovery evidence at game 53370174224106a840f1a6fdc83f139804901fe9; parent AC2/AC3/AC5 and integrated admission remain open.",
   "reading_guide": [
     "Each epic is one coherent, demonstrable capability with a permanent BW identifier, scope, hard prerequisites, acceptance criteria and required evidence. Phases group integration objectives derived from the dependency graph; they do not require every independent branch to wait for the previous phase.",
     "Navigate from the dashboard to a phase index, then open an individual epic page. Every epic has direct links to its prerequisites, downstream work, recommended sequence neighbors and numbered acceptance criteria. Existing dashboard and phase epic bookmarks lead to the same canonical epic page.",
@@ -277,7 +277,7 @@
       ],
       "status": "In Progress",
       "blockers": [],
-      "ordering_rationale": "2026-10-21: T01 is Complete with a versioned native-source responsibility review satisfying AC1. The earlier planned admission/contract drafts are absent in the current game checkout and available BriarwakeNative worktree; their historical observation establishes no executable owner. T02-T07 remain Not Started: AC2 admission, AC3 binding rejection, AC4 compatibility and AC5 economic contract/graph gates plus integrated native verification still lack passing evidence. BW-002 remains In Progress and BW-003 remains ineligible until those gates pass.",
+      "ordering_rationale": "2026-10-21: T01 and T02 are Complete. The retained responsibility map satisfies AC1; current canonical extraction, native encoding/round-trip/revision tests and failure/recovery controls satisfy AC4. T03-T07 remain Not Started: AC2 semantic/atomic content admission, AC3 unsupported binding/readiness rejection, AC5 owner-reviewed economic identity/provenance and full graph gate, plus integrated verification remain open. BW-002 stays Dependency-ready/In Progress and BW-003 remains ineligible.",
       "verified_evidence": [
         {
           "criteria": [
@@ -287,6 +287,15 @@
           "revision": "game aaa93bac22ff5bdd919f0c02ee79a3c112a62db5; canonical docs 614597b2cb86ef9b9c486154dc9270f4906dabde",
           "result": "Passed",
           "summary": "T01 boundary review covers all five AC1 domains with lifecycle, authority, input and disclosure boundaries, preserving canonical epoch, asset, build and recovery invariants. Missing gameplay/persistence/presentation owners are explicit. AC2-AC5 and integrated execution remain unverified; this review does not certify runtime authority or admission."
+        },
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T02/review.json",
+          "revision": "game 53370174224106a840f1a6fdc83f139804901fe9; source SHA-256 e2afc3d3fd9db3200d71fff708b0ab17ff7be665780ca187f9b453fd937281c6",
+          "result": "Passed",
+          "summary": "T02 native compatibility review: 22 canonical definitions reproduce; clean/recovery each execute 747 exact native checks preserving IDs, encodings, optional/null values and independent content/rules/synthetic-database revisions. Real assertion, missing/stale report and stale binary controls reject. AC2/AC3/AC5 and T07 integration remain unverified."
         }
       ],
       "phase": "phase-foundations"
@@ -324,7 +333,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests; production dashboards and retention policy can wait. T01-T05 plan fresh native Unreal fixture execution, beyond the completed BW-001 bootstrap. BW-002 has unfinished native admission drafts and remains In Progress without passing evidence, so BW-003 and its tickets remain Not Started and not Dependency-ready.",
+      "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests. BW-002 T01/T02 now verify the authority review and canonical compatibility, but T03-T07 admission/binding/economic/integration gates remain unfinished. BW-003 and its tickets remain Not Started on this main-based task branch and are not Dependency-ready. Separate branch-specific native fixture work is preserved on docs/bw-003-t02-prerequisite-review; it is not imported or promoted by this T02 task.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -5932,7 +5941,7 @@
       "id": "BW-002-T02",
       "parent_epic": "BW-002",
       "title": "Preserve canonical encodings and independent revision domains",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-4"
       ],
@@ -6028,30 +6037,44 @@
         }
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT. Planned and unverified until implementation:\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_content_admission.py --suite compatibility",
+        "launch": "Working directory: GAME_ROOT (the existing workspace Git root containing Briarwake.uproject).\npython3 tools/extract_content_contracts.py --check\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_content_admission.py --suite compatibility",
         "setup": [
-          "All game commands run from GAME_ROOT: the verified Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal. DOCS_ROOT is its separate mmo_docs repository. Filesystem paths below are relative to their named repository; /Engine/Maps/Entry is an Unreal package reference, not a project filesystem map.",
-          "Inspection on 2026-10-21: game HEAD and fetched origin/main are 43998f9fcbcd76bc9f179a6bde2a43ef4994a962. The pinned UE 5.8.3 Launcher CL 58210709 and source engine commit 396c9f059903aed5fec78ecd3d437a40c6415368, macOS ARM64 Development and Xcode 27.0 build 27A266a are described by tools/toolchain.lock.json. Installed UnrealEditor-Cmd and source-engine Build.version exist; xcodebuild -version reports the pinned Xcode. No new native admission build or runtime test was run during planning.",
-          "Briarwake.Build.cs depends on Core/CoreUObject/Engine and private Json; Game/Editor/Client/Server targets exist. The supplied MultiplayerSessions project plugin declares OnlineSubsystem and OnlineSubsystemSteam enabled; it is not admission, authorization or persistence ownership. Content contains no project maps; bootstrap configuration uses /Engine/Maps/Entry. Pure admission tests require no authored world, Actor, widget, network provider or database.",
-          "Only FServerConfiguration and Briarwake.Baseline.ServerConfiguration/Execution are tracked baseline owners/tests. Untracked ContentAdmission/ContentContracts C++ files, tools/extract_content_contracts.py and fixtures/content_admission/contracts.snapshot.json are unfinished local drafts, not passing or published implementation. Preserve them, inspect applicability when executing, and transfer only task-scoped work onto a fresh main-based branch. Do not create duplicate owners or silently depend on another working tree.",
-          "Planned deliverables: editor/development-guarded Briarwake.ContentAdmission tests, committed synthetic fixture inputs outside Content, and tools/check_content_admission.py. Reuse existing check_baseline.py toolchain/source identity/process timeout support where suitable; its current test stage selects and verifies only Briarwake.Baseline, so it cannot certify the new suite unchanged. The new wrapper must verify exact discovered tests and real assertions/reports. Suite/control names below are proposed interfaces to implement and verify, not existing commands."
+          "Verified on 2026-10-21 at game 53370174224106a840f1a6fdc83f139804901fe9, fetched main d450654e75a1fa76042f6e87744a3cf7d5b18ef2 and source SHA-256 e2afc3d3fd9db3200d71fff708b0ab17ff7be665780ca187f9b453fd937281c6. Canonical docs main is d47a7e267cbb9fe9e00a7a451fc2c61032b01bed. EngineAssociation is 5.8; tools/toolchain.lock.json verifies installed UE 5.8.3 CL 58210709, Xcode 27.0 build 27A266a and native macOS ARM64 Development.",
+          "Use the existing game checkout and nested mmo_docs checkout. Workspace storage policy prohibits extra worktrees, clones, project copies and whole-project test snapshots. Preserve unrelated work in place; do not invoke the historical verify_baseline.py snapshot runner. Existing engine/toolchain installations are used in place.",
+          "FContentContracts owns bounded decoding of 14 selected canonical roots and their 22-definition local reference closure. tools/extract_content_contracts.py --check compares definitions, authority/conventions and selected compatibility samples; roadmap/page metadata does not change those fingerprints. Native tests load only fixtures/content_admission/contracts.snapshot.json, without reading the docs checkout.",
+          "FAbilityCommand narrows validated ability_command_v2 payloads. FContentRevisions::FromConfiguration reuses FServerConfiguration content/rules settings and a separately supplied synthetic database identity. FContentCompatibility accepts only a server-supplied exact tuple; it exposes no gameplay command, content publication or migration. Numbers must be finite; integer decoding rejects values beyond the exact binary64 integer range rather than rounding them.",
+          "The runtime wrapper selects exactly Briarwake.ContentAdmission.Compatibility.Encodings and .Revisions. Native automation is guarded by WITH_EDITOR and WITH_DEV_AUTOMATION_TESTS; fixtures live outside Content. No authored map, Actor, provider, database, rendered editor action or editor bridge is needed. Module dependencies remain Core/CoreUObject/Engine and private Json; the existing MultiplayerSessions plugin supplies no admission authority."
         ],
         "actions": [
-          "Run the launch block twice with new outputs. Compare canonical semantic fingerprints, preserved encodings and separate content/rules/database identities. Inspect actual native test assertions.",
-          "Run disposable fixtures changing only content, only rules and only database identity; inspect declared-compatible versus unsupported tuples. Exercise unknown/case-changed tokens, unknown fields, missing/null/optional variants and stale canonical snapshots.",
-          "Run --control assertion-failure, --control missing-report and --control stale-report, then a clean run. Check wrapper exits, actual discovered tests and fresh binary identity."
+          "Run the launch block into its fresh default output. The executed clean run and independent recovery each report 724 encoding/parser/typed-command checks plus 23 revision/snapshot checks. Inspect native encodings.json/revisions.json and automation/index.json rather than relying on process exit.",
+          "Run python3 tools/check_content_admission.py --suite compatibility --control assertion-failure, then --control missing-report, then --control stale-report --prior-report artifacts/bw002-t02-final-pass-one/native/encodings.json, then --control stale-binary. Use a fresh default output each time and substitute the native encodings.json path from your own earlier clean run when replaying elsewhere. All controls must return nonzero.",
+          "Run python3 tools/check_content_admission.py --suite compatibility again for independent recovery, then python3 tools/check_baseline.py test. For extraction/report regressions run mkdir -p artifacts/tmp followed by TMPDIR=\"$PWD/artifacts/tmp\" python3 -m unittest discover -s tools -p \"test_*.py\".",
+          "Inspect the 199 committed cases for accepted round trips and rejected unknown/case-changed fields/discriminators/tokens, missing/null/optional variants, nonfinite/fractional values, hidden-source result shape, and explicit incompatible content/rules/database tuples. Native snapshot-byte modification and Python semantic/sample/reference/vocabulary controls must reject."
         ],
         "expected_results": [
-          "Clean canonical round trips and declared compatible cases pass without encoding drift. Every invalid compatibility case is visibly rejected and prior state remains unchanged.",
-          "Controls fail distinctly and clean recovery succeeds; no unexecuted case is reported passed."
+          "Both exact native tests execute 747 successful checks on clean runs. Reports include current source/snapshot identities and an invocation nonce; native revision observations separately name content_version, rules_version and database_revision. Declared compatibility passes and rejected candidates preserve the previous accepted tuple.",
+          "Assertion control is Executed/Failed. Missing/stale reports remain unverified failures; stale binary is Not Executed. Independent clean recovery passes without replacing prior reports. No structural result certifies gameplay authorization, reference resolution, database migrations or T03-T07 admission gates."
         ],
         "reset": [
-          "Run only against committed synthetic inputs and disposable negative-control copies. Each invocation uses a fresh output directory and rejects an existing output; preserve all prior reports, canonical definitions, user edits and assets.",
-          "Bound native child execution, stop only owned process groups on timeout and release candidate/test state after each case. A rejected candidate preserves the previous active selection. Recover by running clean into a new output, without resetting the checkout or changing shared engines."
+          "Each invocation rejects an existing output path and creates a fresh one by default. Keep prior reports. The stale-binary marker and modified native snapshot are uniquely owned disposable files and are removed by their owner; no whole-project copy is created.",
+          "The wrapper bounds child execution and stops only its owned process group on timeout. Fixture controls operate on test-owned inputs under the existing checkout. Do not reset, clean, stash or modify canonical definitions, user edits, assets or engine files to recover."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-002-T02/review.json",
+          "revision": "game 53370174224106a840f1a6fdc83f139804901fe9; source SHA-256 e2afc3d3fd9db3200d71fff708b0ab17ff7be665780ca187f9b453fd937281c6",
+          "result": "Passed",
+          "summary": "Canonical 22-definition extraction and semantic/sample mutation checks; two exact native compatibility suites execute 747 named assertions in clean and independent post-commit recovery runs. Established tokens/IDs, optional/null fields, public shapes and independent server-supported revision tuples pass. Executed assertion failure, missing/stale reports and stale binary controls reject. Pinned Editor/Game builds, baseline automation and 15 Python regressions pass. Database identity is synthetic; no gameplay authorization, content publication, migration or economic gate is certified."
+        }
+      ]
     },
     {
       "id": "BW-002-T03",
