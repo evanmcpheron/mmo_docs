@@ -1,0 +1,68 @@
+{
+  "epic": "BW-001",
+  "inspected_at": "2026-10-21T16:03:06.911133+00:00",
+  "review_type": "Initial read-only prerequisite and implementation inspection; no acceptance criterion is certified by this audit.",
+  "documentation_base": "fb5bd002ced89a45373c2e877a186a1f1f9f1581",
+  "game_root": "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal",
+  "game_remote": "git@github.com:evanmcpheron/BriarwakeUnreal.git",
+  "game_base": "50ce9cd193d0bdfb3909389d17f604c88b89fb91",
+  "game_state": "Existing uncommitted BW-001 implementation preserved. Owner selected this checkout; its running Server build must finish before implementation changes.",
+  "engine_installed": {
+    "MajorVersion": 5,
+    "MinorVersion": 8,
+    "PatchVersion": 3,
+    "Changelist": 58210709,
+    "CompatibleChangelist": 55116800,
+    "IsLicenseeVersion": 0,
+    "IsPromotedBuild": 1,
+    "BranchName": "++UE5+Release-5.8"
+  },
+  "engine_source_revision": "396c9f059903aed5fec78ecd3d437a40c6415368",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "source_files": {
+    "Briarwake.uproject": "3519f1372f2eca52497145818c06e4dbc98cd435b802eca0fd1af3bdd9aed7c6",
+    "Source/Briarwake/Briarwake.Build.cs": "ff348fcbb0c811b2f05430282c475867eb20dd1a067f66ae98bbf11ae8e04431",
+    "Source/Briarwake/Briarwake.cpp": "23ad23459db6bbd57aa6e7a758b1f9023857e778e40713e20141a78f4ad0f3ad",
+    "Source/Briarwake/ServerConfiguration.cpp": "71cc3caa77ba71bdb2ed98dc811e237357160e76547d0c92c819064853f07635",
+    "Source/Briarwake/ServerConfiguration.h": "9b0994b60059610992a7b3dc2a7a838bfb499f965a54570fcaf4c0b5c27eed11",
+    "Source/Briarwake/Tests/ServerConfigurationTests.cpp": "98ae21a0ca2668b22fa115af358098e840c90a090734c02db5226ceff180f33f",
+    "Source/Briarwake.Target.cs": "f9718a0f35f35fdb0587873e4a9273a48204c63653c70d902bf9663300f08118",
+    "Source/BriarwakeClient.Target.cs": "00e749912c325b9b52c71c139ae6b3be62cee65d99964530980e5c0e05a046db",
+    "Source/BriarwakeEditor.Target.cs": "973e864f2256491fcebfcaa7a74e6f80ff41f5cb4279448f1cc56c47e88375cf",
+    "Source/BriarwakeServer.Target.cs": "4e5581f3746945761926033f61696503c763354fe303afb1031aad5f925849cc",
+    "tools/check_baseline.py": "9d72aeddd8308d90f7d049b790bb116efe17e8e52f007a26a3d878ca7fda4978",
+    "tools/prepare_build_tool.py": "2df855ca68f34c27d28916919efa735d8656b1ac725f9fd0454a472cea3b52ce",
+    "tools/test_check_baseline.py": "08c6651f71637b30f00db098f3e2713662e8d1f498a5d685ec3ced507dc1e146",
+    "tools/toolchain.lock.json": "e6b0ccdffa97b7cf445c6e190649bdf47d98f89b4b04ece4f25aab9a3c5623f5"
+  },
+  "canonical_contracts": [
+    {
+      "name": "ServerConfiguration",
+      "href": "guide/data-inventory.html#server-configuration",
+      "owner": "Source/Briarwake/ServerConfiguration.h; Source/Briarwake/ServerConfiguration.cpp",
+      "review": "The registry owns serialized field names, requiredness and authority. The existing native type parses all eight required fields. Gameplay simulation and BW-003 fixture contracts remain outside this bootstrap."
+    }
+  ],
+  "observed_remaining_work": [
+    "Finish and inspect the already running source-engine Server build.",
+    "Correct the cook/stage output-directory mismatch and execute packaged artifact checks.",
+    "Execute independent client launch and dedicated-server smoke, including rejected required configuration.",
+    "Inspect distributed client contents for private inputs, using harmless synthetic negative controls.",
+    "Retain distinct actual build failure, runtime startup failure, assertion failure, timeout and recovery outcomes.",
+    "Recheck current main, preserve pre-existing work, and publish linked game/docs pull requests."
+  ],
+  "editor_bridge": {
+    "endpoint": "http://localhost:8000/mcp",
+    "initial": "Initialization succeeded but list_toolsets exposed only AgentSkillToolset.",
+    "after_owner_setup": "All Toolsets became discoverable and EditorAppToolset.IsPIERunning returned false. Slate windows reported Briarwake - Unreal Editor.",
+    "limitation": "The open editor process points to the original AI-guidance workspace project, not the separately selected BriarwakeUnreal implementation. No editor or runtime acceptance result is claimed."
+  },
+  "not_run": [
+    "No game build, cook, package, automation test, client launch, server smoke or credential inspection was executed by this initial inspection."
+  ],
+  "review_checklist": {
+    "scope": "Inspection/evidence only; no game files, engine files, canonical contracts or protected engineering standards modified.",
+    "source_ownership": "Current remote main is the progress source; the local documentation branch contains superseded Godot-era tracking and is preserved.",
+    "evidence": "Documentation validation is distinct from unverified game acceptance."
+  }
+}

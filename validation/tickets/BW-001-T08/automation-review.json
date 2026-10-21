@@ -1,0 +1,60 @@
+{
+  "reviewed_at": "2026-10-21T16:33:08.113511+00:00",
+  "result": "Passed",
+  "criteria": [
+    4
+  ],
+  "revision": "7bd068b6b0ed2e3dcbe5494241c2bb01d829f7d9",
+  "source_sha256": "939070d1fc3a46bb67105eee1ecfae9c4833c33d7f9d15c33078d21ef1eccaf9",
+  "scope": "Actual native C++ Editor baseline build/automation from fresh isolated source snapshots. This does not certify packaged server startup or any gameplay/Steam session behavior.",
+  "cases": {
+    "pass": {
+      "build_result": "Passed",
+      "runtime_execution": "Executed",
+      "assertion_result": "Passed",
+      "exit_status": 0
+    },
+    "build-failure": {
+      "build_result": "Failed",
+      "runtime_execution": "Not Executed",
+      "assertion_result": null,
+      "exit_status": 1
+    },
+    "assertion-failure": {
+      "build_result": "Passed",
+      "runtime_execution": "Executed",
+      "assertion_result": "Failed",
+      "exit_status": 1
+    },
+    "timeout": {
+      "build_result": "Passed",
+      "runtime_execution": "Not Executed",
+      "assertion_result": null,
+      "exit_status": 1
+    },
+    "recovery": {
+      "build_result": "Passed",
+      "runtime_execution": "Executed",
+      "assertion_result": "Passed",
+      "exit_status": 0
+    }
+  },
+  "actual_tests": [
+    "Briarwake.Baseline.ServerConfiguration",
+    "Briarwake.Baseline.Execution"
+  ],
+  "evidence": [
+    "automation/pass/verification.json",
+    "automation/build-failure/verification.json",
+    "automation/assertion-failure/verification.json",
+    "automation/timeout/verification.json",
+    "automation/recovery/verification.json"
+  ],
+  "cleanup": "Each runner removed only its owned temporary clean source snapshot after process completion; all stage logs and actual automation reports were retained.",
+  "python_regressions": {
+    "command": "python3 -m unittest discover -s tools -p 'test_*.py' -v",
+    "exit_status": 0,
+    "tests": 9,
+    "artifact": "python-regressions.log"
+  }
+}
