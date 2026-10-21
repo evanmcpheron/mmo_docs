@@ -230,13 +230,14 @@ class RoadmapTests(unittest.TestCase):
         self.assertEqual([], self.errors())
 
     def test_status_and_blocker_rules(self):
-        self.data['epics'][0]['status'] = 'Done'
+        epic = self.by_id['BW-099']
+        epic['status'] = 'Done'
         self.assertTrue(any('invalid status' in e for e in self.errors()))
-        self.data['epics'][0]['status'] = 'Blocked'
+        epic['status'] = 'Blocked'
         self.assertTrue(any('Blocked requires' in e for e in self.errors()))
-        self.data['epics'][0]['blockers'] = ['An explicit external constraint.']
+        epic['blockers'] = ['An explicit external constraint.']
         self.assertEqual([], self.errors())
-        self.assertNotIn(self.data['epics'][0], ready_epics(self.data))
+        self.assertNotIn(epic, ready_epics(self.data))
 
     def test_complete_requires_passing_evidence_for_every_ac(self):
         epic = self.data['epics'][0]

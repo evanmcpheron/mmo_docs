@@ -119,8 +119,9 @@ BW-002 has seven tickets, T01 through T07: authority/lifecycle review, canonical
 compatibility, atomic admission, unsupported-behavior rejection, owner-approved
 economic contract resolution, complete economic graph admission and integrated
 verification. T01 is Complete with a versioned responsibility map and retained
-documentation/source review; T02-T07 remain Not Started without native execution
-evidence. T05 resolves
+documentation/source review. T02 is Complete with 22-definition canonical extraction,
+747 native compatibility checks, independent revision domains and failure/recovery
+controls. T03-T07 remain Not Started. T05 resolves
 the missing material/item identity bridge and original salvage provenance before
 T06 implements its graph gate; no new economic fields or price values are assumed.
 BW-001-T08 tracks the native bootstrap without reusing retired legacy ticket IDs.
@@ -132,9 +133,10 @@ BW-001/T08 are Complete: the final source Server package runs headlessly outside
 the source tree, checks three ticks and rejects missing/invalid configuration.
 Exact artifact/source identities, clean execution controls and limitations are in
 validation/tickets/BW-001-T08/final/review.json. BW-002 remains In Progress: T01
-satisfies AC1, while AC2-AC5 and integrated native verification remain open. The
-historically observed admission drafts are absent in current game worktrees; no
-passing native admission or economic evidence is recorded. BW-003 remains Not Started.
+satisfies AC1 and T02 satisfies AC4, while AC2/AC3/AC5 and integrated native
+admission verification remain open. Compatibility evidence is retained under
+validation/tickets/BW-002-T02/. No content publication or economic admission is
+certified. BW-003 remains Not Started on this main-based task branch.
 BW-002 remains the sole Dependency-ready epic; BW-003 still requires BW-002. Generated
 views own readiness and milestone calculations.
 

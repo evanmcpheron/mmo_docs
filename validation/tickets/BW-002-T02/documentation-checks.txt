@@ -1,0 +1,217 @@
+$ python3 scripts/build_development_roadmap.py
+Built 125 roadmap pages.
+EXIT 0
+$ python3 scripts/build_data_inventory.py --review-roadmap
+{
+  "mode": "build",
+  "changed_files": 1,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 178,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252
+}
+EXIT 0
+$ python3 scripts/build_development_roadmap.py --check
+All 125 roadmap pages are current.
+EXIT 0
+$ python3 scripts/build_data_inventory.py --check
+{
+  "mode": "check",
+  "changed_files": 0,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 178,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252
+}
+EXIT 0
+$ python3 validation/check_development_roadmap.py
+{
+  "passed": true,
+  "phases": 9,
+  "epics": 97,
+  "tickets": 13,
+  "statuses": {
+    "Not Started": 95,
+    "In Progress": 1,
+    "Blocked": 0,
+    "Complete": 1
+  },
+  "completion_percentage": 1.0,
+  "errors": []
+}
+EXIT 0
+$ python3 validation/check_data_inventory.py
+{
+  "passed": true,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 178,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252,
+  "errors": []
+}
+EXIT 0
+$ python3 -m unittest discover -s validation -p test_*.py
+.................................................F..........................
+======================================================================
+FAIL: test_status_and_blocker_rules (test_development_roadmap.RoadmapTests.test_status_and_blocker_rules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 238, in test_status_and_blocker_rules
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-002-T02: Complete requires complete dependencies']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'BW-002-T02: Complete requires complete dependencies'
+
+- []
++ ['BW-002-T02: Complete requires complete dependencies']
+
+----------------------------------------------------------------------
+Ran 76 tests in 75.183s
+
+FAILED (failures=1)
+EXIT 1
+
+RERUN AFTER ISOLATING THE STATUS-ONLY TEST FIXTURE
+$ python3 scripts/build_development_roadmap.py
+Built 125 roadmap pages.
+EXIT 0
+$ python3 scripts/build_data_inventory.py --review-roadmap
+{
+  "mode": "build",
+  "changed_files": 0,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 178,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252
+}
+EXIT 0
+$ python3 scripts/build_development_roadmap.py --check
+All 125 roadmap pages are current.
+EXIT 0
+$ python3 scripts/build_data_inventory.py --check
+{
+  "mode": "check",
+  "changed_files": 0,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 178,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252
+}
+EXIT 0
+$ python3 validation/check_development_roadmap.py
+{
+  "passed": true,
+  "phases": 9,
+  "epics": 97,
+  "tickets": 13,
+  "statuses": {
+    "Not Started": 95,
+    "In Progress": 1,
+    "Blocked": 0,
+    "Complete": 1
+  },
+  "completion_percentage": 1.0,
+  "errors": []
+}
+EXIT 0
+$ python3 validation/check_data_inventory.py
+{
+  "passed": true,
+  "enums": 81,
+  "interfaces": 168,
+  "schemas": 252,
+  "unique_structures": 501,
+  "feature_pages_reviewed": 49,
+  "pages_reviewed": 178,
+  "pages_with_data": 49,
+  "existing": 80,
+  "proposed": 421,
+  "needs_review": 0,
+  "partially_defined": 0,
+  "open_review_items": 0,
+  "resolved_review_items": 29,
+  "fully_defined_enums": 81,
+  "fully_defined_interfaces": 168,
+  "fully_defined_schemas": 252,
+  "errors": []
+}
+EXIT 0
+$ python3 -m unittest discover -s validation -p test_*.py
+............................................................................
+----------------------------------------------------------------------
+Ran 76 tests in 74.937s
+
+OK
+EXIT 0
+$ python3 validation/run_checks.py
+{
+  "checks_passed": 242,
+  "checks_failed": 0,
+  "level_allocation_cases": 2940,
+  "sample_capstone_allocations": 98,
+  "html_page_count": 179
+}
+EXIT 0

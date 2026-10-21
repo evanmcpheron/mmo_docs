@@ -1,0 +1,156 @@
+{
+  "ticket": "BW-002-T02",
+  "date": "2026-10-21",
+  "game_repository": "evanmcpheron/BriarwakeUnreal",
+  "game_pr": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/4",
+  "fetched_main": "d450654e75a1fa76042f6e87744a3cf7d5b18ef2",
+  "tested_revision": "53370174224106a840f1a6fdc83f139804901fe9",
+  "source_sha256": "e2afc3d3fd9db3200d71fff708b0ab17ff7be665780ca187f9b453fd937281c6",
+  "canonical_docs_base": "d47a7e267cbb9fe9e00a7a451fc2c61032b01bed",
+  "semantic_sha256": "b80068a8ff5f78617572bc68a38b9e3d87ff45543d73516c55663a2db103df0a",
+  "samples_sha256": "2dd09d486be3f5b8514fe69f94281a46a2b3b378c2e7eb3cc044b58670f296ca",
+  "selected_roots": [
+    "ability_command_v2",
+    "TargetMode",
+    "EffectOperation",
+    "ItemGrade",
+    "ItemRarity",
+    "Id",
+    "Version",
+    "Instant",
+    "CurrencyAmount",
+    "CombatAmount",
+    "ServerConfiguration",
+    "PublicCombatResult",
+    "CommandResponse",
+    "ValidationFinding"
+  ],
+  "definition_closure": [
+    "ActionRejectionReason",
+    "CombatAmount",
+    "CommandContext",
+    "CommandOutcome",
+    "CommandResponse",
+    "Count",
+    "CurrencyAmount",
+    "DamageSchool",
+    "EffectOperation",
+    "Id",
+    "Instant",
+    "ItemGrade",
+    "ItemRarity",
+    "NonzeroDirection",
+    "PublicCombatResult",
+    "Seconds",
+    "ServerConfiguration",
+    "TargetMode",
+    "ValidationFinding",
+    "Vector2",
+    "Version",
+    "ability_command_v2"
+  ],
+  "criteria": [
+    {
+      "criterion": 1,
+      "result": "Passed",
+      "checks": [
+        "Explicit canonical extraction/check matches 22-definition closure and selected catalog samples.",
+        "Executed Python mutations detect semantic/sample changes, missing/nonlocal references and unsupported vocabulary; planning-only metadata does not change meaning."
+      ]
+    },
+    {
+      "criterion": 2,
+      "result": "Passed",
+      "checks": [
+        "199 committed native cases; 724 named encoding/parser/typed-command assertions.",
+        "Established case-sensitive tokens and IDs, optional/nullable fields, UTC strings and ItemRarity alias round-trip.",
+        "PublicCombatResult hidden source remains present null; private breakdown and unknown fields reject.",
+        "Missing/invalid fields, wrong encodings, nonfinite/fractional numbers, duplicate/colliding JSON keys reject."
+      ]
+    },
+    {
+      "criterion": 3,
+      "result": "Passed",
+      "checks": [
+        "23 native revision/snapshot checks preserve independent content/rules/synthetic-database values.",
+        "Explicit server-owned compatible tuple and content upgrade pass; independently incompatible/missing/case-changed/swapped domains reject without mutation."
+      ]
+    },
+    {
+      "criterion": 4,
+      "result": "Passed",
+      "checks": [
+        "Both exact native compatibility tests execute 747 named checks in initial clean run and independent post-commit recovery.",
+        "Actual assertion failure is Executed/Failed; missing/stale reports fail verification; actual source marker makes prior binary stale and prevents execution.",
+        "Pinned Editor/Game builds, current module identity and baseline automation pass."
+      ]
+    }
+  ],
+  "review_checklist": {
+    "scope_and_ownership": "Passed: bounded decoder/revision owner only; no gameplay publication or authorization. AGENTS/README storage edits explicitly requested by owner.",
+    "contracts": "Passed: one canonical extracted definition owner, no changed wire identifiers or schema meanings. Metadata invariants remain documented and unexecuted.",
+    "cpp": "Passed: typed command narrowing, exact string equality, finite/safe-integer checks, atomic compatibility selection, no header bodies or warning suppression.",
+    "tests": "Passed: actual native assertions, exact test discovery, source/nonce/snapshot identity, controls and independent recovery; Python regressions and baseline automation.",
+    "network_and_assets": "N/A: no RPC, replication, Actor, map, widget, asset or persistence change.",
+    "bridge": "N/A: pure native automation needs no direct editor bridge.",
+    "storage": "Passed: all ongoing work uses existing checkouts; own extra docs worktree removed. Pre-existing user worktrees preserved.",
+    "limits": "No current packaging, source-Server runtime, database migration, connected gameplay, content publication/economic graph or later BW-003 certification."
+  },
+  "observed_engine_diagnostics": [
+    "Game build warns about pre-existing missing MetalShaderConverter include and staged runtime directory.",
+    "Editor reports existing ZenStore/IoStore combination and layout-version warnings; compatibility tests have no warnings or errors on clean runs."
+  ],
+  "historical_failures": [
+    {
+      "run": "bw002-t02-native-first",
+      "cause": "A case-colliding invalid-input example prevented strict fixture-corpus loading. Removed its duplicate key; direct duplicate/collision parser checks retained."
+    },
+    {
+      "run": "bw002-t02-native-corrected",
+      "cause": "Raw NaN token accepted by Unreal parser. Added explicit finite-number tokenizer guard; final clean/recovery parser assertions pass."
+    }
+  ],
+  "parent_review": {
+    "BW-002-AC-1": "Retained T01 authority/lifecycle review remains applicable; new code owns only decoding/compatibility, with gameplay owners still absent.",
+    "BW-002-AC-2": "Open: T03 content admission/publication and semantic reference/target/resource validation.",
+    "BW-002-AC-3": "Open: T04 unsupported-binding/readiness rejection.",
+    "BW-002-AC-4": "Passed: this T02 native encoding/independent-revision evidence.",
+    "BW-002-AC-5": "Open: T05 approved economic identity/provenance and T06 full graph gate; T07 integrated review also pending.",
+    "status": "In Progress",
+    "readiness": "BW-002 remains Dependency-ready; BW-003 still requires completed BW-002."
+  },
+  "retained_runs": {
+    "editor-build": "editor-build/run.json",
+    "game-build": "game-build/run.json",
+    "clean": "clean/run.json",
+    "assertion-control": "assertion-control/run.json",
+    "missing-control": "missing-control/run.json",
+    "stale-control": "stale-control/run.json",
+    "stale-binary-control": "stale-binary-control/run.json",
+    "recovery": "recovery/run.json",
+    "baseline": "baseline/run.json",
+    "historical-corpus-failure": "historical-corpus-failure/run.json",
+    "historical-nonfinite-failure": "historical-nonfinite-failure/run.json"
+  },
+  "preserved_docs_branch": {
+    "branch": "docs/bw-003-t02-prerequisite-review",
+    "merge_revision": "863e09de47b8cee072077192c56ee32027cb0fa9",
+    "scope": "Prior work preserved separately; this task branch starts at fetched main and includes only T02 tracking/evidence."
+  },
+  "documentation_regression_fix": "The first full documentation regression run exposed a status-policy test that changed completed BW-001 to Blocked, unintentionally invalidating the newly Complete T02 dependency. The validator correctly rejected that fixture. The status/blocker test now uses leaf epic BW-099; its assertions and the separate completed-ticket dependency/evidence regression remain intact. No production validation policy was weakened.",
+  "delivery_bases": {
+    "game_main_initial_and_rechecked": "d450654e75a1fa76042f6e87744a3cf7d5b18ef2",
+    "docs_main_initial_and_rechecked": "d47a7e267cbb9fe9e00a7a451fc2c61032b01bed",
+    "tested_game_revision": "53370174224106a840f1a6fdc83f139804901fe9",
+    "documentation_test_state": "Task tracking, generated pages, evidence and status-test fixture changes were uncommitted during validation; final docs commit retains this exact result."
+  },
+  "documentation_checks": {
+    "result": "Passed",
+    "regression_tests": 76,
+    "full_checks_passed": 242,
+    "full_checks_failed": 0,
+    "html_pages": 179,
+    "commands": "All eight required skill/README commands executed in order; initial isolated fixture failure and passing rerun are retained in documentation-checks.txt.",
+    "generated_views": "generated-view-review.json"
+  }
+}
