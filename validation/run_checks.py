@@ -86,7 +86,7 @@ def validate_allocation(nodes: list[dict], allocation: dict, level: int, budget:
             return False
     return sum(allocation.values()) == budget and max(groups.values(), default=0) <= 1
 
-def run_checks(write_examples=False):
+def run_checks(write_examples=False, allocation_checks=True):
     checks: list[dict] = []
 
     def load(name: str):
@@ -114,28 +114,29 @@ def run_checks(write_examples=False):
         selectable = sum(node['max_ranks'] for node in nodes if not node['exclusive_group']) + 2
         check(f"Selectable rank capacity: {owner['id']}", selectable == 92)
 
-    capacity_failures = []
-    for owner in owners:
-        nodes = [node for node in talents if node['owner_id'] == owner['id']]
-        for level in range(1, 61):
-            budget = level - 1 if owner in classes or level >= 10 else 0
-            allocation = allocate(nodes, level, budget)
-            if not validate_allocation(nodes, allocation, level, budget):
-                capacity_failures.append([owner['id'], level, budget, sum(allocation.values())])
-    check('Legal allocation at every level for all 49 trees', not capacity_failures, f'2,940 owner/level cases; failures: {capacity_failures}')
     sample_builds = []
-    for owner in owners:
-        nodes = [node for node in talents if node['owner_id'] == owner['id']]
-        for route in [0, 1]:
-            allocation = allocate(nodes, 60, 59, route)
-            has_capstone = any(node['tier'] == 6 and node['exclusive_group'] and allocation.get(node['id'], 0) for node in nodes)
-            check(f"Capstone allocation: {owner['id']} route {route + 1}", validate_allocation(nodes, allocation, 60, 59) and has_capstone)
-            sample_builds.append({'owner_id': owner['id'], 'route': route + 1, 'level': 60, 'points': 59, 'allocation': allocation, 'status': 'structural_example_not_optimized_or_playtested'})
-    examples = json.dumps(sample_builds, indent=2) + '\n'
-    if write_examples:
-        (DATA / 'allocation_examples.json').write_text(examples)
-    check('Generated allocation examples are current',
-          (DATA / 'allocation_examples.json').read_text() == examples)
+    if allocation_checks:
+        capacity_failures = []
+        for owner in owners:
+            nodes = [node for node in talents if node['owner_id'] == owner['id']]
+            for level in range(1, 61):
+                budget = level - 1 if owner in classes or level >= 10 else 0
+                allocation = allocate(nodes, level, budget)
+                if not validate_allocation(nodes, allocation, level, budget):
+                    capacity_failures.append([owner['id'], level, budget, sum(allocation.values())])
+        check('Legal allocation at every level for all 49 trees', not capacity_failures, f'2,940 owner/level cases; failures: {capacity_failures}')
+        for owner in owners:
+            nodes = [node for node in talents if node['owner_id'] == owner['id']]
+            for route in [0, 1]:
+                allocation = allocate(nodes, 60, 59, route)
+                has_capstone = any(node['tier'] == 6 and node['exclusive_group'] and allocation.get(node['id'], 0) for node in nodes)
+                check(f"Capstone allocation: {owner['id']} route {route + 1}", validate_allocation(nodes, allocation, 60, 59) and has_capstone)
+                sample_builds.append({'owner_id': owner['id'], 'route': route + 1, 'level': 60, 'points': 59, 'allocation': allocation, 'status': 'structural_example_not_optimized_or_playtested'})
+        examples = json.dumps(sample_builds, indent=2) + '\n'
+        if write_examples:
+            (DATA / 'allocation_examples.json').write_text(examples)
+        check('Generated allocation examples are current',
+              (DATA / 'allocation_examples.json').read_text() == examples)
     progression = load('progression.json')
     check('Two points every level-up; 118 at cap', all(row['total_points'] == 2 * (row['level'] - 1) and row['class_points'] == row['specialization_points'] == row['level'] - 1 for row in progression) and progression[-1]['total_points'] == 118)
     check('Specialization points bank before level 10', all(row['spendable_specialization_points'] == (row['level'] - 1 if row['level'] >= 10 else 0) for row in progression))
@@ -213,7 +214,9 @@ def run_checks(write_examples=False):
           f"{len(development_roadmap['epics'])} epics; errors: {development_roadmap_errors[:20]}")
     counts = Counter(ability['content_status'] for ability in abilities)
     talent_counts = Counter(node['binding_status'] for node in talents)
-    report = {'generated_at_utc': datetime.now(timezone.utc).isoformat(), 'package_version': catalog['version'], 'checks_passed': sum(check['passed'] for check in checks), 'checks_failed': sum(not check['passed'] for check in checks), 'checks': checks, 'level_allocation_cases': 2940, 'sample_capstone_allocations': len(sample_builds), 'faction_role_coverage': coverage, 'readiness': {'ability_status_counts': dict(counts), 'talent_status_counts': dict(talent_counts), 'representative_item_configuration_required': sum(item.get('effect', {}).get('configuration_required', False) for item in items), 'gameplay_balance_tested': False, 'database_integration_tested': False, 'network_capacity_tested': False}, 'html_page_count': len(html_files)}
+    report = {'generated_at_utc': datetime.now(timezone.utc).isoformat(), 'package_version': catalog['version'], 'checks_passed': sum(check['passed'] for check in checks), 'checks_failed': sum(not check['passed'] for check in checks), 'checks': checks, 'level_allocation_cases': 2940 if allocation_checks else 0, 'sample_capstone_allocations': len(sample_builds), 'faction_role_coverage': coverage, 'readiness': {'ability_status_counts': dict(counts), 'talent_status_counts': dict(talent_counts), 'representative_item_configuration_required': sum(item.get('effect', {}).get('configuration_required', False) for item in items), 'gameplay_balance_tested': False, 'database_integration_tested': False, 'network_capacity_tested': False}, 'html_page_count': len(html_files)}
+    if not allocation_checks:
+        report['deferred_checks'] = ['Allocation cases, capstone routes and allocation-example freshness; unchanged data inputs, FULL required']
     return report
 
 
@@ -221,8 +224,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--read-only', action='store_true', help='Verify without updating examples or historical evidence')
     parser.add_argument('--report', type=Path, help='Explicit report destination, including with --read-only')
+    parser.add_argument('--scope', choices=('full', 'documentation'), default='full',
+                        help='Documentation scope defers allocation checks; requires --read-only')
     args = parser.parse_args()
-    report = run_checks(write_examples=not args.read_only)
+    if args.scope == 'documentation' and not args.read_only:
+        parser.error('documentation scope requires --read-only')
+    report = run_checks(write_examples=not args.read_only, allocation_checks=args.scope == 'full')
     destination = args.report or (None if args.read_only else ROOT / 'validation/report.json')
     if destination is not None:
         destination.parent.mkdir(parents=True, exist_ok=True)

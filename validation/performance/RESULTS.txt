@@ -62,7 +62,8 @@ checks than builder --check. Inventory builder --check + inventory validator +
 aggregate inventory call -> one aggregate inventory call using the same registry
 validator and expected-output/stale-output comparison. No separate check-only
 command regenerates output. Positive regression tests remain independent.
-76 Python regressions -> all original tests plus 14 selection/cache regressions.
+76 Python regressions -> all original tests plus 16 selection/cache regressions
+(14 at the initial FULL measurement, two more for allocation/search selection).
 All gameplay/allocation checks, links, stable anchors, search destinations, browser
 assertions/screenshots and four JS cleanup tests -> retained in FULL. Read-only
 aggregate validation additionally rejects stale allocation examples instead of
@@ -70,10 +71,14 @@ overwriting them before inspection. Aggregate check-call preservation is verifie
 in source-equivalence.json. Browser report matches the original passing report.
 
 FULL defaults to comprehensive validation; no Git classification can bypass CI.
-FAST always runs the aggregate and engine audit, with relevant regression modules
-and browser checks. Roadmap changes select roadmap/inventory tests and browser;
+FAST always runs aggregate documentation checks and the engine audit, with relevant
+regression modules and browser checks. Allocation cases/routes/example freshness
+are explicitly deferred only when shipped data inputs are unchanged. Roadmap
+changes select roadmap/inventory tests and browser;
 contracts/schema outputs select model/reviewed-contract/inventory tests and browser;
-shared search/manifest changes union both; shipped data-only changes omit browser.
+standalone shared search/manifest changes union both, while regenerated search
+alongside a known source uses its domain tests and inventory navigation tests;
+shipped data-only changes omit browser.
 Other HTML, CSS, JS, templates, instructions, generators, validators, helpers and
 unknown paths fall back to FULL. Scope detection includes branch commits, index,
 worktree, untracked files, deletes and both rename paths; unavailable scope or

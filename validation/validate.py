@@ -54,6 +54,7 @@ def select_checks(paths, root=ROOT):
         return 'full', [], 'Cannot establish generator dependencies: ' + str(error)
     tests = set()
     browser = False
+    shared_changed = False
     for path in paths:
         if path in roadmap:
             tests.update(ROADMAP_TESTS)
@@ -62,19 +63,21 @@ def select_checks(paths, root=ROOT):
             tests.update(CONTRACT_TESTS)
             browser = True
         elif path in shared_outputs:
-            tests.update(ROADMAP_TESTS | CONTRACT_TESTS)
+            shared_changed = True
             browser = True
         elif path in data and path.startswith('data/') and path.endswith('.json'):
             tests.update(CONTRACT_TESTS)
         else:
             return 'full', [], 'Unknown or cross-cutting dependency: ' + path
+    if shared_changed:
+        tests.update({'test_data_inventory'} if tests else ROADMAP_TESTS | CONTRACT_TESTS)
     checks = ['aggregate', 'python', 'engine-artifacts']
     if browser:
         checks.insert(2, 'browser')
     return 'fast', sorted(tests), checks
 
 
-def commands(mode, tests, checks, report_dir=None):
+def commands(mode, tests, checks, report_dir=None, documentation_only=False):
     durations = ['--durations', '15'] if sys.version_info >= (3, 12) else []
     python_tests = ([sys.executable, '-m', 'unittest', 'discover', '-s', 'validation', '-p', 'test_*.py']
                     if mode == 'full' else [sys.executable, '-m', 'unittest', *tests])
@@ -90,6 +93,8 @@ def commands(mode, tests, checks, report_dir=None):
         available['browser'].extend(['--report', str(report_dir / 'data-inventory-browser-checks.json')])
     if mode == 'full':
         available['browser'].extend(['--screenshots', str(ROOT / '.git/validation-tmp/screenshots')])
+    elif documentation_only:
+        available['aggregate'].extend(['--scope', 'documentation'])
     return [(name, available[name]) for name in checks]
 
 
@@ -112,10 +117,15 @@ def main(argv=None):
                 reason = selection
         except (OSError, ValueError, subprocess.CalledProcessError) as error:
             reason = 'Changed-file detection failed: ' + str(error)
-    plan = commands(mode, tests, checks, args.report_dir.resolve() if args.report_dir else None)
+    documentation_only = mode == 'fast' and not any(
+        path.startswith('data/') and path != 'data/manifest.json' for path in paths)
+    plan = commands(mode, tests, checks, args.report_dir.resolve() if args.report_dir else None,
+                    documentation_only=documentation_only)
     deferred = [name for name in FULL_CHECKS if name not in checks]
     if mode == 'fast':
         deferred.append('Python modules outside: ' + ', '.join(tests))
+    if documentation_only:
+        deferred.append('Allocation cases, capstone routes and allocation-example freshness (unchanged data inputs)')
     print(f'Requested {args.mode.upper()}; executing {mode.upper()}: {reason}', flush=True)
     if args.mode == 'fast':
         print('Changed files: ' + json.dumps(paths) + '; merge base: ' + str(revision), flush=True)

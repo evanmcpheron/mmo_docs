@@ -75,7 +75,9 @@ staged changes, unstaged changes and untracked files, including both sides of
 renames and deleted paths. Use --base REF to explicitly select another task base.
 It always checks both generators' output freshness, both registries, all HTML
 links/anchors/search destinations, gameplay-documentation consistency and tracked
-engine artifacts. It selects relevant Python modules and browser verification
+engine artifacts. When shipped data inputs are unchanged, it explicitly defers
+allocation cases, capstone routes and allocation-example freshness to FULL.
+It selects relevant Python modules and browser verification
 from the source/generator dependency map. Browser tests are deferred for changes
 only to shipped data records; they run for rendered contracts, roadmap or shared
 generated output. Unknown/cross-cutting files, validation code, generators, test

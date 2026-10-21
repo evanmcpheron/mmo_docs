@@ -48,6 +48,15 @@ class SelectionTests(unittest.TestCase):
             self.assertEqual(ROADMAP_TESTS | CONTRACT_TESTS, set(tests))
             self.assertIn('browser', checks)
 
+    def test_generated_search_does_not_require_unrelated_domain_tests_when_its_source_is_known(self):
+        for paths in (['sources/data-inventory.json', 'assets/search-index.js'],
+                      ['assets/search-index.js', 'sources/data-inventory.json']):
+            mode, tests, checks = select_checks(paths)
+            self.assertEqual('fast', mode)
+            self.assertEqual(CONTRACT_TESTS, set(tests))
+            self.assertIn('aggregate', checks)
+            self.assertIn('browser', checks)
+
     def test_unknown_infrastructure_templates_and_browser_dependencies_fall_back_to_full(self):
         for path in ('new-file.json', 'data/new-catalog.json', 'AGENTS.md', 'README.txt',
                      '.agents/skills/execute-ticket/SKILL.md', 'validation/validate.py',
@@ -70,6 +79,7 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(set(FULL_CHECKS), set(plan))
         self.assertIn('validation/run_checks.py', plan['aggregate'])
         self.assertIn('--read-only', plan['aggregate'])
+        self.assertNotIn('--scope', plan['aggregate'])
         self.assertIn('discover', plan['python'])
         self.assertIn('validation/test_browser_cleanup.mjs', plan['browser-cleanup'])
         self.assertIn('validation/check_inventory_browser.mjs', plan['browser'])
@@ -95,6 +105,19 @@ class SelectionTests(unittest.TestCase):
                 self.assertEqual(0, main(['--mode', 'fast', '--explain']))
         self.assertIn('executing FULL', output.getvalue())
         self.assertIn('Changed-file detection failed', output.getvalue())
+
+    def test_allocation_checks_are_deferred_only_when_their_shipped_data_inputs_are_unchanged(self):
+        for path, defer in (('sources/development-roadmap.json', True),
+                            ('sources/data-inventory.json', True), ('data/character_catalog.json', False),
+                            ('data/allocation_examples.json', False), ('data/talents.json', False)):
+            with self.subTest(path=path):
+                output = io.StringIO()
+                with patch('validate.changed_files', return_value=([path], 'fixture-base')):
+                    with redirect_stdout(output):
+                        self.assertEqual(0, main(['--mode', 'fast', '--explain']))
+                self.assertEqual(defer, '--scope documentation' in output.getvalue())
+                if defer:
+                    self.assertIn('unchanged data inputs', output.getvalue())
 
     def test_missing_executables_fail_every_affected_stage_and_return_nonzero(self):
         with patch('validate.subprocess.run', side_effect=FileNotFoundError('missing prerequisite')):
