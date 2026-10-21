@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-172 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-five individual BW-003 ticket pages and one native BW-001 execution ticket,
+179 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+seven BW-002 ticket pages, five BW-003 ticket pages and one native BW-001 execution ticket,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -115,6 +115,12 @@ redacted diagnostics, bounded measurements and integrated verification. They
 cover all four epic criteria and begin Not Started with no verified evidence.
 The owner selected a local probe with logical recipients and explicitly labeled
 serialized payload bytes; this does not certify connected clients or wire traffic.
+BW-002 has seven tickets, T01 through T07: authority/lifecycle review, canonical
+compatibility, atomic admission, unsupported-behavior rejection, owner-approved
+economic contract resolution, complete economic graph admission and integrated
+verification. New tickets are Not Started with no verified evidence. T05 resolves
+the missing material/item identity bridge and original salvage provenance before
+T06 implements its graph gate; no new economic fields or price values are assumed.
 BW-001-T08 tracks the native bootstrap without reusing retired legacy ticket IDs.
 The owner selected evanmcpheron/BriarwakeUnreal; its task branch includes the supplied
 engineering docs and MultiplayerSessions Steam plugin. Actual Editor/Game builds,
@@ -123,8 +129,10 @@ launch, decoded-Pak inspection and clean pass/failure/recovery controls are reta
 BW-001/T08 are Complete: the final source Server package runs headlessly outside
 the source tree, checks three ticks and rejects missing/invalid configuration.
 Exact artifact/source identities, clean execution controls and limitations are in
-validation/tickets/BW-001-T08/final/review.json. BW-002/BW-003 remain Not Started.
-BW-002 is the sole Dependency-ready epic; BW-003 still requires BW-002. Generated
+validation/tickets/BW-001-T08/final/review.json. BW-002 is In Progress from
+unfinished native admission drafts; no passing native admission or economic
+evidence is recorded. BW-003 remains Not Started.
+BW-002 remains the sole Dependency-ready epic; BW-003 still requires BW-002. Generated
 views own readiness and milestone calculations.
 
 Store tickets in the registry's tickets list with stable IDs, parent_epic,

@@ -1,8 +1,9 @@
 import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { cleanupBrowser } from './browser_cleanup.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const registry = JSON.parse(readFileSync(join(root, 'sources/data-inventory.json'), 'utf8'));
@@ -22,7 +23,7 @@ const browser = spawn(executable, [
   '--headless', '--disable-gpu', '--disable-background-networking', '--disable-component-update',
   '--disable-sync', '--disable-breakpad', '--no-first-run', '--no-default-browser-check',
   '--remote-debugging-pipe', `--user-data-dir=${profile}`, 'about:blank',
-], { stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] });
+], { detached: true, stdio: ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'] });
 let sequence = 0;
 let buffer = '';
 const pending = new Map();
@@ -342,13 +343,13 @@ try {
 } catch (error) {
   check('Browser automation completed', false, error.message);
 } finally {
-  await new Promise(resolveExit => {
-    const timer = setTimeout(() => { browser.kill('SIGKILL'); resolveExit(); }, 2000);
-    browser.once('exit', () => { clearTimeout(timer); resolveExit(); });
-    browser.kill();
-  });
   for (const request of pending.values()) clearTimeout(request.timer);
-  rmSync(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  try {
+    await cleanupBrowser(browser, profile);
+    check('Browser process group stopped and temporary profile removed', true);
+  } catch (error) {
+    check('Browser process group stopped and temporary profile removed', false, error.message);
+  }
 }
 const report = {
   browser: browserVersion,
