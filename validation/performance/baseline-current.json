@@ -1,0 +1,102 @@
+{
+  "revision": "8c761215140d54bb1fd668c6653d9a77312262a3",
+  "python": "3.14.0 (v3.14.0:ebf955df7a8, Oct  7 2025, 08:20:14) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "node": "v24.10.0",
+  "stages": [
+    {
+      "command": [
+        "python3",
+        "scripts/build_development_roadmap.py",
+        "--check"
+      ],
+      "seconds": 0.726,
+      "exit_code": 0,
+      "log": "baseline-current-01.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build_data_inventory.py",
+        "--check"
+      ],
+      "seconds": 3.192,
+      "exit_code": 0,
+      "log": "baseline-current-02.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_development_roadmap.py"
+      ],
+      "seconds": 1.638,
+      "exit_code": 0,
+      "log": "baseline-current-03.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_data_inventory.py"
+      ],
+      "seconds": 3.202,
+      "exit_code": 0,
+      "log": "baseline-current-04.log"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py",
+        "--durations",
+        "15"
+      ],
+      "seconds": 69.905,
+      "exit_code": 0,
+      "log": "baseline-current-05.log"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "validation/test_browser_cleanup.mjs"
+      ],
+      "seconds": 2.544,
+      "exit_code": 0,
+      "log": "baseline-current-06.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/run_checks.py"
+      ],
+      "seconds": 10.336,
+      "exit_code": 0,
+      "log": "baseline-current-07.log"
+    },
+    {
+      "command": [
+        "node",
+        "validation/check_inventory_browser.mjs"
+      ],
+      "seconds": 10.374,
+      "exit_code": 0,
+      "log": "baseline-current-08.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_engine_artifacts.py"
+      ],
+      "seconds": 0.058,
+      "exit_code": 0,
+      "log": "baseline-current-09.log"
+    }
+  ],
+  "total_seconds": 101.975,
+  "condition": "Original validation code; only stale generated output and page reviews on fetched main repaired with existing builders."
+}

@@ -1,11 +1,20 @@
 import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { parseArgs } from 'node:util';
 import { cleanupBrowser } from './browser_cleanup.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+if (Number(process.versions.node.split('.')[0]) < 22) throw new Error('Browser verification requires Node 22+.');
+const { values: options } = parseArgs({ options: {
+  'read-only': { type: 'boolean', default: false },
+  report: { type: 'string' },
+  screenshots: { type: 'string' },
+} });
+const screenshotDirectory = options.screenshots || (options['read-only'] ? null : tmpdir());
+if (screenshotDirectory) mkdirSync(screenshotDirectory, { recursive: true });
 const registry = JSON.parse(readFileSync(join(root, 'sources/data-inventory.json'), 'utf8'));
 const roadmap = JSON.parse(readFileSync(join(root, 'sources/development-roadmap.json'), 'utf8'));
 const phasePath = phase => `guide/roadmap-${phase.id.replace(/^phase-/, '')}.html`;
@@ -97,8 +106,9 @@ try {
     await loaded;
   };
   const captureRoadmap = async name => {
+    if (!screenshotDirectory) return;
     const screenshot = await command('Page.captureScreenshot', { format: 'png' });
-    writeFileSync(join(tmpdir(), `briarwake-roadmap-${name}.png`), Buffer.from(screenshot.data, 'base64'));
+    writeFileSync(join(screenshotDirectory, `briarwake-roadmap-${name}.png`), Buffer.from(screenshot.data, 'base64'));
   };
   const scrollRoadmap = id => evaluate(`document.getElementById(${JSON.stringify(id)}).scrollIntoView({behavior:'instant'})`);
   const clickNavigation = async expression => {
@@ -158,8 +168,10 @@ try {
   await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))`);
   await evaluate(`new Promise(resolve => setTimeout(resolve, 250))`);
   check('Escape closes mobile navigation', await evaluate(`!document.querySelector('#navigation').classList.contains('open') && document.querySelector('#navigation').getBoundingClientRect().right <= 0`));
-  const screenshot = await command('Page.captureScreenshot', { format: 'png' });
-  writeFileSync(join(tmpdir(), 'briarwake-inventory-mobile.png'), Buffer.from(screenshot.data, 'base64'));
+  if (screenshotDirectory) {
+    const screenshot = await command('Page.captureScreenshot', { format: 'png' });
+    writeFileSync(join(screenshotDirectory, 'briarwake-inventory-mobile.png'), Buffer.from(screenshot.data, 'base64'));
+  }
   await navigate('guide/development-roadmap.html');
   check('Offline roadmap hub is compact and links every phase instead of embedding epic details', await evaluate(`(() => {
     const expected = ${JSON.stringify(roadmap.phases.map(phasePath))};
@@ -358,6 +370,10 @@ const report = {
   failed: checks.filter(check => !check.passed).length,
   checks,
 };
-writeFileSync(join(root, 'validation/data-inventory-browser-checks.json'), JSON.stringify(report, null, 2) + '\n');
+const reportPath = options.report || (options['read-only'] ? null : join(root, 'validation/data-inventory-browser-checks.json'));
+if (reportPath) {
+  mkdirSync(dirname(reportPath), { recursive: true });
+  writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
+}
 console.log(JSON.stringify(report, null, 2));
 process.exitCode = report.failed ? 1 : 0;

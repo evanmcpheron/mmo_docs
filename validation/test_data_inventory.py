@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_data_inventory import (CATEGORIES, DATA_START, INVENTORY_PAGE, content_fingerprint,
-                                  ROADMAP_PAGE, expected_outputs, load_registry, review_pages,
+                                  ROADMAP_PAGE, document_metadata, expected_outputs, load_registry, review_pages,
                                   roadmap_search, stale_outputs, validate_registry)
 from build_development_roadmap import anchor_page, epic_page, generated_page_paths, phase_page
 
@@ -218,6 +218,15 @@ class InventoryTests(unittest.TestCase):
         self.assertIn(INVENTORY_PAGE, stale_outputs(corrupted))
         for page in self.registry['pages']:
             self.assertEqual(page['reviewed_content_sha256'], content_fingerprint(first[page['page']]))
+
+    def test_reused_document_metadata_is_immutable_and_keyed_by_actual_content(self):
+        first = document_metadata('<main><h2 id="original">Original</h2></main>')
+        changed = document_metadata('<main><h2 id="changed">Changed</h2></main>')
+        self.assertEqual(('original',), first.ids)
+        self.assertEqual(('changed',), changed.ids)
+        self.assertEqual((('h2', 'changed', 'Changed'),), changed.headings)
+        with self.assertRaises(AttributeError):
+            first.ids += ('injected',)
 
 
 if __name__ == '__main__':

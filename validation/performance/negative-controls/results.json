@@ -1,0 +1,280 @@
+{
+  "revision": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+  "controls": [
+    {
+      "control": "invalid roadmap dependency",
+      "required_diagnostic": "undefined epic BW-999999",
+      "observed": [
+        "BW-001 hard_dependencies: undefined epic BW-999999"
+      ]
+    },
+    {
+      "control": "invalid completion evidence",
+      "required_diagnostic": "passing evidence for every AC",
+      "observed": [
+        "BW-001: Complete requires passing evidence for every AC"
+      ]
+    },
+    {
+      "control": "invalid status",
+      "required_diagnostic": "invalid status",
+      "observed": [
+        "BW-094: invalid status"
+      ]
+    },
+    {
+      "control": "invalid contract",
+      "required_diagnostic": "undefined type reference",
+      "observed": [
+        "CharacterState.health: undefined type reference #/$defs/MissingNegativeControl"
+      ]
+    },
+    {
+      "control": "invalid shipped record",
+      "required_diagnostic": "expected string",
+      "observed": [
+        "data/abilities.json/*[0].id: expected string"
+      ]
+    },
+    {
+      "control": "stale roadmap HTML",
+      "required_diagnostic": "Stale generated roadmap: guide/roadmap-bw-001.html",
+      "observed": [
+        "Stale generated roadmap: guide/roadmap-bw-001.html"
+      ]
+    },
+    {
+      "control": "stale inventory HTML",
+      "required_diagnostic": "Stale generated output: guide/data-inventory.html",
+      "observed": [
+        "Stale generated output: guide/data-inventory.html"
+      ]
+    },
+    {
+      "control": "stale owned search output",
+      "required_diagnostic": "Stale generated output: assets/search-index.js",
+      "observed": [
+        "Stale generated output: assets/search-index.js"
+      ]
+    },
+    {
+      "control": "broken links/required AC anchor/search destination",
+      "required_diagnostic": "Local HTML links, anchors and template completion",
+      "observed": [
+        "Local HTML links, anchors and template completion"
+      ]
+    },
+    {
+      "control": "broken links/required AC anchor/search destination",
+      "required_diagnostic": "Global search destinations and anchors",
+      "observed": [
+        "Global search destinations and anchors"
+      ]
+    },
+    {
+      "control": "unknown-validation-control.txt",
+      "executed_plan": "Requested FAST; executing FULL: Unknown or cross-cutting dependency: unknown-validation-control.txt\nChanged files: [\"unknown-validation-control.txt\"]; merge base: 3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d\nDeferred to FULL: none\naggregate: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/run_checks.py --read-only\npython: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m unittest discover -s validation -p 'test_*.py' --durations 15\nbrowser-cleanup: node --test validation/test_browser_cleanup.mjs\nbrowser: node validation/check_inventory_browser.mjs --read-only --screenshots '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-tmp/screenshots'\nengine-artifacts: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/check_engine_artifacts.py\n"
+    },
+    {
+      "control": "validation/validate.py",
+      "executed_plan": "Requested FAST; executing FULL: Unknown or cross-cutting dependency: validation/validate.py\nChanged files: [\"validation/validate.py\"]; merge base: 3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d\nDeferred to FULL: none\naggregate: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/run_checks.py --read-only\npython: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m unittest discover -s validation -p 'test_*.py' --durations 15\nbrowser-cleanup: node --test validation/test_browser_cleanup.mjs\nbrowser: node validation/check_inventory_browser.mjs --read-only --screenshots '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-tmp/screenshots'\nengine-artifacts: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/check_engine_artifacts.py\n"
+    },
+    {
+      "control": "combined invalid state",
+      "mode": "fast",
+      "command": [
+        "python3",
+        "validation/validate.py",
+        "--mode",
+        "fast",
+        "--base",
+        "HEAD",
+        "--report-dir",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/fast"
+      ],
+      "exit_code": 1,
+      "seconds": 26.228,
+      "failed_aggregate_checks": [
+        "Generated allocation examples are current",
+        "Local HTML links, anchors and template completion",
+        "Global search destinations and anchors",
+        "Data inventory coverage, evidence and generated output",
+        "Development roadmap dependencies, evidence, coverage and generated progress"
+      ],
+      "summary": {
+        "revision": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+        "main_revision": "8c761215140d54bb1fd668c6653d9a77312262a3",
+        "requested_mode": "fast",
+        "executed_mode": "fast",
+        "reason": "Focused source/generator dependencies",
+        "merge_base": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+        "changed_files": [
+          "assets/search-index.js",
+          "data/abilities.json",
+          "data/allocation_examples.json",
+          "guide/data-inventory.html",
+          "guide/roadmap-bw-001.html",
+          "sources/data-inventory.json",
+          "sources/development-roadmap.json"
+        ],
+        "checks": [
+          {
+            "name": "aggregate",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+              "validation/run_checks.py",
+              "--read-only",
+              "--report",
+              "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/fast/report.json"
+            ],
+            "exit_code": 1,
+            "seconds": 6.52
+          },
+          {
+            "name": "python",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+              "-m",
+              "unittest",
+              "test_data_inventory",
+              "test_data_model",
+              "test_development_roadmap",
+              "test_reviewed_contracts",
+              "--durations",
+              "15"
+            ],
+            "exit_code": 1,
+            "seconds": 13.552
+          },
+          {
+            "name": "browser",
+            "command": [
+              "node",
+              "validation/check_inventory_browser.mjs",
+              "--read-only",
+              "--report",
+              "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/fast/data-inventory-browser-checks.json"
+            ],
+            "exit_code": 1,
+            "seconds": 5.833
+          },
+          {
+            "name": "engine-artifacts",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+              "validation/check_engine_artifacts.py"
+            ],
+            "exit_code": 0,
+            "seconds": 0.136
+          }
+        ],
+        "deferred": [
+          "browser-cleanup",
+          "Python modules outside: test_data_inventory, test_data_model, test_development_roadmap, test_reviewed_contracts"
+        ],
+        "passed": false,
+        "seconds": 26.042
+      }
+    },
+    {
+      "control": "combined invalid state",
+      "mode": "full",
+      "command": [
+        "python3",
+        "validation/validate.py",
+        "--mode",
+        "full",
+        "--base",
+        "HEAD",
+        "--report-dir",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/full"
+      ],
+      "exit_code": 1,
+      "seconds": 29.424,
+      "failed_aggregate_checks": [
+        "Generated allocation examples are current",
+        "Local HTML links, anchors and template completion",
+        "Global search destinations and anchors",
+        "Data inventory coverage, evidence and generated output",
+        "Development roadmap dependencies, evidence, coverage and generated progress"
+      ],
+      "summary": {
+        "revision": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+        "main_revision": "8c761215140d54bb1fd668c6653d9a77312262a3",
+        "requested_mode": "full",
+        "executed_mode": "full",
+        "reason": "Comprehensive verification requested",
+        "merge_base": null,
+        "changed_files": [],
+        "checks": [
+          {
+            "name": "aggregate",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+              "validation/run_checks.py",
+              "--read-only",
+              "--report",
+              "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/full/report.json"
+            ],
+            "exit_code": 1,
+            "seconds": 6.55
+          },
+          {
+            "name": "python",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "validation",
+              "-p",
+              "test_*.py",
+              "--durations",
+              "15"
+            ],
+            "exit_code": 1,
+            "seconds": 14.592
+          },
+          {
+            "name": "browser-cleanup",
+            "command": [
+              "node",
+              "--test",
+              "validation/test_browser_cleanup.mjs"
+            ],
+            "exit_code": 0,
+            "seconds": 2.551
+          },
+          {
+            "name": "browser",
+            "command": [
+              "node",
+              "validation/check_inventory_browser.mjs",
+              "--read-only",
+              "--report",
+              "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/full/data-inventory-browser-checks.json",
+              "--screenshots",
+              "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-tmp/screenshots"
+            ],
+            "exit_code": 1,
+            "seconds": 5.465
+          },
+          {
+            "name": "engine-artifacts",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+              "validation/check_engine_artifacts.py"
+            ],
+            "exit_code": 0,
+            "seconds": 0.051
+          }
+        ],
+        "deferred": [],
+        "passed": false,
+        "seconds": 29.209
+      }
+    }
+  ],
+  "all_mutations_restored": true
+}

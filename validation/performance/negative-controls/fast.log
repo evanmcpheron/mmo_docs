@@ -1,0 +1,1163 @@
+Requested FAST; executing FAST: Focused source/generator dependencies
+Changed files: ["assets/search-index.js", "data/abilities.json", "data/allocation_examples.json", "guide/data-inventory.html", "guide/roadmap-bw-001.html", "sources/data-inventory.json", "sources/development-roadmap.json"]; merge base: 3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d
+Deferred to FULL: browser-cleanup, Python modules outside: test_data_inventory, test_data_model, test_development_roadmap, test_reviewed_contracts
+aggregate: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/run_checks.py --read-only --report '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/fast/report.json'
+python: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m unittest test_data_inventory test_data_model test_development_roadmap test_reviewed_contracts --durations 15
+browser: node validation/check_inventory_browser.mjs --read-only --report '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/negative-controls/fast/data-inventory-browser-checks.json'
+engine-artifacts: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 validation/check_engine_artifacts.py
+
+RUN aggregate
+{
+  "checks_passed": 238,
+  "checks_failed": 5,
+  "level_allocation_cases": 2940,
+  "sample_capstone_allocations": 98,
+  "html_page_count": 179
+}
+FAIL: Generated allocation examples are current
+FAIL: Local HTML links, anchors and template completion 179 HTML pages; errors: ['guide/roadmap-bw-001-t08.html: missing anchor roadmap-bw-001.html#BW-001-AC-1', 'guide/roadmap-bw-001.html: missing anchor #BW-001-AC-1', 'guide/roadmap-bw-001.html: missing anchor #BW-001-AC-1', 'guide/roadmap-bw-001.html: missing missing-negative-control.html']
+FAIL: Global search destinations and anchors 3877 indexed destinations; errors: ['guide/roadmap-bw-001.html#missing-negative-control', 'guide/roadmap-bw-001.html#BW-001-AC-1']
+FAIL: Data inventory coverage, evidence and generated output 501 structures; errors: ['guide/roadmap-bw-001.html: feature content changed; review coverage and update its fingerprint', 'CharacterState.health: undefined type reference #/$defs/MissingNegativeControl', 'CharacterState: inconsistent dependency metadata']
+FAIL: Development roadmap dependencies, evidence, coverage and generated progress 97 epics; errors: ['BW-001 hard_dependencies: undefined epic BW-999999', 'BW-001: Complete requires passing evidence for every AC', 'BW-099: invalid status']
+FAIL aggregate: 6.52s
+
+RUN python
+.......FFF....F.....F........FFE..EEEE..EE.FEE.FEFFEFEF..FFE................
+======================================================================
+ERROR: test_acceptance_criteria_have_direct_links_for_future_tickets (test_development_roadmap.RoadmapTests.test_acceptance_criteria_have_direct_links_for_future_tickets)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 53, in test_acceptance_criteria_have_direct_links_for_future_tickets
+    outputs = generated_pages(self.data)
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 524, in generated_pages
+    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in render_phase
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in <genexpr>
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                                                                                                ~~~~~~~~~~~~~~^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_component_completion_does_not_complete_integration_milestone (test_development_roadmap.RoadmapTests.test_component_completion_does_not_complete_integration_milestone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 275, in test_component_completion_does_not_complete_integration_milestone
+    for identifier in prerequisite_closure(self.data, milestone['required_epics']):
+                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 54, in prerequisite_closure
+    visit(identifier)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  [Previous line repeated 1 more time]
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 50, in visit
+    for dependency in by_id[identifier]['hard_dependencies']:
+                      ~~~~~^^^^^^^^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_cross_phase_prerequisites_open_their_defining_phase (test_development_roadmap.RoadmapTests.test_cross_phase_prerequisites_open_their_defining_phase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 177, in test_cross_phase_prerequisites_open_their_defining_phase
+    outputs = generated_pages(self.data)
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 524, in generated_pages
+    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in render_phase
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in <genexpr>
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                                                                                                ~~~~~~~~~~~~~~^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_dashboard_and_phases_are_indexes_and_each_epic_has_its_own_page (test_development_roadmap.RoadmapTests.test_dashboard_and_phases_are_indexes_and_each_epic_has_its_own_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 37, in test_dashboard_and_phases_are_indexes_and_each_epic_has_its_own_page
+    outputs = generated_pages(self.data)
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 524, in generated_pages
+    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in render_phase
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in <genexpr>
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                                                                                                ~~~~~~~~~~~~~~^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_dependencies_and_dependents_link_in_both_directions (test_development_roadmap.RoadmapTests.test_dependencies_and_dependents_link_in_both_directions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 64, in test_dependencies_and_dependents_link_in_both_directions
+    outputs = generated_pages(self.data)
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 524, in generated_pages
+    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in render_phase
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in <genexpr>
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                                                                                                ~~~~~~~~~~~~~~^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_epic_previous_and_next_follow_the_recommended_sequence (test_development_roadmap.RoadmapTests.test_epic_previous_and_next_follow_the_recommended_sequence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 157, in test_epic_previous_and_next_follow_the_recommended_sequence
+    outputs = generated_pages(self.data)
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 524, in generated_pages
+    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in render_phase
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in <genexpr>
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                                                                                                ~~~~~~~~~~~~~~^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_external_persistent_play_requires_security_restore_and_prediction (test_development_roadmap.RoadmapTests.test_external_persistent_play_requires_security_restore_and_prediction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 292, in test_external_persistent_play_requires_security_restore_and_prediction
+    closure = prerequisite_closure(self.data, opening['required_epics'])
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 54, in prerequisite_closure
+    visit(identifier)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  [Previous line repeated 4 more times]
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 50, in visit
+    for dependency in by_id[identifier]['hard_dependencies']:
+                      ~~~~~^^^^^^^^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_item_use_and_conversion_do_not_require_personal_crafting (test_development_roadmap.RoadmapTests.test_item_use_and_conversion_do_not_require_personal_crafting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 297, in test_item_use_and_conversion_do_not_require_personal_crafting
+    self.assertNotIn('BW-037', prerequisite_closure(self.data, [identifier]))
+                               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 54, in prerequisite_closure
+    visit(identifier)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  [Previous line repeated 6 more times]
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 50, in visit
+    for dependency in by_id[identifier]['hard_dependencies']:
+                      ~~~~~^^^^^^^^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_legacy_bookmarks_offer_direct_canonical_shortcuts_without_javascript (test_development_roadmap.RoadmapTests.test_legacy_bookmarks_offer_direct_canonical_shortcuts_without_javascript)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 171, in test_legacy_bookmarks_offer_direct_canonical_shortcuts_without_javascript
+    dashboard = Anchors(generated_pages(self.data)[PAGE])
+                        ~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 524, in generated_pages
+    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in render_phase
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in <genexpr>
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                                                                                                ~~~~~~~~~~~~~~^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_production_gate_reaches_every_epic_including_pve_level_sync (test_development_roadmap.RoadmapTests.test_production_gate_reaches_every_epic_including_pve_level_sync)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 300, in test_production_gate_reaches_every_epic_including_pve_level_sync
+    closure = set(prerequisite_closure(self.data, ['BW-094']))
+                  ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 54, in prerequisite_closure
+    visit(identifier)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  [Previous line repeated 9 more times]
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 50, in visit
+    for dependency in by_id[identifier]['hard_dependencies']:
+                      ~~~~~^^^^^^^^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_recommended_predecessor_is_not_a_hard_gate (test_development_roadmap.RoadmapTests.test_recommended_predecessor_is_not_a_hard_gate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 225, in test_recommended_predecessor_is_not_a_hard_gate
+    for dependency in prerequisite_closure(self.data, epic['hard_dependencies']):
+                      ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 54, in prerequisite_closure
+    visit(identifier)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 50, in visit
+    for dependency in by_id[identifier]['hard_dependencies']:
+                      ~~~~~^^^^^^^^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_technical_proof_does_not_require_economic_characters (test_development_roadmap.RoadmapTests.test_technical_proof_does_not_require_economic_characters)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 286, in test_technical_proof_does_not_require_economic_characters
+    closure = prerequisite_closure(self.data, ['BW-012'])
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 54, in prerequisite_closure
+    visit(identifier)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 51, in visit
+    visit(dependency)
+    ~~~~~^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 50, in visit
+    for dependency in by_id[identifier]['hard_dependencies']:
+                      ~~~~~^^^^^^^^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+ERROR: test_tickets_link_to_parent_criteria_and_dependencies_and_are_searchable (test_development_roadmap.RoadmapTests.test_tickets_link_to_parent_criteria_and_dependencies_and_are_searchable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 74, in test_tickets_link_to_parent_criteria_and_dependencies_and_are_searchable
+    outputs = generated_pages(self.data)
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 524, in generated_pages
+    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in render_phase
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/scripts/build_development_roadmap.py", line 431, in <genexpr>
+    incoming = list(dict.fromkeys(dep for epic in epics for dep in epic['hard_dependencies'] if epic_map(data)[dep]['phase'] != phase['id']))
+                                                                                                ~~~~~~~~~~~~~~^^^^^
+KeyError: 'BW-999999'
+
+======================================================================
+FAIL: test_owned_output_is_idempotent_and_stale_changes_are_detected (test_data_inventory.InventoryTests.test_owned_output_is_idempotent_and_stale_changes_are_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_data_inventory.py", line 220, in test_owned_output_is_idempotent_and_stale_changes_are_detected
+    self.assertEqual(page['reviewed_content_sha256'], content_fingerprint(first[page['page']]))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'a0d92bdb1dc1134ebdeec6e0933cdde6cacee702bded6cce187dfc412f72e3f0' != 'f22177d6a48b52f3582207f341edac124b5c26157a2e2351b89d1a77d8ad2337'
+- a0d92bdb1dc1134ebdeec6e0933cdde6cacee702bded6cce187dfc412f72e3f0
++ f22177d6a48b52f3582207f341edac124b5c26157a2e2351b89d1a77d8ad2337
+
+
+======================================================================
+FAIL: test_planning_reference_navigation_search_and_counts (test_data_inventory.InventoryTests.test_planning_reference_navigation_search_and_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_data_inventory.py", line 89, in test_planning_reference_navigation_search_and_counts
+    self.assertTrue({ROADMAP_PAGE, *(epic_page(roadmap, epic['id']) + '#' + epic['id']
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                    for epic in roadmap['epics'])} <= destinations)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_registry_and_generated_output_are_current (test_data_inventory.InventoryTests.test_registry_and_generated_output_are_current)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_data_inventory.py", line 62, in test_registry_and_generated_output_are_current
+    self.assertEqual([], validate_registry(self.registry))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['guide/roadmap-bw-001.html: feature conte[185 chars]ata']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'guide/roadmap-bw-001.html: feature content changed; review coverage and update its fingerprint'
+
+- []
++ ['guide/roadmap-bw-001.html: feature content changed; review coverage and '
++  'update its fingerprint',
++  'CharacterState.health: undefined type reference '
++  '#/$defs/MissingNegativeControl',
++  'CharacterState: inconsistent dependency metadata']
+
+======================================================================
+FAIL: test_all_original_identifiers_have_canonical_shapes (test_data_model.ModelTests.test_all_original_identifiers_have_canonical_shapes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_data_model.py", line 32, in test_all_original_identifiers_have_canonical_shapes
+    self.assertEqual([], model_errors(self.registry, ROOT))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['CharacterState.health: undefined type re[87 chars]ata']
+
+Second list contains 2 additional elements.
+First extra element 0:
+'CharacterState.health: undefined type reference #/$defs/MissingNegativeControl'
+
+- []
++ ['CharacterState.health: undefined type reference '
++  '#/$defs/MissingNegativeControl',
++  'CharacterState: inconsistent dependency metadata']
+
+======================================================================
+FAIL: test_every_shipped_variant_and_embedded_snapshot_matches (test_data_model.ModelTests.test_every_shipped_variant_and_embedded_snapshot_matches)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_data_model.py", line 35, in test_every_shipped_variant_and_embedded_snapshot_matches
+    self.assertEqual([], sample_errors(self.registry, ROOT))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['data/abilities.json/*[0].id: expected string']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'data/abilities.json/*[0].id: expected string'
+
+- []
++ ['data/abilities.json/*[0].id: expected string']
+
+======================================================================
+FAIL: test_a_stale_epic_is_detected_even_when_its_phase_is_unchanged (test_development_roadmap.RoadmapTests.test_a_stale_epic_is_detected_even_when_its_phase_is_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 207, in test_a_stale_epic_is_detected_even_when_its_phase_is_unchanged
+    self.assertTrue(any('Stale generated roadmap: ' + target.relative_to(ROOT).as_posix() in error
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        for error in self.errors(generated=True)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_a_stale_phase_is_detected_even_when_the_dashboard_is_unchanged (test_development_roadmap.RoadmapTests.test_a_stale_phase_is_detected_even_when_the_dashboard_is_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 194, in test_a_stale_phase_is_detected_even_when_the_dashboard_is_unchanged
+    self.assertTrue(any('Stale generated roadmap: ' + target.relative_to(ROOT).as_posix() in error
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        for error in self.errors(generated=True)))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_final_milestone_cannot_omit_a_branch (test_development_roadmap.RoadmapTests.test_final_milestone_cannot_omit_a_branch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 283, in test_final_milestone_cannot_omit_a_branch
+    self.assertTrue(any('Final full-game milestone' in e for e in self.errors()))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_planning_ids_allow_gaps_without_numeric_priority (test_development_roadmap.RoadmapTests.test_planning_ids_allow_gaps_without_numeric_priority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 329, in test_planning_ids_allow_gaps_without_numeric_priority
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-200 hard_dependencies: undefined epic[92 chars]tus']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'BW-200 hard_dependencies: undefined epic BW-999999'
+
+- []
++ ['BW-200 hard_dependencies: undefined epic BW-999999',
++  'BW-200: Complete requires passing evidence for every AC',
++  'BW-099: invalid status']
+
+======================================================================
+FAIL: test_progress_changes_all_derived_views_without_duplicate_status (test_development_roadmap.RoadmapTests.test_progress_changes_all_derived_views_without_duplicate_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 264, in test_progress_changes_all_derived_views_without_duplicate_status
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-001 hard_dependencies: undefined epic BW-999999']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'BW-001 hard_dependencies: undefined epic BW-999999'
+
+- []
++ ['BW-001 hard_dependencies: undefined epic BW-999999']
+
+======================================================================
+FAIL: test_published_registry_and_static_page_are_current (test_development_roadmap.RoadmapTests.test_published_registry_and_static_page_are_current)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 34, in test_published_registry_and_static_page_are_current
+    self.assertEqual([], self.errors(generated=True))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-001 hard_dependencies: undefined epic[92 chars]tus']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'BW-001 hard_dependencies: undefined epic BW-999999'
+
+- []
++ ['BW-001 hard_dependencies: undefined epic BW-999999',
++  'BW-001: Complete requires passing evidence for every AC',
++  'BW-099: invalid status']
+
+======================================================================
+FAIL: test_status_and_blocker_rules (test_development_roadmap.RoadmapTests.test_status_and_blocker_rules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 239, in test_status_and_blocker_rules
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-001 hard_dependencies: undefined epic[66 chars] AC']
+
+Second list contains 2 additional elements.
+First extra element 0:
+'BW-001 hard_dependencies: undefined epic BW-999999'
+
+- []
++ ['BW-001 hard_dependencies: undefined epic BW-999999',
++  'BW-001: Complete requires passing evidence for every AC']
+
+======================================================================
+FAIL: test_ticket_completion_requires_executed_evidence_and_dependencies (test_development_roadmap.RoadmapTests.test_ticket_completion_requires_executed_evidence_and_dependencies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 128, in test_ticket_completion_requires_executed_evidence_and_dependencies
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-001 hard_dependencies: undefined epic[92 chars]tus']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'BW-001 hard_dependencies: undefined epic BW-999999'
+
+- []
++ ['BW-001 hard_dependencies: undefined epic BW-999999',
++  'BW-001: Complete requires passing evidence for every AC',
++  'BW-099: invalid status']
+
+======================================================================
+FAIL: test_ticket_manual_test_requires_runnable_steps_or_explicit_rationale (test_development_roadmap.RoadmapTests.test_ticket_manual_test_requires_runnable_steps_or_explicit_rationale)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 109, in test_ticket_manual_test_requires_runnable_steps_or_explicit_rationale
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-001 hard_dependencies: undefined epic[92 chars]tus']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'BW-001 hard_dependencies: undefined epic BW-999999'
+
+- []
++ ['BW-001 hard_dependencies: undefined epic BW-999999',
++  'BW-001: Complete requires passing evidence for every AC',
++  'BW-099: invalid status']
+
+======================================================================
+FAIL: test_ticket_planning_does_not_promote_epic_or_readiness (test_development_roadmap.RoadmapTests.test_ticket_planning_does_not_promote_epic_or_readiness)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/test_development_roadmap.py", line 154, in test_ticket_planning_does_not_promote_epic_or_readiness
+    self.assertEqual([], self.errors())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['BW-001 hard_dependencies: undefined epic[92 chars]tus']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'BW-001 hard_dependencies: undefined epic BW-999999'
+
+- []
++ ['BW-001 hard_dependencies: undefined epic BW-999999',
++  'BW-001: Complete requires passing evidence for every AC',
++  'BW-099: invalid status']
+
+Slowest test durations
+----------------------------------------------------------------------
+2.788s     test_unmanaged_entry_fields_and_invalid_categories_are_rejected (test_data_inventory.InventoryTests.test_unmanaged_entry_fields_and_invalid_categories_are_rejected)
+1.445s     test_owned_output_is_idempotent_and_stale_changes_are_detected (test_data_inventory.InventoryTests.test_owned_output_is_idempotent_and_stale_changes_are_detected)
+0.926s     test_every_shipped_variant_and_embedded_snapshot_matches (test_data_model.ModelTests.test_every_shipped_variant_and_embedded_snapshot_matches)
+0.776s     test_planning_reference_navigation_search_and_counts (test_data_inventory.InventoryTests.test_planning_reference_navigation_search_and_counts)
+0.768s     test_definition_status_must_agree_with_open_decisions (test_data_inventory.InventoryTests.test_definition_status_must_agree_with_open_decisions)
+0.701s     test_missing_evidence_paths_and_anchors_are_rejected (test_data_inventory.InventoryTests.test_missing_evidence_paths_and_anchors_are_rejected)
+0.696s     test_removed_page_review_and_changed_content_are_rejected (test_data_inventory.InventoryTests.test_removed_page_review_and_changed_content_are_rejected)
+0.691s     test_duplicate_identifiers_and_case_insensitive_names_are_rejected (test_data_inventory.InventoryTests.test_duplicate_identifiers_and_case_insensitive_names_are_rejected)
+0.678s     test_feature_associations_require_section_evidence (test_data_inventory.InventoryTests.test_feature_associations_require_section_evidence)
+0.548s     test_malformed_ticket_text_lists_are_reported_without_crashing (test_development_roadmap.RoadmapTests.test_malformed_ticket_text_lists_are_reported_without_crashing)
+0.512s     test_exact_section_membership_hierarchy_and_bottom_placement (test_data_inventory.InventoryTests.test_exact_section_membership_hierarchy_and_bottom_placement)
+0.359s     test_contract_and_content_versions_cannot_disagree (test_reviewed_contracts.ReviewedContractTests.test_contract_and_content_versions_cannot_disagree)
+0.348s     test_a_stale_epic_is_detected_even_when_its_phase_is_unchanged (test_development_roadmap.RoadmapTests.test_a_stale_epic_is_detected_even_when_its_phase_is_unchanged)
+0.348s     test_review_issues_and_backlinks_are_required (test_data_inventory.InventoryTests.test_review_issues_and_backlinks_are_required)
+0.335s     test_registry_and_generated_output_are_current (test_data_inventory.InventoryTests.test_registry_and_generated_output_are_current)
+
+----------------------------------------------------------------------
+Ran 76 tests in 13.425s
+
+FAILED (failures=15, errors=13)
+FAIL python: 13.552s
+
+RUN browser
+{
+  "browser": "Chrome/155.0.8059.86",
+  "method": "Installed headless Chrome via DevTools pipe, actual local file navigation with network emulation offline; isolated temporary profile.",
+  "passed": 146,
+  "failed": 3,
+  "checks": [
+    {
+      "name": "Actual offline file URL navigation and inventory rendering",
+      "passed": true
+    },
+    {
+      "name": "All category tables render in alphabetical order",
+      "passed": true
+    },
+    {
+      "name": "Every rendered canonical schema matches the authoritative registry",
+      "passed": false
+    },
+    {
+      "name": "Existing local filter: enums",
+      "passed": true
+    },
+    {
+      "name": "Existing local filter: interfaces",
+      "passed": true
+    },
+    {
+      "name": "Existing local filter: schemas",
+      "passed": true
+    },
+    {
+      "name": "Offline global search finds the canonical inventory anchor",
+      "passed": true
+    },
+    {
+      "name": "Desktop inventory has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Feature Data section is last in the article and uses normal layout",
+      "passed": true
+    },
+    {
+      "name": "Feature link opens the correct canonical entry",
+      "passed": true
+    },
+    {
+      "name": "Inventory backlink opens feature Data",
+      "passed": true
+    },
+    {
+      "name": "Mobile inventory has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Mobile navigation includes and opens Data Inventory",
+      "passed": true
+    },
+    {
+      "name": "Escape closes mobile navigation",
+      "passed": true
+    },
+    {
+      "name": "Offline roadmap hub is compact and links every phase instead of embedding epic details",
+      "passed": true
+    },
+    {
+      "name": "Mobile roadmap hub has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Roadmap navigation is prominent and marks the hub current",
+      "passed": true
+    },
+    {
+      "name": "Offline global search points to the individual epic page",
+      "passed": true
+    },
+    {
+      "name": "Hub legacy epic anchor offers a direct canonical link",
+      "passed": true
+    },
+    {
+      "name": "Legacy hub epic navigation reaches its individual epic page",
+      "passed": true
+    },
+    {
+      "name": "Offline search finds a specific acceptance criterion",
+      "passed": true
+    },
+    {
+      "name": "Desktop roadmap hub has no body overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 1 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "6 epics"
+    },
+    {
+      "name": "Phase 1 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 1 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 2 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "12 epics"
+    },
+    {
+      "name": "Phase 2 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 2 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 3 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "14 epics"
+    },
+    {
+      "name": "Phase 3 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 3 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 4 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "16 epics"
+    },
+    {
+      "name": "Phase 4 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 4 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 5 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "12 epics"
+    },
+    {
+      "name": "Phase 5 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 5 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 6 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "6 epics"
+    },
+    {
+      "name": "Phase 6 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 6 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 7 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "13 epics"
+    },
+    {
+      "name": "Phase 7 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 7 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 8 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "14 epics"
+    },
+    {
+      "name": "Phase 8 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 8 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Phase 9 indexes only its own epics with direct page links",
+      "passed": true,
+      "detail": "4 epics"
+    },
+    {
+      "name": "Phase 9 has current local navigation, hub return and adjacent phases",
+      "passed": true
+    },
+    {
+      "name": "Phase 9 has no desktop overflow",
+      "passed": true
+    },
+    {
+      "name": "Every epic has one phase index entry",
+      "passed": true,
+      "detail": "97 / 97"
+    },
+    {
+      "name": "BW-001 renders its own criteria, dependencies and sequence navigation",
+      "passed": false
+    },
+    {
+      "name": "BW-002 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-003 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-097 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-095 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-018 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-004 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-005 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-006 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-007 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-008 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-009 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-010 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-011 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-013 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-028 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-012 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-083 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-014 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-015 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-016 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-017 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-019 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-020 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-021 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-022 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-023 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-024 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-025 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-026 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-027 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-029 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-098 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-045 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-043 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-030 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-031 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-032 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-033 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-034 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-035 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-037 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-080 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-084 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-085 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-086 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-087 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-039 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-036 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-038 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-040 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-041 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-042 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-044 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-046 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-096 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-081 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-082 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-088 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-091 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-047 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-048 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-049 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-050 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-051 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-052 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-054 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-055 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-056 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-057 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-058 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-059 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-060 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-061 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-075 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-076 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-062 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-063 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-064 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-099 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-053 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-065 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-066 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-067 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-068 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-077 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-069 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-070 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-071 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-072 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-073 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-074 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-089 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-090 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-092 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-093 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "BW-094 renders its own criteria, dependencies and sequence navigation",
+      "passed": true
+    },
+    {
+      "name": "Browser automation completed",
+      "passed": false,
+      "detail": "Cannot read properties of undefined (reading 'id')"
+    },
+    {
+      "name": "Browser process group stopped and temporary profile removed",
+      "passed": true
+    }
+  ]
+}
+FAIL browser: 5.833s
+
+RUN engine-artifacts
+Legacy engine implementation artifact count: 0; documentation and evidence references are permitted
+PASS engine-artifacts: 0.136s
+
+FAST FAIL: 26.042s; focused checks only; FULL still required

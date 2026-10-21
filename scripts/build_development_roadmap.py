@@ -476,7 +476,7 @@ def render_decisions(data, root=ROOT):
                  '<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine">dedicated servers</a>, and '
                  '<a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-owner-and-owning-connection-in-unreal-engine">actor ownership and connection relevancy</a>. '
                  'These are engine facilities, not proof of MMO scale or Briarwake implementation. Pin the tested engine/toolchain revision; '
-                 'verify owner-provided replication plugins before integration. The roadmap contains no game runtime evidence.</p>')
+                 'verify owner-provided replication plugins before integration. Retained game evidence is scoped to the revisions and environments recorded in the roadmap.</p>')
     parts.append('<h2 id="critical-review">Final dependency review</h2>' + bullets(data['critical_review']))
     return shell(data, page, 'Roadmap sequencing decisions', 'The analysis method, important alternatives and architectural reasons behind the recommended development sequence.',
                  parts, [('reading-guide', 'How to read'), ('analysis', 'Analysis and research'), ('sequencing-decisions', 'Ordering decisions')] +
@@ -503,7 +503,7 @@ def render_maintenance(data, root=ROOT):
     page = REFERENCE_PAGES['maintenance'][0]
     parts = ['<h2 id="maintenance">Updating statuses and evidence</h2>']
     parts.extend(f'<p>{escape(paragraph)}</p>' for paragraph in data['maintenance'])
-    parts.append('<h2 id="commands">Rebuild and validate</h2><pre><code>python3 scripts/build_development_roadmap.py\npython3 scripts/build_data_inventory.py --review-roadmap\npython3 validation/check_development_roadmap.py\npython3 validation/run_checks.py</code></pre>')
+    parts.append('<h2 id="commands">Rebuild and validate</h2><pre><code>python3 scripts/build_development_roadmap.py\npython3 scripts/build_data_inventory.py --review-roadmap\npython3 validation/validate.py --mode fast\npython3 validation/validate.py --mode full</code></pre>')
     parts.append('<p>Commit the registry and generated outputs together. The roadmap builder owns the dashboard, phase indexes, individual epic pages and reference pages; '
                  'the inventory builder owns shared navigation, search and manifest outputs. Reading requires neither a build step nor JavaScript.</p>')
     return shell(data, page, 'Updating roadmap progress', 'Maintain epic statuses, blockers and completion evidence without reorganizing the roadmap.',
@@ -549,9 +549,9 @@ def main():
             raise SystemExit('Stale generated roadmap: ' + ', '.join(stale))
         print(f'All {len(outputs)} roadmap pages are current.')
     else:
-        for path, source in outputs.items():
-            (ROOT / path).write_text(source, encoding='utf-8')
-        print(f'Built {len(outputs)} roadmap pages.')
+        for path in stale:
+            (ROOT / path).write_text(outputs[path], encoding='utf-8')
+        print(f'Built {len(outputs)} roadmap pages; changed {len(stale)} files.')
 
 
 if __name__ == '__main__':

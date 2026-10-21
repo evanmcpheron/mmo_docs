@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from functools import lru_cache
 from html.parser import HTMLParser
 import json
 from pathlib import Path
@@ -34,6 +35,11 @@ class Anchors(HTMLParser):
                 self.link_targets[values['id']] = values['href']
         if 'roadmap-epic' in values.get('class', '').split():
             self.epic_ids.append(values.get('id'))
+
+
+@lru_cache(maxsize=256)
+def document_ids(source):
+    return frozenset(Anchors(source).ids)
 
 
 def roadmap_errors(data, root=ROOT, check_generated=True):
@@ -103,7 +109,7 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 errors.append(f'{context}: missing/nonlocal documentation {href}')
             elif parsed.fragment:
                 if path not in documents:
-                    documents[path] = set(Anchors(path.read_text(encoding='utf-8')).ids)
+                    documents[path] = document_ids(path.read_text(encoding='utf-8'))
                 if unquote(parsed.fragment) not in documents[path]:
                     errors.append(f'{context}: missing documentation anchor {href}')
 

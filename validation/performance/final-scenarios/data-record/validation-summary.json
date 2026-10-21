@@ -1,0 +1,56 @@
+{
+  "revision": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+  "main_revision": "8c761215140d54bb1fd668c6653d9a77312262a3",
+  "requested_mode": "fast",
+  "executed_mode": "fast",
+  "reason": "Focused source/generator dependencies",
+  "merge_base": "3fa131b8aa90a8609c12ed1e8cd5d4ee7481f87d",
+  "changed_files": [
+    "data/abilities.json"
+  ],
+  "checks": [
+    {
+      "name": "aggregate",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/run_checks.py",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-evidence/final-scenarios/data-record/report.json"
+      ],
+      "exit_code": 0,
+      "seconds": 9.478
+    },
+    {
+      "name": "python",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "-m",
+        "unittest",
+        "test_data_inventory",
+        "test_data_model",
+        "test_reviewed_contracts",
+        "--durations",
+        "15"
+      ],
+      "exit_code": 0,
+      "seconds": 13.529
+    },
+    {
+      "name": "engine-artifacts",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/check_engine_artifacts.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.054
+    }
+  ],
+  "deferred": [
+    "browser-cleanup",
+    "browser",
+    "Python modules outside: test_data_inventory, test_data_model, test_reviewed_contracts"
+  ],
+  "passed": true,
+  "seconds": 23.061
+}
