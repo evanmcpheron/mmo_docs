@@ -34,10 +34,12 @@ MAIN CHANGES
 World of Warcraft-style character creation and a guided level 1–10 beginner area.
 The opening journey is also the first complete playable testing ground.
 See guide/character-creation.html for the player-facing feature flow.
-The visual target is low-resolution 3D pixel art with an angled orthographic
-camera, following the user-selected David Holland article. The t3ssel8r channel supplies supplementary art-direction references. The art direction in
-guide/decisions.html and the rendering/camera and acceptance-test sections define
-project requirements. Continuous planar/floor gameplay contracts and existing
+The visual target is low-resolution 3D pixel art with a character-following,
+angled orthographic overview that scrolls into a close third-person perspective.
+Holding middle mouse and dragging orbits the camera around the character.
+David Holland and t3ssel8r are supplementary visual references, not camera
+implementation specifications. The art direction in guide/decisions.html and
+the rendering/camera and acceptance-test sections define project requirements. Continuous planar/floor gameplay contracts and existing
 SpriteDirection values remain compatible; the renderer does not mandate sprites.
 Unreal Engine 5 version, toolchain, camera/display settings and plugin compatibility require
 verified evidence before full asset production.
