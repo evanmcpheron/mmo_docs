@@ -1,5 +1,5 @@
 MMORPG GAMEPLAY REFERENCE — VERSION 2.2
-Mechanics and architecture reference for a planned Unreal Engine 5 native C++ MMORPG; no game project exists
+Mechanics and architecture reference for a planned Unreal Engine 5 native C++ MMORPG
 
 OPEN THE REFERENCE
 1. Extract the entire ZIP, keeping the folder structure intact.
@@ -22,7 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-166 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+171 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+five individual BW-003 ticket pages,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -54,7 +55,9 @@ Numerical coefficients, progression pacing, item budgets and recipes are
 prototype proposals, not verified game balance. Named secondary ability effects
 and many inherited talent behaviors still require explicit runtime binding.
 Read guide/audit.html before treating this as implementation-ready game content.
-No Unreal Engine project, C++ game code, dedicated server, production database, economy, or game load test exists. The separate implementation repository has not been created.
+A minimal Unreal C++ starter exists locally as of 2026-10-21. A separately versioned
+implementation repository, dedicated-server target, fixture harness, production
+database, economy and applicable game runtime verification remain unfinished.
 
 VALIDATION
 Run: python validation/run_checks.py
@@ -105,15 +108,36 @@ Edit an existing epic's status and verified_evidence there. Use exactly Not
 Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
 evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
 adding an epic, then update relevant dependencies, milestones and coverage.
+BW-003 has five native Unreal fixture tickets, BW-003-T01 through T05, in
+execution order: attributable evidence, deterministic context/control isolation,
+redacted diagnostics, bounded measurements and integrated verification. They
+cover all four epic criteria and begin Not Started with no verified evidence.
+The owner selected a local probe with logical recipients and explicitly labeled
+serialized payload bytes; this does not certify connected clients or wire traffic.
+A 2026-10-21 workspace inspection found a minimal local Unreal 5.8 C++ starter
+and installed UE 5.8.3/Xcode candidates. Its containing AI-guidance Git repository
+ignores game source; no separate versioned game repository, Server target or
+fixture harness is established. BW-001 is In Progress from starter creation;
+BW-002/BW-003 remain Not Started, and BW-003 is not Dependency-ready.
+
+Store tickets in the registry's tickets list with stable IDs, parent_epic,
+exact epic_criteria anchors, dependencies, scope, out_of_scope, observable
+acceptance_criteria, manual_test, completion_evidence, related_docs, blockers
+and verified_evidence. New tickets begin Not Started with no verified evidence.
+Manual tests require launch, setup, actions, expected_results and reset, or an
+explicit not_applicable rationale. Their future commands/fixtures are ticket
+deliverables, not executed evidence. Ticket planning never completes an epic.
 Do not edit the generated pages or search records. Rebuild and validate with:
 python3 scripts/build_development_roadmap.py
 python3 scripts/build_data_inventory.py --review-roadmap
 python3 scripts/build_development_roadmap.py --check
 python3 scripts/build_data_inventory.py --check
+python3 validation/check_development_roadmap.py
+python3 validation/check_data_inventory.py
 python3 -m unittest discover -s validation -p 'test_*.py'
 python3 validation/run_checks.py
 
-The roadmap builder owns the hub, phase indexes, individual epic pages and
+The roadmap builder owns the hub, phase indexes, individual epic/ticket pages and
 roadmap reference pages. The
 inventory builder's --review-roadmap option registers and refreshes all of these
 as planning references, without adding gameplay data associations. It refreshes
@@ -179,7 +203,9 @@ security/operations contracts, fixture expectations and the first PvP rules.
 Required content parameters remain explicit; a concrete art/map/price record is
 future content production, not an unanswered question about its schema.
 
-Briarwake is a planned new Unreal Engine 5 native C++ project, with Blueprint assets used only where suitable. No game repository or Unreal project exists. This phase writes documentation and
+Briarwake targets Unreal Engine 5 native C++, with Blueprint assets used where
+suitable. The dated workspace inspection above records the local starter and
+remaining implementation prerequisites. This phase writes documentation and
 language-neutral contracts only. The inventory preserves resolved decision
 history and separately labels future Briarwake implementation work. No game
 handlers, maps/art, provider/database deployment or gameplay test executions
