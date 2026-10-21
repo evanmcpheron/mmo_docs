@@ -4,6 +4,7 @@ from __future__ import annotations
 import copy
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -36,6 +37,55 @@ class ModelTests(unittest.TestCase):
         for identifier in ('ability.arcanist.charge_lance', 'ability.beastmaster.guarding_fang', 'ability.totemist.calling_stone'):
             row = next(row for row in abilities if row['id'] == identifier)
             self.assertEqual([], instance_errors(row, self.defs['AbilityDefinition'], self.defs), identifier)
+
+    def test_sample_reuse_detects_schema_binding_catalog_and_same_path_content_mutations(self):
+        registry = {
+            'shared_definitions': {},
+            'entries': [{'name': 'Fixture', 'definition': {'type': 'integer', 'minimum': 1}}],
+            'sample_bindings': [{'path': 'records.json', 'selector': '/*', 'type': 'Fixture'}],
+        }
+        with tempfile.TemporaryDirectory(dir=ROOT / '.git') as directory:
+            root = Path(directory)
+            records = root / 'records.json'
+            records.write_text('[1]')
+            self.assertEqual([], sample_errors(registry, root))
+            schema = registry['entries'][0]['definition']
+            schema['minimum'] = 2
+            errors = sample_errors(registry, root)
+            self.assertTrue(any('minimum' in error for error in errors))
+            errors.clear()
+            self.assertTrue(sample_errors(registry, root))
+            schema['minimum'] = 1
+            self.assertEqual([], sample_errors(registry, root))
+            records.write_text('[0]')
+            self.assertTrue(sample_errors(registry, root))
+            records.write_text('[1]')
+            self.assertEqual([], sample_errors(registry, root))
+            registry['sample_bindings'][0]['selector'] = '/absent'
+            self.assertTrue(any('no records' in error for error in sample_errors(registry, root)))
+            registry['sample_bindings'][0]['selector'] = '/*'
+            registry['sample_bindings'][0]['type'] = 'Missing'
+            self.assertTrue(any('missing sample type' in error for error in sample_errors(registry, root)))
+
+    def test_reused_sample_identity_checks_include_other_catalogs(self):
+        registry = {
+            'shared_definitions': {},
+            'entries': [
+                {'name': 'Target', 'definition': {'type': 'object', 'properties': {'id': {'type': 'string'}}}},
+                {'name': 'Reference', 'definition': {'type': 'string', 'x-reference': {'target': 'Target'}}},
+            ],
+            'sample_bindings': [
+                {'path': 'targets.json', 'selector': '/*', 'type': 'Target'},
+                {'path': 'references.json', 'selector': '/*', 'type': 'Reference'},
+            ],
+        }
+        with tempfile.TemporaryDirectory(dir=ROOT / '.git') as directory:
+            root = Path(directory)
+            (root / 'targets.json').write_text('[{"id":"known"}]')
+            (root / 'references.json').write_text('["known"]')
+            self.assertEqual([], sample_errors(registry, root))
+            (root / 'targets.json').write_text('[{"id":"other"}]')
+            self.assertTrue(any('unresolved content identity' in error for error in sample_errors(registry, root)))
 
     def test_canonical_reference_and_dependency_drift_are_rejected(self):
         registry = copy.deepcopy(self.registry)

@@ -1,0 +1,101 @@
+{
+  "revision": "8c761215140d54bb1fd668c6653d9a77312262a3",
+  "python": "3.14.0 (v3.14.0:ebf955df7a8, Oct  7 2025, 08:20:14) [Clang 16.0.0 (clang-1600.0.26.6)]",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "node": "v24.10.0",
+  "stages": [
+    {
+      "command": [
+        "python3",
+        "scripts/build_development_roadmap.py",
+        "--check"
+      ],
+      "seconds": 0.883,
+      "exit_code": 1,
+      "log": "baseline-01.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/build_data_inventory.py",
+        "--check"
+      ],
+      "seconds": 2.747,
+      "exit_code": 1,
+      "log": "baseline-02.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_development_roadmap.py"
+      ],
+      "seconds": 1.717,
+      "exit_code": 1,
+      "log": "baseline-03.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_data_inventory.py"
+      ],
+      "seconds": 2.683,
+      "exit_code": 1,
+      "log": "baseline-04.log"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py",
+        "--durations",
+        "15"
+      ],
+      "seconds": 71.418,
+      "exit_code": 1,
+      "log": "baseline-05.log"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "validation/test_browser_cleanup.mjs"
+      ],
+      "seconds": 2.72,
+      "exit_code": 0,
+      "log": "baseline-06.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/run_checks.py"
+      ],
+      "seconds": 9.557,
+      "exit_code": 1,
+      "log": "baseline-07.log"
+    },
+    {
+      "command": [
+        "node",
+        "validation/check_inventory_browser.mjs"
+      ],
+      "seconds": 16.089,
+      "exit_code": 0,
+      "log": "baseline-08.log"
+    },
+    {
+      "command": [
+        "python3",
+        "validation/check_engine_artifacts.py"
+      ],
+      "seconds": 0.087,
+      "exit_code": 0,
+      "log": "baseline-09.log"
+    }
+  ],
+  "total_seconds": 107.901
+}

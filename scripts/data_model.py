@@ -11,6 +11,7 @@ import re
 from collections import Counter
 from datetime import datetime
 from decimal import Decimal
+from functools import lru_cache
 from pathlib import Path
 
 SCHEMA_PATH = 'sources/data-model.schema.json'
@@ -133,11 +134,19 @@ def schema_errors(schema, defs, path):
 
 
 def accepts_type(value, kind):
-    return {'object': isinstance(value, dict), 'array': isinstance(value, list),
-            'string': isinstance(value, str), 'integer': type(value) is int or
-            (type(value) is float and math.isfinite(value) and value.is_integer()),
-            'number': type(value) in (int, float) and math.isfinite(value),
-            'boolean': type(value) is bool, 'null': value is None}.get(kind, False)
+    if kind == 'object':
+        return isinstance(value, dict)
+    if kind == 'array':
+        return isinstance(value, list)
+    if kind == 'string':
+        return isinstance(value, str)
+    if kind == 'integer':
+        return type(value) is int or (type(value) is float and math.isfinite(value) and value.is_integer())
+    if kind == 'number':
+        return type(value) in (int, float) and math.isfinite(value)
+    if kind == 'boolean':
+        return type(value) is bool
+    return kind == 'null' and value is None
 
 
 def instance_errors(value, schema, defs, path='$', catalogs=None):
@@ -217,7 +226,7 @@ def instance_errors(value, schema, defs, path='$', catalogs=None):
             if target.get('kind') == 'content-member':
                 alternatives = [name + '/' + target['member_path'] for name in alternatives]
             available = [catalogs[name] for name in alternatives if name in catalogs]
-            if available and value not in set().union(*available):
+            if available and all(value not in catalog for catalog in available):
                 errors.append(f'{path}: unresolved content identity {value!r} in {alternatives}')
     return errors
 
@@ -251,8 +260,18 @@ def selected_values(data, selector):
 
 
 def sample_errors(registry, root):
-    defs = definitions(registry)
-    sources = {}
+    # Keys include fresh source contents and copied schemas; callers can mutate either safely.
+    sources = tuple((path, (root / path).read_text())
+                    for path in dict.fromkeys(binding['path'] for binding in registry['sample_bindings']))
+    return list(_sample_errors(json.dumps(definitions(registry), sort_keys=True),
+                               json.dumps(registry['sample_bindings'], sort_keys=True), sources))
+
+
+@lru_cache(maxsize=2)
+def _sample_errors(definitions_json, bindings_json, source_texts):
+    defs = json.loads(definitions_json)
+    bindings = json.loads(bindings_json)
+    sources = {path: json.loads(source) for path, source in source_texts}
     samples = []
     catalogs = {}
     member_targets = set()
@@ -266,10 +285,8 @@ def sample_errors(registry, root):
 
     for schema in defs.values():
         collect_members(schema)
-    for binding in registry['sample_bindings']:
+    for binding in bindings:
         path = binding['path']
-        if path not in sources:
-            sources[path] = json.loads((root / path).read_text())
         values = selected_values(sources[path], binding['selector'])
         samples.append((binding, values))
         ids = {v['id'] for v in values if isinstance(v, dict) and isinstance(v.get('id'), str)}
@@ -290,7 +307,7 @@ def sample_errors(registry, root):
         for index, value in enumerate(values):
             errors.extend(instance_errors(value, defs[binding['type']], defs,
                           f'{binding["path"]}{binding["selector"]}[{index}]', catalogs))
-    return errors
+    return tuple(errors)
 
 
 def model_errors(registry, root):

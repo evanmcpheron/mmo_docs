@@ -1,0 +1,110 @@
+VALIDATION PERFORMANCE AND COVERAGE
+
+Environment: macOS ARM64, Python 3.14.0, Node 24.10.0, installed Chrome.
+Python 3.12 is unavailable locally; unittest --durations 15 was used on 3.14.
+CI pins Python 3.12 and Node 22. Timings are actual sequential wall-clock
+executions on this machine, not projections of GitHub Actions performance.
+Base: 8c761215140d54bb1fd668c6653d9a77312262a3 (fetched origin/main).
+
+BASELINE
+The unmodified fetched main took 107.901s and failed seven Python regressions,
+both inventory checks, both roadmap freshness checks and aggregate validation:
+one stale roadmap page and six stale page-review fingerprints were already on
+main. baseline.json and baseline-*.log retain these failures. Existing builders
+repaired generated output and reviewed the affected content without changing any
+canonical contract or roadmap requirement. baseline-current.json records the
+comparable passing original workflow (original code, repaired output): 101.975s.
+
+Original command                                      Seconds  Purpose/dependencies
+scripts/build_development_roadmap.py --check              0.726  Registry, template, audit include -> all roadmap pages
+scripts/build_data_inventory.py --check                  3.192  Registry, all reviewed HTML, catalogs, roadmap, search, manifest -> owned output
+validation/check_development_roadmap.py                  1.638  Roadmap dependencies/status/evidence/traceability and rendered anchors/freshness
+validation/check_data_inventory.py                      3.202  Inventory metadata, evidence, schemas, shipped samples and freshness
+python3 -m unittest discover -s validation -p test_*.py  69.905  All 76 original behavioral regressions (with --durations 15)
+node --test validation/test_browser_cleanup.mjs           2.544  Four actual process/profile teardown regressions
+validation/run_checks.py                               10.336  Gameplay consistency, 2,940 allocations, links/search, both validators
+node validation/check_inventory_browser.mjs             10.374  Offline navigation/search/layout/print/no-JS and cleanup
+validation/check_engine_artifacts.py                     0.058  Git-tracked legacy engine artifact audit
+TOTAL                                                 101.975
+
+Python entrypoints above use python3. All checks use repository sources and the
+standard library; browser checks require Node 22+ and installed Chrome/Chromium;
+the engine artifact check requires Git. Builders' --check modes are read-only.
+Original roadmap regeneration rewrote all 125 pages, even when unchanged.
+Inventory generation already wrote only stale owned outputs, but explicit review
+always rewrote the registry. run_checks.py rewrote the allocation examples and
+timestamped report; the browser wrote its report and temporary screenshots.
+Explicit review options refresh source fingerprints and must follow real review.
+baseline-regeneration.json records builder wall times separately from validation.
+
+PROFILING AND CHANGES
+Original slowest tests: unmanaged entry fields 20.138s; feature associations 5.345s;
+page review drift 5.307s; malformed ticket lists 4.774s. The passing baseline's
+complete durations are in baseline-current-05.log.
+cProfile (instrumented timings, not wall-clock benchmarks) identified sample
+instance validation (851,972 recursive calls), repeated HTML parsing and repeated
+registry checks. See profile-inventory.txt and profile-roadmap.txt.
+
+Sample validation reuses results only inside one process, bounded to two entries.
+Keys contain serialized definitions and bindings plus every freshly read bound
+source's contents. Cached errors are immutable; callers receive fresh lists.
+HTML caches hold immutable metadata keyed by actual source text, bounded to 256
+entries. No filesystem timestamp, mutable registry identity or persistent cache
+can certify stale content. Regression tests mutate schemas, bindings, catalogs,
+same-path records and returned errors. All existing mutation tests remain.
+Type checks no longer compute every candidate type eagerly; identity checks no
+longer allocate a union for every field. No schema constraint changed.
+
+COVERAGE BEFORE -> AFTER
+Roadmap builder --check + roadmap validator + aggregate roadmap call -> one
+aggregate roadmap call with the same source/freshness checks and stronger anchor
+checks than builder --check. Inventory builder --check + inventory validator +
+aggregate inventory call -> one aggregate inventory call using the same registry
+validator and expected-output/stale-output comparison. No separate check-only
+command regenerates output. Positive regression tests remain independent.
+76 Python regressions -> all original tests plus 14 selection/cache regressions.
+All gameplay/allocation checks, links, stable anchors, search destinations, browser
+assertions/screenshots and four JS cleanup tests -> retained in FULL. Read-only
+aggregate validation additionally rejects stale allocation examples instead of
+overwriting them before inspection. Aggregate check-call preservation is verified
+in source-equivalence.json. Browser report matches the original passing report.
+
+FULL defaults to comprehensive validation; no Git classification can bypass CI.
+FAST always runs the aggregate and engine audit, with relevant regression modules
+and browser checks. Roadmap changes select roadmap/inventory tests and browser;
+contracts/schema outputs select model/reviewed-contract/inventory tests and browser;
+shared search/manifest changes union both; shipped data-only changes omit browser.
+Other HTML, CSS, JS, templates, instructions, generators, validators, helpers and
+unknown paths fall back to FULL. Scope detection includes branch commits, index,
+worktree, untracked files, deletes and both rename paths; unavailable scope or
+dependency data also falls back to FULL. Reports explicitly list deferred checks.
+
+MEASURED INITIAL FULL
+optimized-full.json / optimized-full.log: 47.304s (53.6% below the passing original
+workflow): aggregate 9.163s, 90 Python tests 24.249s, JS cleanup 2.641s, browser
+11.191s, artifact audit 0.059s. This measured the implementation working tree based
+on the base SHA, before its first task commit. Final revision verification and
+representative FAST timings are recorded in subsequent delivery evidence.
+
+COMPATIBILITY AND SAFETY
+compatibility.json records equal legacy/read-only aggregate reports except actual
+timestamps, unchanged historical evidence/examples during read-only validation,
+identical complete browser reports before/after, and zero rewritten tracked files
+on repeat roadmap build and inventory --review-roadmap. Source equivalence proves
+the roadmap source is unchanged and the inventory registry differs only in eight
+page fingerprints: pre-existing stale reviews, generated decisions and maintenance
+instructions. Original content definitions, IDs, statuses, dependencies and criteria
+are preserved. No game repository changes, gameplay tests or runtime claims.
+
+GitHub API: main branch protection returns 404 "Branch not protected"; applicable
+branch rules and repository rulesets both return []. No settings were changed.
+The FULL job runs on every PR to main, main push and manual dispatch, without path
+filters. Fresh summary, aggregate and browser reports upload with always() under
+the existing browser-verification artifact name; missing prerequisites fail nonzero.
+
+Remaining duplicate work: positive regression tests intentionally verify the same
+published registries/output independently; idempotence tests build twice by design.
+Aggregate and unittest subprocesses start separate bounded caches. Whole-site link
+checking, sample validation and browser traversal remain comprehensive. FULL is
+still required after shared infrastructure edits, including this task. FAST is
+conservative for unsupported HTML/assets rather than guessing dependencies.

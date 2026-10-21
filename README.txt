@@ -63,11 +63,59 @@ pinned macOS ARM64 Development matrix. Gameplay fixtures, production database, e
 connected Steam sessions and capacity remain unverified.
 
 VALIDATION
-Run: python validation/run_checks.py
-Requires Python 3.10+; standard library only. The script rewrites report.json
-and allocation_examples.json. It does not regenerate HTML or run a game.
-The HTML evidence page records checks from package generation; report.json is
-the source of truth after a later rerun.
+Iterate: python3 validation/validate.py --mode fast
+Final PR gate (also the default): python3 validation/validate.py --mode full
+Requires Python 3.10+ (3.12+ reports slow unittest durations), Git, Node 22+
+and installed Chrome/Chromium. Set BRIARWAKE_CHROME_BIN when autodetection cannot
+find the browser. Missing prerequisites fail explicitly. No downloads or Python
+packages are required. These commands verify documentation, never gameplay.
+
+FAST combines committed branch changes since the merge base with origin/main,
+staged changes, unstaged changes and untracked files, including both sides of
+renames and deleted paths. Use --base REF to explicitly select another task base.
+It always checks both generators' output freshness, both registries, all HTML
+links/anchors/search destinations, gameplay-documentation consistency and tracked
+engine artifacts. It selects relevant Python modules and browser verification
+from the source/generator dependency map. Browser tests are deferred for changes
+only to shipped data records; they run for rendered contracts, roadmap or shared
+generated output. Unknown/cross-cutting files, validation code, generators, test
+helpers or unreliable Git/dependency detection fall back to FULL. --explain prints
+the selected commands and deferrals without executing them. A FAST pass only
+certifies its listed checks; it never certifies comprehensive verification.
+
+FULL retains all Python regressions, JavaScript cleanup regressions, actual offline
+browser navigation/search/layout/print/no-JavaScript checks, both registries and
+generated output checks, aggregate checks, links/anchors and engine-artifact audit.
+The aggregate includes the standalone roadmap/inventory checks, so the entrypoint
+does not repeat those commands. CI runs FULL for every PR targeting main without
+path filtering. Fix failures using the reported focused command; avoid a full-suite
+rerun after every edit. FULL must pass before claiming comprehensive PR success.
+
+Both modes normally leave working-tree content unchanged. Regeneration, manual
+review and evidence updates are explicit, independent operations. To retain run
+reports in the established formats, use:
+python3 validation/validate.py --mode full --report-dir PATH
+This writes validation-summary.json, report.json and data-inventory-browser-checks.json
+under PATH. CI uploads that directory even on failure. Historical tracked evidence
+is retained; an old evidence file is not proof that a new run passed. The HTML
+evidence page records package-generation checks and is not a live execution report.
+
+Focused diagnostics remain available:
+python3 validation/check_development_roadmap.py
+python3 validation/check_data_inventory.py
+python3 -m unittest discover -s validation -p 'test_*.py'
+python3 validation/run_checks.py --read-only
+node --test validation/test_browser_cleanup.mjs
+node validation/check_inventory_browser.mjs --read-only
+python3 validation/check_engine_artifacts.py
+
+For compatibility, running run_checks.py without --read-only still explicitly
+rewrites validation/report.json and data/allocation_examples.json; it does not
+regenerate HTML. Without --read-only the standalone browser script still writes
+its historical report/screenshots. Add --report PATH to either script to retain
+a report with --read-only; --screenshots DIR explicitly requests browser images.
+Before/after timings, coverage equivalence and limitations are recorded in
+validation/performance/RESULTS.txt with raw execution logs.
 
 validation/browser-checks.json preserves the original rendering-only evidence
 and its navigation limitations. Current inventory and roadmap browser evidence is recorded
@@ -151,12 +199,9 @@ deliverables, not executed evidence. Ticket planning never completes an epic.
 Do not edit the generated pages or search records. Rebuild and validate with:
 python3 scripts/build_development_roadmap.py
 python3 scripts/build_data_inventory.py --review-roadmap
-python3 scripts/build_development_roadmap.py --check
-python3 scripts/build_data_inventory.py --check
-python3 validation/check_development_roadmap.py
-python3 validation/check_data_inventory.py
-python3 -m unittest discover -s validation -p 'test_*.py'
-python3 validation/run_checks.py
+python3 validation/validate.py --mode fast
+
+Run FULL once for final PR verification as described under VALIDATION.
 
 The roadmap builder owns the hub, phase indexes, individual epic/ticket pages and
 roadmap reference pages. The
@@ -237,13 +282,12 @@ actual passed/failed execution; schema checks never promote those states.
 Build: python3 scripts/build_data_inventory.py
 Check without writing: python3 scripts/build_data_inventory.py --check
 Focused consistency check: python3 validation/check_data_inventory.py
-Regression tests: python3 -m unittest discover -s validation -p 'test_*.py'
-Full existing checks, including inventory: python3 validation/run_checks.py
-Optional rendered checks: node validation/check_inventory_browser.mjs
+Iterative checks: python3 validation/validate.py --mode fast
+Comprehensive PR gate: python3 validation/validate.py --mode full
 All Python commands require Python 3.10+ and the standard library only.
 The browser check uses Node 22+ and installed Chrome/Chromium without downloads.
-Set BRIARWAKE_CHROME_BIN if needed. Its evidence is stored separately from the
-historical rendering-only record in validation/data-inventory-browser-checks.json.
+Set BRIARWAKE_CHROME_BIN if needed. Use --report-dir to retain fresh evidence
+separately from historical rendering-only and inventory browser records.
 
 The builder owns guide/data-inventory.html, marked Data blocks, Data contents
 links, the Data Inventory and Development Roadmap sidebar links, inventory- and

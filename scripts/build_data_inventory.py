@@ -8,8 +8,10 @@ import json
 import posixpath
 import re
 from collections import Counter
+from functools import lru_cache
 from html.parser import HTMLParser
 from pathlib import Path
+from typing import NamedTuple
 from urllib.parse import unquote, urlsplit
 from data_model import model_errors, schema_bundle, review_report, schema_children
 
@@ -59,6 +61,17 @@ class Document(HTMLParser):
             self.heading = None
         if tag == 'main':
             self.main = False
+
+
+class DocumentMetadata(NamedTuple):
+    ids: tuple
+    headings: tuple
+
+
+@lru_cache(maxsize=256)
+def document_metadata(source):
+    document = Document(source)
+    return DocumentMetadata(tuple(document.ids), tuple(document.headings))
 
 
 def load_registry(root=ROOT):
@@ -135,7 +148,7 @@ def validate_registry(registry, root=ROOT):
         errors.append('Character catalog and canonical contract content versions disagree')
     entries = registry['entries']
     pages = registry['pages']
-    documents = {p.relative_to(root).as_posix(): Document(strip_data(p.read_text(encoding='utf-8')))
+    documents = {p.relative_to(root).as_posix(): document_metadata(strip_data(p.read_text(encoding='utf-8')))
                  for p in sorted(root.rglob('*.html')) if p.relative_to(root).as_posix() != INVENTORY_PAGE}
 
     def unique(values, label):
@@ -592,7 +605,10 @@ def main():
         parser.error(str(error))
     if args.review_page or args.review_roadmap:
         registry['pages'].sort(key=lambda p: p['page'])
-        (ROOT / 'sources/data-inventory.json').write_text(json.dumps(registry, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+        registry_path = ROOT / 'sources/data-inventory.json'
+        source = json.dumps(registry, indent=2, ensure_ascii=False) + '\n'
+        if registry_path.read_text(encoding='utf-8') != source:
+            registry_path.write_text(source, encoding='utf-8')
     errors = validate_registry(registry)
     if errors:
         raise SystemExit('\n'.join(errors))

@@ -21,22 +21,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check generated outputs and regression tests
-        run: |
-          python3 scripts/build_development_roadmap.py --check
-          python3 scripts/build_data_inventory.py --check
-          python3 validation/check_development_roadmap.py
-          python3 validation/check_data_inventory.py
-          python3 -m unittest discover -s validation -p 'test_*.py'
-          node --test validation/test_browser_cleanup.mjs
-          python3 validation/run_checks.py
-      - name: Verify offline navigation, search, layout and print
-        run: node validation/check_inventory_browser.mjs
-      - name: Audit tracked engine artifacts
-        run: python3 validation/check_engine_artifacts.py
+      - name: Full documentation validation
+        run: python3 validation/validate.py --mode full --report-dir .git/validation-evidence
       - name: Retain browser verification results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: browser-verification
-          path: validation/data-inventory-browser-checks.json
+          path: .git/validation-evidence/
+          include-hidden-files: true
+          if-no-files-found: error
