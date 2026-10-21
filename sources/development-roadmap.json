@@ -3,7 +3,7 @@
   "title": "Briarwake Development Roadmap",
   "research_date": "2026-10-17",
   "purpose": "A dependency and evidence map for Briarwake, an Unreal Engine 5 native C++ MMORPG. This documentation owns gameplay contracts and progress; evanmcpheron/BriarwakeUnreal owns the newly versioned native bootstrap. Completion depends on scoped executed evidence rather than planning or historical engine results.",
-  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002/BW-003 and other gameplay epics remain Not Started. No connected Steam sessions, gameplay fixtures, persistence, capacity, Shipping or other-platform certification is implied.",
+  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002/BW-003 and other gameplay epics remain Not Started; BW-003-T02 is Blocked on its missing T01 native fixture owner and the BW-002 prerequisite. No connected Steam sessions, gameplay fixtures, persistence, capacity, Shipping or other-platform certification is implied.",
   "reading_guide": [
     "Each epic is one coherent, demonstrable capability with a permanent BW identifier, scope, hard prerequisites, acceptance criteria and required evidence. Phases group integration objectives derived from the dependency graph; they do not require every independent branch to wait for the previous phase.",
     "Navigate from the dashboard to a phase index, then open an individual epic page. Every epic has direct links to its prerequisites, downstream work, recommended sequence neighbors and numbered acceptance criteria. Existing dashboard and phase epic bookmarks lead to the same canonical epic page.",
@@ -314,7 +314,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "Minimal observability precedes meaningful multiplayer tests; production dashboards and retention policy can wait. T01-T05 plan fresh native Unreal fixture execution, beyond the completed BW-001 bootstrap. BW-002 remains Not Started, so BW-003 and its tickets remain Not Started and not Dependency-ready.",
+      "ordering_rationale": "BW-001 is Complete and its native baseline evidence remains applicable: this invocation changes no game source/configuration. BW-002 and BW-003-T01 remain Not Started. BW-003-T02 execution found the required T01 native fixture/transient-world owner absent and is Blocked pending prerequisite implementation or an explicit scope decision. No BW-003 implementation has begun; the parent remains Not Started and not Dependency-ready. Parent AC1-AC4 have no executed fixture evidence; T03-T05 remain Not Started.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -5340,7 +5340,7 @@
       "id": "BW-003-T02",
       "parent_epic": "BW-003",
       "title": "Replay a bounded seeded context with isolated test control",
-      "status": "Not Started",
+      "status": "Blocked",
       "epic_criteria": [
         "BW-003-AC-2"
       ],
@@ -5407,6 +5407,7 @@
       "manual_test": {
         "launch": "Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).\nPlanned and unverified until this ticket is implemented:\npython3 tools/check_runtime_fixtures.py --suite context",
         "setup": [
+          "2026-10-21 execution inspection: prerequisites prevent the launch command from running on current game main. tools/check_runtime_fixtures.py does not exist; Source/Briarwake/Tests contains only ServerConfigurationTests.cpp. All T02 replay, invalid-input, reset and normal-launch/artifact-isolation acceptance checks remain not run. See validation/tickets/BW-003-T02/prerequisite-review.json. The missing harness is not an Unreal editor bridge failure.",
           "Current implementation ownership: use the Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject. BW-001 used a separate BriarwakeNative worktree and now has verified native bootstrap/build/revision/configuration owners. BW-002 admission and these BW-003 gameplay fixtures remain unimplemented. Recheck current main and documented commands before execution.",
           "The pinned baseline is UE 5.8.3 Launcher CL 58210709 plus source commit 396c9f059903aed5fec78ecd3d437a40c6415368, Xcode 27.0 build 27A266a, macOS ARM64 Development. tools/toolchain.lock.json verifies identities. Briarwake.Build.cs uses Core/CoreUObject/Engine and private Json; Game/Editor/Server targets and two native baseline automation tests exist. Source Server packaging and headless startup have executed BW-001 evidence, but this fixture runner does not exist yet.",
           "No authored project map exists under Content; the bootstrap uses /Engine/Maps/Entry. Create and destroy a transient automation-test UWorld for this ticket. The supplied MultiplayerSessions plugin is auto-enabled as a project plugin and has compilation/widget checks, without connected-session or gameplay-fixture certification. Do not assume optional editor plugins from an older checkout are enabled.",
@@ -5426,7 +5427,9 @@
           "Retain previous logs/reports; rerun into a new default output directory. Controls modify only disposable inputs. Never overwrite prior evidence or modify canonical sources, user maps or assets to reset a run."
         ]
       },
-      "blockers": [],
+      "blockers": [
+        "BW-003-T01 is Not Started and its required native fixture runner, report reader and transient-UWorld owner are absent from game main 43998f9fcbcd76bc9f179a6bde2a43ef4994a962. T01 also requires the unimplemented BW-002 content-admission boundary. Resolve these prerequisites, or obtain an explicit scope decision for independent T02 work, before extending the shared harness."
+      ],
       "verified_evidence": []
     },
     {

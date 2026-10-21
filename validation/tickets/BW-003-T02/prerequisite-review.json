@@ -1,0 +1,88 @@
+{
+  "reviewed_at_utc": "2026-10-21T17:39:51.131150+00:00",
+  "kind": "prerequisite inspection; not runtime execution evidence",
+  "ticket": "BW-003-T02",
+  "game_main": "43998f9fcbcd76bc9f179a6bde2a43ef4994a962",
+  "docs_main": "614645979cfc15fcd7f00d28b2ed96cde93d0515",
+  "game_changes": false,
+  "implementation_started": false,
+  "inspected_paths": [
+    "Briarwake.uproject",
+    "Source/Briarwake/Briarwake.Build.cs",
+    "Source/Briarwake.Target.cs",
+    "Source/BriarwakeEditor.Target.cs",
+    "Source/BriarwakeClient.Target.cs",
+    "Source/BriarwakeServer.Target.cs",
+    "Source/Briarwake/Briarwake.cpp",
+    "Source/Briarwake/Tests/ServerConfigurationTests.cpp",
+    "tools/check_baseline.py",
+    "tools/toolchain.lock.json",
+    "Plugins/MultiplayerSessions/MultiplayerSessions.uplugin"
+  ],
+  "missing_prerequisites": {
+    "BW-003-T01": "No tools/check_runtime_fixtures.py, fixture report reader or native transient-world fixture owner exists on fetched game main.",
+    "BW-002": "No native content-admission implementation exists; only server startup configuration parsing is implemented."
+  },
+  "contract_review": {
+    "source": "sources/data-inventory.json",
+    "FixtureWorldContext": "All eight fields are required; unknown fields rejected. server_tick is Count, owner_epoch is Version, both nonnegative integers. server_time is an authoritative RFC 3339 UTC Instant. world_configuration_id and random_seed are nonempty opaque Id strings. visible_entities/npc_states/parties are explicit arrays; empty is known-empty, absent/null is invalid.",
+    "FixtureStep": "Finite documented gameplay/control variants; no generic diagnostic-probe command variant. Do not redefine variants or implement gameplay to populate this early local probe.",
+    "FixtureAssertion": "Use only documented typed variants. TestCheck supplies name, passed and detail for probe-only checks.",
+    "references_reviewed": [
+      "Id",
+      "Count",
+      "Version",
+      "Instant",
+      "TestCheck",
+      "FixtureWorldContext",
+      "FixtureStep",
+      "FixtureAssertion"
+    ],
+    "owner_mapping": "No existing native fixture context/clock/queue owner. T02 must extend the T01 owner after it is implemented or explicitly authorized to proceed independently."
+  },
+  "acceptance_checks": [
+    {
+      "criterion": 1,
+      "execution": "Not run",
+      "reason": "Required native T01 fixture runner and transient-world owner are missing."
+    },
+    {
+      "criterion": 2,
+      "execution": "Not run",
+      "reason": "Required native T01 fixture runner and transient-world owner are missing."
+    },
+    {
+      "criterion": 3,
+      "execution": "Not run",
+      "reason": "Required native T01 fixture runner and transient-world owner are missing."
+    }
+  ],
+  "parent_review": {
+    "epic": "BW-003",
+    "status": "Not Started",
+    "criteria": {
+      "1": "No executed native fixture evidence; T01 unimplemented.",
+      "2": "No native replay/isolation execution; T02 blocked before implementation.",
+      "3": "No native correlated diagnostic sample; T03 unimplemented.",
+      "4": "No measured local probe tick/recipient/queue sample; T04 unimplemented."
+    },
+    "hard_dependencies": {
+      "BW-001": "Complete; retained evidence applies because no game input changes occur.",
+      "BW-002": "Not Started; not satisfied."
+    },
+    "children": {
+      "BW-003-T01": "Not Started",
+      "BW-003-T02": "Blocked",
+      "BW-003-T03": "Not Started",
+      "BW-003-T04": "Not Started",
+      "BW-003-T05": "Not Started"
+    },
+    "aggregate": "T05 unimplemented; no parent completion or downstream readiness promotion."
+  },
+  "limitations": [
+    "No C++ build, Unreal automation, replay, gameplay-control negative launch or packaged artifact isolation check executed for T02.",
+    "No historical Godot result is used as Unreal evidence.",
+    "No direct editor UI action was needed for this prerequisite inspection; the Unreal MCP bridge was not tested."
+  ],
+  "review_checklist": "Scope, contracts, actual checkout/toolchain/targets and dependency ownership inspected. No game changes, networking changes or new abstractions. Runtime validation is not run. Documentation regeneration/validation and Git delivery are recorded separately."
+}
