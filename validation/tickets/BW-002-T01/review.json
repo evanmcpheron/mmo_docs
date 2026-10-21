@@ -1,0 +1,176 @@
+{
+  "ticket": "BW-002-T01",
+  "reviewed_on": "2026-10-21",
+  "kind": "Executed documentation and source boundary review; no game execution",
+  "result": "Passed",
+  "game": {
+    "repository": "https://github.com/evanmcpheron/BriarwakeUnreal",
+    "fetched_main": "43998f9fcbcd76bc9f179a6bde2a43ef4994a962",
+    "tested_revision": "aaa93bac22ff5bdd919f0c02ee79a3c112a62db5",
+    "authority_map": "docs/authority-and-lifecycles.md",
+    "authority_map_url": "https://github.com/evanmcpheron/BriarwakeUnreal/blob/aaa93bac22ff5bdd919f0c02ee79a3c112a62db5/docs/authority-and-lifecycles.md",
+    "authority_map_sha256": "94d8c3cc059fe38387a61d62f3bdaf4ef4a93a22f77f185d2d529a4257411c2a",
+    "inspected_source_sha256": {
+      "Briarwake.uproject": "3519f1372f2eca52497145818c06e4dbc98cd435b802eca0fd1af3bdd9aed7c6",
+      "Source/Briarwake/Briarwake.cpp": "ae11b4e4df51c2c6c00a8dbdd595b9e991425d4660a7e91c6bd473609030f0f0",
+      "Source/Briarwake/ServerConfiguration.h": "e149ae4e6b512db8ded93fb2c998aacc683d5b4c718ef4a03c3ab282b900ed39",
+      "Source/Briarwake/ServerConfiguration.cpp": "88ec5793db41f1e7bbe0f6cb8c8f3187df2516c8926b17e97e46b6b3a05015cf",
+      "Source/Briarwake/Tests/ServerConfigurationTests.cpp": "98ae21a0ca2668b22fa115af358098e840c90a090734c02db5226ceff180f33f",
+      "Source/Briarwake/Briarwake.Build.cs": "ff348fcbb0c811b2f05430282c475867eb20dd1a067f66ae98bbf11ae8e04431",
+      "Source/Briarwake.Target.cs": "f9718a0f35f35fdb0587873e4a9273a48204c63653c70d902bf9663300f08118",
+      "Source/BriarwakeEditor.Target.cs": "973e864f2256491fcebfcaa7a74e6f80ff41f5cb4279448f1cc56c47e88375cf",
+      "Source/BriarwakeClient.Target.cs": "00e749912c325b9b52c71c139ae6b3be62cee65d99964530980e5c0e05a046db",
+      "Source/BriarwakeServer.Target.cs": "8d742ad8f881dcf32783adb2adc0f5765c08d5ce269823ee01a89b312a233eca",
+      "Config/DefaultEngine.ini": "3a22d67c5c284b870cac7c9729498c271fbce6afde4cac7949521d8cdd066de4",
+      "Config/DefaultGame.ini": "90627cb8ed2a59344631d587df7c85e376e49c66d731788bfc792a95722b67b2",
+      "Plugins/MultiplayerSessions/MultiplayerSessions.uplugin": "9d342be7674cb5febef1d741ebd0d69f90c7371e83ac117037d8daf02800ddf5",
+      "Plugins/MultiplayerSessions/Source/MultiplayerSessions/Public/MultiplayerSessionsSubsystem.h": "4066cc8042eadac038967f65053cbaf8dd0a1bd8ab29825c3a65f16a24747d95",
+      "Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessionsSubsystem.cpp": "39d1d778da64208d3ab2768a08129afa44a17f7bb4043a52b3cb6e5b8b23c31a",
+      "Plugins/MultiplayerSessions/Source/MultiplayerSessions/Public/Menu.h": "c6ff9e376c1fa783d643d7cbff4a98ba8515ba780c2d4f32a0e48d02fe80425d",
+      "Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/Menu.cpp": "ccba4cf2fa28d96d0184b7052fb36a3db15d3ee4cc0a6fb50f973d8cfb0a24ca",
+      "tools/toolchain.lock.json": "e6b0ccdffa97b7cf445c6e190649bdf47d98f89b4b04ece4f25aab9a3c5623f5"
+    }
+  },
+  "docs": {
+    "repository": "https://github.com/evanmcpheron/mmo_docs",
+    "fetched_main": "614597b2cb86ef9b9c486154dc9270f4906dabde",
+    "canonical_registry_sha256": "51c8978d08efdfd27263c8af1aaf700cbe724e2e4a4aab19881175a12019668c",
+    "contract_review": "Registry conventions and five dependency/authority groups; selected movement/session/combat/item/wallet/build/prediction/projection contracts, their 65-definition local $ref closure and associated mechanics. Reviewed resolved boundary-encoding, command-policy, disclosure, operational-security and equipment-lifecycle issues. No canonical definition changed."
+  },
+  "criteria": [
+    {
+      "criterion": 1,
+      "result": "Passed",
+      "sections": [
+        "Current implementation",
+        "Required domain owners",
+        "Identity and handoff invariants"
+      ],
+      "summary": "Reviewed five domains for creation/update/teardown, authenticated intent, trusted state, transfer/reconnect/crash policy and projection audiences; each missing native owner is explicit. Menu and session callbacks receive no gameplay authority."
+    },
+    {
+      "criterion": 2,
+      "result": "Passed",
+      "sections": [
+        "Current implementation",
+        "Durable assets and currency",
+        "Applied talent builds",
+        "Identity and handoff invariants"
+      ],
+      "summary": "Source inspection confirms FServerConfiguration and module lifecycle are bootstrap-only. Canonical epoch fencing, atomic item/wallet transactions, one build revision and no reset invariants are preserved. Named admission drafts are historical, currently absent and candidate admission owners only."
+    },
+    {
+      "criterion": 3,
+      "result": "Passed",
+      "sections": [
+        "Projection audiences",
+        "Client presentation and prediction"
+      ],
+      "summary": "EntitySnapshot/PublicCombatResult are independently authorized public projections; ReconnectSnapshot is authenticated owner-only with independently filtered visible_entities; CombatResult/TransferCheckpoint stay server-only. Hidden source null, recipient-scoped correlation, authorization-loss removal and one writable truth are explicit."
+    }
+  ],
+  "link_check": "link-check.json",
+  "draft_observation": {
+    "method": "Read-only Path.exists checks for named draft files in both available game worktrees; no source recovered or edited.",
+    "game_worktrees": [
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal",
+      "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeNative"
+    ],
+    "absent_paths": [
+      "Source/Briarwake/ContentAdmission.h",
+      "Source/Briarwake/ContentAdmission.cpp",
+      "Source/Briarwake/ContentContracts.h",
+      "Source/Briarwake/ContentContracts.cpp",
+      "tools/extract_content_contracts.py",
+      "fixtures/content_admission/contracts.snapshot.json"
+    ]
+  },
+  "environment": {
+    "uproject_engine_association": "5.8",
+    "installed_engine": "5.8.3 CL 58210709",
+    "xcode": "27.0 build 27A266a",
+    "inspection_only": true,
+    "unreal_bridge": "Not required: no editor/UI/runtime work in T01"
+  },
+  "parent_review": {
+    "epic": "BW-002",
+    "status": "In Progress",
+    "criteria": [
+      {
+        "criterion": 1,
+        "state": "Passed documentation review",
+        "artifact": "validation/tickets/BW-002-T01/review.json"
+      },
+      {
+        "criterion": 2,
+        "state": "Unverified; T03 and integrated T07 admission execution pending"
+      },
+      {
+        "criterion": 3,
+        "state": "Unverified; T04 and integrated T07 binding rejection pending"
+      },
+      {
+        "criterion": 4,
+        "state": "Unverified; T02 and integrated T07 compatibility execution pending"
+      },
+      {
+        "criterion": 5,
+        "state": "Unverified; T05 contract resolution, T06 graph gate and integrated T07 execution pending"
+      }
+    ],
+    "dependencies": "T01 has no prerequisites. BW-001 completion/evidence retained; implementation inputs are unchanged by this docs-only game commit. BW-002 hard_dependencies is empty; AC2-AC5 still prevent completion. T02 and T05 are now prerequisite-satisfied but remain Not Started. BW-003 and other BW-002-dependent epics remain Not Started and not Dependency-ready.",
+    "stale_status_scan": "No unfinished epic with all tickets Complete, or Not Started parent with an In Progress child, found before the update. No active blocker was resolved by this review."
+  },
+  "engineering_review": {
+    "scope_correctness": "Passed source/contract inspection; ordinary documentation and README only in game; tracking, evidence and generated views in authorized docs repository.",
+    "single_owner_boundaries": "Passed documentation review; no new abstraction, duplicate schema or writable state.",
+    "cpp_unreal_changes": "N/A: no code, reflected type, config, map or asset changed. Existing project/module/targets/plugin inspected.",
+    "network_security": "Passed boundary-document review only; server identity, epoch, intent and disclosure constraints documented. Runtime enforcement remains missing.",
+    "tests": "Documentation/link/content checks only; eight README checks recorded in documentation-checks.txt.",
+    "protected_standards": "Unchanged; AGENTS.md and docs/ai/** read-only.",
+    "preservation": "Existing docs checkout/index edits left untouched using an isolated worktree; no reset/stash/clean or draft transfer."
+  },
+  "not_run": [
+    {
+      "check": "Unreal build, automation, editor and server/multiple-client gameplay tests",
+      "reason": "No executable behavior changed; T01 acceptance is explicitly documentation review. No runtime pass is claimed."
+    },
+    {
+      "check": "Admission/compatibility/binding/economic graph execution",
+      "reason": "T02-T07 work remains unstarted/unverified; T01 does not certify those gates."
+    },
+    {
+      "check": "Rendered browser verification",
+      "reason": "No visual/navigation implementation changed; generated HTML content/links and existing documentation validators are checked separately."
+    }
+  ],
+  "validation_correction": {
+    "initial_result": "Failed documentation validation; no game execution",
+    "artifact": "documentation-checks-initial.txt",
+    "reason": "Roadmap related_docs permits only local documentation, so the game GitHub blob URL was rejected.",
+    "resolution": "Removed the external related_docs entries; canonical local type links remain. The pinned game document URL is retained in this review evidence. All eight commands rerun in documentation-checks.txt."
+  },
+  "generated_progress_review": "progress-review.json",
+  "documentation_validation": {
+    "result": "Passed",
+    "commands": "documentation-checks.txt",
+    "commands_passed": 8,
+    "regression_tests": 76,
+    "full_checks_passed": 242,
+    "full_checks_failed": 0,
+    "docs_revision": "614597b2cb86ef9b9c486154dc9270f4906dabde plus task working-tree changes before commit; exact checked input hashes below",
+    "checked_files_sha256": {
+      "sources/development-roadmap.json": "688ca706f5930b9427db7605844643714c285940af64ebd3b29db81dc3504ecd",
+      "sources/data-inventory.json": "8bd60a97d5686069257e1cb19d7535abeea57eae9cc203b37adc7f12f5ff41e8",
+      "assets/search-index.js": "86c2f8c4c468f62c2f695dccd766bbbb74bab57e573d63645271695fe506ab79",
+      "guide/roadmap-bw-002.html": "8a2f2476e3b4ebc833cd7bf7c364ff72e4455118f62ce27a17024cd3e2cbb91a",
+      "guide/roadmap-bw-002-t01.html": "d6bd88e3cfdab3b774ca3d7437df982d45745a8e423a5acac567f92e4b5dd08e"
+    }
+  },
+  "delivery": {
+    "game_main_rechecked": "43998f9fcbcd76bc9f179a6bde2a43ef4994a962",
+    "docs_main_rechecked": "614597b2cb86ef9b9c486154dc9270f4906dabde",
+    "game_pr": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/3",
+    "history": "Fresh main-based branches; no merge, rebase, force push or deployment."
+  }
+}
