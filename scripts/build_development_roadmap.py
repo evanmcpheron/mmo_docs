@@ -35,6 +35,10 @@ def epic_map(data):
     return {e['id']: e for e in data['epics']}
 
 
+def ticket_map(data):
+    return {t['id']: t for t in data['tickets']}
+
+
 def prerequisite_closure(data, ids):
     by_id = epic_map(data)
     found = set()
@@ -91,12 +95,19 @@ def epic_page(data, identifier):
     return 'guide/roadmap-' + identifier.lower() + '.html'
 
 
+def ticket_page(identifier):
+    return 'guide/roadmap-' + identifier.lower() + '.html'
+
+
 def generated_page_paths(data):
     return [PAGE, *(phase_page(p) for p in data['phases']),
-            *(epic_page(data, e['id']) for e in data['epics']), *(p[0] for p in REFERENCE_PAGES.values())]
+            *(epic_page(data, e['id']) for e in data['epics']),
+            *(ticket_page(t['id']) for t in data['tickets']), *(p[0] for p in REFERENCE_PAGES.values())]
 
 
 def anchor_page(data, identifier):
+    if identifier in ticket_map(data):
+        return ticket_page(identifier)
     if identifier in epic_map(data):
         return epic_page(data, identifier)
     if identifier in {p['id'] for p in data['phases']}:
@@ -157,13 +168,16 @@ def phase_navigation(data, phase, page, position):
     return f'<nav class="roadmap-phase-nav" aria-label="Phase navigation ({position})">{previous}{following}</nav>'
 
 
-def shell(data, page, title, description, body, toc, root=ROOT, phase=None, epic=None):
+def shell(data, page, title, description, body, toc, root=ROOT, phase=None, epic=None, ticket=None):
     breadcrumb = '<a href="../index.html">Reference</a><span>/</span>'
     if page != PAGE:
         breadcrumb += link(PAGE, page, 'Development roadmap') + '<span>/</span>'
     if epic is not None:
         breadcrumb += link(phase_page(phase), page, phase['title']) + '<span>/</span>'
-    breadcrumb += escape(epic['id'] if epic is not None else 'Development roadmap' if page == PAGE else title)
+    if ticket is not None:
+        breadcrumb += link(epic_page(data, epic['id']), page, epic['id'], epic['id']) + '<span>/</span>'
+    breadcrumb += escape(ticket['id'] if ticket is not None else epic['id'] if epic is not None else
+                         'Development roadmap' if page == PAGE else title)
     main = (f'<main id="main" tabindex="-1"><div class="breadcrumb">{breadcrumb}</div><h1>{escape(title)}</h1>'
             f'<p class="page-description">{escape(description)}</p><div class="article-body">{roadmap_nav(data, page)}' +
             ''.join(body) + '</div><footer class="page-footer">' + link(PAGE, page, 'Roadmap dashboard') +
@@ -249,10 +263,23 @@ def render_epic(data, epic, root=ROOT):
     else:
         parts.append('<p><strong>Recorded evidence:</strong> None. Required evidence above describes future verification.</p>')
     parts.append(f'<p><strong>Blockers:</strong> {escape("; ".join(epic["blockers"])) if epic["blockers"] else "None recorded; see hard prerequisites."}</p>')
-    parts.append('<h2 id="ticket-planning">Ticket planning</h2>'
-                 f'<p>Use <strong>{identifier}</strong> as the parent epic. Link each future ticket to the AC links above and '
-                 'state the evidence it will produce. Split work into demonstrable behaviors; one criterion may require several tickets. '
-                 'Epic completion still requires every criterion, verified evidence and completed hard prerequisites.</p>')
+    parts.append('<h2 id="ticket-planning">Ticket planning</h2>')
+    tickets = [t for t in data['tickets'] if t['parent_epic'] == identifier]
+    if tickets:
+        parts.append('<p>Execute these tickets in dependency order. Ticket statuses are tracked separately; '
+                     'epic completion still requires every criterion, verified evidence and completed hard prerequisites.</p>')
+        parts.append('<ol class="roadmap-contents">' + ''.join(
+            '<li>' + link(ticket_page(t['id']), page, t['id'] + ' · ' + t['title'], t['id']) +
+            f' <span class="badge">{escape(t["status"])}</span></li>' for t in tickets) + '</ol>')
+        parts.append('<div class="table-scroll"><table><caption>Ticket coverage of epic acceptance criteria</caption>'
+                     '<thead><tr><th>Epic criterion</th><th>Tickets</th></tr></thead><tbody>' + ''.join(
+            '<tr><td>' + link(page, page, f'{identifier}-AC-{n}', f'{identifier}-AC-{n}') + '</td><td>' +
+            links(data, [t['id'] for t in tickets if f'{identifier}-AC-{n}' in t['epic_criteria']], page) + '</td></tr>'
+            for n in range(1, len(epic['acceptance_criteria']) + 1)) + '</tbody></table></div>')
+    else:
+        parts.append(f'<p>Use <strong>{identifier}</strong> as the parent epic. Link each future ticket to the AC links above and '
+                     'state the evidence it will produce. Split work into demonstrable behaviors; one criterion may require several tickets. '
+                     'Epic completion still requires every criterion, verified evidence and completed hard prerequisites.</p>')
     if epic.get('ordering_rationale'):
         parts.append(f'<p><strong>Ordering rationale:</strong> {escape(epic["ordering_rationale"])}</p>')
     decisions = [d for d in data['open_decisions'] if identifier in d['epics']]
@@ -268,6 +295,60 @@ def render_epic(data, epic, root=ROOT):
            ('ticket-planning', 'Ticket planning'), ('documentation', 'Related documentation')]
     return shell(data, page, identifier + ' · ' + epic['title'], epic['objective'], parts, toc, root, phase, epic)
 
+
+def render_ticket(data, ticket, root=ROOT):
+    identifier = ticket['id']
+    page = ticket_page(identifier)
+    epic = epic_map(data)[ticket['parent_epic']]
+    phase = next(p for p in data['phases'] if p['id'] == epic['phase'])
+    parts = [f'<article class="roadmap-ticket" id="{identifier}">',
+             f'<p><span class="badge">{escape(ticket["status"])}</span> · Parent epic: ' +
+             link(epic_page(data, epic['id']), page, epic['id'] + ' · ' + epic['title'], epic['id']) + '</p>',
+             '<p><strong>Epic acceptance criteria:</strong> ' + ', '.join(
+                 link(epic_page(data, epic['id']), page, anchor, anchor) for anchor in ticket['epic_criteria']) + '</p>',
+             '<h2 id="scope">Implementation scope</h2>', bullets(ticket['scope']),
+             '<h3>Out of scope</h3>', bullets(ticket['out_of_scope']),
+             '<h2 id="dependencies">Dependencies</h2>',
+             '<p><strong>Hard prerequisites:</strong> ' + links(data, ticket['dependencies'], page) + '</p>',
+             '<h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance">']
+    for number, criterion in enumerate(ticket['acceptance_criteria'], 1):
+        anchor = f'{identifier}-AC-{number}'
+        parts.append(f'<li id="{anchor}">' + link(page, page, f'AC {number}', anchor,
+                     ' class="roadmap-criterion-link"') + f'<p>{escape(criterion)}</p></li>')
+    parts.append('</ol><h2 id="manual-test">Manual verification</h2>')
+    test = ticket['manual_test']
+    if 'not_applicable' in test:
+        parts.append('<p>' + escape(test['not_applicable']) + '</p>')
+    else:
+        parts.append('<p>Run from the Briarwake implementation repository. The commands, test worlds and fixtures below '
+                     'are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p>')
+        parts.append('<h3>Launch command or scene</h3><pre><code>' + escape(test['launch']) + '</code></pre>')
+        for key, title in [('setup', 'Setup'), ('actions', 'Actions'), ('expected_results', 'Expected results'), ('reset', 'Reset')]:
+            parts.extend([f'<h3>{title}</h3>', bullets(test[key], ordered=True)])
+    parts.extend(['<h2 id="verification">Completion evidence and blockers</h2>',
+                  '<p><strong>Required evidence:</strong> ' + escape(ticket['completion_evidence']) + '</p>',
+                  '<p><strong>Blockers:</strong> ' + escape('; '.join(ticket['blockers']) or 'None recorded; see dependencies.') + '</p>'])
+    if ticket['verified_evidence']:
+        parts.append('<ul>')
+        for record in ticket['verified_evidence']:
+            artifact = record['artifact']
+            href = artifact if artifact.startswith('https://') else address(artifact, page)
+            parts.append(f'<li><a href="{escape(href, quote=True)}">{escape(record["summary"])}</a> — '
+                         f'AC {escape(", ".join(map(str, record["criteria"])))}; {escape(record["result"])}; '
+                         f'revision {escape(record["revision"])}</li>')
+        parts.append('</ul>')
+    else:
+        parts.append('<p><strong>Recorded evidence:</strong> None. Planning does not establish an executed pass.</p>')
+    parts.extend(['<h2 id="documentation">Related documentation</h2><p>' + doclinks(ticket['related_docs']) + '</p>', '</article>'])
+    peers = [t for t in data['tickets'] if t['parent_epic'] == epic['id']]
+    index = peers.index(ticket)
+    parts.append('<nav class="roadmap-epic-nav" aria-label="Tickets in execution order">' + ''.join(
+        link(ticket_page(peers[n]['id']), page, label + ': ' + peers[n]['id'], peers[n]['id'])
+        for n, label in [(index - 1, 'Previous'), (index + 1, 'Next')] if 0 <= n < len(peers)) + '</nav>')
+    toc = [('scope', 'Implementation scope'), ('dependencies', 'Dependencies'), ('acceptance-criteria', 'Acceptance criteria'),
+           ('manual-test', 'Manual verification'), ('verification', 'Completion evidence'), ('documentation', 'Related documentation')]
+    return shell(data, page, identifier + ' · ' + ticket['title'], 'Implementation ticket for ' + epic['id'] + '.',
+                 parts, toc, root, phase, epic, ticket)
 
 def render(data, root=ROOT):
     page = PAGE
@@ -442,6 +523,7 @@ def render_audit(data, root=ROOT):
 def generated_pages(data, root=ROOT):
     return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
             **{epic_page(data, e['id']): render_epic(data, e, root) for e in data['epics']},
+            **{ticket_page(t['id']): render_ticket(data, t, root) for t in data['tickets']},
             REFERENCE_PAGES['milestones'][0]: render_milestones(data, root),
             REFERENCE_PAGES['sequencing-decisions'][0]: render_decisions(data, root),
             REFERENCE_PAGES['coverage'][0]: render_coverage(data, root),
