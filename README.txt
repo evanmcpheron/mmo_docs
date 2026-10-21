@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-171 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-five individual BW-003 ticket pages,
+172 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+five individual BW-003 ticket pages and one native BW-001 execution ticket,
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -55,9 +55,10 @@ Numerical coefficients, progression pacing, item budgets and recipes are
 prototype proposals, not verified game balance. Named secondary ability effects
 and many inherited talent behaviors still require explicit runtime binding.
 Read guide/audit.html before treating this as implementation-ready game content.
-A minimal Unreal C++ starter exists locally as of 2026-10-21. A separately versioned
-implementation repository, dedicated-server target, fixture harness, production
-database, economy and applicable game runtime verification remain unfinished.
+The native Unreal C++ bootstrap is versioned in evanmcpheron/BriarwakeUnreal.
+BW-001-T08 records actual client/build/configuration/inspection evidence; dedicated
+server verification remains active. Gameplay fixtures, production database, economy,
+connected Steam sessions and capacity remain unverified.
 
 VALIDATION
 Run: python validation/run_checks.py
@@ -114,11 +115,14 @@ redacted diagnostics, bounded measurements and integrated verification. They
 cover all four epic criteria and begin Not Started with no verified evidence.
 The owner selected a local probe with logical recipients and explicitly labeled
 serialized payload bytes; this does not certify connected clients or wire traffic.
-A 2026-10-21 workspace inspection found a minimal local Unreal 5.8 C++ starter
-and installed UE 5.8.3/Xcode candidates. Its containing AI-guidance Git repository
-ignores game source; no separate versioned game repository, Server target or
-fixture harness is established. BW-001 is In Progress from starter creation;
-BW-002/BW-003 remain Not Started, and BW-003 is not Dependency-ready.
+BW-001-T08 tracks the native bootstrap without reusing retired legacy ticket IDs.
+The owner selected evanmcpheron/BriarwakeUnreal; its task branch includes the supplied
+engineering docs and MultiplayerSessions Steam plugin. Actual Editor/Game builds,
+native configuration/execution tests, menu Blueprint compilation, packaged-client
+launch, decoded-Pak inspection and clean pass/failure/recovery controls are retained.
+The source-engine Server build and remaining package/smoke checks are still active,
+so BW-001/T08 remain In Progress. BW-002/BW-003 remain Not Started; BW-003 is not
+Dependency-ready. See the registry and BW-001 evidence for exact scope and revisions.
 
 Store tickets in the registry's tickets list with stable IDs, parent_epic,
 exact epic_criteria anchors, dependencies, scope, out_of_scope, observable

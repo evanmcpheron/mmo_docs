@@ -2,8 +2,8 @@
   "version": 1,
   "title": "Briarwake Development Roadmap",
   "research_date": "2026-10-17",
-  "purpose": "A dependency and evidence map for Briarwake, a brand-new Unreal Engine 5 native C++ MMORPG. This documentation is the authoritative gameplay reference; no game project or implementation repository exists yet. It identifies prerequisites, demonstrable milestones, and future work without asserting executable progress.",
-  "evidence_baseline": "As of the 2026-10-21 workspace inspection, a minimal Briarwake Unreal 5.8 C++ starter project and UE 5.8.3/Xcode candidates exist locally. The containing godot-ai Git repository tracks AI guidance only and ignores the project/source; no separately versioned Unreal game repository, dedicated-server target, fixture harness or applicable native runtime verification is established. BW-001 is In Progress from starter-project creation; all other implementation epics remain Not Started. Documentation checks and historical Godot runs do not establish Unreal runtime completion.",
+  "purpose": "A dependency and evidence map for Briarwake, an Unreal Engine 5 native C++ MMORPG. This documentation owns gameplay contracts and progress; evanmcpheron/BriarwakeUnreal owns the newly versioned native bootstrap. Completion depends on scoped executed evidence rather than planning or historical engine results.",
+  "evidence_baseline": "As of 2026-10-21, the owner-selected evanmcpheron/BriarwakeUnreal repository has a pushed native implementation branch and draft PR 1. UE 5.8.3/Xcode identities, Editor and Game builds, two native configuration/execution tests, the supplied MultiplayerSessions menu Blueprint, packaged-client launch and decoded-Pak inspection have actual retained execution. Fresh C++ snapshots distinguish pass, build failure, executed assertion failure, timeout and recovery. Dedicated-server build/package/smoke verification is still running, so BW-001 and native execution ticket BW-001-T08 remain In Progress. BW-002/BW-003 and other gameplay epics remain Not Started; bootstrap tests do not certify gameplay fixtures, connected clients, Steam sessions, persistence or capacity.",
   "reading_guide": [
     "Each epic is one coherent, demonstrable capability with a permanent BW identifier, scope, hard prerequisites, acceptance criteria and required evidence. Phases group integration objectives derived from the dependency graph; they do not require every independent branch to wait for the previous phase.",
     "Navigate from the dashboard to a phase index, then open an individual epic page. Every epic has direct links to its prerequisites, downstream work, recommended sequence neighbors and numbered acceptance criteria. Existing dashboard and phase epic bookmarks lead to the same canonical epic page.",
@@ -13,7 +13,7 @@
     "Milestone requirements include their transitive hard prerequisites. Explicit integration/certification epics test connected behavior on compatible builds. Phase completion means every member epic is Complete; it does not replace those integrated proofs.",
     "Foundations certify the state families in their tested package. An epic introducing another family must extend the applicable recipient-view, reconstruction, security and operational checks before admitting it. This never certifies a future family in advance; full-roster and release certification still cover their entire declared scope.",
     "The selected presentation is low-resolution 3D pixel art inspired by David Holland. Camera/readability and art-production work have their own evidence gates; continuous planar/floor simulation remains authoritative. Historical references to eight sprite directions now mean compatible preview headings, not a required spritesheet pipeline.",
-    "The future native C++ Unreal Engine 5 game project will live in a separate repository created only when explicitly authorized. Ticket planning can proceed here; executing game implementation requires verified access to that future repository and a pinned tested engine/toolchain. The owner has replication plugins available, but their identities, compatibility and actual coverage must be checked before integration; neither selection nor integration is implied."
+    "The owner selected evanmcpheron/BriarwakeUnreal as the separate native C++ implementation repository. Reverify its Git root, task branch and pinned toolchain before execution. The supplied MultiplayerSessions Steam plugin has baseline compilation/widget checks; authoritative replication, connected sessions and provider capabilities remain unverified. Ticket planning does not establish implemented gameplay."
   ],
   "distinctions": [
     {
@@ -186,7 +186,7 @@
       "id": "BW-001",
       "title": "Reproducible client and headless project",
       "objective": "Prepare and create the first native C++ Unreal Engine 5 project with reproducible client and dedicated-server execution from zero.",
-      "scope": "Install and verify the required Unreal Engine 5 editor, native C++ compiler/toolchain and build prerequisites; select a tested engine revision; create a new C++ project and its separate game repository; configure client and dedicated-server build targets, versioned settings and foundational smoke tests. No existing project, servers or plugins are assumed.",
+      "scope": "Install and verify the required Unreal Engine 5 editor, native C++ compiler/toolchain and build prerequisites; select a tested engine revision; create a new C++ project and its separate game repository; configure client and dedicated-server build targets, versioned settings and foundational smoke tests. No existing project, servers or plugins are assumed. The owner selected evanmcpheron/BriarwakeUnreal for the implementation and requested inclusion of its supplied engineering docs and MultiplayerSessions Steam plugin. Bootstrap uses the canonical ServerConfiguration contract; Steam account/session behavior and gameplay remain outside this baseline.",
       "hard_dependencies": [],
       "recommended_predecessors": [],
       "acceptance_criteria": [
@@ -195,7 +195,7 @@
         "Missing required configuration fails with an actionable diagnostic; credentials are absent from distributed client artifacts.",
         "A clean automated run distinguishes build failure from an executed passing or failing runtime check."
       ],
-      "completion_evidence": "New project/repository creation record, pinned toolchain and engine versions, clean native C++ client/server builds, packaged artifact identifiers, and an actually executed headless-server smoke test. No such evidence exists yet.",
+      "completion_evidence": "Versioned native project/repository, pinned engine and toolchain identities, clean C++ client/server build and package logs, exact artifact hashes, actual client launch and headless-server smoke, configuration rejection, credential inspection and distinct automated failure controls.",
       "related_docs": [
         {
           "label": "Authority and networking",
@@ -208,12 +208,26 @@
         {
           "label": "Selected 3D pixel-art direction",
           "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "ServerConfiguration (native FServerConfiguration)",
+          "href": "guide/data-inventory.html#server-configuration"
         }
       ],
       "status": "In Progress",
       "blockers": [],
-      "ordering_rationale": "Development environment verification, C++ project creation and an executable baseline must precede gameplay runtime evidence. Select and pin the engine version from a tested candidate rather than documentation defaults. The 2026-10-21 workspace inspection verifies a minimal local C++ starter and installed engine/compiler candidates, so implementation has begun; versioned game repository creation, toolchain pinning, dedicated-server target, reproducible packages and all executed acceptance evidence remain unfinished.",
-      "verified_evidence": [],
+      "ordering_rationale": "A versioned native C++ implementation branch now exists in evanmcpheron/BriarwakeUnreal, with installed/source UE 5.8.3 and Xcode candidates pinned and Editor/configuration/widget checks executed. Client/server packaging, independent launches, credential inspection and clean-run failure controls remain under verification; no historical Godot evidence applies.",
+      "verified_evidence": [
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "validation/tickets/BW-001-T08/automation-review.json",
+          "revision": "7bd068b6b0ed2e3dcbe5494241c2bb01d829f7d9; source SHA-256 939070d1fc3a46bb67105eee1ecfae9c4833c33d7f9d15c33078d21ef1eccaf9",
+          "result": "Passed",
+          "summary": "Actual fresh native C++ snapshot builds and two registered Unreal baseline tests distinguish passing execution, real compilation failure with runtime Not Executed, executed assertion failure, bounded timeout with no assertion pass, and independent passing recovery. Nine Python regressions passed. This satisfies only the automated-outcome criterion; packaged-server completion remains unverified."
+        }
+      ],
       "phase": "phase-foundations"
     },
     {
@@ -543,7 +557,7 @@
         "Two clients agree on authoritative movement and entity identity after join, leave and re-entry.",
         "A new observer receives current state rather than depending on an earlier event it never saw.",
         "Stale or duplicate snapshots do not resurrect despawned entities or overwrite newer state.",
-        "Owner resources and private recovery state are absent from another client’s public snapshots; unavailable references fail safely."
+        "Owner resources and private recovery state are absent from another client\u2019s public snapshots; unavailable references fail safely."
       ],
       "completion_evidence": "Two-client lifecycle traces including late join and stale snapshot injection.",
       "related_docs": [
@@ -573,7 +587,7 @@
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "At 0, 50, 100, 150 and 250 ms RTT, correction converges to the server position without applying acknowledged input twice.",
-        "Jitter and 1–5% packet loss do not leave permanent remote motion divergence after state delivery resumes.",
+        "Jitter and 1\u20135% packet loss do not leave permanent remote motion divergence after state delivery resumes.",
         "Collision corrections and ownership changes discard obsolete prediction history and cannot move a character through a wall.",
         "Record correction magnitude/frequency and input response for each scenario, with an explicit review of understandable failure at 250 ms.",
         "Render-camera alignment and visual interpolation do not quantize predicted or authoritative positions; slow tracking during correction and teleport/reset cases remain understandable in the selected low-resolution view."
@@ -856,7 +870,7 @@
       "acceptance_criteria": [
         "A repeatable workload drives moving clients and implemented actions, includes burst joins/departures, and records client count, content/rules versions, hardware and measurement duration.",
         "Reports retain tick median/tail percentiles, queue depth, memory, bytes per client, rejection/duplicate counts and recovery behavior rather than connection counts alone. Record the actual client render configuration and frame timings separately so rendering cost is not mistaken for a server or bandwidth limit.",
-        "Latency runs include 0/50/100/150/250 ms RTT plus declared jitter, snapshot reordering and 1–5% loss; failures and rejected inputs remain visible.",
+        "Latency runs include 0/50/100/150/250 ms RTT plus declared jitter, snapshot reordering and 1\u20135% loss; failures and rejected inputs remain visible.",
         "The report identifies measured constraints and bounded next changes, explicitly distinguishes prototype rates from achieved capacity and records unresolved budgets before further scale claims."
       ],
       "completion_evidence": "Required future proof: reproducible workload/configuration, raw measurements and a reviewed bottleneck report tied to the tested build, with reruns for any claimed improvement.",
@@ -1671,7 +1685,7 @@
       "id": "BW-034",
       "title": "Profession enrollment and skill progression",
       "objective": "Keep profession learning independent of combat level and talent currencies.",
-      "scope": "Two manufacturing slots, two gathering slots, three universal life skills, skill 1–300 and deterministic progress accounting. Training and declared acquisition sources grant durable recipe knowledge; deactivation retains learned recipes.",
+      "scope": "Two manufacturing slots, two gathering slots, three universal life skills, skill 1\u2013300 and deterministic progress accounting. Training and declared acquisition sources grant durable recipe knowledge; deactivation retains learned recipes.",
       "hard_dependencies": [
         "BW-021"
       ],
@@ -1961,7 +1975,7 @@
     {
       "id": "BW-039",
       "title": "First complete beginner journey",
-      "objective": "Deliver the first complete level 1–10 player experience using a declared representative playable roster.",
+      "objective": "Deliver the first complete level 1\u201310 player experience using a declared representative playable roster.",
       "scope": "Equivalent faction-separated starter layouts for an initial Warrior/Bard/Mage roster, bound early kits, guidance, solo graduation and a safe explicit exit; full roster acceptance is BW-052.",
       "hard_dependencies": [
         "BW-026",
@@ -2721,7 +2735,7 @@
       "id": "BW-052",
       "title": "Every-roster beginner certification",
       "objective": "Prove the complete opening journey for every documented legal character choice.",
-      "scope": "All eleven races, both Human allegiances, twelve classes, level-1–10 ability/talent bindings and specialization graduations; full higher-level kit/tree certification remains separate.",
+      "scope": "All eleven races, both Human allegiances, twelve classes, level-1\u201310 ability/talent bindings and specialization graduations; full higher-level kit/tree certification remains separate.",
       "hard_dependencies": [
         "BW-039",
         "BW-040",
@@ -3065,7 +3079,7 @@
       "acceptance_criteria": [
         "Each admitted item-use timing policy commits one owned item and one permitted effect; duplicate requests and concurrent trade/equip use cannot create free or repeated output.",
         "First Aid follows the authored six-second interruptible channel and 60-second recipient treatment lock; damage interruption, concurrent healers and retries cannot bypass the lock or duplicate ticks.",
-        "Food/preparation and consumable categories obey their authored caps and fixed level-band effects; old low-band supplies do not scale from a high-level consumer’s maximum resources.",
+        "Food/preparation and consumable categories obey their authored caps and fixed level-band effects; old low-band supplies do not scale from a high-level consumer\u2019s maximum resources.",
         "Mode restrictions, invalid targets and unavailable items produce explicit rejection; UI shows timing, shared cooldown and treatment availability before use."
       ],
       "completion_evidence": "Executed consumption, interruption, category and concurrent-treatment fixtures with item/receipt and effective-output traces; reviewed timing bindings for item-use policies.",
@@ -3148,7 +3162,7 @@
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
-        "Every profession has validated bands 1–300, legal mastery routes and accessible basic training/tools on both factions.",
+        "Every profession has validated bands 1\u2013300, legal mastery routes and accessible basic training/tools on both factions.",
         "Manufacturing bands provide useful entry, repeat-demand, upgrade and service/tool outputs with exact numerical/binding contracts.",
         "Consumables, bags, tools, shields, instruments, gems, enchants and utility items obey their actual slot/category budgets.",
         "Rare/earned cores are excluded from material-saving effects; gathering, prospecting, salvage and conversion graphs cannot amplify materials or skill indefinitely.",
@@ -3348,7 +3362,7 @@
     },
     {
       "id": "BW-053",
-      "title": "Level 11–60 progression journey",
+      "title": "Level 11\u201360 progression journey",
       "objective": "Provide an authored, traversable route from beginner departure to the documented level cap.",
       "scope": "Release-selected leveling maps, quests, NPC kits, loot and ability-unlock opportunities tested with a declared supported roster; all-roster integration is BW-073, with no invented zone count or lore.",
       "hard_dependencies": [
@@ -3904,7 +3918,7 @@
       "id": "BW-092",
       "title": "Full-game integrated regression and balance signoff",
       "objective": "Demonstrate the intended game as connected player journeys and resolve release-blocking interaction and balance findings.",
-      "scope": "Release-candidate integration across characters, level 1–60, enabled roster, groups/PvP, world travel, economy/professions, social systems and presentation. This is evidence of integration beyond individual epic completion.",
+      "scope": "Release-candidate integration across characters, level 1\u201360, enabled roster, groups/PvP, world travel, economy/professions, social systems and presentation. This is evidence of integration beyond individual epic completion.",
       "hard_dependencies": [
         "BW-072",
         "BW-073",
@@ -4072,7 +4086,7 @@
     {
       "id": "milestone-opening",
       "title": "First complete persistent opening playtest",
-      "objective": "Validate the documented level 1–10 flow for a representative supported roster and prepare external testing.",
+      "objective": "Validate the documented level 1\u201310 flow for a representative supported roster and prepare external testing.",
       "required_epics": [
         "BW-032",
         "BW-085",
@@ -4135,7 +4149,7 @@
         "BW-074",
         "BW-089"
       ],
-      "outcome": "Level 1–60, voluntary PvE level sync, dungeons/raids, flagged/duel/objective PvP, professions/economy, full-state recovery and accessible presentation have certified content and recorded balance/relevance findings. Complete character and environment art passes the supported visual-quality and performance checks."
+      "outcome": "Level 1\u201360, voluntary PvE level sync, dungeons/raids, flagged/duel/objective PvP, professions/economy, full-state recovery and accessible presentation have certified content and recorded balance/relevance findings. Complete character and environment art passes the supported visual-quality and performance checks."
     },
     {
       "id": "milestone-production",
@@ -4314,7 +4328,7 @@
     {
       "id": "decision-journey",
       "title": "Two meanings of playable",
-      "choice": "Use a minimal technical multiplayer proof first; retain the level 1–10 beginner area as the first complete persistent player journey. Prove a representative supported kit before all-roster graduation certification.",
+      "choice": "Use a minimal technical multiplayer proof first; retain the level 1\u201310 beginner area as the first complete persistent player journey. Prove a representative supported kit before all-roster graduation certification.",
       "alternatives": "Making the full beginner journey the first experiment combines identity, economy, XP, quests and content before authority is checked. Waiting for all 12 classes before any beginner playtest delays useful usability evidence. The representative slice is explicitly incomplete roster evidence.",
       "basis": "The beginner requirements mandate solo completion, equivalent faction opportunities, normal unlock levels and enough required XP without optional grinding. They do not mandate that no smaller technical experiment precede them.",
       "epics": [
@@ -4625,7 +4639,7 @@
       ]
     },
     {
-      "family": "Quest credit, required beginner XP, optional tutorials, solo graduation and level 11–60 content",
+      "family": "Quest credit, required beginner XP, optional tutorials, solo graduation and level 11\u201360 content",
       "epics": [
         "BW-033",
         "BW-039",
@@ -4895,7 +4909,7 @@
       "id": "open-platform",
       "title": "Engine, platform and deployment candidates",
       "kind": "Open decision",
-      "description": "Select and pin a tested Unreal Engine 5 revision, native C++ compiler/toolchain, supported platforms, build and dedicated-server targets and Unicode-data revisions. Inventory the owner's available replication plugins and verify each one's license, compatible engine versions, network capabilities and limits before choosing integration; none is presumed installed. Select trusted identity, persistence and initial hosting later; no game repository or deployment currently exists.",
+      "description": "Select and pin a tested Unreal Engine 5 revision, native C++ compiler/toolchain, supported platforms, build and dedicated-server targets and Unicode-data revisions. Inventory the owner's available replication plugins and verify each one's license, compatible engine versions, network capabilities and limits before choosing integration; the supplied MultiplayerSessions Steam plugin has baseline compile/widget checks, with actual networking coverage still unverified. The owner-selected game repository now exists; trusted identity, persistence, hosting and deployment remain future work.",
       "resolution_gate": "BW-001 demonstrates actual installation, new C++ project and tested build targets; BW-004/BW-013 evaluate builtin replication and compatible owner-provided plugins against connection and disclosure requirements; BW-018/BW-086/BW-088 verify persistence, provider and deployment choices before external play.",
       "epics": [
         "BW-001",
@@ -4953,7 +4967,7 @@
       "title": "Concrete world and starter records",
       "kind": "Open decision",
       "description": "Author finite functional maps, appearance assets, starter instructions, NPC kits, loot tables, recovery/exit locations and required XP allocations within existing contracts. No names, lore, branching narrative system or detailed new geography are inferred here.",
-      "resolution_gate": "Representative records before BW-039; full-roster starter and level 11–60 content before BW-052/BW-053, and reviewed release-content manifest before BW-092.",
+      "resolution_gate": "Representative records before BW-039; full-roster starter and level 11\u201360 content before BW-052/BW-053, and reviewed release-content manifest before BW-092.",
       "epics": [
         "BW-020",
         "BW-033",
@@ -4984,7 +4998,7 @@
       "title": "Runtime bindings and complete release inventory",
       "kind": "Open decision",
       "description": "Prototype profiles do not establish the named secondary ability/talent behavior. The supplied 257 recipes and sample items are representative, not the launch inventory. Decide concrete compatible bindings and complete useful content within the documented class/profession scope.",
-      "resolution_gate": "BW-047–051 and BW-062 certify the intended full scope; BW-092 rejects missing required roster/content rather than silently shrinking the game.",
+      "resolution_gate": "BW-047\u2013051 and BW-062 certify the intended full scope; BW-092 rejects missing required roster/content rather than silently shrinking the game.",
       "epics": [
         "BW-047",
         "BW-048",
@@ -5044,7 +5058,7 @@
       "title": "Measured balance, usability and content limits",
       "kind": "Open decision",
       "description": "Approve balance deviations and launch content bounds using equal-budget role/build/faction tests, actual progression, supported input devices and accessible visual feedback. Twelve classes, 37 specializations and level cap 60 remain requirements; a smaller technical slice is not permission to omit them.",
-      "resolution_gate": "Representative proof before expansion; BW-071–074 and BW-092 resolve release-blocking findings using documented test standards.",
+      "resolution_gate": "Representative proof before expansion; BW-071\u2013074 and BW-092 resolve release-blocking findings using documented test standards.",
       "epics": [
         "BW-032",
         "BW-052",
@@ -5193,7 +5207,7 @@
     "Moved the durable ownership/recovery probe into the first review group so database correctness can be tested alongside simulation instead of waiting for a full role encounter. It has no combat dependency.",
     "Kept privacy in the initial entity projection and added richer relevance bounds before the first integrated action. Prediction follows authoritative movement but is a recommendation for the technical proof, not a fabricated prerequisite of numerical combat.",
     "Introduced a representative signature-resource probe before role and starter integration; full pets, forms, maintained support and damage-debt families precede roster expansion, rather than every first playable interaction.",
-    "Separated a representative beginner playtest from full-roster level 1–10 certification. Optional crafting and grouping remain optional to a player, while the documented introductions still need integration evidence.",
+    "Separated a representative beginner playtest from full-roster level 1\u201310 certification. Optional crafting and grouping remain optional to a player, while the documented introductions still need integration evidence.",
     "Separated local travel and instance identity from cross-process ownership. Simple handoff is tested before final advanced-state recovery; the first handoff does not certify mechanics introduced afterward.",
     "Removed global phase barriers and kept social, profession and economic branches independently actionable. Recommended predecessors express integration convenience; only observable prerequisites are hard edges.",
     "Required provider security and a real restore before persistent external testing, while early headless fixtures and restricted technical sessions stay small. Final capacity and incidents wait for representative full workloads.",
@@ -5203,7 +5217,7 @@
     "Art-direction revision: replaced the former 2D sprite mandate with the selected 3D pixel-art reference. BW-097/BW-098/BW-099 cover early orthographic camera/readability verification, reusable art production and environment integration, while independent headless development and full release visual/performance checks remain required."
   ],
   "maintenance": [
-    "Reverify the implementation location and Git ownership before execution: the 2026-10-21 workspace has a local ignored Unreal C++ starter, not a reproducible versioned game repository. BW-001 must establish that baseline and dedicated-server build. Planning work does not execute implementation; only applicable native build/test evidence can substantiate completion. Inspect actual plugin compatibility/capabilities before integration.",
+    "Reverify the implementation location and Git ownership before execution. The owner selected evanmcpheron/BriarwakeUnreal; the task uses its separate BriarwakeNative worktree. The older Briarwake directory remains an AI-guidance repository and must not be mistaken for the game source owner. BW-001 evidence must distinguish client verification from still-running dedicated-server verification. Planning and historical Godot runs cannot substantiate native completion.",
     "Edit only sources/development-roadmap.json for planning content, statuses, blockers and evidence. Do not hand-edit the generated pages, dashboard, milestone states, search records or manifest counts. Status must be exactly Not Started, In Progress, Blocked or Complete.",
     "For an existing epic, change status and add verified_evidence records with criteria (one-based AC numbers), artifact (a committed repository-relative file or HTTPS evidence link), revision (the tested game/content revision), result (Passed or Failed) and summary. Preserve prior failure evidence in retained run artifacts; the current completion record must have passing evidence for every criterion. Never copy documentation-validation results into gameplay-completion evidence.",
     "A Blocked epic needs a concrete blockers entry identifying the unresolved decision, missing prerequisite or external limit. Ordinary future prerequisites do not make every unstarted epic Blocked. Reopen an epic when a regression invalidates its current evidence; update dependent completion states rather than leaving a false release gate.",
@@ -5221,7 +5235,7 @@
         "BW-003-AC-1"
       ],
       "scope": [
-        "Reuse BW-001 build/revision/smoke ownership and BW-002 content-admission/contract validation ownership once implemented. Current Source/Briarwake contains only the primary module registration/header; no admission or test owner exists to reuse today. Add the smallest native C++ automation tests under the module test boundary and tools/check_runtime_fixtures.py as a bounded process/report wrapper, using Unreal Automation rather than introducing a second test framework. Keep test code and fixture data out of normal packaged client/server behavior.",
+        "Reuse BW-001 build/revision/smoke ownership and BW-002 content-admission/contract validation ownership once implemented. BW-001 now provides native bootstrap/configuration owners and two baseline automation tests; BW-002 admission and this gameplay fixture harness are still unimplemented. Add the smallest native C++ automation tests under the module test boundary and tools/check_runtime_fixtures.py as a bounded process/report wrapper, using Unreal Automation rather than introducing a second test framework. Keep test code and fixture data out of normal packaged client/server behavior.",
         "Run a small positive/negative ContentValidationFixture corpus against the real BW-002 admission boundary. Preserve exact fixture/scenario IDs, content/rules revisions, expected ValidationFinding records and immutable source hashes. Store actual FixtureRunEvidence separately from specifications, with named runner, UTC completion time, executed TestCheck assertions and build/engine/source identity in an evidence envelope. Reuse canonical definitions and referenced primitives; do not duplicate their schema policy in the runner or add gameplay handlers.",
         "Create the transient UWorld/test lifecycle, committed finite fixture inputs, report reader and documented native command/build steps needed by the evidence suite. A report must distinguish build/load/startup failure, missing execution/report and executed assertion failure. Add assertion-failure, missing-report, load-failure and startup-failure controls plus timeout handling; inspect runner return status and actual assertion records rather than trusting an engine exit code alone."
       ],
@@ -5288,7 +5302,7 @@
       "manual_test": {
         "launch": "Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).\nPlanned and unverified until this ticket is implemented:\npython3 tools/check_runtime_fixtures.py --suite evidence",
         "setup": [
-          "Workspace inspection on 2026-10-21: GAME_ROOT is the directory containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/Briarwake, not a briarwake/ child. Its containing Git repository is evanmcpheron/godot-ai and tracks AI guidance only; the descriptor and game source are ignored. No separate versioned Unreal game repository is verified. BW-001 must establish the tracked implementation and reproducible client/server baseline before these tickets can be verified. Recheck GAME_ROOT and its Git owner when executing.",
+          "Current implementation ownership: use the Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject; this BW-001 execution uses a separate BriarwakeNative worktree. Native build/revision/configuration owners now exist on its pushed task branch, while BW-001 server verification and BW-002 admission remain unfinished. These BW-003 gameplay fixtures are still unimplemented. Recheck the current branch and documented commands before execution.",
           "The descriptor selects UE 5.8; the installed candidate is UE 5.8.3, changelist 58210709, with UnrealEditor-Cmd, Mac Build.sh and RunUAT.sh present under /Users/Shared/Epic Games/UE_5.8. Xcode 27.0 (27A266a) is installed. These are inspected candidates, not a pinned or passing build. Briarwake.Build.cs uses Core/CoreUObject/Engine/InputCore/EnhancedInput; Game and Editor targets use V7 build settings and Unreal5_8 include order. No Server target, fixture runner or automation tests exist in the module.",
           "No project map exists under Content; the current default is the engine package /Engine/Maps/Templates/OpenWorld. Use a transient automation-test UWorld created and destroyed by this ticket; no filesystem map path or /Game test package is assumed. Plugins enabled explicitly are ModelingToolsEditorMode (Editor), ElectronicNodes and DarkerNodes. A local MultiplayerSessions plugin exists but no replication/test integration is verified or required.",
           "All commands below run from GAME_ROOT. tools/check_runtime_fixtures.py, its controls, fixtures, test names and reports are planned deliverables, not existing commands or executed evidence. T01 must document the verified native invocation/build steps and actual supported target; later tickets extend its same runner. Preserve canonical contracts in sibling DOCS_ROOT; no dependency installation or gameplay implementation is part of ticket planning."
@@ -5381,7 +5395,7 @@
       "manual_test": {
         "launch": "Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).\nPlanned and unverified until this ticket is implemented:\npython3 tools/check_runtime_fixtures.py --suite context",
         "setup": [
-          "Workspace inspection on 2026-10-21: GAME_ROOT is the directory containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/Briarwake, not a briarwake/ child. Its containing Git repository is evanmcpheron/godot-ai and tracks AI guidance only; the descriptor and game source are ignored. No separate versioned Unreal game repository is verified. BW-001 must establish the tracked implementation and reproducible client/server baseline before these tickets can be verified. Recheck GAME_ROOT and its Git owner when executing.",
+          "Current implementation ownership: use the Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject; this BW-001 execution uses a separate BriarwakeNative worktree. Native build/revision/configuration owners now exist on its pushed task branch, while BW-001 server verification and BW-002 admission remain unfinished. These BW-003 gameplay fixtures are still unimplemented. Recheck the current branch and documented commands before execution.",
           "The descriptor selects UE 5.8; the installed candidate is UE 5.8.3, changelist 58210709, with UnrealEditor-Cmd, Mac Build.sh and RunUAT.sh present under /Users/Shared/Epic Games/UE_5.8. Xcode 27.0 (27A266a) is installed. These are inspected candidates, not a pinned or passing build. Briarwake.Build.cs uses Core/CoreUObject/Engine/InputCore/EnhancedInput; Game and Editor targets use V7 build settings and Unreal5_8 include order. No Server target, fixture runner or automation tests exist in the module.",
           "No project map exists under Content; the current default is the engine package /Engine/Maps/Templates/OpenWorld. Use a transient automation-test UWorld created and destroyed by this ticket; no filesystem map path or /Game test package is assumed. Plugins enabled explicitly are ModelingToolsEditorMode (Editor), ElectronicNodes and DarkerNodes. A local MultiplayerSessions plugin exists but no replication/test integration is verified or required.",
           "All commands below run from GAME_ROOT. tools/check_runtime_fixtures.py, its controls, fixtures, test names and reports are planned deliverables, not existing commands or executed evidence. T01 must document the verified native invocation/build steps and actual supported target; later tickets extend its same runner. Preserve canonical contracts in sibling DOCS_ROOT; no dependency installation or gameplay implementation is part of ticket planning."
@@ -5478,7 +5492,7 @@
       "manual_test": {
         "launch": "Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).\nPlanned and unverified until this ticket is implemented:\npython3 tools/check_runtime_fixtures.py --suite diagnostics",
         "setup": [
-          "Workspace inspection on 2026-10-21: GAME_ROOT is the directory containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/Briarwake, not a briarwake/ child. Its containing Git repository is evanmcpheron/godot-ai and tracks AI guidance only; the descriptor and game source are ignored. No separate versioned Unreal game repository is verified. BW-001 must establish the tracked implementation and reproducible client/server baseline before these tickets can be verified. Recheck GAME_ROOT and its Git owner when executing.",
+          "Current implementation ownership: use the Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject; this BW-001 execution uses a separate BriarwakeNative worktree. Native build/revision/configuration owners now exist on its pushed task branch, while BW-001 server verification and BW-002 admission remain unfinished. These BW-003 gameplay fixtures are still unimplemented. Recheck the current branch and documented commands before execution.",
           "The descriptor selects UE 5.8; the installed candidate is UE 5.8.3, changelist 58210709, with UnrealEditor-Cmd, Mac Build.sh and RunUAT.sh present under /Users/Shared/Epic Games/UE_5.8. Xcode 27.0 (27A266a) is installed. These are inspected candidates, not a pinned or passing build. Briarwake.Build.cs uses Core/CoreUObject/Engine/InputCore/EnhancedInput; Game and Editor targets use V7 build settings and Unreal5_8 include order. No Server target, fixture runner or automation tests exist in the module.",
           "No project map exists under Content; the current default is the engine package /Engine/Maps/Templates/OpenWorld. Use a transient automation-test UWorld created and destroyed by this ticket; no filesystem map path or /Game test package is assumed. Plugins enabled explicitly are ModelingToolsEditorMode (Editor), ElectronicNodes and DarkerNodes. A local MultiplayerSessions plugin exists but no replication/test integration is verified or required.",
           "All commands below run from GAME_ROOT. tools/check_runtime_fixtures.py, its controls, fixtures, test names and reports are planned deliverables, not existing commands or executed evidence. T01 must document the verified native invocation/build steps and actual supported target; later tickets extend its same runner. Preserve canonical contracts in sibling DOCS_ROOT; no dependency installation or gameplay implementation is part of ticket planning."
@@ -5576,7 +5590,7 @@
       "manual_test": {
         "launch": "Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).\nPlanned and unverified until this ticket is implemented:\npython3 tools/check_runtime_fixtures.py --suite metrics",
         "setup": [
-          "Workspace inspection on 2026-10-21: GAME_ROOT is the directory containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/Briarwake, not a briarwake/ child. Its containing Git repository is evanmcpheron/godot-ai and tracks AI guidance only; the descriptor and game source are ignored. No separate versioned Unreal game repository is verified. BW-001 must establish the tracked implementation and reproducible client/server baseline before these tickets can be verified. Recheck GAME_ROOT and its Git owner when executing.",
+          "Current implementation ownership: use the Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject; this BW-001 execution uses a separate BriarwakeNative worktree. Native build/revision/configuration owners now exist on its pushed task branch, while BW-001 server verification and BW-002 admission remain unfinished. These BW-003 gameplay fixtures are still unimplemented. Recheck the current branch and documented commands before execution.",
           "The descriptor selects UE 5.8; the installed candidate is UE 5.8.3, changelist 58210709, with UnrealEditor-Cmd, Mac Build.sh and RunUAT.sh present under /Users/Shared/Epic Games/UE_5.8. Xcode 27.0 (27A266a) is installed. These are inspected candidates, not a pinned or passing build. Briarwake.Build.cs uses Core/CoreUObject/Engine/InputCore/EnhancedInput; Game and Editor targets use V7 build settings and Unreal5_8 include order. No Server target, fixture runner or automation tests exist in the module.",
           "No project map exists under Content; the current default is the engine package /Engine/Maps/Templates/OpenWorld. Use a transient automation-test UWorld created and destroyed by this ticket; no filesystem map path or /Game test package is assumed. Plugins enabled explicitly are ModelingToolsEditorMode (Editor), ElectronicNodes and DarkerNodes. A local MultiplayerSessions plugin exists but no replication/test integration is verified or required.",
           "All commands below run from GAME_ROOT. tools/check_runtime_fixtures.py, its controls, fixtures, test names and reports are planned deliverables, not existing commands or executed evidence. T01 must document the verified native invocation/build steps and actual supported target; later tickets extend its same runner. Preserve canonical contracts in sibling DOCS_ROOT; no dependency installation or gameplay implementation is part of ticket planning."
@@ -5675,7 +5689,7 @@
       "manual_test": {
         "launch": "Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).\nPlanned and unverified until this ticket is implemented:\npython3 tools/check_runtime_fixtures.py --suite all",
         "setup": [
-          "Workspace inspection on 2026-10-21: GAME_ROOT is the directory containing Briarwake.uproject, currently /Users/le-evanmcpheron/Documents/Unreal Projects/Briarwake, not a briarwake/ child. Its containing Git repository is evanmcpheron/godot-ai and tracks AI guidance only; the descriptor and game source are ignored. No separate versioned Unreal game repository is verified. BW-001 must establish the tracked implementation and reproducible client/server baseline before these tickets can be verified. Recheck GAME_ROOT and its Git owner when executing.",
+          "Current implementation ownership: use the Git root of evanmcpheron/BriarwakeUnreal containing Briarwake.uproject; this BW-001 execution uses a separate BriarwakeNative worktree. Native build/revision/configuration owners now exist on its pushed task branch, while BW-001 server verification and BW-002 admission remain unfinished. These BW-003 gameplay fixtures are still unimplemented. Recheck the current branch and documented commands before execution.",
           "The descriptor selects UE 5.8; the installed candidate is UE 5.8.3, changelist 58210709, with UnrealEditor-Cmd, Mac Build.sh and RunUAT.sh present under /Users/Shared/Epic Games/UE_5.8. Xcode 27.0 (27A266a) is installed. These are inspected candidates, not a pinned or passing build. Briarwake.Build.cs uses Core/CoreUObject/Engine/InputCore/EnhancedInput; Game and Editor targets use V7 build settings and Unreal5_8 include order. No Server target, fixture runner or automation tests exist in the module.",
           "No project map exists under Content; the current default is the engine package /Engine/Maps/Templates/OpenWorld. Use a transient automation-test UWorld created and destroyed by this ticket; no filesystem map path or /Game test package is assumed. Plugins enabled explicitly are ModelingToolsEditorMode (Editor), ElectronicNodes and DarkerNodes. A local MultiplayerSessions plugin exists but no replication/test integration is verified or required.",
           "All commands below run from GAME_ROOT. tools/check_runtime_fixtures.py, its controls, fixtures, test names and reports are planned deliverables, not existing commands or executed evidence. T01 must document the verified native invocation/build steps and actual supported target; later tickets extend its same runner. Preserve canonical contracts in sibling DOCS_ROOT; no dependency installation or gameplay implementation is part of ticket planning."
@@ -5696,6 +5710,89 @@
       },
       "blockers": [],
       "verified_evidence": []
+    },
+    {
+      "id": "BW-001-T08",
+      "parent_epic": "BW-001",
+      "title": "Establish and verify the native Unreal bootstrap",
+      "status": "In Progress",
+      "epic_criteria": [
+        "BW-001-AC-1",
+        "BW-001-AC-2",
+        "BW-001-AC-3",
+        "BW-001-AC-4"
+      ],
+      "dependencies": [],
+      "scope": [
+        "Version and verify the minimal Unreal C++ project in the owner-selected BriarwakeUnreal repository, including Game/Editor/Server targets, engine/toolchain identities and reproducible build/cook/stage commands. Preserve the supplied engineering documentation and MultiplayerSessions plugin source/assets.",
+        "Reuse native FServerConfiguration as the owner of the canonical ServerConfiguration startup shape. Reject missing or malformed configuration before server readiness, with no credentials embedded in distributed clients.",
+        "Execute the packaged client and a bounded dedicated-server smoke with executable/engine/source/rules/content identities, no rendering or local player, and three checked world ticks. Retain artifact identities and real process results.",
+        "Use fresh isolated C++ project snapshots to distinguish build failure, executed assertion failure, timeout and independent passing recovery. Inspect loose and decoded Pak contents with harmless contamination controls. Bootstrap operational records do not implement gameplay FixtureRunEvidence or ValidationReport."
+      ],
+      "out_of_scope": [
+        "Gameplay, replication-policy implementation, connected multiplayer, production credentials, provider deployment and Steam account/session certification.",
+        "Promoting written test plans, source checks, stale binaries or historical Godot executions into Unreal completion evidence."
+      ],
+      "acceptance_criteria": [
+        "On a documented clean machine, the developer can install the required engine and native C++ toolchain, create a fresh C++ Unreal project in an explicitly chosen separate repository, pin the tested engine revision, and produce launchable client and dedicated-server targets using recorded build, cook and package steps.",
+        "The compiled dedicated server starts without rendering or a local player and reports its executable, engine, rules and content revisions; the client can be launched separately.",
+        "Missing required configuration fails with an actionable diagnostic; credentials are absent from distributed client artifacts.",
+        "A clean automated run distinguishes build failure from an executed passing or failing runtime check."
+      ],
+      "manual_test": {
+        "launch": "Working directory: the BriarwakeUnreal game repository root containing Briarwake.uproject (the task uses a separate BriarwakeNative worktree).\npython3 tools/check_baseline.py toolchain\npython3 tools/check_baseline.py build --target BriarwakeEditor\npython3 tools/check_baseline.py build --target Briarwake\npython3 tools/check_baseline.py package --output artifacts/client-package\npython3 tools/check_baseline.py build --target BriarwakeServer --engine /Users/Shared/UnrealEngine-5.8.3-source --timeout 7200\npython3 tools/check_baseline.py package --target BriarwakeServer --engine /Users/Shared/UnrealEngine-5.8.3-source --output artifacts/server-package --timeout 1200\npython3 tools/verify_baseline.py --case pass --output artifacts/clean-verification\npython3 -m unittest discover -s tools -p 'test_*.py' -v",
+        "setup": [
+          "Use the pinned native macOS ARM64 UE 5.8.3/Xcode environment and the recorded source engine for the dedicated Server target. Follow the game README for installation, existing engine patch identity and side-by-side build-tool preparation. Do not modify a shared engine or install a second engine merely to repeat a check.",
+          "Use new artifact output paths; existing paths are deliberately rejected. Preserve user checkouts, imported plugin assets, pre-existing builds, credentials and unrelated files. Only committed synthetic configuration is used."
+        ],
+        "actions": [
+          "Run the documented build and package commands. Preserve run.json, commands, actual exits, source hashes and engine/toolchain identities from each output directory.",
+          "Launch the exact packaged client identified by its artifact inventory from outside the game source tree. Capture the visible window, close it normally and record its exit and unchanged artifact identity.",
+          "Run tools/smoke_server.py with --executable pointing to the exact packaged Server launcher, --case pass and a new --output directory. Repeat with missing-config and invalid-config; those must reject before accepted configuration/readiness. A timeout run must return nonzero and stop its owned process group.",
+          "Run tools/inspect_client.py with --bundle pointing to the exact client package, --self-test and a new --report. Inspect loose files and every extracted Pak member; ensure the deliberate loose and compressed-Pak contamination is detected without recording synthetic values.",
+          "Run tools/verify_baseline.py with pass, build-failure, assertion-failure and timeout into separate new outputs, then a fresh pass. Read the actual build, runtime execution and assertion fields; a missing/unexecuted report must have no assertion pass."
+        ],
+        "expected_results": [
+          "The native client and dedicated server build/package commands succeed for the recorded supported matrix. The exact packaged client visibly opens and closes; this is a baseline window, with no gameplay claim.",
+          "The actual Server smoke completes three passing dedicated-world checks with rendering disabled and zero local players, controllers and pawns. Missing/invalid configuration and timeout return nonzero.",
+          "Client inspection reports zero findings for the distributed client, actively detects the harmless negative controls after decompression, and removes owned temporary contamination fixtures.",
+          "The clean pass and recovery execute the two exact native automation tests. Build failure never runs them; assertion failure remains Executed/Failed; timeout cannot become a passing assertion result."
+        ],
+        "reset": [
+          "Close the owned client and confirm recorded test/server process groups exited. Keep all reports, logs and captures. Only disposable snapshots and inspection controls created by the scripts are removed automatically; choose new output paths for reruns."
+        ]
+      },
+      "completion_evidence": "Versioned native project/repository, pinned engine and toolchain identities, clean C++ client/server build and package logs, exact artifact hashes, actual client launch and headless-server smoke, configuration rejection, credential inspection and distinct automated failure controls.",
+      "related_docs": [
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html"
+        },
+        {
+          "label": "Verification requirements",
+          "href": "guide/testing.html"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "ServerConfiguration (native FServerConfiguration)",
+          "href": "guide/data-inventory.html#server-configuration"
+        }
+      ],
+      "blockers": [],
+      "verified_evidence": [
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "validation/tickets/BW-001-T08/automation-review.json",
+          "revision": "7bd068b6b0ed2e3dcbe5494241c2bb01d829f7d9; source SHA-256 939070d1fc3a46bb67105eee1ecfae9c4833c33d7f9d15c33078d21ef1eccaf9",
+          "result": "Passed",
+          "summary": "Actual fresh native C++ snapshot builds and two registered Unreal baseline tests distinguish passing execution, real compilation failure with runtime Not Executed, executed assertion failure, bounded timeout with no assertion pass, and independent passing recovery. Nine Python regressions passed. This satisfies only the automated-outcome criterion; packaged-server completion remains unverified."
+        }
+      ]
     }
   ]
 }

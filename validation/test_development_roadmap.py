@@ -314,8 +314,16 @@ class RoadmapTests(unittest.TestCase):
             row['required_epics'] = [replacement if i == original else i for i in row['required_epics']]
         for row in self.data['coverage'] + self.data['sequencing_decisions'] + self.data['open_decisions']:
             row['epics'] = [replacement if i == original else i for i in row['epics']]
+        renamed_tickets = {ticket['id']: ticket['id'].replace(original, replacement, 1)
+                           for ticket in self.data['tickets'] if ticket['parent_epic'] == original}
         for ticket in self.data['tickets']:
-            ticket['dependencies'] = [replacement if i == original else i for i in ticket['dependencies']]
+            if ticket['parent_epic'] == original:
+                ticket['parent_epic'] = replacement
+                ticket['id'] = renamed_tickets[ticket['id']]
+                ticket['epic_criteria'] = [anchor.replace(original, replacement, 1)
+                                           for anchor in ticket['epic_criteria']]
+            ticket['dependencies'] = [renamed_tickets.get(i, replacement if i == original else i)
+                                      for i in ticket['dependencies']]
         self.assertEqual([], self.errors())
 
 
