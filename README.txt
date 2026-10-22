@@ -161,10 +161,15 @@ Edit an existing epic's status and verified_evidence there. Use exactly Not
 Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
 evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
 adding an epic, then update relevant dependencies, milestones and coverage.
-BW-003 has five native Unreal fixture tickets, BW-003-T01 through T05, in
-execution order: attributable evidence, deterministic context/control isolation,
-redacted diagnostics, bounded measurements and integrated verification. They
-cover all four epic criteria and begin Not Started with no verified evidence.
+BW-003 retains five native Unreal fixture tickets, BW-003-T01 through T05:
+attributable evidence, deterministic context/control isolation, redacted
+diagnostics, bounded measurements and integrated verification. T01 is ready
+after completed BW-001/BW-002; T03 and T04 can follow T02 independently, then
+T05 verifies all four epic criteria. The refreshed plan reuses the current
+admission/report owners and seven native tests, preserves canonical actual
+findings versus execution-failure evidence, and integrates future suites into
+the existing game FULL route. All five tickets remain Not Started with no
+verified BW-003 evidence. Planned fixture commands remain unimplemented.
 The owner selected a local probe with logical recipients and explicitly labeled
 serialized payload bytes; this does not certify connected clients or wire traffic.
 BW-002 has seven tickets, T01 through T07: authority/lifecycle review, canonical
