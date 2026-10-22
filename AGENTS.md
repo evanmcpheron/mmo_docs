@@ -27,11 +27,15 @@ Read the task, canonical sources and directly relevant code/tests first; follow 
 
 Ticket scopes must identify reusable owners, genuinely new work and evidence gaps; exact `epic_criteria` links must collectively cover every parent criterion. Reuse never removes authorization, sequencing, idempotency or recipient privacy gates. Keep all planning in the existing roadmap registry and use its current coverage/dependency/link/freshness checks; do not add a parallel registry or require game builds for routine ticket authoring.
 
-During implementation, run FAST and correct failures with the smallest relevant command it reports. Regenerate affected outputs only after canonical sources change, using the commands in `README.txt`. FAST checks freshness without rebuilding or refreshing review fingerprints. Unknown files, shared infrastructure or uncertain dependency impact require FULL.
+Use `python3 validation/validate.py` (QUICK) during routine work and
+`python3 validation/validate.py --gate` for focused PR source/output verification.
+Use INTEGRATION for browser/template/UI changes and FULL only when the affected
+harness, milestone or explicit request warrants comprehensive coverage. Unknown
+impact and failed Git detection must never escalate execution automatically.
 
-```sh
-python3 validation/validate.py --mode fast
-python3 validation/validate.py --mode full
-```
-
-FULL is the default and mandatory final PR gate, including browser tests with Node 22+ and installed Chrome/Chromium. Reuse successful results while their source dependencies, selected scope and toolchain remain unchanged; record the tested revision and local changes. Do not rerun it after every minor edit, claim comprehensive success from FAST, defer known defects, or fabricate evidence. CI always runs FULL, independently of changed-file selection. See `README.txt` for prerequisites, coverage, explicit evidence generation and focused commands. A documentation test result never constitutes gameplay runtime evidence.
+[Validation policy](docs/validation.md) owns mode selection, commands, manual tests,
+evidence reuse/retention, performance budgets and the justification required for
+new checks. Follow it instead of duplicating command chains. Generate affected
+outputs once after actual source review. Do not run validator regression suites for
+ordinary content edits or rerun successful unchanged checks. Missing required game
+acceptance evidence still blocks Complete; documentation checks never supply it.

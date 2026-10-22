@@ -86,7 +86,7 @@ def validate_allocation(nodes: list[dict], allocation: dict, level: int, budget:
             return False
     return sum(allocation.values()) == budget and max(groups.values(), default=0) <= 1
 
-def run_checks(write_examples=False, allocation_checks=True):
+def run_data_checks(write_examples=False, allocation_checks=True):
     checks: list[dict] = []
 
     def load(name: str):
@@ -171,6 +171,18 @@ def run_checks(write_examples=False, allocation_checks=True):
     check('Haste cannot lower GCD below one second', all(max(1, 1.25 / (1 + haste)) >= 1 for haste in [0,.1,.2,.3]))
     check('Enhancements and item allocation conserve budget', .45 + .35 + .20 == 1 and math.isclose(.92 + .08, 1))
 
+    counts = Counter(ability['content_status'] for ability in abilities)
+    talent_counts = Counter(node['binding_status'] for node in talents)
+    report = {'generated_at_utc': datetime.now(timezone.utc).isoformat(), 'package_version': catalog['version'], 'checks_passed': sum(check['passed'] for check in checks), 'checks_failed': sum(not check['passed'] for check in checks), 'checks': checks, 'level_allocation_cases': 2940 if allocation_checks else 0, 'sample_capstone_allocations': len(sample_builds), 'faction_role_coverage': coverage, 'readiness': {'ability_status_counts': dict(counts), 'talent_status_counts': dict(talent_counts), 'representative_item_configuration_required': sum(item.get('effect', {}).get('configuration_required', False) for item in items), 'gameplay_balance_tested': False, 'database_integration_tested': False, 'network_capacity_tested': False}, 'html_page_count': 0}
+    if not allocation_checks:
+        report['deferred_checks'] = ['Allocation cases, capstone routes and allocation-example freshness; not selected in this scope']
+    return report
+
+
+def site_checks():
+    checks = []
+    def check(name, condition, detail=''):
+        checks.append({'name': name, 'passed': bool(condition), 'detail': detail})
     class Document(HTMLParser):
         def __init__(self):
             super().__init__(); self.ids = []; self.references = []
@@ -205,32 +217,37 @@ def run_checks(write_examples=False, allocation_checks=True):
         check('Global search destinations and anchors', not search_errors, f'{len(search_records)} indexed destinations; errors: {search_errors[:10]}')
     else:
         check('HTML generation complete', False, 'Run again after generating the website.')
+    return checks
+
+
+def run_checks(write_examples=False, allocation_checks=True):
+    report = run_data_checks(write_examples, allocation_checks)
+    report['checks'].extend(site_checks())
     inventory_registry, data_inventory_errors = inventory_errors()
-    check('Data inventory coverage, evidence and generated output', not data_inventory_errors,
-          f"{len(inventory_registry['entries'])} structures; errors: {data_inventory_errors[:20]}")
-    development_roadmap = load_roadmap()
-    development_roadmap_errors = roadmap_errors(development_roadmap)
-    check('Development roadmap dependencies, evidence, coverage and generated progress', not development_roadmap_errors,
-          f"{len(development_roadmap['epics'])} epics; errors: {development_roadmap_errors[:20]}")
-    counts = Counter(ability['content_status'] for ability in abilities)
-    talent_counts = Counter(node['binding_status'] for node in talents)
-    report = {'generated_at_utc': datetime.now(timezone.utc).isoformat(), 'package_version': catalog['version'], 'checks_passed': sum(check['passed'] for check in checks), 'checks_failed': sum(not check['passed'] for check in checks), 'checks': checks, 'level_allocation_cases': 2940 if allocation_checks else 0, 'sample_capstone_allocations': len(sample_builds), 'faction_role_coverage': coverage, 'readiness': {'ability_status_counts': dict(counts), 'talent_status_counts': dict(talent_counts), 'representative_item_configuration_required': sum(item.get('effect', {}).get('configuration_required', False) for item in items), 'gameplay_balance_tested': False, 'database_integration_tested': False, 'network_capacity_tested': False}, 'html_page_count': len(html_files)}
-    if not allocation_checks:
-        report['deferred_checks'] = ['Allocation cases, capstone routes and allocation-example freshness; unchanged data inputs, FULL required']
+    report['checks'].append({'name': 'Data inventory coverage, evidence and generated output',
+                             'passed': not data_inventory_errors, 'detail': str(data_inventory_errors[:20])})
+    development_roadmap_errors = roadmap_errors(load_roadmap())
+    report['checks'].append({'name': 'Development roadmap dependencies, evidence, coverage and generated progress',
+                             'passed': not development_roadmap_errors, 'detail': str(development_roadmap_errors[:20])})
+    report['checks_passed'] = sum(check['passed'] for check in report['checks'])
+    report['checks_failed'] = sum(not check['passed'] for check in report['checks'])
+    report['html_page_count'] = len(list(ROOT.rglob('*.html')))
     return report
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--read-only', action='store_true', help='Verify without updating examples or historical evidence')
+    parser.add_argument('--read-only', action='store_true', help='Compatibility option; validation is always read-only')
+    parser.add_argument('--write-examples', action='store_true', help='Explicitly regenerate allocation examples; not validation')
     parser.add_argument('--report', type=Path, help='Explicit report destination, including with --read-only')
-    parser.add_argument('--scope', choices=('full', 'documentation'), default='full',
+    parser.add_argument('--scope', choices=('full', 'documentation', 'data', 'data-structure'), default='full',
                         help='Documentation scope defers allocation checks; requires --read-only')
     args = parser.parse_args()
-    if args.scope == 'documentation' and not args.read_only:
-        parser.error('documentation scope requires --read-only')
-    report = run_checks(write_examples=not args.read_only, allocation_checks=args.scope == 'full')
-    destination = args.report or (None if args.read_only else ROOT / 'validation/report.json')
+    if args.write_examples and (args.read_only or args.scope not in {'full', 'data'}):
+        parser.error('--write-examples requires allocation scope and cannot combine with --read-only')
+    runner = run_data_checks if args.scope in {'data', 'data-structure'} else run_checks
+    report = runner(write_examples=args.write_examples, allocation_checks=args.scope in {'full', 'data'})
+    destination = args.report
     if destination is not None:
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(json.dumps(report, indent=2) + '\n')

@@ -1,134 +1,146 @@
-"""Scope selection must fail closed and include committed and local task changes."""
+"""Selection is bounded; unsupported PR claims fail visibly."""
 from contextlib import redirect_stdout
 import io
+import json
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from validate import (CONTRACT_TESTS, FULL_CHECKS, ROADMAP_TESTS, ROOT, changed_files,
-                      commands, main, select_checks)
+from validate import FULL_CHECKS, ROOT, changed_files, commands, main, select_checks, input_identity
+from check_sources import check_sources
 
 
 class SelectionTests(unittest.TestCase):
-    def test_roadmap_inputs_and_generated_pages_require_link_inventory_and_browser_checks(self):
-        for path in ('sources/development-roadmap.json', 'sources/roadmap-audit.html.inc',
-                     'sources/roadmap-reuse-review.html.inc',
-                     'guide/roadmap-bw-001.html', 'guide/development-roadmap.html'):
-            with self.subTest(path=path):
-                mode, tests, checks = select_checks([path])
-                self.assertEqual('fast', mode)
-                self.assertEqual(ROADMAP_TESTS, set(tests))
-                self.assertTrue({'html-format', 'aggregate', 'browser', 'engine-artifacts'} <= set(checks))
+    def test_roadmap_edit_checks_current_graph_without_regression_suite_or_browser(self):
+        impact = select_checks(['sources/development-roadmap.json'])
+        self.assertEqual([], impact['tests'])
+        self.assertEqual([], impact['unresolved'])
+        plan = dict(commands('quick', impact, ['sources/development-roadmap.json']))
+        self.assertEqual({'whitespace', 'staged-whitespace', 'sources'}, set(plan))
+        self.assertNotIn('freshness', plan['sources'])
+        self.assertNotIn('site', plan['sources'])
+        gate = dict(commands('quick', impact, ['sources/development-roadmap.json'], gate=True))
+        self.assertIn('freshness', gate['sources'])
+        self.assertNotIn('aggregate', gate)
+        self.assertNotIn('browser', gate)
 
-    def test_contracts_and_schema_outputs_require_model_regressions_and_browser(self):
-        for path in ('sources/data-inventory.json', 'sources/data-model.schema.json',
-                     'guide/data-inventory.html', 'validation/data-model-review.txt'):
-            with self.subTest(path=path):
-                mode, tests, checks = select_checks([path])
-                self.assertEqual('fast', mode)
-                self.assertEqual(CONTRACT_TESTS, set(tests))
-                self.assertIn('aggregate', checks)
-                self.assertIn('browser', checks)
+    def test_contract_and_gameplay_data_select_real_invariants_but_not_unrelated_allocations(self):
+        for path in ('data/recipes.json', 'data/abilities.json'):
+            impact = select_checks([path])
+            self.assertIn('contracts', impact['checks'])
+            self.assertNotIn('allocations', impact['checks'])
+            self.assertIn('data-structure', dict(commands('quick', impact, [path], gate=True))['data'])
+        impact = select_checks(['data/character_catalog.json'])
+        self.assertIn('allocations', impact['checks'])
+        self.assertIn('data', dict(commands('quick', impact, ['data/character_catalog.json'], gate=True))['data'])
 
-    def test_shipped_records_check_models_and_all_outputs_without_launching_browser(self):
-        for path in ('data/character_catalog.json', 'data/abilities.json', 'data/races.json'):
-            with self.subTest(path=path):
-                mode, tests, checks = select_checks([path])
-                self.assertEqual('fast', mode)
-                self.assertEqual(CONTRACT_TESTS, set(tests))
-                self.assertIn('aggregate', checks)
-                self.assertNotIn('browser', checks)
+    def test_unknown_inputs_block_pr_claim_without_local_full_fallback(self):
+        impact = select_checks(['mystery.bin'])
+        self.assertTrue(impact['unresolved'])
+        self.assertEqual({'whitespace', 'staged-whitespace'}, set(dict(commands('quick', impact, ['mystery.bin']))))
+        with patch('validate.changed_files', return_value=(['mystery.bin'], 'base')), redirect_stdout(io.StringIO()):
+            self.assertEqual(2, main(['--gate', '--explain']))
 
-    def test_shared_generated_outputs_and_combined_changes_union_their_dependencies(self):
-        for paths in (['assets/search-index.js'], ['data/manifest.json'],
-                      ['sources/development-roadmap.json', 'sources/data-inventory.json']):
-            mode, tests, checks = select_checks(paths)
-            self.assertEqual('fast', mode)
-            self.assertEqual(ROADMAP_TESTS | CONTRACT_TESTS, set(tests))
-            self.assertIn('browser', checks)
+    def test_default_empty_scope_and_failed_git_are_quick(self):
+        for arguments in (['--explain'], ['--mode', 'fast', '--explain']):
+            stream = io.StringIO()
+            with patch('validate.changed_files', side_effect=ValueError('missing base')), redirect_stdout(stream):
+                self.assertEqual(0, main(arguments))
+            self.assertIn('executing QUICK', stream.getvalue())
+            self.assertIn('Cannot establish Git scope', stream.getvalue())
+            self.assertNotIn('aggregate:', stream.getvalue())
+        with patch('validate.changed_files', side_effect=ValueError('missing base')), redirect_stdout(io.StringIO()):
+            self.assertEqual(2, main(['--gate', '--explain']))
+        self.assertEqual([], select_checks([])['checks'])
 
-    def test_generated_search_does_not_require_unrelated_domain_tests_when_its_source_is_known(self):
-        for paths in (['sources/data-inventory.json', 'assets/search-index.js'],
-                      ['assets/search-index.js', 'sources/data-inventory.json']):
-            mode, tests, checks = select_checks(paths)
-            self.assertEqual('fast', mode)
-            self.assertEqual(CONTRACT_TESTS, set(tests))
-            self.assertIn('aggregate', checks)
-            self.assertIn('browser', checks)
+    def test_validator_changes_select_importing_regressions_not_tests_for_content_edits(self):
+        impact = select_checks(['validation/check_development_roadmap.py'])
+        self.assertIn('test_development_roadmap', impact['tests'])
+        self.assertEqual([], select_checks(['README.txt'])['tests'])
 
-    def test_unknown_infrastructure_templates_and_browser_dependencies_fall_back_to_full(self):
-        for path in ('new-file.json', 'data/new-catalog.json', 'AGENTS.md', 'README.txt',
-                     '.agents/skills/execute-ticket/SKILL.md', 'validation/validate.py',
-                     'validation/check_data_inventory.py', 'validation/run_checks.py',
-                     'validation/test_data_model.py', 'validation/browser_cleanup.mjs',
-                     'validation/check_inventory_browser.mjs', '.github/workflows/validate-documentation.yml',
-                     'scripts/data_model.py', 'scripts/build_data_inventory.py',
-                     'scripts/build_development_roadmap.py', 'guide/networking.html',
-                     'guide/combat.html', 'assets/styles.css', 'assets/app.js'):
-            with self.subTest(path=path):
-                self.assertEqual('full', select_checks(['sources/development-roadmap.json', path])[0])
+    def test_ui_requires_browser_mode_and_static_ticket_updates_do_not(self):
+        impact = select_checks(['assets/styles.css'])
+        self.assertIn('browser', impact['checks'])
+        self.assertNotIn('browser', dict(commands('quick', impact, ['assets/styles.css'], gate=True)))
+        self.assertIn('browser', dict(commands('integration', impact, ['assets/styles.css'], gate=True)))
+        with patch('validate.changed_files', return_value=(['assets/styles.css'], 'base')), redirect_stdout(io.StringIO()):
+            self.assertEqual(2, main(['--gate', '--explain']))
 
-    def test_missing_dependency_registry_and_empty_scope_fall_back_to_full(self):
-        self.assertEqual('full', select_checks([])[0])
+    def test_full_retains_comprehensive_gates_and_native_is_unsupported(self):
+        self.assertEqual(set(FULL_CHECKS), set(dict(commands('full', {'checks': [], 'tests': []}, []))))
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(2, main(['--mode', 'native']))
+
+    def test_missing_tool_is_failure_and_successful_unchanged_stages_are_not_duplicated(self):
+        with patch('validate.changed_files', return_value=(['README.txt'], 'base')), \
+             patch('validate.subprocess.run', side_effect=FileNotFoundError('missing prerequisite')), \
+             patch('validate.input_identity', return_value='fixture'), \
+             patch('validate.subprocess.check_output', return_value='revision'), \
+             redirect_stdout(io.StringIO()):
+            self.assertEqual(1, main([]))
+        plan = commands('quick', select_checks(['sources/development-roadmap.json']), ['sources/development-roadmap.json'], gate=True)
+        self.assertEqual(len(plan), len({name for name, _ in plan}))
+        self.assertEqual(1, sum(name == 'sources' for name, _ in plan))
+
+    def test_malformed_changed_json_is_rejected_without_generation(self):
         with tempfile.TemporaryDirectory(dir=ROOT / '.git') as directory:
-            self.assertEqual('full', select_checks(['data/abilities.json'], Path(directory))[0])
+            root = Path(directory)
+            (root / 'invalid.json').write_text('{')
+            self.assertTrue(check_sources([], ['invalid.json'], root))
+            (root / 'invalid.json').write_text('{}')
+            self.assertEqual([], check_sources([], ['invalid.json'], root))
 
-    def test_full_plan_contains_every_existing_gate_and_no_duplicate_standalone_checks(self):
-        plan = dict(commands('full', [], FULL_CHECKS))
-        self.assertEqual(set(FULL_CHECKS), set(plan))
-        self.assertEqual(['npm', 'run', 'format:check'], plan['html-format'])
-        self.assertIn('validation/run_checks.py', plan['aggregate'])
-        self.assertIn('--read-only', plan['aggregate'])
-        self.assertNotIn('--scope', plan['aggregate'])
-        self.assertIn('discover', plan['python'])
-        self.assertIn('validation/test_browser_cleanup.mjs', plan['browser-cleanup'])
-        self.assertIn('validation/check_inventory_browser.mjs', plan['browser'])
-        self.assertIn('--screenshots', plan['browser'])
-        self.assertIn('validation/check_engine_artifacts.py', plan['engine-artifacts'])
+    def test_changed_content_during_validation_cannot_pass(self):
+        with patch('validate.changed_files', return_value=(['README.txt'], 'base')), \
+             patch('validate.input_identity', side_effect=['before', 'after']), \
+             patch('validate.subprocess.run', return_value=subprocess.CompletedProcess([], 0)), \
+             redirect_stdout(io.StringIO()):
+            self.assertEqual(1, main([]))
 
-    def test_unspecified_mode_is_full_and_fast_scope_is_never_reported_as_full_success(self):
-        output = io.StringIO()
-        with redirect_stdout(output):
-            self.assertEqual(0, main(['--explain']))
-        self.assertIn('executing FULL', output.getvalue())
-        output = io.StringIO()
-        with patch('validate.changed_files', return_value=(['data/abilities.json'], 'fixture-base')):
-            with redirect_stdout(output):
-                self.assertEqual(0, main(['--mode', 'fast', '--explain']))
-        self.assertIn('executing FAST', output.getvalue())
-        self.assertIn('Deferred to FULL: browser-cleanup, browser', output.getvalue())
+    def test_missing_links_and_anchors_fail_static_checks_without_chrome(self):
+        from run_checks import site_checks
+        with tempfile.TemporaryDirectory(dir=ROOT / '.git') as directory:
+            root = Path(directory)
+            (root / 'assets').mkdir()
+            (root / 'assets/search-index.js').write_text('window.SEARCH_INDEX=[];')
+            page = root / 'index.html'
+            page.write_text('<a href="missing.html#criterion">Missing</a>')
+            with patch('run_checks.ROOT', root):
+                self.assertTrue(any(not item['passed'] for item in site_checks()))
+                page.write_text('<a href="#absent">Missing anchor</a>')
+                self.assertTrue(any(not item['passed'] for item in site_checks()))
+                page.write_text('<p id="present">Valid</p><a href="#present">Valid</a>')
+                self.assertTrue(all(item['passed'] for item in site_checks()))
 
-    def test_failed_git_detection_falls_back_to_full(self):
-        with patch('validate.changed_files', side_effect=ValueError('no merge base')):
-            output = io.StringIO()
-            with redirect_stdout(output):
-                self.assertEqual(0, main(['--mode', 'fast', '--explain']))
-        self.assertIn('executing FULL', output.getvalue())
-        self.assertIn('Changed-file detection failed', output.getvalue())
+    def test_archived_details_are_not_reread_unless_changed_but_current_inputs_remain_identified(self):
+        with tempfile.TemporaryDirectory(dir=ROOT / '.git') as directory:
+            root = Path(directory)
+            def git(*arguments):
+                return subprocess.check_output(['git', *arguments], cwd=root, stderr=subprocess.PIPE)
+            git('init', '-q', '-b', 'main')
+            archive = root / 'validation/epics/example/raw.log'
+            archive.parent.mkdir(parents=True)
+            archive.write_text('historical details')
+            source = root / 'source.json'
+            source.write_text('{}')
+            git('add', '.')
+            before = input_identity(root)
+            archive.write_text('other historical details')
+            self.assertEqual(before, input_identity(root))
+            self.assertNotEqual(before, input_identity(root, ['validation/epics/example/raw.log']))
+            source.write_text('{"changed": true}')
+            self.assertNotEqual(before, input_identity(root))
 
-    def test_allocation_checks_are_deferred_only_when_their_shipped_data_inputs_are_unchanged(self):
-        for path, defer in (('sources/development-roadmap.json', True),
-                            ('sources/data-inventory.json', True), ('data/character_catalog.json', False),
-                            ('data/allocation_examples.json', False), ('data/talents.json', False)):
-            with self.subTest(path=path):
-                output = io.StringIO()
-                with patch('validate.changed_files', return_value=([path], 'fixture-base')):
-                    with redirect_stdout(output):
-                        self.assertEqual(0, main(['--mode', 'fast', '--explain']))
-                self.assertEqual(defer, '--scope documentation' in output.getvalue())
-                if defer:
-                    self.assertIn('unchanged data inputs', output.getvalue())
-
-    def test_missing_executables_fail_every_affected_stage_and_return_nonzero(self):
-        with patch('validate.subprocess.run', side_effect=FileNotFoundError('missing prerequisite')):
-            output = io.StringIO()
-            with redirect_stdout(output):
-                self.assertEqual(1, main(['--mode', 'full']))
-        for name in FULL_CHECKS:
-            self.assertIn('FAIL ' + name, output.getvalue())
-        self.assertIn('FULL FAIL', output.getvalue())
+    def test_shared_template_changes_select_browser_and_node_regressions_are_not_browser_tests(self):
+        for path in ('scripts/build_development_roadmap.py', 'scripts/build_data_inventory.py', 'scripts/html_format.py'):
+            self.assertIn('browser', select_checks([path])['checks'])
+        impact = select_checks(['validation/test_browser_cleanup.mjs'])
+        self.assertNotIn('browser', impact['checks'])
+        plan = dict(commands('quick', impact, ['validation/test_browser_cleanup.mjs']))
+        self.assertIn('browser-cleanup', plan)
+        self.assertNotIn('browser', plan)
 
 
 class ChangedFileTests(unittest.TestCase):

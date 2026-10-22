@@ -669,8 +669,8 @@
 <p>
   Routine decomposition uses focused source inspection and applicable retained evidence. Expensive
   native/peer/Steam/workload tests above are future implementation completion evidence, not
-  prerequisites for generating planning pages. Run documentation generation and the existing
-  FAST/FULL aggregate below; it already checks schema shape, graph ordering, complete
+  prerequisites for generating planning pages. Run documentation generation and the existing focused
+  validation entry point below; it already checks schema shape, graph ordering, complete
   parent-criterion coverage, links, search and generated freshness. Documentation validation never
   upgrades the capability classifications or gameplay progress.
 </p>

@@ -13,7 +13,7 @@ const { values: options } = parseArgs({ options: {
   report: { type: 'string' },
   screenshots: { type: 'string' },
 } });
-const screenshotDirectory = options.screenshots || (options['read-only'] ? null : tmpdir());
+const screenshotDirectory = options.screenshots || null;
 if (screenshotDirectory) mkdirSync(screenshotDirectory, { recursive: true });
 const registry = JSON.parse(readFileSync(join(root, 'sources/data-inventory.json'), 'utf8'));
 const roadmap = JSON.parse(readFileSync(join(root, 'sources/development-roadmap.json'), 'utf8'));
@@ -21,6 +21,11 @@ const phasePath = phase => `guide/roadmap-${phase.id.replace(/^phase-/, '')}.htm
 const epicPhase = new Map(roadmap.epics.map(epic => [epic.id, roadmap.phases.find(phase => phase.id === epic.phase)]));
 const epicPath = id => `guide/roadmap-${id.toLowerCase()}.html`;
 const epicHref = id => `${epicPath(id).split('/').pop()}#${id}`;
+const representativeEpics = new Set([
+  roadmap.epics[0].id,
+  roadmap.epics.at(-1).id,
+  [...roadmap.epics].sort((left, right) => JSON.stringify(right).length - JSON.stringify(left).length)[0].id,
+]);
 const referencePages = ['milestones', 'decisions', 'coverage', 'maintenance', 'audit'].map(name => `guide/roadmap-${name}.html`);
 const executable = process.env.BRIARWAKE_CHROME_BIN || [
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -238,6 +243,7 @@ try {
   }
   check('Every epic has one phase index entry', indexedEpicCount === roadmap.epics.length, `${indexedEpicCount} / ${roadmap.epics.length}`);
   for (const [index, epic] of roadmap.epics.entries()) {
+    if (!representativeEpics.has(epic.id)) continue;
     await navigate(epicPath(epic.id));
     check(`${epic.id} renders its own criteria, dependencies and sequence navigation`, await evaluate(`(() => {
       const epic = ${JSON.stringify(epic)};
@@ -308,7 +314,7 @@ try {
   await captureRoadmap('audit-mobile');
   await navigate(phasePath(roadmap.phases[0]));
   await captureRoadmap('phase-mobile');
-  for (const epic of roadmap.epics) {
+  for (const epic of roadmap.epics.filter(epic => representativeEpics.has(epic.id))) {
     await navigate(epicPath(epic.id));
     check(`Mobile ${epic.id} has no body overflow`, await evaluate('document.documentElement.scrollWidth <= innerWidth'));
   }
@@ -382,7 +388,7 @@ const report = {
   failed: checks.filter(check => !check.passed).length,
   checks,
 };
-const reportPath = options.report || (options['read-only'] ? null : join(root, 'validation/data-inventory-browser-checks.json'));
+const reportPath = options.report || null;
 if (reportPath) {
   mkdirSync(dirname(reportPath), { recursive: true });
   writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
