@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-208 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-42 ticket pages (13 foundation tickets plus 29 first-multiplayer-milestone tickets),
+214 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+48 ticket pages (19 foundation tickets plus 29 first-multiplayer-milestone tickets),
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -251,6 +251,14 @@ all begin Not Started. No gameplay progress or parent criteria changed. BW-003
 T02 through T05 received targeted reuse corrections; completed tickets and
 evidence are preserved. Native builds/Steam/peer/workload checks remain future
 completion evidence, outside ordinary documentation generation.
+
+BW-097 has six Not Started camera-reference tickets, T01 through T06: a native
+reference scene and Unreal UI tuning, reversible follow/zoom, held middle-mouse
+orbit, representative readability and independently scaled UI, authorized
+floor-safe picking, and reproducible visual/performance evidence. T04 and T05
+can follow T03 independently; T06 joins their evidence. Scene/control/package
+paths remain planned and unverified. BW-097 remains Dependency-ready after
+completed BW-001/BW-003; live gameplay systems and BW-098/BW-099 remain separate.
 
 Store tickets in the registry's tickets list with stable IDs, parent_epic,
 exact epic_criteria anchors, dependencies, scope, out_of_scope, observable

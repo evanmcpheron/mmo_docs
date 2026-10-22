@@ -3,7 +3,7 @@
   "title": "Briarwake Development Roadmap",
   "research_date": "2026-10-17",
   "purpose": "A dependency and evidence map for Briarwake, an Unreal Engine 5 native C++ MMORPG. This documentation owns gameplay contracts and progress; evanmcpheron/BriarwakeUnreal owns the newly versioned native bootstrap. Completion depends on scoped executed evidence rather than planning or historical engine results.",
-  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002 and all seven of its tickets are Complete for reviewed boundaries and content admission. Two fresh native seven-test aggregates at game 5dd6e53e945aecc204cf59df88b162de3c87b85d each pass 3,584 content assertions, including 797 complete economic graph checks; all 25 default FULL stages, independent failure/recovery controls and Game/source-Server package isolation pass. Current five-criterion review and exact source/canonical/build identities are retained in validation/tickets/BW-002-T06/parent-review.json. Historical T01-T05 execution evidence remains retained at its original revisions. Current 2026-10-22 review: BW-003 is In Progress with T01/T02/T03 Complete and parent AC1/AC2/AC3 verified; T04 measurements and T05 integrated verification remain Not Started; BW-003, BW-018, BW-004, BW-005 and BW-006 are now Dependency-ready. No production economic handler, connected Steam session, production gameplay fixture system, persistence, capacity, Shipping or other-platform certification is implied.",
+  "evidence_baseline": "As of 2026-10-21, evanmcpheron/BriarwakeUnreal owns the versioned native UE 5.8.3 C++ bootstrap. BW-001 and BW-001-T08 are Complete for the recorded macOS ARM64 Development matrix: actual Editor/Game/source-Server builds, nonempty client/console-Server packages, visible independent client launch, three-tick headless checks, missing/invalid configuration rejection, decoded-Pak inspection and clean build/runtime failure controls. Exact logs, hashes, commands, revisions and limitations are retained in validation/tickets/BW-001-T08/final/review.json. BW-002 and all seven of its tickets are Complete for reviewed boundaries and content admission. Two fresh native seven-test aggregates at game 5dd6e53e945aecc204cf59df88b162de3c87b85d each pass 3,584 content assertions, including 797 complete economic graph checks; all 25 default FULL stages, independent failure/recovery controls and Game/source-Server package isolation pass. Current five-criterion review and exact source/canonical/build identities are retained in validation/tickets/BW-002-T06/parent-review.json. Historical T01-T05 execution evidence remains retained at its original revisions. Current 2026-10-22 review: BW-003 and all five tickets are Complete after the T05 four-criterion review at game 03f16be061e5f6f1991d1fa86f1d560cda3ab90b, with native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 still matching inspected game main f90e86a741df3dc778af61d79944289baffbd7af. Retained validation/tickets/BW-003-T05/review.json records 46 default FULL stages, 66 Python regressions and two 242-assertion fixture aggregates. BW-003 leaves Dependency-ready; BW-097/BW-095 join BW-018/BW-004/BW-005/BW-006 as Not Started and Dependency-ready. BW-097 now has six unexecuted camera-reference tickets; planning does not advance its status. No production economic handler, connected Steam session, production gameplay fixture system, persistence, capacity, Shipping or other-platform certification is implied.",
   "reading_guide": [
     "Each epic is one coherent, demonstrable capability with a permanent BW identifier, scope, hard prerequisites, acceptance criteria and required evidence. Phases group integration objectives derived from the dependency graph; they do not require every independent branch to wait for the previous phase.",
     "Navigate from the dashboard to a phase index, then open an individual epic page. Every epic has direct links to its prerequisites, downstream work, recommended sequence neighbors and numbered acceptance criteria. Existing dashboard and phase epic bookmarks lead to the same canonical epic page.",
@@ -479,7 +479,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "Verify zoomable orthographic-to-third-person framing, orbit controls, display behavior and camera-to-world input early while server development remains independent. Do not prescribe a specialized rendering technique.",
+      "ordering_rationale": "Verify zoomable orthographic-to-third-person framing, orbit controls, display behavior and camera-to-world input early while server development remains independent. Six Not Started tickets use an isolated reference scene with declared floor/authorized public fixtures; live movement, target legality and interest privacy remain in their owning epics. Owner direction 2026-10-22: supply good defaults and expose all fine tuning through Unreal UI. BW-001/BW-003 remain Complete with matching retained native evidence; BW-097 stays Not Started and Dependency-ready, and BW-098 still awaits BW-095/BW-097. No specialized rendering technique or gameplay completion is implied.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -9165,6 +9165,560 @@
         ],
         "reset": [
           "Stop only the scenario-owned processes, restore test-only emulation/input settings and destroy test-owned state. Start fresh sessions/worlds and repeat a clean recovery into new bounded outputs. Preserve prior evidence, assets, user changes and build directories."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T01",
+      "parent_epic": "BW-097",
+      "title": "Create a reproducible reference scene with Unreal UI tuning",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-1"
+      ],
+      "scope": [
+        "Reuse assessment: Implemented and verified \u2014 BW-001 native Editor/Game/source-Server bootstrap and BW-003 attributable test evidence, at the matching source identity recorded in manual setup. Extend those owners for this feature; do not rerun unchanged native prerequisites merely to author tickets.",
+        "Reuse assessment: Provided by Unreal or a plugin \u2014 UE 5.8.3 UCameraComponent, USpringArmComponent, APlayerCameraManager and Enhanced Input 1.0 are available. Config/DefaultInput.ini names EnhancedPlayerInput/EnhancedInputComponent and the engine plugin is enabled by default, but the game module currently depends only on Core/CoreUObject/Engine plus private Json. Add only the camera/input/UI dependencies actually consumed. MultiplayerSessions 1.0 supplies session/menu code, not a gameplay camera or scene.",
+        "Reuse assessment: Missing \u2014 a project pawn/controller/camera owner, reference map, input actions and visual fixtures. Create the smallest native presentation component wired explicitly to a controlled reference pawn/controller, a versioned reference level and scene-only stationary/axial/diagonal routes. Reinspect before implementation and reuse any owner introduced by intervening work. Fixture routes are not production movement and camera input cannot mutate their position, facing or aim.",
+        "Supply one validated editor-visible camera configuration with documented Unreal UI locations and units for every fine-tuning control: overview/close framing and focus offsets, orthographic width and perspective FOV, projection-transition policy/timing, follow smoothing, wheel step/rate, orbit sensitivity/inversion/pitch limits and collision behavior. Provide live PIE preview and save/reload of authored defaults through Details or an appropriate asset editor; preserve authored settings across restart. Reject invalid/nonfinite/inverted limits observably rather than silently fixing saved settings. Do not require C++ edits or hand-edited ini files for tuning.",
+        "Start with documented adjustable reference defaults: overview pitch -55 degrees and orthographic width 2400 Unreal centimeters; close pitch -15 degrees, distance 350 centimeters and FOV 70 degrees; orbit pitch bounds -80 to -10 degrees, normalized wheel step 0.1, transition duration 0.35 seconds and yaw/pitch sensitivity 0.15 degrees per mouse input unit. Complete remaining focus, follow and collision defaults from the scene proportions, state their units, and expose them in the same UI. These are proposed presentation defaults, not new world-unit or gameplay rules. T02 verifies the actual projection transition before its policy is accepted.",
+        "Record host CPU/GPU/OS/display, engine/compiler, asset/configuration hashes, input mappings and a proposed reference matrix covering 1280x720, 1920x1080, a non-16:9 window and native high-DPI backing scale where available. Record minimum-window/letterbox policy, independent UI scale controls and proposed CPU/GPU/memory budgets before final measurements; unavailable configurations stay unverified. This scope introduces no canonical camera wire/schema type. Preserve MovementState continuous planar/floor semantics and InputBindingConfiguration/InputBinding meanings without building a production binding editor."
+      ],
+      "out_of_scope": [
+        "Production movement/aim, combat, networking/admission, new gameplay enums/schemas, art production tools, other-platform certification and custom settings menus."
+      ],
+      "dependencies": [
+        "BW-001",
+        "BW-003"
+      ],
+      "acceptance_criteria": [
+        "A fresh run opens the versioned native reference level with an explicitly controlled pawn, default elevated orthographic camera, recognizable floor/target anchors and resettable stationary/axial/diagonal routes. Record the real launch and all settings; no missing-asset or implicit external-Actor dependency remains.",
+        "A developer can change and preview every camera fine-tuning parameter using Unreal UI, save a preset/default and recover it after closing/reopening the level/editor. Record the UI path, units and validation behavior. Invalid ranges/nonfinite values fail observably without corrupting the last valid configuration.",
+        "The environment/display/input record distinguishes tested configurations from proposed/unavailable ones and records baseline budgets before T06. Baseline Entry map, existing native tests and server behavior remain compatible; reference routes do not establish authoritative gameplay."
+      ],
+      "completion_evidence": "Retain actual native build/launch logs, scene/config/input identities, screenshots of the Unreal tuning controls, save/reload and invalid-setting results, declared display/hardware/budget matrix and repeatable setup/reset. All camera runtime evidence remains unexecuted until this ticket runs.",
+      "related_docs": [
+        {
+          "label": "Parent epic and original criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Required reuse assessment",
+          "href": "guide/roadmap-maintenance.html#maintenance"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Camera and visual verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Camera and visual configuration decision",
+          "href": "guide/roadmap-coverage.html#open-rendering"
+        },
+        {
+          "label": "MovementState",
+          "href": "guide/data-inventory.html#movement-state"
+        },
+        {
+          "label": "InputBindingConfiguration",
+          "href": "guide/data-inventory.html#input-binding-configuration"
+        },
+        {
+          "label": "InputBinding",
+          "href": "guide/data-inventory.html#shared-InputBinding"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
+        }
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log\nThe executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.",
+        "setup": [
+          "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
+          "Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the installed engine and remains the baseline startup map. T01 supplies the separate reference level and its complete fixture setup without replacing bootstrap defaults.",
+          "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+        ],
+        "actions": [
+          "Create/open the reference level in Unreal, build through the existing command, then execute the recorded rendered launch. Inspect stationary, axial and diagonal scene-only routes and return to reset.",
+          "In the documented Unreal Details/asset UI, change each tuning group, preview it in PIE, save and reopen the editor/level. Restore the default preset. Try an invalid FOV/width, inverted pitch bounds and invalid transition duration through supported test input; inspect rejection and preserved valid state.",
+          "Record the host/display/backing scale and proposed window/quality/budget matrix. Run existing focused regressions and game FAST after the integration; final game FULL is required when executing this implementation ticket."
+        ],
+        "expected_results": [
+          "The reference scene launches and resets reproducibly with no missing dependencies. Every fine-tuning group has an editable Unreal UI control with saved values and actionable validation; no code/ini edit is needed. Tested/proposed settings and absent live gameplay are explicit."
+        ],
+        "reset": [
+          "Stop only the owned PIE/standalone session. Restore the reference configuration preset through Unreal UI, reset the scene-owned route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview input. Reload the reference level and repeat a clean run.",
+          "Retain failed and successful captures in bounded task outputs under GAME_ROOT/artifacts with revision/settings identities. Preserve other editor sessions, prior evidence, user assets and build caches; no project copies, worktrees, cache deletion or unrelated asset resaves."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T02",
+      "parent_epic": "BW-097",
+      "title": "Follow the character through reversible orthographic-to-third-person zoom",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-2"
+      ],
+      "scope": [
+        "Reuse assessment: Provided by Unreal or a plugin \u2014 UCameraComponent exposes orthographic width, FOV and projection mode; USpringArmComponent provides offset, collision and lag facilities. Source inspection shows distinct projection modes, not proof of seamless mixed-projection interpolation. Reuse native transforms/projection data and validate a bounded transition experiment before choosing the simplest policy that meets the epic.",
+        "Extend T01 single camera/configuration owner with a character-following elevated orthographic default and wheel-driven lowering/closing into a behind-character perspective endpoint, reversible through intermediate zoom. Preserve focus and apparent scale at any projection handoff; do not call a projection-mode toggle or generic view-target blend proof of continuity. Keep all transition/framing/smoothing/focus/clip tunables available in Unreal UI.",
+        "Use T01 scene-only stationary/axial/diagonal routes and explicit frame/landmark observations to measure continuity at endpoints, intermediate samples, direction reversal and supported frame rates/windows. Record the actual chosen transition policy, numeric tolerances and resulting captures. Reject invalid tuning with the existing config owner. If native facilities cannot meet the requirement, retain the failed experiment and obtain a bounded implementation decision rather than silently relaxing the orthographic endpoint.",
+        "MovementState, WorldPoint and SpriteDirection remain compatibility constraints: camera transforms, cosmetic height and pixel effects never quantize or modify continuous planar/floor position or aim. SpriteDirection retains its eight case-sensitive preview strings and does not drive gameplay or camera yaw. No new camera protocol or movement owner is needed."
+      ],
+      "out_of_scope": [
+        "Middle-mouse orbit (T03), world-picking implementation (T05), production movement/prediction, specialized pixel renderer and production asset creation."
+      ],
+      "dependencies": [
+        "BW-097-T01"
+      ],
+      "acceptance_criteria": [
+        "The default camera is genuinely orthographic and follows the controlled pawn; inward scroll reaches a close behind-character perspective with lower viewing angle, and outward scroll returns to the recorded overview. Focus/framing remain continuous without visible projection jumps at measured handoff/reversal samples.",
+        "Stationary, axial and diagonal routes, rapid scroll reversals, endpoints and tested frame-rate/window variations preserve character framing and keep camera-only input from changing route state, facing, collision or continuous aim. Frame observations meet the recorded continuity tolerances.",
+        "Changing zoom endpoints, widths/FOV, focus offsets, transition and follow controls through Unreal UI affects the same camera owner and survives save/reload. Invalid settings fail observably; no second tuning source or forced eight-direction aim is introduced."
+      ],
+      "completion_evidence": "Retain rendered motion/still captures in both directions and at the projection handoff, frame/landmark continuity results, route/aim invariance assertions, chosen policy and UI configuration hashes. Native automation covers deterministic interpolation/bounds/lifecycle; rendered evidence is required for the actual projection result.",
+      "related_docs": [
+        {
+          "label": "Parent epic and original criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Required reuse assessment",
+          "href": "guide/roadmap-maintenance.html#maintenance"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Camera and visual verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Camera and visual configuration decision",
+          "href": "guide/roadmap-coverage.html#open-rendering"
+        },
+        {
+          "label": "MovementState",
+          "href": "guide/data-inventory.html#movement-state"
+        },
+        {
+          "label": "WorldPoint",
+          "href": "guide/data-inventory.html#shared-WorldPoint"
+        },
+        {
+          "label": "SpriteDirection",
+          "href": "guide/data-inventory.html#sprite-direction"
+        }
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log\nThe executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.",
+        "setup": [
+          "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
+          "Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the installed engine and remains the baseline startup map. T01 supplies the separate reference level and its complete fixture setup without replacing bootstrap defaults.",
+          "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+        ],
+        "actions": [
+          "Using T01 default preset, start stationary, then axial and diagonal routes. Scroll fully inward/outward slowly and rapidly, reverse near the projection handoff and hold each intermediate sample. Capture motion and frame/landmark observations.",
+          "Repeat at the recorded display sizes and supported frame-rate variations. Change endpoint/transition/follow settings in Unreal UI, save/reload and repeat. Compare fixture position/facing/aim observations before and after camera-only input."
+        ],
+        "expected_results": [
+          "Both required projection endpoints and reversible transitions pass the recorded framing/continuity checks. Camera tuning changes presentation only and the saved preset reproduces it."
+        ],
+        "reset": [
+          "Stop only the owned PIE/standalone session. Restore the reference configuration preset through Unreal UI, reset the scene-owned route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview input. Reload the reference level and repeat a clean run.",
+          "Retain failed and successful captures in bounded task outputs under GAME_ROOT/artifacts with revision/settings identities. Preserve other editor sessions, prior evidence, user assets and build caches; no project copies, worktrees, cache deletion or unrelated asset resaves."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T03",
+      "parent_epic": "BW-097",
+      "title": "Add held middle-mouse orbit with isolated input capture",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-3",
+        "BW-097-AC-5"
+      ],
+      "scope": [
+        "Reuse assessment: Provided by Unreal or a plugin \u2014 Enhanced Input mapping contexts, PlayerController input and camera/spring-arm transforms are available. Integrate them into T01/T02 owners rather than rotating the pawn/controller aim or introducing a second camera manager.",
+        "Map held middle mouse plus horizontal/vertical drag to local camera yaw and bounded pitch in overview, close view and throughout scrolling. Wheel/orbit input is consumed only when the world viewport owns it. Add explicit release, focus-loss, PIE stop, pawn/view-target replacement and widget-capture cleanup so no stuck drag or delayed input resumes unexpectedly.",
+        "Expose sensitivity, inversion, limits and response/smoothing in the existing Unreal tuning UI. Reuse InputBindingConfiguration/InputBinding semantics where a binding boundary is represented, without inventing an enum of future actions or a gameplay RPC. Supply a small consuming UI panel/control and focus/capture fixtures now; T04 may restyle them and T05 reuses them for picking.",
+        "MovementState remains owned by the scene route or eventual gameplay owner. Record camera-only versus independent movement/aim observations during stationary/axial/diagonal tests; release ends new orbit input and configured smoothing settles without continuing uncontrolled rotation."
+      ],
+      "out_of_scope": [
+        "Production key-binding/settings UI, controller-platform certification, aim/movement authorization and world-picking rules."
+      ],
+      "dependencies": [
+        "BW-097-T02"
+      ],
+      "acceptance_criteria": [
+        "Held horizontal drag orbits yaw, vertical drag respects configured pitch limits, and release stops new orbit input in both views and during zoom. Stationary/axial/diagonal routes keep stable framing and unchanged independent position/facing/aim.",
+        "Wheel and drag captured by a UI control do not move the world camera. Releasing outside the viewport, losing focus, stopping/restarting PIE or replacing the view target clears capture and pending deltas; returning focus never resumes a stale drag.",
+        "Orbit sensitivity/inversion/limits and smoothing are adjustable and persistent through the same Unreal UI controls. Invalid settings use T01 validation and produce no invalid camera transform."
+      ],
+      "completion_evidence": "Retain input/capture lifecycle regressions, camera and independent route/aim observations, Unreal UI tuning screenshots and rendered orbit/scroll/release recordings. Verify camera-only input emits no gameplay mutation request; this does not certify connected input admission.",
+      "related_docs": [
+        {
+          "label": "Parent epic and original criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Required reuse assessment",
+          "href": "guide/roadmap-maintenance.html#maintenance"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Camera and visual verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Camera and visual configuration decision",
+          "href": "guide/roadmap-coverage.html#open-rendering"
+        },
+        {
+          "label": "InputBindingConfiguration",
+          "href": "guide/data-inventory.html#input-binding-configuration"
+        },
+        {
+          "label": "InputBinding",
+          "href": "guide/data-inventory.html#shared-InputBinding"
+        },
+        {
+          "label": "MovementState",
+          "href": "guide/data-inventory.html#movement-state"
+        }
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log\nThe executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.",
+        "setup": [
+          "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
+          "Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the installed engine and remains the baseline startup map. T01 supplies the separate reference level and its complete fixture setup without replacing bootstrap defaults.",
+          "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+        ],
+        "actions": [
+          "At overview, close view and intermediate zoom, hold middle mouse and drag horizontally/vertically to both pitch limits, reverse direction, then release. Repeat stationary and on axial/diagonal routes while scrolling.",
+          "Repeat wheel/drag over the consuming UI fixture. Press in the viewport then release outside it, alt-tab away while held, replace the fixture view target and stop/restart PIE. Verify no stale drag on return.",
+          "Tune sensitivity/inversion/limits/smoothing in Unreal UI, save/reopen and repeat while comparing independent route/facing/aim observations."
+        ],
+        "expected_results": [
+          "Yaw/pitch respond only to valid held world input; limits, release and capture cleanup work in every view. Route/facing/aim remain independent and no world-camera action leaks through UI capture."
+        ],
+        "reset": [
+          "Stop only the owned PIE/standalone session. Restore the reference configuration preset through Unreal UI, reset the scene-owned route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview input. Reload the reference level and repeat a clean run.",
+          "Retain failed and successful captures in bounded task outputs under GAME_ROOT/artifacts with revision/settings identities. Preserve other editor sessions, prior evidence, user assets and build caches; no project copies, worktrees, cache deletion or unrelated asset resaves."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T04",
+      "parent_epic": "BW-097",
+      "title": "Review representative 3D readability and independently scaled UI",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-2",
+        "BW-097-AC-4"
+      ],
+      "scope": [
+        "Reuse assessment: Provided by Unreal or a plugin \u2014 native meshes/materials/lighting and Slate/UMG DPI scaling are available; MultiplayerSessions Menu.cpp demonstrates widget input but is not a reusable gameplay HUD. Reuse native widget/layout facilities and T03 capture ownership, adding only required module dependencies.",
+        "Reuse assessment: Missing \u2014 representative project models, equipment, terrain, target/hazard markers and readable camera UI. Add a bounded original or already-available legally usable reference asset set with recorded provenance, recognizable silhouette/equipment/alternate-form contrasts, simple animation or poses, terrain/floor changes and bright/dark lighting presets. Include representative occluding walls/roof/foliage and limited water/transparent/effect samples; full environment production belongs to BW-098/BW-099.",
+        "Provide independently scalable labels/UI and target/hazard indicators that remain identifiable without color alone throughout both views, orbit and transitions. Expose scene lighting/material/effect/quality settings and UI scale via existing Unreal editor/widget/settings controls. Keep all required markers when reducing cosmetic effects. Record a visual/accessibility review at actual gameplay distances and the T01 window/high-DPI matrix.",
+        "Respect VisualPresentationDefinition server-event ownership, nullable telegraph_id and TelegraphDefinition geometry/critical semantics if those boundaries are used; do not invent attack authorization or timing from animation. SpriteDirection preview strings remain unchanged; representative heading comparisons do not require implementing character creation. Use only T01 authorized public fixture data and T05 visibility removal when available; no marker may reveal excluded entities."
+      ],
+      "out_of_scope": [
+        "Full roster/production asset library, rig/export workflow, character creation UI, final environments/weather, real combat or release accessibility certification."
+      ],
+      "dependencies": [
+        "BW-097-T03"
+      ],
+      "acceptance_criteria": [
+        "Recorded stills/motion at overview, close and intermediate views demonstrate recognizable character/equipment/terrain silhouettes and readable target/hazard markers in bright and dark presets. Non-color shape/pattern cues remain visible under reduced cosmetic effects and occluding samples.",
+        "At every tested window/aspect/backing scale, labels and UI scale independently of the world image; text, pointer controls, targets and playable floor remain usable. Unavailable high-DPI configurations remain explicitly unverified.",
+        "The bounded asset/provenance/configuration list and Unreal UI paths reproduce the review. Camera/display settings change no collision/reach/speed/aim, no hidden marker is fabricated, and visual/telegraph contract encodings and required/nullable fields remain compatible."
+      ],
+      "completion_evidence": "Retain asset/provenance and settings manifest, labeled bright/dark/viewpoint comparisons, motion captures, display/UI-scale matrix and reviewer findings including failures and mitigations. Rendered human review is required; a screenshot existing or a headless pass alone does not establish readability.",
+      "related_docs": [
+        {
+          "label": "Parent epic and original criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Required reuse assessment",
+          "href": "guide/roadmap-maintenance.html#maintenance"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Camera and visual verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Camera and visual configuration decision",
+          "href": "guide/roadmap-coverage.html#open-rendering"
+        },
+        {
+          "label": "VisualPresentationDefinition",
+          "href": "guide/data-inventory.html#visual-presentation-definition"
+        },
+        {
+          "label": "TelegraphDefinition",
+          "href": "guide/data-inventory.html#telegraph-definition"
+        },
+        {
+          "label": "SpriteDirection",
+          "href": "guide/data-inventory.html#sprite-direction"
+        }
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log\nThe executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.",
+        "setup": [
+          "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
+          "Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the installed engine and remains the baseline startup map. T01 supplies the separate reference level and its complete fixture setup without replacing bootstrap defaults.",
+          "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+        ],
+        "actions": [
+          "Select the reference model/equipment/alternate-form and terrain presets; compare stationary and moving silhouettes in bright/dark scenes at both endpoints, intermediate zoom and orbit angles.",
+          "Enable wall/roof/foliage/transparent/water/effect samples, overlap target and hazard markers and reduce cosmetic effects. Identify targets/hazards by shape/pattern as well as color.",
+          "Resize through the display matrix, test native high-DPI backing scale where available, adjust UI/text scale independently and verify pointer controls and UI capture. Change visual settings through documented Unreal UI and restore/reload the saved preset."
+        ],
+        "expected_results": [
+          "Representative silhouettes, markers and non-color hazards remain readable in every declared supported configuration, UI scaling is independent and the reviewed settings reproduce. Unsupported configurations and failed findings remain explicit."
+        ],
+        "reset": [
+          "Stop only the owned PIE/standalone session. Restore the reference configuration preset through Unreal UI, reset the scene-owned route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview input. Reload the reference level and repeat a clean run.",
+          "Retain failed and successful captures in bounded task outputs under GAME_ROOT/artifacts with revision/settings identities. Preserve other editor sessions, prior evidence, user assets and build caches; no project copies, worktrees, cache deletion or unrelated asset resaves."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T05",
+      "parent_epic": "BW-097",
+      "title": "Keep world picking and ground previews within authorized floor fixtures",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-5"
+      ],
+      "scope": [
+        "Reuse assessment: Provided by Unreal or a plugin \u2014 APlayerController deprojection/tracing and UWidgetLayoutLibrary viewport geometry/DPI methods are available. Extend T01 controller/camera input ownership with one world-content-rectangle conversion and reuse it for entity selection and ground previews; never infer canonical floor identity from a raw trace Z value.",
+        "Reuse assessment: Implemented and verified \u2014 FContentContracts, FAbilityCommand and DecodeAbilityCommand in ContentAdmission/AbilityCommand.cpp already preserve ability_command_v2 shape/nullability and strict rejection. Reuse this owner and canonical extractor/reference closure for any serialized fixture boundary. Do not add a second command decoder, validator or production targeting implementation.",
+        "Reuse assessment: Missing \u2014 project world picking, floor-scoped GroundTargetPreview and visibility fixture projections. Add finite known anchors for two overlapping floors plus zone/instance mismatch, occluding geometry, UI/letterbox capture and authorized/excluded/revoked entity cases. Supply public fixture projections to the camera while keeping excluded records out of that view entirely, not merely hidden on a local mesh. Do not pass FixtureWorldContext private npc_states/parties to presentation; its existing empty-world probe is not a general populated gameplay world.",
+        "Preserve WorldPoint zone_id/instance_id/floor_id and continuous foot-anchor position with an explicit reference-only conversion between authored tile widths and Unreal transforms. GroundTargetPreview requires ability_id, point, legal and findings; legal is advisory. A test-only intent sink compares preview/confirmed intent against known anchors via existing FAbilityCommand without committing a cast. ability_command_v2 keeps all three target keys present with unused values null; aim_point stays Vector2 in authenticated fixture scope, never a client-selected floor/actor or a new wire field.",
+        "Across follow, scroll/projection handoff, orbit, resize/DPI and occlusion, reject outside-content/UI-captured/invalid/no-hit/foreign-floor or unauthorized entity input observably; clear stale previews/selections on capture/authorization/floor/view-target loss. Camera changes cannot expand the supplied authorization envelope or mutate route/collision/aim. Server route/range/visibility validation, actual casts, live replication and full controls remain with BW-005/BW-009/BW-013/BW-028; this isolated proof certifies only the camera boundary. Document this active-view/picking boundary so BW-028-T01 reuses its coordinate conversion and adds live action controls/server checks instead of maintaining a parallel conversion."
+      ],
+      "out_of_scope": [
+        "Live authentication, interest filtering, production movement/targeting/cast execution, damage/resources, a new RPC/protocol and reimplementing future BW-009/BW-028 controls."
+      ],
+      "dependencies": [
+        "BW-097-T03"
+      ],
+      "acceptance_criteria": [
+        "Known same-floor anchors yield the expected scoped WorldPoint and preview/confirmed point within a recorded world-space tolerance throughout follow/zoom/orbit/projection handoff/resizing/high-DPI. The intent sink decodes canonical ability_command_v2 with unchanged keys/nullability; no camera-only action emits or commits gameplay intent.",
+        "UI/letterbox input, invalid/no-hit geometry, nonfinite coordinates, wrong zone/instance/floor and excluded entity IDs produce no selectable entity or confirmed target. Rejection is attributable, pending state clears and fresh valid input recovers. Canonical malformed/missing/ambiguous/unknown-field inputs are rejected through the existing reader.",
+        "Excluded entity records/IDs/positions never enter camera render/marker/picking data, logs or captures. Revoking a previously authorized projection removes its mesh/marker/selection/preview as applicable. Zoom/orbit/occlusion cannot restore it, expose another floor or modify route/facing/aim; retained evidence states that a fixture is not a connected privacy test."
+      ],
+      "completion_evidence": "Retain native contract and projection-coordinate regressions, actual rendered pointer/preview/intent comparisons at known anchors, rejection/recovery and authorization-removal observations with scoped identities. Demonstrate excluded data absence at the presentation boundary, not just a hidden actor. Keep no hidden fixture secrets in public logs/captures.",
+      "related_docs": [
+        {
+          "label": "Parent epic and original criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Required reuse assessment",
+          "href": "guide/roadmap-maintenance.html#maintenance"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Camera and visual verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Camera and visual configuration decision",
+          "href": "guide/roadmap-coverage.html#open-rendering"
+        },
+        {
+          "label": "GroundTargetPreview",
+          "href": "guide/data-inventory.html#ground-target-preview"
+        },
+        {
+          "label": "WorldPoint",
+          "href": "guide/data-inventory.html#shared-WorldPoint"
+        },
+        {
+          "label": "EntitySnapshot",
+          "href": "guide/data-inventory.html#entity-snapshot"
+        },
+        {
+          "label": "MovementState",
+          "href": "guide/data-inventory.html#movement-state"
+        },
+        {
+          "label": "ability_command_v2 / FAbilityCommand",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "FixtureWorldContext",
+          "href": "guide/data-inventory.html#shared-FixtureWorldContext"
+        }
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log\nThe executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.",
+        "setup": [
+          "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
+          "Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the installed engine and remains the baseline startup map. T01 supplies the separate reference level and its complete fixture setup without replacing bootstrap defaults.",
+          "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework.",
+          "The test-only authority/projection producer, anchor assertions and intent sink are ticket deliverables. They require no Steam accounts or production connection, and must remain isolated from ordinary Game/Server control surfaces. Existing populated canonical records may be validated without implementing their unrelated gameplay systems."
+        ],
+        "actions": [
+          "Load the finite two-floor/zone/instance fixture and its authorized public view. Select known visible entities and place/confirm ground previews while stationary and following; compare sink intent with the anchor observations.",
+          "Repeat at both projection endpoints, during transition/reversal and orbit, then resize/change DPI/letterbox and repeat through occluding geometry. Click UI/letterbox, no-hit and wrong-floor locations; supply malformed/nonfinite/mixed-intent inputs through test-only controls and inspect rejection and clean recovery.",
+          "Attempt to select excluded entities by fixture ID and rotate/zoom around their locations; confirm they were never supplied to presentation. Revoke an authorized entity while selected/previewing, inspect immediate cleanup and repeat camera changes. Compare route/facing/aim before/after."
+        ],
+        "expected_results": [
+          "Preview and confirmed fixture intent agree at valid floor anchors; invalid/captured/foreign input never yields a target. Camera data and feedback remain inside the declared authorization envelope and recover cleanly without gameplay mutation."
+        ],
+        "reset": [
+          "Stop only the owned PIE/standalone session. Restore the reference configuration preset through Unreal UI, reset the scene-owned route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview input. Reload the reference level and repeat a clean run.",
+          "Retain failed and successful captures in bounded task outputs under GAME_ROOT/artifacts with revision/settings identities. Preserve other editor sessions, prior evidence, user assets and build caches; no project copies, worktrees, cache deletion or unrelated asset resaves."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-097-T06",
+      "parent_epic": "BW-097",
+      "title": "Reproduce the camera proof and record visual performance decisions",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-097-AC-1",
+        "BW-097-AC-2",
+        "BW-097-AC-3",
+        "BW-097-AC-4",
+        "BW-097-AC-5",
+        "BW-097-AC-6"
+      ],
+      "scope": [
+        "Reuse assessment: Implemented and verified \u2014 tools/validate.py, native automation/stage attribution, FRuntimeFixtureEvidence/FContentCompatibilityRun and existing package failure/isolation controls. Extend appropriate owners for this feature; retain unexecuted-versus-executed evidence semantics. BW-003 local probe timings/serialized payload bytes are not GPU frame timings or network traffic measurements.",
+        "Reuse assessment: Provided by Unreal or a plugin \u2014 native profiling/capture and packaging facilities. Use Unreal CPU/GPU frame and memory tools with actual rendering on the declared host; verify profiling availability before selecting a capture route. Record warmup/sample durations, workload/actor counts, resolution/backing scale, VSync/frame cap, quality and exact settings identities. Capture CPU/GPU frame-time percentiles and memory separately, including camera/transition/orbit and representative occlusion/effect cost.",
+        "Integrate only cross-boundary evidence from T01-T05: two independent resets/launches on each declared supported reference configuration, actual built/cooked level and assets, still/motion comparisons and a six-criterion parent review. The existing check_baseline.py package command hard-codes /Engine/Maps/Entry; add the smallest explicit reference-level cook/launch option to the existing tooling while preserving its default and server baseline. Record successful commands and hashes. Do not call the ordinary Entry package proof of the new level.",
+        "Compare results to T01 recorded reference budgets, retain failed measurements/mitigations and state supported camera/display/quality decisions with reproducible Unreal UI preset paths. Do not move thresholds after observing a failure without a recorded decision and rerun. No new canonical camera/performance schema applies; reuse TestCheck/FixtureRunEvidence only for their actual meanings and keep raw visual/profiling artifacts separate.",
+        "Add the focused feature regressions to the existing game FAST/FULL routes, including load/build/runtime failure distinctions, settings/configuration identity, rendered versus NullRHI limitations and normal Game/Server fixture-control isolation. Reuse unchanged prerequisite evidence and feature-owned tests rather than creating a parallel aggregate suite. Confirm BW-098 can consume the resulting reference assets/settings/evidence, while 30-player/legal-summon combat, full environments and release workloads remain later certification."
+      ],
+      "out_of_scope": [
+        "Production asset pipeline, 30-player gameplay/server capacity, live replication/privacy certification, Shipping/other platforms, full environment production and release performance/accessibility approval."
+      ],
+      "dependencies": [
+        "BW-097-T04",
+        "BW-097-T05"
+      ],
+      "acceptance_criteria": [
+        "Two independently reset rendered launches reproduce T01-T05 on each supported reference configuration, including the built/cooked level. Actual commands, identities, assertions, stills/motion and failures are attributable; a missing capture/report/configuration or failed child remains incomplete rather than passing from documentation or an old report.",
+        "Raw measurements report CPU/GPU frame-time percentiles and memory with sampling/workload/hardware/display/quality settings and compare them against the predeclared budgets. Failures retain mitigations and retested outcomes; supported and unverified configurations are explicit. All camera/visual adjustments needed to reproduce the result are accessible through documented Unreal UI.",
+        "Current game default FULL and applicable manual evidence pass without weakening Entry/server/bootstrap/security gates. Normal packages expose no usable reference fixture controls. A parent review maps passing evidence to all six BW-097 criteria and preserves prerequisite/dependent statuses truthfully; no live gameplay or release-capacity claim is inferred."
+      ],
+      "completion_evidence": "Retain built/cooked scene and preset identities, exact rendered launch/cook/profile/reset commands, two-run comparisons, labeled still/motion captures, raw CPU/GPU/memory samples, supported-quality/accessibility findings and current game FULL results. Record an explicit six-criterion parent review and remaining live-gameplay/platform limits; documentation FULL is a separate tracking check.",
+      "related_docs": [
+        {
+          "label": "Parent epic and original criteria",
+          "href": "guide/roadmap-bw-097.html#BW-097"
+        },
+        {
+          "label": "Required reuse assessment",
+          "href": "guide/roadmap-maintenance.html#maintenance"
+        },
+        {
+          "label": "Rendering, camera and input",
+          "href": "guide/interface.html#rendering-and-camera"
+        },
+        {
+          "label": "Camera and visual verification",
+          "href": "guide/testing.html#rendering-verification"
+        },
+        {
+          "label": "Selected 3D pixel-art direction",
+          "href": "guide/decisions.html#art-direction"
+        },
+        {
+          "label": "Camera and visual configuration decision",
+          "href": "guide/roadmap-coverage.html#open-rendering"
+        },
+        {
+          "label": "TestCheck",
+          "href": "guide/data-inventory.html#shared-TestCheck"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        }
+      ],
+      "manual_test": {
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log\nThe executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.",
+        "setup": [
+          "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
+          "Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the installed engine and remains the baseline startup map. T01 supplies the separate reference level and its complete fixture setup without replacing bootstrap defaults.",
+          "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+        ],
+        "actions": [
+          "Use the T01 editor/standalone launch and the explicit reference-level cook/package procedure delivered here. Record the actual rendered package launch path; it does not exist at planning time. Run T02/T03/T04/T05 actions twice after independent scene/process reset on each declared supported configuration.",
+          "Record warmup and bounded samples for stationary/following, both camera endpoints, continuous scroll/orbit and representative bright/dark/occlusion/effect presets. Capture CPU/GPU frame-time percentiles and memory with the documented Unreal tools and compare to predeclared budgets.",
+          "Inspect the built/cooked asset inventory, preset UI and exact commands; exercise missing-level/settings/report failure and clean recovery through existing tooling. Verify fixture-control isolation in ordinary Game/Server artifacts, run python3 tools/validate.py from GAME_ROOT and retain any manual/not-run gaps.",
+          "Complete the parent six-criterion review only from applicable passing evidence, regenerate DOCS_ROOT using README.txt and inspect BW-097, foundations, readiness, milestone and BW-098 prerequisite displays."
+        ],
+        "expected_results": [
+          "The versioned reference proof reproduces on its declared tested matrix with attributable visual/profiling evidence and predeclared budget results. Default native FULL and manual gates pass, unavailable/live/release work remains explicit and no gameplay completion is invented."
+        ],
+        "reset": [
+          "Stop only the owned PIE/standalone session. Restore the reference configuration preset through Unreal UI, reset the scene-owned route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview input. Reload the reference level and repeat a clean run.",
+          "Retain failed and successful captures in bounded task outputs under GAME_ROOT/artifacts with revision/settings identities. Preserve other editor sessions, prior evidence, user assets and build caches; no project copies, worktrees, cache deletion or unrelated asset resaves."
         ]
       },
       "blockers": [],
