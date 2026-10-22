@@ -1,161 +1,718 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Combat mechanics · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a aria-current=page href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Unreal C++ &amp; networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Combat</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Combat</div><h1>Combat mechanics</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<h2 id="targeting-and-movement">Targeting and movement</h2>
-<p>Support target lock, aimed line/cone, ground point, self area, friendly target, legal movement and bounded pet commands. These are targeting methods; projectile travel is an independent execution property. A target-locked spell may launch a projectile, and a ground effect may follow a delayed impact.</p>
-<p>Default movement is 3.5 world units per second. Normalize diagonal keyboard input. A player may move in one direction while aiming elsewhere. The 3D pixel-art camera and model heading do not restrict authoritative aim to eight angles; the existing <code>SpriteDirection</code> values serve preview heading presets only. Base walk speed, collision radius and attack reach are the same across races.</p>
-<p>Click selects a visible eligible entity. Target cycling sorts eligible enemies in the facing hemisphere by angular difference, distance and stable entity ID. It excludes dead, hidden, friendly, invulnerable and cross-floor entities unless the current ability explicitly permits them. Friendly frame targeting has precedence over characters hidden behind scenery. Ground-cast modes support preview/confirm and optional quick cast with a clear cancel input.</p>
-<h2 id="shared-numerical-defaults">Shared numerical defaults</h2>
-<table>
-<thead>
-<tr>
-<th>Setting</th>
-<th style="text-align:right">Prototype default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>GCD</td>
-<td style="text-align:right">1.25 seconds; haste floor 1.0 second</td>
-</tr>
-<tr>
-<td>Local input queue</td>
-<td style="text-align:right">One eligible next ability, up to 200 ms before ready</td>
-</tr>
-<tr>
-<td>Melee reach</td>
-<td style="text-align:right">1.5 units between foot anchors, with authored collision allowance</td>
-</tr>
-<tr>
-<td>Normal ranged reach</td>
-<td style="text-align:right">8 units</td>
-</tr>
-<tr>
-<td>Friendly spell reach</td>
-<td style="text-align:right">8 units</td>
-</tr>
-<tr>
-<td>Default area radius</td>
-<td style="text-align:right">2.5 units</td>
-</tr>
-<tr>
-<td>Default cone</td>
-<td style="text-align:right">90 degrees, three-unit length</td>
-</tr>
-<tr>
-<td>Default line</td>
-<td style="text-align:right">Eight units long, 0.7 units wide</td>
-</tr>
-<tr>
-<td>Typical active hostile target cap</td>
-<td style="text-align:right">Five, unless a profile explicitly differs</td>
-</tr>
-<tr>
-<td>Ground telegraph lead</td>
-<td style="text-align:right">At least 1.0 second for ordinary dodgeable PvE hazards</td>
-</tr>
-<tr>
-<td>Normal projectile speed</td>
-<td style="text-align:right">12 units per second</td>
-</tr>
-<tr>
-<td>Collision radius</td>
-<td style="text-align:right">0.30 units for player gameplay bodies</td>
-</tr>
-</tbody>
-</table>
-<p>These defaults are not a license to stamp every ability with identical parameters. The profile catalog supplies a complete baseline; bespoke variants require explicit overrides and tests.</p>
-<h2 id="cast-lifecycle">Cast lifecycle</h2>
-<p>At acceptance, verify learned ability, selected build version, faction/class ownership, equipment, alive/control state, target relation, floor, range, line of sight and available resources. Reserve the cost. Start the cast and GCD. A client may predict the cast indicator but may not authorize a hit.</p>
-<p>At release, verify the conditions declared in <code>revalidation_policy</code>, consume the reserved cost, start the ability cooldown and create the authoritative effect or projectile. A cancelled or interrupted pre-release cast releases its reservation, leaves the started GCD in place and does not consume the ability cooldown under the supported release-commit policy. Non-channel start-commit is deferred; this revision supports only release_commit and channel_start_commit. Channels commit cost at start and do not refund completed or remaining ticks on cancellation. Their tooltips must say so.</p>
-<p>Movement cancels stationary casts. A talent may permit movement only through a precise flag or window. Do not let visual animation events decide whether a cast finished. During a cast, changing target does not retarget the in-progress spell unless explicitly allowed.</p>
-<p>An accepted instant ability commits cost and cooldown in the same simulation transaction. A target becoming invalid before acceptance costs nothing. A valid launched attack that later hits a wall or loses an eligible target does not refund its cost.</p>
-<h2 id="projectiles-and-ground-effects">Projectiles and ground effects</h2><p>The baseline collision policy is <code>stop_on_world</code> with the server-resolved <code>solid_world</code> mask. Walls, closed doors and floor boundaries stop swept projectiles. <code>single_target</code> and <code>piercing</code> govern actor hits separately: piercing never implies wall penetration. A launched attack that is blocked remains committed.</p>
-<p>Every damaging projectile has a server ID, owner, lifetime, speed, hit policy, floor and collision mask. Cosmetic client projectiles can be corrected or cancelled. Server collision uses swept segments to avoid fast objects skipping thin walls.</p>
-<p>A homing projectile validates relation and target existence at impact, and follows its declared wall-collision policy. It cannot damage a character who became an ally. A straight skillshot uses its original direction and does not acquire a new target silently. Piercing attacks maintain a set of already hit entities and a finite target count.</p>
-<p>Ground effects have a placement range, radius, floor, duration, tick interval, target cap, ownership and overlap rule. Enforce legal placement before spending resources. They cannot spawn beyond a closed door, in a protected spawn area, on an inaccessible floor or inside forbidden navigation volumes.</p>
-<p>Friendly damage is disabled in the baseline. An offensive area effect selects only legal hostile entities at the time of each tick. Beneficial effects respect faction and group rules even if the recipient entered the visual area.</p>
-<h2 id="tanking-and-threat">Tanking and threat</h2><p><strong>NPC baseline:</strong> simple_encounter_v1 has idle, engaged, leashing and dead states. Legal perceived hostility starts engagement; losing all eligible targets or exceeding the authored home leash initiates reset. Leashing clears threat and encounter hazards, rejects combat actions and returns home before restoring maximum health. Death resolves one completion key. Ability rules choose the lowest eligible priority, then stable ability ID, at most once per tick while respecting costs, GCD and cooldowns. Finite encounter conditions are start, elapsed phase time, a health threshold, eligible target in range and owner death.</p>
-<p>A tank specialization grants a 3.0× threat multiplier on its own damage, a single-target challenge at level 10 and basic active mitigation. Taunt is not an optional talent. Single-target challenge sets threat to 110% of the current highest eligible threat and forces attention for three seconds; cooldown eight seconds. It cannot engage an unengaged distant boss, affect a player, or defeat an encounter immunity.</p>
-<p>Ordinary damage grants threat equal to effective damage. Effective healing creates 0.5 threat per healing point, divided among engaged NPCs that can perceive the event. Shield prevention follows the same 0.5 rule when consumed. Overkill and overhealing do not generate extra threat. Summon damage belongs to its declared pet threat owner; no double credit to pet and summoner.</p>
-<p>An NPC changes ordinary aggro when another eligible target exceeds current threat by 10% in melee or 30% outside melee. Scripted encounter targets may temporarily override this. After a mechanic ends, the normal table resumes. Leashing clears threat and resets encounter-owned hazards; it never awards kill rewards or refunds spent consumables.</p>
-<h2 id="healer-and-support-interaction">Healer and support interaction</h2><p>Use <code>ordered_marginal_v1</code> offensive-support accounting. Preserve the same root hit, critical outcome, non-support effects, mitigation, caps and rounding. Within each modifier family, order positive support modifiers by source entity ID, owner ability ID and status instance ID; credit each source only its incremental effective damage at that step, then aggregate once per source. Negative modifiers belong in the baseline. Attributed amounts sum to the support increment and never exceed actual damage.</p>
-<p>Direct healing, sustained healing, absorb prevention and emergency recovery are different responsibilities. No mandatory party mechanic requires a named exclusive class. Shared healer training covers revival and a configurable cleanse; class specialization determines efficiency and pattern.</p>
-<p>For group offensive buffs, use a non-stacking category cap. Start at a 10% maximum combined bonus from the ordinary group-amplification category, with most effects providing 3–5%. A second support character must contribute their own output and complementary utility, not multiply a permanent exponential buff chain.</p>
-<p>Combat logs record personal damage, effective healing, absorbs consumed, damage transferred and attributed offensive support separately. Contribution attribution is an accounting model, not additional damage. When a 5% buff changes 1,000 baseline damage into 1,050, attribute at most the incremental 50 to support while retaining 1,050 as actual target damage. Multiple buffs use the deterministic ordered marginal policy above; never credit the full increase to each provider.</p>
-<h2 id="death-recovery-and-battle-revival">Death, recovery and battle revival</h2>
-<p>At zero health, atomically stop casts, end controllable effects, invalidate pet commands, settle damage ledgers and mark the character dead. Drop no equipment or inventory on ordinary death. Apply a modest repair cost through durability loss, not item deletion. Do not incur durability damage in normalized rated PvP.</p>
-<p>Out-of-combat revival takes eight seconds and restores 20% health and mana. Healers receive it through role training at level 10. A five-player boss attempt has one shared battle-revival charge; a 10-player attempt has two; larger attempts cap at three. Charges reset only when the encounter genuinely resets or completes. Individual cooldowns and the shared pool both apply. Disconnect/reconnect does not create a new charge.</p>
-<p>Solo recovery uses ordinary food, drink, rest and modest class self-sustain. Professions improve preparation and convenience but are not required to recover from a death or a empty resource bar.</p>
-<h2 id="what-a-group-encounter-must-test">What a group encounter must test</h2>
-<p>Use one encounter that combines a tank-facing cone, an interruptible cast, a recoverable group-damage pulse, a moving hazard and a short priority-target phase. Test the same fight with each common tank and healer, without a faction-exclusive class and without an optimized Bard composition. This reveals whether talents genuinely change decisions while the core encounter remains completable.</p>
-<!-- data-inventory:start -->
-<section class="data-inventory" aria-labelledby="data">
-<h2 id="data">Data</h2>
-<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
-<h3 id="data-enums">Enums</h3>
-<ul>
-<li data-inventory-id="action-rejection-reason"><code><a href="data-inventory.html#action-rejection-reason">ActionRejectionReason</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cast-commit-policy"><code><a href="data-inventory.html#cast-commit-policy">CastCommitPolicy</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="cast-phase"><code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-life-state"><code><a href="data-inventory.html#character-life-state">CharacterLifeState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="damage-school"><code><a href="data-inventory.html#damage-school">DamageSchool</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="dispel-family"><code><a href="data-inventory.html#dispel-family">DispelFamily</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="effect-operation"><code><a href="data-inventory.html#effect-operation">EffectOperation</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="ground-cast-mode"><code><a href="data-inventory.html#ground-cast-mode">GroundCastMode</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="npc-behavior-state"><code><a href="data-inventory.html#npc-behavior-state">NpcBehaviorState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="projectile-collision-policy"><code><a href="data-inventory.html#projectile-collision-policy">ProjectileCollisionPolicy</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="projectile-hit-policy"><code><a href="data-inventory.html#projectile-hit-policy">ProjectileHitPolicy</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="status-category"><code><a href="data-inventory.html#status-category">StatusCategory</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="target-mode"><code><a href="data-inventory.html#target-mode">TargetMode</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="target-relation"><code><a href="data-inventory.html#target-relation">TargetRelation</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-interfaces">Interfaces</h3>
-<ul>
-<li data-inventory-id="absorb-state"><code><a href="data-inventory.html#absorb-state">AbsorbState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="action-bar-state"><code><a href="data-inventory.html#action-bar-state">ActionBarState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="battle-revival-pool"><code><a href="data-inventory.html#battle-revival-pool">BattleRevivalPool</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cast-state"><code><a href="data-inventory.html#cast-state">CastState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-state"><code><a href="data-inventory.html#character-state">CharacterState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cleanse-module-selection"><code><a href="data-inventory.html#cleanse-module-selection">CleanseModuleSelection</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-hud-state"><code><a href="data-inventory.html#combat-hud-state">CombatHudState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-result"><code><a href="data-inventory.html#combat-result">CombatResult</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cooldown-state"><code><a href="data-inventory.html#cooldown-state">CooldownState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="crowd-control-history"><code><a href="data-inventory.html#crowd-control-history">CrowdControlHistory</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="ground-effect-state"><code><a href="data-inventory.html#ground-effect-state">GroundEffectState</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="ground-target-preview"><code><a href="data-inventory.html#ground-target-preview">GroundTargetPreview</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="input-queue-state"><code><a href="data-inventory.html#input-queue-state">InputQueueState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="movement-state"><code><a href="data-inventory.html#movement-state">MovementState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="nameplate-state"><code><a href="data-inventory.html#nameplate-state">NameplateState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="npc-state"><code><a href="data-inventory.html#npc-state">NpcState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="prepared-device-state"><code><a href="data-inventory.html#prepared-device-state">PreparedDeviceState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="projectile-state"><code><a href="data-inventory.html#projectile-state">ProjectileState</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recovery-state"><code><a href="data-inventory.html#recovery-state">RecoveryState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-reservation"><code><a href="data-inventory.html#resource-reservation">ResourceReservation</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="role-capability-set"><code><a href="data-inventory.html#role-capability-set">RoleCapabilitySet</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="status-instance"><code><a href="data-inventory.html#status-instance">StatusInstance</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="support-contribution"><code><a href="data-inventory.html#support-contribution">SupportContribution</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="target-cycle-state"><code><a href="data-inventory.html#target-cycle-state">TargetCycleState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="target-selection"><code><a href="data-inventory.html#target-selection">TargetSelection</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="threat-table"><code><a href="data-inventory.html#threat-table">ThreatTable</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="travel-eligibility"><code><a href="data-inventory.html#travel-eligibility">TravelEligibility</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-schemas">Schemas</h3>
-<ul>
-<li data-inventory-id="ability-targeting-policy"><code><a href="data-inventory.html#ability-targeting-policy">AbilityTargetingPolicy</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="ability-timing-policy"><code><a href="data-inventory.html#ability-timing-policy">AbilityTimingPolicy</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-log-record"><code><a href="data-inventory.html#combat-log-record">CombatLogRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-rules-configuration"><code><a href="data-inventory.html#combat-rules-configuration">CombatRulesConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cooldown-definition"><code><a href="data-inventory.html#cooldown-definition">CooldownDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cooldown-family"><code><a href="data-inventory.html#cooldown-family">CooldownFamily</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="encounter-checkpoint"><code><a href="data-inventory.html#encounter-checkpoint">EncounterCheckpoint</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="navigation-configuration"><code><a href="data-inventory.html#navigation-configuration">NavigationConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="npc-ability-kit"><code><a href="data-inventory.html#npc-ability-kit">NpcAbilityKit</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="npc-definition"><code><a href="data-inventory.html#npc-definition">NpcDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="recovery-point-definition"><code><a href="data-inventory.html#recovery-point-definition">RecoveryPointDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="recovery-request"><code><a href="data-inventory.html#recovery-request">RecoveryRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-type"><code><a href="data-inventory.html#resource-type">ResourceType</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="world-location-definition"><code><a href="data-inventory.html#world-location-definition">WorldLocationDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="world-object-definition"><code><a href="data-inventory.html#world-object-definition">WorldObjectDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="zone-definition"><code><a href="data-inventory.html#zone-definition">ZoneDefinition</a></code> — Proposed · Fully Defined</li>
-</ul>
-</section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#targeting-and-movement">Targeting and movement</a><a href="#shared-numerical-defaults">Shared numerical defaults</a><a href="#cast-lifecycle">Cast lifecycle</a><a href="#projectiles-and-ground-effects">Projectiles and ground effects</a><a href="#tanking-and-threat">Tanking and threat</a><a href="#healer-and-support-interaction">Healer and support interaction</a><a href="#death-recovery-and-battle-revival">Death, recovery and battle revival</a><a href="#what-a-group-encounter-must-test">What a group encounter must test</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Combat mechanics · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a aria-current="page" href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Combat</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Combat</div>
+          <h1>Combat mechanics</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <h2 id="targeting-and-movement">Targeting and movement</h2>
+            <p>
+              Support target lock, aimed line/cone, ground point, self area, friendly target, legal
+              movement and bounded pet commands. These are targeting methods; projectile travel is
+              an independent execution property. A target-locked spell may launch a projectile, and
+              a ground effect may follow a delayed impact.
+            </p>
+            <p>
+              Default movement is 3.5 world units per second. Normalize diagonal keyboard input. A
+              player may move in one direction while aiming elsewhere. The 3D pixel-art camera and
+              model heading do not restrict authoritative aim to eight angles; the existing
+              <code>SpriteDirection</code> values serve preview heading presets only. Base walk
+              speed, collision radius and attack reach are the same across races.
+            </p>
+            <p>
+              Click selects a visible eligible entity. Target cycling sorts eligible enemies in the
+              facing hemisphere by angular difference, distance and stable entity ID. It excludes
+              dead, hidden, friendly, invulnerable and cross-floor entities unless the current
+              ability explicitly permits them. Friendly frame targeting has precedence over
+              characters hidden behind scenery. Ground-cast modes support preview/confirm and
+              optional quick cast with a clear cancel input.
+            </p>
+            <h2 id="shared-numerical-defaults">Shared numerical defaults</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Setting</th>
+                  <th style="text-align:right">Prototype default</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>GCD</td>
+                  <td style="text-align:right">1.25 seconds; haste floor 1.0 second</td>
+                </tr>
+                <tr>
+                  <td>Local input queue</td>
+                  <td style="text-align:right">
+                    One eligible next ability, up to 200 ms before ready
+                  </td>
+                </tr>
+                <tr>
+                  <td>Melee reach</td>
+                  <td style="text-align:right">
+                    1.5 units between foot anchors, with authored collision allowance
+                  </td>
+                </tr>
+                <tr>
+                  <td>Normal ranged reach</td>
+                  <td style="text-align:right">8 units</td>
+                </tr>
+                <tr>
+                  <td>Friendly spell reach</td>
+                  <td style="text-align:right">8 units</td>
+                </tr>
+                <tr>
+                  <td>Default area radius</td>
+                  <td style="text-align:right">2.5 units</td>
+                </tr>
+                <tr>
+                  <td>Default cone</td>
+                  <td style="text-align:right">90 degrees, three-unit length</td>
+                </tr>
+                <tr>
+                  <td>Default line</td>
+                  <td style="text-align:right">Eight units long, 0.7 units wide</td>
+                </tr>
+                <tr>
+                  <td>Typical active hostile target cap</td>
+                  <td style="text-align:right">Five, unless a profile explicitly differs</td>
+                </tr>
+                <tr>
+                  <td>Ground telegraph lead</td>
+                  <td style="text-align:right">
+                    At least 1.0 second for ordinary dodgeable PvE hazards
+                  </td>
+                </tr>
+                <tr>
+                  <td>Normal projectile speed</td>
+                  <td style="text-align:right">12 units per second</td>
+                </tr>
+                <tr>
+                  <td>Collision radius</td>
+                  <td style="text-align:right">0.30 units for player gameplay bodies</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              These defaults are not a license to stamp every ability with identical parameters. The
+              profile catalog supplies a complete baseline; bespoke variants require explicit
+              overrides and tests.
+            </p>
+            <h2 id="cast-lifecycle">Cast lifecycle</h2>
+            <p>
+              At acceptance, verify learned ability, selected build version, faction/class
+              ownership, equipment, alive/control state, target relation, floor, range, line of
+              sight and available resources. Reserve the cost. Start the cast and GCD. A client may
+              predict the cast indicator but may not authorize a hit.
+            </p>
+            <p>
+              At release, verify the conditions declared in <code>revalidation_policy</code>,
+              consume the reserved cost, start the ability cooldown and create the authoritative
+              effect or projectile. A cancelled or interrupted pre-release cast releases its
+              reservation, leaves the started GCD in place and does not consume the ability cooldown
+              under the supported release-commit policy. Non-channel start-commit is deferred; this
+              revision supports only release_commit and channel_start_commit. Channels commit cost
+              at start and do not refund completed or remaining ticks on cancellation. Their
+              tooltips must say so.
+            </p>
+            <p>
+              Movement cancels stationary casts. A talent may permit movement only through a precise
+              flag or window. Do not let visual animation events decide whether a cast finished.
+              During a cast, changing target does not retarget the in-progress spell unless
+              explicitly allowed.
+            </p>
+            <p>
+              An accepted instant ability commits cost and cooldown in the same simulation
+              transaction. A target becoming invalid before acceptance costs nothing. A valid
+              launched attack that later hits a wall or loses an eligible target does not refund its
+              cost.
+            </p>
+            <h2 id="projectiles-and-ground-effects">Projectiles and ground effects</h2>
+            <p>
+              The baseline collision policy is <code>stop_on_world</code> with the server-resolved
+              <code>solid_world</code> mask. Walls, closed doors and floor boundaries stop swept
+              projectiles. <code>single_target</code> and <code>piercing</code> govern actor hits
+              separately: piercing never implies wall penetration. A launched attack that is blocked
+              remains committed.
+            </p>
+            <p>
+              Every damaging projectile has a server ID, owner, lifetime, speed, hit policy, floor
+              and collision mask. Cosmetic client projectiles can be corrected or cancelled. Server
+              collision uses swept segments to avoid fast objects skipping thin walls.
+            </p>
+            <p>
+              A homing projectile validates relation and target existence at impact, and follows its
+              declared wall-collision policy. It cannot damage a character who became an ally. A
+              straight skillshot uses its original direction and does not acquire a new target
+              silently. Piercing attacks maintain a set of already hit entities and a finite target
+              count.
+            </p>
+            <p>
+              Ground effects have a placement range, radius, floor, duration, tick interval, target
+              cap, ownership and overlap rule. Enforce legal placement before spending resources.
+              They cannot spawn beyond a closed door, in a protected spawn area, on an inaccessible
+              floor or inside forbidden navigation volumes.
+            </p>
+            <p>
+              Friendly damage is disabled in the baseline. An offensive area effect selects only
+              legal hostile entities at the time of each tick. Beneficial effects respect faction
+              and group rules even if the recipient entered the visual area.
+            </p>
+            <h2 id="tanking-and-threat">Tanking and threat</h2>
+            <p>
+              <strong>NPC baseline:</strong> simple_encounter_v1 has idle, engaged, leashing and
+              dead states. Legal perceived hostility starts engagement; losing all eligible targets
+              or exceeding the authored home leash initiates reset. Leashing clears threat and
+              encounter hazards, rejects combat actions and returns home before restoring maximum
+              health. Death resolves one completion key. Ability rules choose the lowest eligible
+              priority, then stable ability ID, at most once per tick while respecting costs, GCD
+              and cooldowns. Finite encounter conditions are start, elapsed phase time, a health
+              threshold, eligible target in range and owner death.
+            </p>
+            <p>
+              A tank specialization grants a 3.0× threat multiplier on its own damage, a
+              single-target challenge at level 10 and basic active mitigation. Taunt is not an
+              optional talent. Single-target challenge sets threat to 110% of the current highest
+              eligible threat and forces attention for three seconds; cooldown eight seconds. It
+              cannot engage an unengaged distant boss, affect a player, or defeat an encounter
+              immunity.
+            </p>
+            <p>
+              Ordinary damage grants threat equal to effective damage. Effective healing creates 0.5
+              threat per healing point, divided among engaged NPCs that can perceive the event.
+              Shield prevention follows the same 0.5 rule when consumed. Overkill and overhealing do
+              not generate extra threat. Summon damage belongs to its declared pet threat owner; no
+              double credit to pet and summoner.
+            </p>
+            <p>
+              An NPC changes ordinary aggro when another eligible target exceeds current threat by
+              10% in melee or 30% outside melee. Scripted encounter targets may temporarily override
+              this. After a mechanic ends, the normal table resumes. Leashing clears threat and
+              resets encounter-owned hazards; it never awards kill rewards or refunds spent
+              consumables.
+            </p>
+            <h2 id="healer-and-support-interaction">Healer and support interaction</h2>
+            <p>
+              Use <code>ordered_marginal_v1</code> offensive-support accounting. Preserve the same
+              root hit, critical outcome, non-support effects, mitigation, caps and rounding. Within
+              each modifier family, order positive support modifiers by source entity ID, owner
+              ability ID and status instance ID; credit each source only its incremental effective
+              damage at that step, then aggregate once per source. Negative modifiers belong in the
+              baseline. Attributed amounts sum to the support increment and never exceed actual
+              damage.
+            </p>
+            <p>
+              Direct healing, sustained healing, absorb prevention and emergency recovery are
+              different responsibilities. No mandatory party mechanic requires a named exclusive
+              class. Shared healer training covers revival and a configurable cleanse; class
+              specialization determines efficiency and pattern.
+            </p>
+            <p>
+              For group offensive buffs, use a non-stacking category cap. Start at a 10% maximum
+              combined bonus from the ordinary group-amplification category, with most effects
+              providing 3–5%. A second support character must contribute their own output and
+              complementary utility, not multiply a permanent exponential buff chain.
+            </p>
+            <p>
+              Combat logs record personal damage, effective healing, absorbs consumed, damage
+              transferred and attributed offensive support separately. Contribution attribution is
+              an accounting model, not additional damage. When a 5% buff changes 1,000 baseline
+              damage into 1,050, attribute at most the incremental 50 to support while retaining
+              1,050 as actual target damage. Multiple buffs use the deterministic ordered marginal
+              policy above; never credit the full increase to each provider.
+            </p>
+            <h2 id="death-recovery-and-battle-revival">Death, recovery and battle revival</h2>
+            <p>
+              At zero health, atomically stop casts, end controllable effects, invalidate pet
+              commands, settle damage ledgers and mark the character dead. Drop no equipment or
+              inventory on ordinary death. Apply a modest repair cost through durability loss, not
+              item deletion. Do not incur durability damage in normalized rated PvP.
+            </p>
+            <p>
+              Out-of-combat revival takes eight seconds and restores 20% health and mana. Healers
+              receive it through role training at level 10. A five-player boss attempt has one
+              shared battle-revival charge; a 10-player attempt has two; larger attempts cap at
+              three. Charges reset only when the encounter genuinely resets or completes. Individual
+              cooldowns and the shared pool both apply. Disconnect/reconnect does not create a new
+              charge.
+            </p>
+            <p>
+              Solo recovery uses ordinary food, drink, rest and modest class self-sustain.
+              Professions improve preparation and convenience but are not required to recover from a
+              death or a empty resource bar.
+            </p>
+            <h2 id="what-a-group-encounter-must-test">What a group encounter must test</h2>
+            <p>
+              Use one encounter that combines a tank-facing cone, an interruptible cast, a
+              recoverable group-damage pulse, a moving hazard and a short priority-target phase.
+              Test the same fight with each common tank and healer, without a faction-exclusive
+              class and without an optimized Bard composition. This reveals whether talents
+              genuinely change decisions while the core encounter remains completable.
+            </p>
+            <!-- data-inventory:start -->
+            <section class="data-inventory" aria-labelledby="data">
+              <h2 id="data">Data</h2>
+              <p>
+                Follow a type name to its canonical members, properties, constraints and review
+                decisions. Definitions are generated from one shared registry.
+              </p>
+              <h3 id="data-enums">Enums</h3>
+              <ul>
+                <li data-inventory-id="action-rejection-reason">
+                  <code
+                    ><a href="data-inventory.html#action-rejection-reason"
+                      >ActionRejectionReason</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cast-commit-policy">
+                  <code><a href="data-inventory.html#cast-commit-policy">CastCommitPolicy</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="cast-phase">
+                  <code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="character-life-state">
+                  <code
+                    ><a href="data-inventory.html#character-life-state">CharacterLifeState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="damage-school">
+                  <code><a href="data-inventory.html#damage-school">DamageSchool</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="dispel-family">
+                  <code><a href="data-inventory.html#dispel-family">DispelFamily</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="effect-operation">
+                  <code><a href="data-inventory.html#effect-operation">EffectOperation</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="ground-cast-mode">
+                  <code><a href="data-inventory.html#ground-cast-mode">GroundCastMode</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="npc-behavior-state">
+                  <code><a href="data-inventory.html#npc-behavior-state">NpcBehaviorState</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="projectile-collision-policy">
+                  <code
+                    ><a href="data-inventory.html#projectile-collision-policy"
+                      >ProjectileCollisionPolicy</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="projectile-hit-policy">
+                  <code
+                    ><a href="data-inventory.html#projectile-hit-policy"
+                      >ProjectileHitPolicy</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="status-category">
+                  <code><a href="data-inventory.html#status-category">StatusCategory</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="target-mode">
+                  <code><a href="data-inventory.html#target-mode">TargetMode</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="target-relation">
+                  <code><a href="data-inventory.html#target-relation">TargetRelation</a></code> —
+                  Proposed · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-interfaces">Interfaces</h3>
+              <ul>
+                <li data-inventory-id="absorb-state">
+                  <code><a href="data-inventory.html#absorb-state">AbsorbState</a></code> — Proposed
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="action-bar-state">
+                  <code><a href="data-inventory.html#action-bar-state">ActionBarState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="battle-revival-pool">
+                  <code
+                    ><a href="data-inventory.html#battle-revival-pool">BattleRevivalPool</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cast-state">
+                  <code><a href="data-inventory.html#cast-state">CastState</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="character-state">
+                  <code><a href="data-inventory.html#character-state">CharacterState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cleanse-module-selection">
+                  <code
+                    ><a href="data-inventory.html#cleanse-module-selection"
+                      >CleanseModuleSelection</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-hud-state">
+                  <code><a href="data-inventory.html#combat-hud-state">CombatHudState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-result">
+                  <code><a href="data-inventory.html#combat-result">CombatResult</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cooldown-state">
+                  <code><a href="data-inventory.html#cooldown-state">CooldownState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="crowd-control-history">
+                  <code
+                    ><a href="data-inventory.html#crowd-control-history"
+                      >CrowdControlHistory</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="ground-effect-state">
+                  <code
+                    ><a href="data-inventory.html#ground-effect-state">GroundEffectState</a></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="ground-target-preview">
+                  <code
+                    ><a href="data-inventory.html#ground-target-preview"
+                      >GroundTargetPreview</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="input-queue-state">
+                  <code><a href="data-inventory.html#input-queue-state">InputQueueState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="movement-state">
+                  <code><a href="data-inventory.html#movement-state">MovementState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="nameplate-state">
+                  <code><a href="data-inventory.html#nameplate-state">NameplateState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="npc-state">
+                  <code><a href="data-inventory.html#npc-state">NpcState</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="prepared-device-state">
+                  <code
+                    ><a href="data-inventory.html#prepared-device-state"
+                      >PreparedDeviceState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="projectile-state">
+                  <code><a href="data-inventory.html#projectile-state">ProjectileState</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recovery-state">
+                  <code><a href="data-inventory.html#recovery-state">RecoveryState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-reservation">
+                  <code
+                    ><a href="data-inventory.html#resource-reservation"
+                      >ResourceReservation</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="role-capability-set">
+                  <code
+                    ><a href="data-inventory.html#role-capability-set">RoleCapabilitySet</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="status-instance">
+                  <code><a href="data-inventory.html#status-instance">StatusInstance</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="support-contribution">
+                  <code
+                    ><a href="data-inventory.html#support-contribution"
+                      >SupportContribution</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="target-cycle-state">
+                  <code><a href="data-inventory.html#target-cycle-state">TargetCycleState</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="target-selection">
+                  <code><a href="data-inventory.html#target-selection">TargetSelection</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="threat-table">
+                  <code><a href="data-inventory.html#threat-table">ThreatTable</a></code> — Proposed
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="travel-eligibility">
+                  <code
+                    ><a href="data-inventory.html#travel-eligibility">TravelEligibility</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-schemas">Schemas</h3>
+              <ul>
+                <li data-inventory-id="ability-targeting-policy">
+                  <code
+                    ><a href="data-inventory.html#ability-targeting-policy"
+                      >AbilityTargetingPolicy</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="ability-timing-policy">
+                  <code
+                    ><a href="data-inventory.html#ability-timing-policy"
+                      >AbilityTimingPolicy</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-log-record">
+                  <code><a href="data-inventory.html#combat-log-record">CombatLogRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-rules-configuration">
+                  <code
+                    ><a href="data-inventory.html#combat-rules-configuration"
+                      >CombatRulesConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cooldown-definition">
+                  <code
+                    ><a href="data-inventory.html#cooldown-definition">CooldownDefinition</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cooldown-family">
+                  <code><a href="data-inventory.html#cooldown-family">CooldownFamily</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="encounter-checkpoint">
+                  <code
+                    ><a href="data-inventory.html#encounter-checkpoint"
+                      >EncounterCheckpoint</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="navigation-configuration">
+                  <code
+                    ><a href="data-inventory.html#navigation-configuration"
+                      >NavigationConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="npc-ability-kit">
+                  <code><a href="data-inventory.html#npc-ability-kit">NpcAbilityKit</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="npc-definition">
+                  <code><a href="data-inventory.html#npc-definition">NpcDefinition</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="recovery-point-definition">
+                  <code
+                    ><a href="data-inventory.html#recovery-point-definition"
+                      >RecoveryPointDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="recovery-request">
+                  <code><a href="data-inventory.html#recovery-request">RecoveryRequest</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-type">
+                  <code><a href="data-inventory.html#resource-type">ResourceType</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="world-location-definition">
+                  <code
+                    ><a href="data-inventory.html#world-location-definition"
+                      >WorldLocationDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="world-object-definition">
+                  <code
+                    ><a href="data-inventory.html#world-object-definition"
+                      >WorldObjectDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="zone-definition">
+                  <code><a href="data-inventory.html#zone-definition">ZoneDefinition</a></code> —
+                  Proposed · Fully Defined
+                </li>
+              </ul>
+            </section>
+            <!-- data-inventory:end -->
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#targeting-and-movement">Targeting and movement</a
+          ><a href="#shared-numerical-defaults">Shared numerical defaults</a
+          ><a href="#cast-lifecycle">Cast lifecycle</a
+          ><a href="#projectiles-and-ground-effects">Projectiles and ground effects</a
+          ><a href="#tanking-and-threat">Tanking and threat</a
+          ><a href="#healer-and-support-interaction">Healer and support interaction</a
+          ><a href="#death-recovery-and-battle-revival">Death, recovery and battle revival</a
+          ><a href="#what-a-group-encounter-must-test">What a group encounter must test</a>
+          <a data-inventory-toc href="#data">Data</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,93 +1,363 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Sources &amp; provenance · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Unreal C++ &amp; networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a aria-current=page href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Validation</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Validation</div><h1>Sources &amp; provenance</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<h2 id="research-boundary">Research boundary</h2>
-<p>External sources inform the visual direction, Unreal Engine facilities, database guarantees, intellectual-property caution and profession research. The rules, formulas, faction choices, talent structure and professions are project-design proposals, not publisher or engine recommendations.</p>
-<p>Official Unreal Engine technical references were reviewed on <strong>October 20, 2026</strong>; earlier visual research remains a technique reference. Select and pin an actually tested Unreal Engine 5 version, native C++ toolchain, platforms and compatible replication plugins before implementation; a documentation page alone does not verify a supported project setup.</p>
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Primary source</th>
-<th>What it supports</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><span id="s1">S1</span></td>
-<td><a href="https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap">Blizzard — World of Warcraft: Forever Deep Dive Panel Recap</a></td>
-<td>Recipes across level ranges and useful profession-created camping objects; inspiration for relevance during leveling, not copied recipes</td>
-</tr>
-<tr>
-<td><span id="s2">S2</span></td>
-<td><a href="https://dev.epicgames.com/documentation/unreal-engine/networking-overview-for-unreal-engine">Unreal Engine — Networking overview</a></td>
-<td>Authority, actor replication and RPC fundamentals</td>
-</tr>
-<tr>
-<td><span id="s3">S3</span></td>
-<td><a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-owner-and-owning-connection-in-unreal-engine">Unreal Engine — Actor owner and owning connection</a></td>
-<td>Connection ownership, owner-sensitive RPC routing, replication and relevancy</td>
-</tr>
-<tr>
-<td><span id="s4">S4</span></td>
-<td><a href="https://www.postgresql.org/docs/current/transaction-iso.html">PostgreSQL — Transaction isolation</a></td>
-<td>Isolation behavior and need to retry whole transactions after relevant serialization failures</td>
-</tr>
-<tr>
-<td><span id="s5">S5</span></td>
-<td><a href="https://www.postgresql.org/docs/current/ddl-constraints.html">PostgreSQL — Constraints</a></td>
-<td>Primary, unique, foreign-key and check constraints used in ownership/ledger design</td>
-</tr>
-<tr>
-<td><span id="s6">S6</span></td>
-<td><a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine">Unreal Engine — Setting up dedicated servers</a></td>
-<td>Dedicated C++ server setup, build and testing fundamentals</td>
-</tr>
-<tr>
-<td><span id="s7">S7</span></td>
-<td><a href="https://www.copyright.gov/register/tx-games.html">U.S. Copyright Office — Games</a></td>
-<td>Distinction between game ideas/methods and protected creative expression</td>
-</tr>
-<tr>
-<td><span id="s8">S8</span></td>
-<td><a href="https://www.uspto.gov/trademarks/basics/why-search-similar-trademarks">USPTO — Why search for similar trademarks?</a></td>
-<td>Need to consider similar marks and confusion, not only exact name matches</td>
-</tr>
-<tr>
-<td><span id="s9">S9</span></td>
-<td><a href="https://www.davidhol.land/articles/3d-pixel-art-rendering/">David Holland — 3D Pixel Art Rendering</a></td>
-<td>User-selected visual reference; framing, art consistency, lighting, foliage, water and atmosphere. Article dated September 24, 2024, with later updates; project acceptance criteria are defined in <a href="decisions.html#art-direction">Art direction</a>.</td>
-</tr>
-<tr>
-<td><span id="s10">S10</span></td>
-<td><a href="https://dev.epicgames.com/documentation/unreal-engine/anti-aliasing-and-upscaling-in-unreal-engine">Unreal Engine — Anti-aliasing and upscaling</a></td>
-<td>General display quality and performance options</td>
-</tr>
-<tr>
-<td><span id="s12">S12</span></td>
-<td><a href="https://dev.epicgames.com/documentation/unreal-engine/orthographic-camera-in-unreal-engine">Unreal Engine — Orthographic camera</a></td>
-<td>Angled orthographic camera framing and projection</td>
-</tr>
-<tr>
-<td><span id="s13">S13</span></td>
-<td><a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/screen-percentage-with-temporal-upscale-in-unreal-engine">Unreal Engine — Screen percentage and upscaling</a></td>
-<td>Display scaling and independently readable UI</td>
-</tr>
-<tr>
-<td><span id="s14">S14</span></td>
-<td><a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-materials">Unreal Engine — Materials</a></td>
-<td>Surface appearance, lighting and transparency materials</td>
-</tr>
-<tr>
-<td><span id="s16">S16</span></td>
-<td><a href="https://www.youtube.com/channel/UCIjUIjWig0r5DIixQrt6A3A">t3ssel8r — YouTube channel</a>; <a href="https://www.youtube.com/watch?v=ERA7-I5nPAU">Creating a Scene for my 3D Pixel Art Game</a></td>
-<td>User-selected supplementary visual research. Channel identity and scene-video title were checked; select relevant comparisons during future art reviews without prescribing a rendering technique.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="intellectual-property-limits">Intellectual-property limits</h2>
-<p>Traditional archetypes and a two-faction structure do not make reproducing another game's specific creative expression safe. Use independently created ability descriptions, art, icons, sound, visual identities and branding. Race, faction, class and ability names in this prototype have <strong>not</strong> received a trademark clearance search. This reference is not a legal clearance opinion. Obtain appropriate review before committing to commercial branding or asset production. <a href="sources.html">Sources S7, S8</a></p>
-<h2 id="supplied-v1-materials">Supplied v1 materials</h2>
-<p>The source was the attached <code>MMORPG_Character_System_Design_v1.zip</code> and its character catalog, plus the accompanying master/reference markdown files. The v2 package preserves stable identifiers for the inherited class, specialization, ability and talent inventory where possible. It changes progression, race/faction policy and implementation contracts explicitly.</p>
-<p>The original package remains unchanged outside this output. V1 narrative text is not copied into the current mechanics reference. The data provenance file records source filenames and checksums so changes can be traced without mistaking old lore for current design.</p>
-<h2 id="how-to-read-readiness-labels">How to read readiness labels</h2>
-<p><strong>Design policy</strong> means a recommended governing rule. <strong>Prototype profile</strong> means explicit initial numerical parameters, not proven balance. <strong>Shared rule contract</strong> means a repeatable talent behavior has been specified, but still needs runtime code and tests. <strong>Bespoke binding required</strong> means an entry's named special behavior has not yet been resolved into certified runtime operations. <strong>Validated</strong> always refers to a named structural/arithmetic/browser check, never a blanket endorsement of game quality.</p>
-</div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#research-boundary">Research boundary</a><a href="#intellectual-property-limits">Intellectual-property limits</a><a href="#supplied-v1-materials">Supplied v1 materials</a><a href="#how-to-read-readiness-labels">How to read readiness labels</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Sources &amp; provenance · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a aria-current="page" href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Validation</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span>Validation
+          </div>
+          <h1>Sources &amp; provenance</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <h2 id="research-boundary">Research boundary</h2>
+            <p>
+              External sources inform the visual direction, Unreal Engine facilities, database
+              guarantees, intellectual-property caution and profession research. The rules,
+              formulas, faction choices, talent structure and professions are project-design
+              proposals, not publisher or engine recommendations.
+            </p>
+            <p>
+              Official Unreal Engine technical references were reviewed on
+              <strong>October 20, 2026</strong>; earlier visual research remains a technique
+              reference. Select and pin an actually tested Unreal Engine 5 version, native C++
+              toolchain, platforms and compatible replication plugins before implementation; a
+              documentation page alone does not verify a supported project setup.
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Primary source</th>
+                  <th>What it supports</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span id="s1">S1</span></td>
+                  <td>
+                    <a
+                      href="https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap"
+                      >Blizzard — World of Warcraft: Forever Deep Dive Panel Recap</a
+                    >
+                  </td>
+                  <td>
+                    Recipes across level ranges and useful profession-created camping objects;
+                    inspiration for relevance during leveling, not copied recipes
+                  </td>
+                </tr>
+                <tr>
+                  <td><span id="s2">S2</span></td>
+                  <td>
+                    <a
+                      href="https://dev.epicgames.com/documentation/unreal-engine/networking-overview-for-unreal-engine"
+                      >Unreal Engine — Networking overview</a
+                    >
+                  </td>
+                  <td>Authority, actor replication and RPC fundamentals</td>
+                </tr>
+                <tr>
+                  <td><span id="s3">S3</span></td>
+                  <td>
+                    <a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-owner-and-owning-connection-in-unreal-engine"
+                      >Unreal Engine — Actor owner and owning connection</a
+                    >
+                  </td>
+                  <td>
+                    Connection ownership, owner-sensitive RPC routing, replication and relevancy
+                  </td>
+                </tr>
+                <tr>
+                  <td><span id="s4">S4</span></td>
+                  <td>
+                    <a href="https://www.postgresql.org/docs/current/transaction-iso.html"
+                      >PostgreSQL — Transaction isolation</a
+                    >
+                  </td>
+                  <td>
+                    Isolation behavior and need to retry whole transactions after relevant
+                    serialization failures
+                  </td>
+                </tr>
+                <tr>
+                  <td><span id="s5">S5</span></td>
+                  <td>
+                    <a href="https://www.postgresql.org/docs/current/ddl-constraints.html"
+                      >PostgreSQL — Constraints</a
+                    >
+                  </td>
+                  <td>
+                    Primary, unique, foreign-key and check constraints used in ownership/ledger
+                    design
+                  </td>
+                </tr>
+                <tr>
+                  <td><span id="s6">S6</span></td>
+                  <td>
+                    <a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-dedicated-servers-in-unreal-engine"
+                      >Unreal Engine — Setting up dedicated servers</a
+                    >
+                  </td>
+                  <td>Dedicated C++ server setup, build and testing fundamentals</td>
+                </tr>
+                <tr>
+                  <td><span id="s7">S7</span></td>
+                  <td>
+                    <a href="https://www.copyright.gov/register/tx-games.html"
+                      >U.S. Copyright Office — Games</a
+                    >
+                  </td>
+                  <td>Distinction between game ideas/methods and protected creative expression</td>
+                </tr>
+                <tr>
+                  <td><span id="s8">S8</span></td>
+                  <td>
+                    <a href="https://www.uspto.gov/trademarks/basics/why-search-similar-trademarks"
+                      >USPTO — Why search for similar trademarks?</a
+                    >
+                  </td>
+                  <td>Need to consider similar marks and confusion, not only exact name matches</td>
+                </tr>
+                <tr>
+                  <td><span id="s9">S9</span></td>
+                  <td>
+                    <a href="https://www.davidhol.land/articles/3d-pixel-art-rendering/"
+                      >David Holland — 3D Pixel Art Rendering</a
+                    >
+                  </td>
+                  <td>
+                    User-selected visual reference; framing, art consistency, lighting, foliage,
+                    water and atmosphere. Article dated September 24, 2024, with later updates;
+                    project acceptance criteria are defined in
+                    <a href="decisions.html#art-direction">Art direction</a>.
+                  </td>
+                </tr>
+                <tr>
+                  <td><span id="s10">S10</span></td>
+                  <td>
+                    <a
+                      href="https://dev.epicgames.com/documentation/unreal-engine/anti-aliasing-and-upscaling-in-unreal-engine"
+                      >Unreal Engine — Anti-aliasing and upscaling</a
+                    >
+                  </td>
+                  <td>General display quality and performance options</td>
+                </tr>
+                <tr>
+                  <td><span id="s12">S12</span></td>
+                  <td>
+                    <a
+                      href="https://dev.epicgames.com/documentation/unreal-engine/orthographic-camera-in-unreal-engine"
+                      >Unreal Engine — Orthographic camera</a
+                    >
+                  </td>
+                  <td>Angled orthographic camera framing and projection</td>
+                </tr>
+                <tr>
+                  <td><span id="s13">S13</span></td>
+                  <td>
+                    <a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/screen-percentage-with-temporal-upscale-in-unreal-engine"
+                      >Unreal Engine — Screen percentage and upscaling</a
+                    >
+                  </td>
+                  <td>Display scaling and independently readable UI</td>
+                </tr>
+                <tr>
+                  <td><span id="s14">S14</span></td>
+                  <td>
+                    <a
+                      href="https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-materials"
+                      >Unreal Engine — Materials</a
+                    >
+                  </td>
+                  <td>Surface appearance, lighting and transparency materials</td>
+                </tr>
+                <tr>
+                  <td><span id="s16">S16</span></td>
+                  <td>
+                    <a href="https://www.youtube.com/channel/UCIjUIjWig0r5DIixQrt6A3A"
+                      >t3ssel8r — YouTube channel</a
+                    >;
+                    <a href="https://www.youtube.com/watch?v=ERA7-I5nPAU"
+                      >Creating a Scene for my 3D Pixel Art Game</a
+                    >
+                  </td>
+                  <td>
+                    User-selected supplementary visual research. Channel identity and scene-video
+                    title were checked; select relevant comparisons during future art reviews
+                    without prescribing a rendering technique.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h2 id="intellectual-property-limits">Intellectual-property limits</h2>
+            <p>
+              Traditional archetypes and a two-faction structure do not make reproducing another
+              game's specific creative expression safe. Use independently created ability
+              descriptions, art, icons, sound, visual identities and branding. Race, faction, class
+              and ability names in this prototype have <strong>not</strong> received a trademark
+              clearance search. This reference is not a legal clearance opinion. Obtain appropriate
+              review before committing to commercial branding or asset production.
+              <a href="sources.html">Sources S7, S8</a>
+            </p>
+            <h2 id="supplied-v1-materials">Supplied v1 materials</h2>
+            <p>
+              The source was the attached <code>MMORPG_Character_System_Design_v1.zip</code> and its
+              character catalog, plus the accompanying master/reference markdown files. The v2
+              package preserves stable identifiers for the inherited class, specialization, ability
+              and talent inventory where possible. It changes progression, race/faction policy and
+              implementation contracts explicitly.
+            </p>
+            <p>
+              The original package remains unchanged outside this output. V1 narrative text is not
+              copied into the current mechanics reference. The data provenance file records source
+              filenames and checksums so changes can be traced without mistaking old lore for
+              current design.
+            </p>
+            <h2 id="how-to-read-readiness-labels">How to read readiness labels</h2>
+            <p>
+              <strong>Design policy</strong> means a recommended governing rule.
+              <strong>Prototype profile</strong> means explicit initial numerical parameters, not
+              proven balance. <strong>Shared rule contract</strong> means a repeatable talent
+              behavior has been specified, but still needs runtime code and tests.
+              <strong>Bespoke binding required</strong> means an entry's named special behavior has
+              not yet been resolved into certified runtime operations.
+              <strong>Validated</strong> always refers to a named structural/arithmetic/browser
+              check, never a blanket endorsement of game quality.
+            </p>
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#research-boundary">Research boundary</a
+          ><a href="#intellectual-property-limits">Intellectual-property limits</a
+          ><a href="#supplied-v1-materials">Supplied v1 materials</a
+          ><a href="#how-to-read-readiness-labels">How to read readiness labels</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

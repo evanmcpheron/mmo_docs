@@ -1,173 +1,1094 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Interface &amp; accessibility · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Unreal C++ &amp; networking</a><a aria-current=page href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Engineering</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Engineering</div><h1>Interface &amp; accessibility</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<h2 id="character-creation">Character creation</h2>
-<p>The screen should closely follow World of Warcraft’s character creation layout and flow: a prominent character preview, clear faction/race/class choices, appearance customization, naming and review before entering the world. The <a href="character-creation.html">character creation and beginner-area feature flow</a> describes each step and the level 1–10 experience that follows.</p>
-<p>Choose faction, race and class as separate controls. A Human can choose either faction; its starting attributes remain identical. Selecting an incompatible faction clears the class selection only after an explanatory prompt. Show an explicit eligibility matrix rather than hiding an unavailable class without explanation. The server validates the final combination again.</p>
-<p>Show racial offsets beside class-derived starting values and an optional level-60 preview. Explain that racial modifiers are fixed additions. Do not label races as the “best” for a class based on minor starting differences. Body size never changes the combat capsule, movement speed or selection priority.</p>
-<h2 id="talent-and-specialization-screens">Talent and specialization screens</h2>
-<p>The specialization screen must show the role, sustained resource, signature meter, three starting specialization abilities and two contrasting playstyle examples. Changing from High Priest to Oracle must visibly replace direct-recovery emphasis with prevention; changing talents within Oracle must show a smaller, focused change inside that identity.</p>
-<p>Show class points and specialization points separately, including banked points. Every node shows cost, rank, prerequisites, learned-ability requirement, exclusive alternatives and affected abilities. A prospective allocation produces a before/after tooltip diff before confirmation. Highlight changed targeting, movement permissions, resource spending, summon limits and timing—not just damage percentages.</p>
-<p>Keep the gameplay talent editor distinct from this documentation site. This ZIP supplies readable node tables and structured data; it does not pretend to contain a working in-game build editor. A game editor must run the same validation rules as the server and treat local validation only as a convenience.</p>
-<p>Allow keyboard traversal, zoom independent of text size, search by ability/tag, undo in the uncommitted draft and reset by tree. Use labels and shapes as well as color. Clicking a mutually exclusive choice previews the removal of the other selection and all dependent consequences. Nothing partially applies during preview.</p>
-<h2 id="rendering-and-camera">Rendering and camera</h2>
-<p>Apply the <a href="decisions.html#art-direction">3D pixel-art direction</a> consistently across world and character previews. The gameplay camera follows the controlled character and defaults to an elevated, angled top-down orthographic view. Scrolling inward smoothly brings the camera closer, lowers its viewing angle and transitions into a behind-character third-person perspective; scrolling outward returns to the original overview. Keep the character in view through the full reversible zoom range without abrupt framing or projection jumps.</p>
-<p>While middle mouse is held, dragging horizontally rotates the camera around the controlled character (yaw) and dragging vertically adjusts camera pitch within safe bounds. Releasing middle mouse stops orbit input. Orbit operates in both the elevated and close views and changes the camera only: it must not independently turn, move or re-aim the character. UI-captured wheel or middle-mouse input must not move the world camera.</p>
-<p>Test camera modes, scrolling and orbiting alongside aspect ratios, supported window sizes and high-DPI scaling. Keep UI labels and pointer handling independently scalable and readable. See <a href="sources.html#s12">orthographic cameras</a> and <a href="sources.html#s13">display scaling guidance</a>. Camera behavior is an interaction requirement; projection interpolation and implementation details must be verified in Unreal rather than assumed.</p>
-<p>Map pointer input through the displayed world content rectangle, rejecting letterbox space and UI-captured input. Account for viewport scaling, active camera projection and transition state when resolving the declared gameplay floor. Ground-target previews and submitted aim must agree during following, orbiting, scrolling, resizing and third-person transitions. Camera presentation must never modify authoritative movement, collision or aim.</p>
-<p>Keep players, selected targets and required telegraphs identifiable when roofs, walls, foliage or terrain occlude them. Presentation aids and target markers may show only server-authorized state; camera changes never expand the information envelope. Water, shadows, weather and overlapping effects must not conceal actionable hazards. Quality settings may reduce cosmetic cost while retaining required hazards, target feedback and readable contrast.</p>
-<p>Pin the Unreal Engine 5 C++ toolchain and record supported camera, display and quality settings. Review representative characters, environments, lighting and water on target hardware for gameplay readability, accessible UI and measured performance. See <a href="sources.html#s10">general display quality options</a> and <a href="sources.html#s14">surface materials</a>.</p>
-<h2 id="combat-display">Combat display</h2>
-<p>Provide readable 3D model animation in the low-resolution world view with continuous targeting geometry. Preserve the eight <code>SpriteDirection</code> preview presets without imposing eight-direction sprite animation on the world. An action button shows resource cost, cast duration, current cooldown, range failure, line-of-sight failure and incompatible-state failure. Rejected actions display a brief specific reason rather than a generic error sound.</p>
-<p>Keep enemy danger telegraphs above friendly cosmetic effects. Use distinct patterns for hostile cones, persistent hazards, healing areas and selected targets. Player outlines, nameplate density and friendly VFX intensity are adjustable. Boss-critical telegraphs cannot be disabled by the general effect-quality setting.</p>
-<p>A ground-targeted ability supports normal confirmation and optional quick-cast. Always offer a held-key preview and cancellation. Friendly frame targeting and self-cast modifiers prevent the need to click overlapping characters. Target cycling orders candidates by relevance, distance and stable entity ID; repeated presses do not select hidden or ineligible enemies.</p>
-<p>Pet classes receive attack, follow, hold and recall commands plus a visible shared capacity indicator. Bard shows maintained song slots and aggregate support strength. Ironbody shows delayed damage as debt separately from health and shields; it must not look like a free absorb.</p>
-<h2 id="profession-and-market-display">Profession and market display</h2>
-<p>A recipe shows the intended character-level band, required skill, actual output, exact cost, material sources, deterministic yield and whether it still gives skill progress. An output that requires customer-owned bound material is clearly a commission, not a tradable ordinary listing.</p>
-<p>Display available inventory separately from escrowed, listed and reserved amounts. Show why a stack cannot be used. Before crafting or accepting an order, preview output binding, grade, item budget and enhancements that recrafting would replace. Show the commission fee separately from material value and marketplace fees.</p>
-<p>Filter by “useful at my level,” “craftable now,” “gives skill progress,” “available customer order” and “needs one material.” Do not make players inspect hundreds of obsolete recipes to find an appropriate item. Old recipes remain available for trading and collections without falsely appearing to scale to level 60.</p>
-<h2 id="accessibility-and-input">Accessibility and input</h2>
-<p>Support remappable keys, independent UI scaling, readable fonts, reduced screen shake/flashes, non-color status labels, audio/subtitle alternatives and controller navigation where the platform is supported. Do not make the Bard a latency-sensitive rhythm minigame. Reaction windows must consider the target network conditions.</p>
-<p>Animations and sound are feedback, not authoritative clocks. Cast progress follows server time with presentation smoothing. Never allow an inaccessible tiny character, obscure roof layer or low-contrast marker to be the only signal for a lethal attack.</p>
-<h2 id="readiness-tests">Readiness tests</h2>
-<p>Test both Human factions, keyboard-only talent editing, expensive craft confirmation, full inventory delivery, 30-player readability, small-window text reflow and healer ally targeting. These are future acceptance scenarios, not claims that an in-game Unreal UI already exists.</p>
-<!-- data-inventory:start -->
-<section class="data-inventory" aria-labelledby="data">
-<h2 id="data">Data</h2>
-<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
-<h3 id="data-enums">Enums</h3>
-<ul>
-<li data-inventory-id="action-rejection-reason"><code><a href="data-inventory.html#action-rejection-reason">ActionRejectionReason</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="appearance-option-category"><code><a href="data-inventory.html#appearance-option-category">AppearanceOptionCategory</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="armor-family"><code><a href="data-inventory.html#armor-family">ArmorFamily</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="attribute-type"><code><a href="data-inventory.html#attribute-type">AttributeType</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="cast-phase"><code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-creation-outcome"><code><a href="data-inventory.html#character-creation-outcome">CharacterCreationOutcome</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-creation-step"><code><a href="data-inventory.html#character-creation-step">CharacterCreationStep</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-role"><code><a href="data-inventory.html#combat-role">CombatRole</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="enhancement-category"><code><a href="data-inventory.html#enhancement-category">EnhancementCategory</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="equipment-slot"><code><a href="data-inventory.html#equipment-slot">EquipmentSlot</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="ground-cast-mode"><code><a href="data-inventory.html#ground-cast-mode">GroundCastMode</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="input-device-kind"><code><a href="data-inventory.html#input-device-kind">InputDeviceKind</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-binding-state"><code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-grade"><code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="pet-command-type"><code><a href="data-inventory.html#pet-command-type">PetCommandType</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="profession-band"><code><a href="data-inventory.html#profession-band">ProfessionBand</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="sprite-direction"><code><a href="data-inventory.html#sprite-direction">SpriteDirection</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="summon-kind"><code><a href="data-inventory.html#summon-kind">SummonKind</a></code> — Existing · Fully Defined</li>
-</ul>
-<h3 id="data-interfaces">Interfaces</h3>
-<ul>
-<li data-inventory-id="action-bar-state"><code><a href="data-inventory.html#action-bar-state">ActionBarState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="attribute-set"><code><a href="data-inventory.html#attribute-set">AttributeSet</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="build-preview"><code><a href="data-inventory.html#build-preview">BuildPreview</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cast-state"><code><a href="data-inventory.html#cast-state">CastState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-appearance"><code><a href="data-inventory.html#character-appearance">CharacterAppearance</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-creation-draft"><code><a href="data-inventory.html#character-creation-draft">CharacterCreationDraft</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-eligibility"><code><a href="data-inventory.html#character-eligibility">CharacterEligibility</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-loadout"><code><a href="data-inventory.html#character-loadout">CharacterLoadout</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="character-preview-state"><code><a href="data-inventory.html#character-preview-state">CharacterPreviewState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-selection-state"><code><a href="data-inventory.html#character-selection-state">CharacterSelectionState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-hud-state"><code><a href="data-inventory.html#combat-hud-state">CombatHudState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="cooldown-state"><code><a href="data-inventory.html#cooldown-state">CooldownState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-confirmation-state"><code><a href="data-inventory.html#craft-confirmation-state">CraftConfirmationState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-job"><code><a href="data-inventory.html#craft-job">CraftJob</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-lease"><code><a href="data-inventory.html#craft-order-lease">CraftOrderLease</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-quote"><code><a href="data-inventory.html#craft-quote">CraftQuote</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-result-preview"><code><a href="data-inventory.html#craft-result-preview">CraftResultPreview</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="damage-debt-display-state"><code><a href="data-inventory.html#damage-debt-display-state">DamageDebtDisplayState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="damage-ledger"><code><a href="data-inventory.html#damage-ledger">DamageLedger</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="damage-transfer-state"><code><a href="data-inventory.html#damage-transfer-state">DamageTransferState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="derived-combat-stats"><code><a href="data-inventory.html#derived-combat-stats">DerivedCombatStats</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="ground-target-preview"><code><a href="data-inventory.html#ground-target-preview">GroundTargetPreview</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="input-queue-state"><code><a href="data-inventory.html#input-queue-state">InputQueueState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-availability-state"><code><a href="data-inventory.html#inventory-availability-state">InventoryAvailabilityState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-container"><code><a href="data-inventory.html#inventory-container">InventoryContainer</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-budget"><code><a href="data-inventory.html#item-budget">ItemBudget</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-instance"><code><a href="data-inventory.html#item-instance">ItemInstance</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-transfer-eligibility"><code><a href="data-inventory.html#item-transfer-eligibility">ItemTransferEligibility</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="maintained-song-state"><code><a href="data-inventory.html#maintained-song-state">MaintainedSongState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-browser-state"><code><a href="data-inventory.html#market-browser-state">MarketBrowserState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-purchase-quote"><code><a href="data-inventory.html#market-purchase-quote">MarketPurchaseQuote</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-search-query"><code><a href="data-inventory.html#market-search-query">MarketSearchQuery</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="merchant-stall-state"><code><a href="data-inventory.html#merchant-stall-state">MerchantStallState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="nameplate-state"><code><a href="data-inventory.html#nameplate-state">NameplateState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="note-sequence-state"><code><a href="data-inventory.html#note-sequence-state">NoteSequenceState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="pet-command-result"><code><a href="data-inventory.html#pet-command-result">PetCommandResult</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="pet-control-state"><code><a href="data-inventory.html#pet-control-state">PetControlState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="recipe-browser-state"><code><a href="data-inventory.html#recipe-browser-state">RecipeBrowserState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="recipe-configuration"><code><a href="data-inventory.html#recipe-configuration">RecipeConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-pool-state"><code><a href="data-inventory.html#resource-pool-state">ResourcePoolState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-reservation"><code><a href="data-inventory.html#resource-reservation">ResourceReservation</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="role-capability-set"><code><a href="data-inventory.html#role-capability-set">RoleCapabilitySet</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="service-availability"><code><a href="data-inventory.html#service-availability">ServiceAvailability</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="song-display-state"><code><a href="data-inventory.html#song-display-state">SongDisplayState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="song-support-budget"><code><a href="data-inventory.html#song-support-budget">SongSupportBudget</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="specialization-selection-state"><code><a href="data-inventory.html#specialization-selection-state">SpecializationSelectionState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="summon-capacity-state"><code><a href="data-inventory.html#summon-capacity-state">SummonCapacityState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="summon-state"><code><a href="data-inventory.html#summon-state">SummonState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="talent-allocation"><code><a href="data-inventory.html#talent-allocation">TalentAllocation</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="talent-editor-state"><code><a href="data-inventory.html#talent-editor-state">TalentEditorState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="talent-validation-result"><code><a href="data-inventory.html#talent-validation-result">TalentValidationResult</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="target-cycle-state"><code><a href="data-inventory.html#target-cycle-state">TargetCycleState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="target-selection"><code><a href="data-inventory.html#target-selection">TargetSelection</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="tooltip-comparison"><code><a href="data-inventory.html#tooltip-comparison">TooltipComparison</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-schemas">Schemas</h3>
-<ul>
-<li data-inventory-id="ability-definition"><code><a href="data-inventory.html#ability-definition">AbilityDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="accessibility-settings"><code><a href="data-inventory.html#accessibility-settings">AccessibilitySettings</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="action-bar-record"><code><a href="data-inventory.html#action-bar-record">ActionBarRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="build-application-response"><code><a href="data-inventory.html#build-application-response">BuildApplicationResponse</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="buyer-request-record"><code><a href="data-inventory.html#buyer-request-record">BuyerRequestRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-appearance-catalog"><code><a href="data-inventory.html#character-appearance-catalog">CharacterAppearanceCatalog</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-class"><code><a href="data-inventory.html#character-class">CharacterClass</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="character-creation-request"><code><a href="data-inventory.html#character-creation-request">CharacterCreationRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-creation-response"><code><a href="data-inventory.html#character-creation-response">CharacterCreationResponse</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-loadout-record"><code><a href="data-inventory.html#character-loadout-record">CharacterLoadoutRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-naming-policy"><code><a href="data-inventory.html#character-naming-policy">CharacterNamingPolicy</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="character-race"><code><a href="data-inventory.html#character-race">CharacterRace</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="character-selection-snapshot"><code><a href="data-inventory.html#character-selection-snapshot">CharacterSelectionSnapshot</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="class-definition"><code><a href="data-inventory.html#class-definition">ClassDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="client-settings"><code><a href="data-inventory.html#client-settings">ClientSettings</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-acceptance-request"><code><a href="data-inventory.html#craft-acceptance-request">CraftAcceptanceRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-batch-quote"><code><a href="data-inventory.html#craft-batch-quote">CraftBatchQuote</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-escrow-record"><code><a href="data-inventory.html#craft-escrow-record">CraftEscrowRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-job-record"><code><a href="data-inventory.html#craft-job-record">CraftJobRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-cancellation-request"><code><a href="data-inventory.html#craft-order-cancellation-request">CraftOrderCancellationRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-claim-request"><code><a href="data-inventory.html#craft-order-claim-request">CraftOrderClaimRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-record"><code><a href="data-inventory.html#craft-order-record">CraftOrderRecord</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="craft-quote-request"><code><a href="data-inventory.html#craft-quote-request">CraftQuoteRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="equipment-definition"><code><a href="data-inventory.html#equipment-definition">EquipmentDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="equipment-set-record"><code><a href="data-inventory.html#equipment-set-record">EquipmentSetRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="faction"><code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="faction-definition"><code><a href="data-inventory.html#faction-definition">FactionDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="input-action"><code><a href="data-inventory.html#input-action">InputAction</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="input-binding-configuration"><code><a href="data-inventory.html#input-binding-configuration">InputBindingConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-budget-configuration"><code><a href="data-inventory.html#item-budget-configuration">ItemBudgetConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-definition"><code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-effect-definition"><code><a href="data-inventory.html#item-effect-definition">ItemEffectDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="market-fee-configuration"><code><a href="data-inventory.html#market-fee-configuration">MarketFeeConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-listing-record"><code><a href="data-inventory.html#market-listing-record">MarketListingRecord</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="market-purchase-request"><code><a href="data-inventory.html#market-purchase-request">MarketPurchaseRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-search-request"><code><a href="data-inventory.html#market-search-request">MarketSearchRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="market-search-response"><code><a href="data-inventory.html#market-search-response">MarketSearchResponse</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="material-definition"><code><a href="data-inventory.html#material-definition">MaterialDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="playstyle-contract"><code><a href="data-inventory.html#playstyle-contract">PlaystyleContract</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="profession-definition"><code><a href="data-inventory.html#profession-definition">ProfessionDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="race-definition"><code><a href="data-inventory.html#race-definition">RaceDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recipe-definition"><code><a href="data-inventory.html#recipe-definition">RecipeDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recipe-ingredient"><code><a href="data-inventory.html#recipe-ingredient">RecipeIngredient</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recipe-result-preview"><code><a href="data-inventory.html#recipe-result-preview">RecipeResultPreview</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recraft-request"><code><a href="data-inventory.html#recraft-request">RecraftRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-type"><code><a href="data-inventory.html#resource-type">ResourceType</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="service-work-request"><code><a href="data-inventory.html#service-work-request">ServiceWorkRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="specialization"><code><a href="data-inventory.html#specialization">Specialization</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="specialization-definition"><code><a href="data-inventory.html#specialization-definition">SpecializationDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="specialization-selection-request"><code><a href="data-inventory.html#specialization-selection-request">SpecializationSelectionRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="talent-build-record"><code><a href="data-inventory.html#talent-build-record">TalentBuildRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="talent-node-definition"><code><a href="data-inventory.html#talent-node-definition">TalentNodeDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="telegraph-definition"><code><a href="data-inventory.html#telegraph-definition">TelegraphDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="visual-presentation-definition"><code><a href="data-inventory.html#visual-presentation-definition">VisualPresentationDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="world-entry-request"><code><a href="data-inventory.html#world-entry-request">WorldEntryRequest</a></code> — Proposed · Fully Defined</li>
-</ul>
-</section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#character-creation">Character creation</a><a href="#talent-and-specialization-screens">Talent and specialization screens</a><a href="#rendering-and-camera">Rendering and camera</a><a href="#combat-display">Combat display</a><a href="#profession-and-market-display">Profession and market display</a><a href="#accessibility-and-input">Accessibility and input</a><a href="#readiness-tests">Readiness tests</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Interface &amp; accessibility · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a aria-current="page" href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Engineering</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span>Engineering
+          </div>
+          <h1>Interface &amp; accessibility</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <h2 id="character-creation">Character creation</h2>
+            <p>
+              The screen should closely follow World of Warcraft’s character creation layout and
+              flow: a prominent character preview, clear faction/race/class choices, appearance
+              customization, naming and review before entering the world. The
+              <a href="character-creation.html"
+                >character creation and beginner-area feature flow</a
+              >
+              describes each step and the level 1–10 experience that follows.
+            </p>
+            <p>
+              Choose faction, race and class as separate controls. A Human can choose either
+              faction; its starting attributes remain identical. Selecting an incompatible faction
+              clears the class selection only after an explanatory prompt. Show an explicit
+              eligibility matrix rather than hiding an unavailable class without explanation. The
+              server validates the final combination again.
+            </p>
+            <p>
+              Show racial offsets beside class-derived starting values and an optional level-60
+              preview. Explain that racial modifiers are fixed additions. Do not label races as the
+              “best” for a class based on minor starting differences. Body size never changes the
+              combat capsule, movement speed or selection priority.
+            </p>
+            <h2 id="talent-and-specialization-screens">Talent and specialization screens</h2>
+            <p>
+              The specialization screen must show the role, sustained resource, signature meter,
+              three starting specialization abilities and two contrasting playstyle examples.
+              Changing from High Priest to Oracle must visibly replace direct-recovery emphasis with
+              prevention; changing talents within Oracle must show a smaller, focused change inside
+              that identity.
+            </p>
+            <p>
+              Show class points and specialization points separately, including banked points. Every
+              node shows cost, rank, prerequisites, learned-ability requirement, exclusive
+              alternatives and affected abilities. A prospective allocation produces a before/after
+              tooltip diff before confirmation. Highlight changed targeting, movement permissions,
+              resource spending, summon limits and timing—not just damage percentages.
+            </p>
+            <p>
+              Keep the gameplay talent editor distinct from this documentation site. This ZIP
+              supplies readable node tables and structured data; it does not pretend to contain a
+              working in-game build editor. A game editor must run the same validation rules as the
+              server and treat local validation only as a convenience.
+            </p>
+            <p>
+              Allow keyboard traversal, zoom independent of text size, search by ability/tag, undo
+              in the uncommitted draft and reset by tree. Use labels and shapes as well as color.
+              Clicking a mutually exclusive choice previews the removal of the other selection and
+              all dependent consequences. Nothing partially applies during preview.
+            </p>
+            <h2 id="rendering-and-camera">Rendering and camera</h2>
+            <p>
+              Apply the
+              <a href="decisions.html#art-direction">3D pixel-art direction</a> consistently across
+              world and character previews. The gameplay camera follows the controlled character and
+              defaults to an elevated, angled top-down orthographic view. Scrolling inward smoothly
+              brings the camera closer, lowers its viewing angle and transitions into a
+              behind-character third-person perspective; scrolling outward returns to the original
+              overview. Keep the character in view through the full reversible zoom range without
+              abrupt framing or projection jumps.
+            </p>
+            <p>
+              While middle mouse is held, dragging horizontally rotates the camera around the
+              controlled character (yaw) and dragging vertically adjusts camera pitch within safe
+              bounds. Releasing middle mouse stops orbit input. Orbit operates in both the elevated
+              and close views and changes the camera only: it must not independently turn, move or
+              re-aim the character. UI-captured wheel or middle-mouse input must not move the world
+              camera.
+            </p>
+            <p>
+              Test camera modes, scrolling and orbiting alongside aspect ratios, supported window
+              sizes and high-DPI scaling. Keep UI labels and pointer handling independently scalable
+              and readable. See <a href="sources.html#s12">orthographic cameras</a> and
+              <a href="sources.html#s13">display scaling guidance</a>. Camera behavior is an
+              interaction requirement; projection interpolation and implementation details must be
+              verified in Unreal rather than assumed.
+            </p>
+            <p>
+              Map pointer input through the displayed world content rectangle, rejecting letterbox
+              space and UI-captured input. Account for viewport scaling, active camera projection
+              and transition state when resolving the declared gameplay floor. Ground-target
+              previews and submitted aim must agree during following, orbiting, scrolling, resizing
+              and third-person transitions. Camera presentation must never modify authoritative
+              movement, collision or aim.
+            </p>
+            <p>
+              Keep players, selected targets and required telegraphs identifiable when roofs, walls,
+              foliage or terrain occlude them. Presentation aids and target markers may show only
+              server-authorized state; camera changes never expand the information envelope. Water,
+              shadows, weather and overlapping effects must not conceal actionable hazards. Quality
+              settings may reduce cosmetic cost while retaining required hazards, target feedback
+              and readable contrast.
+            </p>
+            <p>
+              Pin the Unreal Engine 5 C++ toolchain and record supported camera, display and quality
+              settings. Review representative characters, environments, lighting and water on target
+              hardware for gameplay readability, accessible UI and measured performance. See
+              <a href="sources.html#s10">general display quality options</a> and
+              <a href="sources.html#s14">surface materials</a>.
+            </p>
+            <h2 id="combat-display">Combat display</h2>
+            <p>
+              Provide readable 3D model animation in the low-resolution world view with continuous
+              targeting geometry. Preserve the eight <code>SpriteDirection</code> preview presets
+              without imposing eight-direction sprite animation on the world. An action button shows
+              resource cost, cast duration, current cooldown, range failure, line-of-sight failure
+              and incompatible-state failure. Rejected actions display a brief specific reason
+              rather than a generic error sound.
+            </p>
+            <p>
+              Keep enemy danger telegraphs above friendly cosmetic effects. Use distinct patterns
+              for hostile cones, persistent hazards, healing areas and selected targets. Player
+              outlines, nameplate density and friendly VFX intensity are adjustable. Boss-critical
+              telegraphs cannot be disabled by the general effect-quality setting.
+            </p>
+            <p>
+              A ground-targeted ability supports normal confirmation and optional quick-cast. Always
+              offer a held-key preview and cancellation. Friendly frame targeting and self-cast
+              modifiers prevent the need to click overlapping characters. Target cycling orders
+              candidates by relevance, distance and stable entity ID; repeated presses do not select
+              hidden or ineligible enemies.
+            </p>
+            <p>
+              Pet classes receive attack, follow, hold and recall commands plus a visible shared
+              capacity indicator. Bard shows maintained song slots and aggregate support strength.
+              Ironbody shows delayed damage as debt separately from health and shields; it must not
+              look like a free absorb.
+            </p>
+            <h2 id="profession-and-market-display">Profession and market display</h2>
+            <p>
+              A recipe shows the intended character-level band, required skill, actual output, exact
+              cost, material sources, deterministic yield and whether it still gives skill progress.
+              An output that requires customer-owned bound material is clearly a commission, not a
+              tradable ordinary listing.
+            </p>
+            <p>
+              Display available inventory separately from escrowed, listed and reserved amounts.
+              Show why a stack cannot be used. Before crafting or accepting an order, preview output
+              binding, grade, item budget and enhancements that recrafting would replace. Show the
+              commission fee separately from material value and marketplace fees.
+            </p>
+            <p>
+              Filter by “useful at my level,” “craftable now,” “gives skill progress,” “available
+              customer order” and “needs one material.” Do not make players inspect hundreds of
+              obsolete recipes to find an appropriate item. Old recipes remain available for trading
+              and collections without falsely appearing to scale to level 60.
+            </p>
+            <h2 id="accessibility-and-input">Accessibility and input</h2>
+            <p>
+              Support remappable keys, independent UI scaling, readable fonts, reduced screen
+              shake/flashes, non-color status labels, audio/subtitle alternatives and controller
+              navigation where the platform is supported. Do not make the Bard a latency-sensitive
+              rhythm minigame. Reaction windows must consider the target network conditions.
+            </p>
+            <p>
+              Animations and sound are feedback, not authoritative clocks. Cast progress follows
+              server time with presentation smoothing. Never allow an inaccessible tiny character,
+              obscure roof layer or low-contrast marker to be the only signal for a lethal attack.
+            </p>
+            <h2 id="readiness-tests">Readiness tests</h2>
+            <p>
+              Test both Human factions, keyboard-only talent editing, expensive craft confirmation,
+              full inventory delivery, 30-player readability, small-window text reflow and healer
+              ally targeting. These are future acceptance scenarios, not claims that an in-game
+              Unreal UI already exists.
+            </p>
+            <!-- data-inventory:start -->
+            <section class="data-inventory" aria-labelledby="data">
+              <h2 id="data">Data</h2>
+              <p>
+                Follow a type name to its canonical members, properties, constraints and review
+                decisions. Definitions are generated from one shared registry.
+              </p>
+              <h3 id="data-enums">Enums</h3>
+              <ul>
+                <li data-inventory-id="action-rejection-reason">
+                  <code
+                    ><a href="data-inventory.html#action-rejection-reason"
+                      >ActionRejectionReason</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="appearance-option-category">
+                  <code
+                    ><a href="data-inventory.html#appearance-option-category"
+                      >AppearanceOptionCategory</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="armor-family">
+                  <code><a href="data-inventory.html#armor-family">ArmorFamily</a></code> — Existing
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="attribute-type">
+                  <code><a href="data-inventory.html#attribute-type">AttributeType</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="cast-phase">
+                  <code><a href="data-inventory.html#cast-phase">CastPhase</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="character-creation-outcome">
+                  <code
+                    ><a href="data-inventory.html#character-creation-outcome"
+                      >CharacterCreationOutcome</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-creation-step">
+                  <code
+                    ><a href="data-inventory.html#character-creation-step"
+                      >CharacterCreationStep</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-role">
+                  <code><a href="data-inventory.html#combat-role">CombatRole</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="enhancement-category">
+                  <code
+                    ><a href="data-inventory.html#enhancement-category"
+                      >EnhancementCategory</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-slot">
+                  <code><a href="data-inventory.html#equipment-slot">EquipmentSlot</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="ground-cast-mode">
+                  <code><a href="data-inventory.html#ground-cast-mode">GroundCastMode</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="input-device-kind">
+                  <code><a href="data-inventory.html#input-device-kind">InputDeviceKind</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-binding-state">
+                  <code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-grade">
+                  <code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="pet-command-type">
+                  <code><a href="data-inventory.html#pet-command-type">PetCommandType</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="profession-band">
+                  <code><a href="data-inventory.html#profession-band">ProfessionBand</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="sprite-direction">
+                  <code><a href="data-inventory.html#sprite-direction">SpriteDirection</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="summon-kind">
+                  <code><a href="data-inventory.html#summon-kind">SummonKind</a></code> — Existing ·
+                  Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-interfaces">Interfaces</h3>
+              <ul>
+                <li data-inventory-id="action-bar-state">
+                  <code><a href="data-inventory.html#action-bar-state">ActionBarState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="attribute-set">
+                  <code><a href="data-inventory.html#attribute-set">AttributeSet</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="build-preview">
+                  <code><a href="data-inventory.html#build-preview">BuildPreview</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cast-state">
+                  <code><a href="data-inventory.html#cast-state">CastState</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="character-appearance">
+                  <code
+                    ><a href="data-inventory.html#character-appearance"
+                      >CharacterAppearance</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-creation-draft">
+                  <code
+                    ><a href="data-inventory.html#character-creation-draft"
+                      >CharacterCreationDraft</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-eligibility">
+                  <code
+                    ><a href="data-inventory.html#character-eligibility"
+                      >CharacterEligibility</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-loadout">
+                  <code><a href="data-inventory.html#character-loadout">CharacterLoadout</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="character-preview-state">
+                  <code
+                    ><a href="data-inventory.html#character-preview-state"
+                      >CharacterPreviewState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-selection-state">
+                  <code
+                    ><a href="data-inventory.html#character-selection-state"
+                      >CharacterSelectionState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-hud-state">
+                  <code><a href="data-inventory.html#combat-hud-state">CombatHudState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="cooldown-state">
+                  <code><a href="data-inventory.html#cooldown-state">CooldownState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-confirmation-state">
+                  <code
+                    ><a href="data-inventory.html#craft-confirmation-state"
+                      >CraftConfirmationState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-job">
+                  <code><a href="data-inventory.html#craft-job">CraftJob</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-lease">
+                  <code><a href="data-inventory.html#craft-order-lease">CraftOrderLease</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-quote">
+                  <code><a href="data-inventory.html#craft-quote">CraftQuote</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="craft-result-preview">
+                  <code
+                    ><a href="data-inventory.html#craft-result-preview">CraftResultPreview</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="damage-debt-display-state">
+                  <code
+                    ><a href="data-inventory.html#damage-debt-display-state"
+                      >DamageDebtDisplayState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="damage-ledger">
+                  <code><a href="data-inventory.html#damage-ledger">DamageLedger</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="damage-transfer-state">
+                  <code
+                    ><a href="data-inventory.html#damage-transfer-state"
+                      >DamageTransferState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="derived-combat-stats">
+                  <code
+                    ><a href="data-inventory.html#derived-combat-stats">DerivedCombatStats</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="ground-target-preview">
+                  <code
+                    ><a href="data-inventory.html#ground-target-preview"
+                      >GroundTargetPreview</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="input-queue-state">
+                  <code><a href="data-inventory.html#input-queue-state">InputQueueState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-availability-state">
+                  <code
+                    ><a href="data-inventory.html#inventory-availability-state"
+                      >InventoryAvailabilityState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-container">
+                  <code
+                    ><a href="data-inventory.html#inventory-container">InventoryContainer</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-budget">
+                  <code><a href="data-inventory.html#item-budget">ItemBudget</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="item-instance">
+                  <code><a href="data-inventory.html#item-instance">ItemInstance</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-transfer-eligibility">
+                  <code
+                    ><a href="data-inventory.html#item-transfer-eligibility"
+                      >ItemTransferEligibility</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="maintained-song-state">
+                  <code
+                    ><a href="data-inventory.html#maintained-song-state"
+                      >MaintainedSongState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-browser-state">
+                  <code
+                    ><a href="data-inventory.html#market-browser-state">MarketBrowserState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-purchase-quote">
+                  <code
+                    ><a href="data-inventory.html#market-purchase-quote"
+                      >MarketPurchaseQuote</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-search-query">
+                  <code
+                    ><a href="data-inventory.html#market-search-query">MarketSearchQuery</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="merchant-stall-state">
+                  <code
+                    ><a href="data-inventory.html#merchant-stall-state">MerchantStallState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="nameplate-state">
+                  <code><a href="data-inventory.html#nameplate-state">NameplateState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="note-sequence-state">
+                  <code
+                    ><a href="data-inventory.html#note-sequence-state">NoteSequenceState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="pet-command-result">
+                  <code><a href="data-inventory.html#pet-command-result">PetCommandResult</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="pet-control-state">
+                  <code><a href="data-inventory.html#pet-control-state">PetControlState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-browser-state">
+                  <code
+                    ><a href="data-inventory.html#recipe-browser-state">RecipeBrowserState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-configuration">
+                  <code
+                    ><a href="data-inventory.html#recipe-configuration"
+                      >RecipeConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-pool-state">
+                  <code
+                    ><a href="data-inventory.html#resource-pool-state">ResourcePoolState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-reservation">
+                  <code
+                    ><a href="data-inventory.html#resource-reservation"
+                      >ResourceReservation</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="role-capability-set">
+                  <code
+                    ><a href="data-inventory.html#role-capability-set">RoleCapabilitySet</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="service-availability">
+                  <code
+                    ><a href="data-inventory.html#service-availability"
+                      >ServiceAvailability</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="song-display-state">
+                  <code><a href="data-inventory.html#song-display-state">SongDisplayState</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="song-support-budget">
+                  <code
+                    ><a href="data-inventory.html#song-support-budget">SongSupportBudget</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="specialization-selection-state">
+                  <code
+                    ><a href="data-inventory.html#specialization-selection-state"
+                      >SpecializationSelectionState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="summon-capacity-state">
+                  <code
+                    ><a href="data-inventory.html#summon-capacity-state"
+                      >SummonCapacityState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="summon-state">
+                  <code><a href="data-inventory.html#summon-state">SummonState</a></code> — Proposed
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="talent-allocation">
+                  <code><a href="data-inventory.html#talent-allocation">TalentAllocation</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="talent-editor-state">
+                  <code
+                    ><a href="data-inventory.html#talent-editor-state">TalentEditorState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="talent-validation-result">
+                  <code
+                    ><a href="data-inventory.html#talent-validation-result"
+                      >TalentValidationResult</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="target-cycle-state">
+                  <code><a href="data-inventory.html#target-cycle-state">TargetCycleState</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="target-selection">
+                  <code><a href="data-inventory.html#target-selection">TargetSelection</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="tooltip-comparison">
+                  <code
+                    ><a href="data-inventory.html#tooltip-comparison">TooltipComparison</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-schemas">Schemas</h3>
+              <ul>
+                <li data-inventory-id="ability-definition">
+                  <code
+                    ><a href="data-inventory.html#ability-definition">AbilityDefinition</a></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="accessibility-settings">
+                  <code
+                    ><a href="data-inventory.html#accessibility-settings"
+                      >AccessibilitySettings</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="action-bar-record">
+                  <code><a href="data-inventory.html#action-bar-record">ActionBarRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="build-application-response">
+                  <code
+                    ><a href="data-inventory.html#build-application-response"
+                      >BuildApplicationResponse</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="buyer-request-record">
+                  <code
+                    ><a href="data-inventory.html#buyer-request-record">BuyerRequestRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-appearance-catalog">
+                  <code
+                    ><a href="data-inventory.html#character-appearance-catalog"
+                      >CharacterAppearanceCatalog</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-class">
+                  <code><a href="data-inventory.html#character-class">CharacterClass</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="character-creation-request">
+                  <code
+                    ><a href="data-inventory.html#character-creation-request"
+                      >CharacterCreationRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-creation-response">
+                  <code
+                    ><a href="data-inventory.html#character-creation-response"
+                      >CharacterCreationResponse</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-loadout-record">
+                  <code
+                    ><a href="data-inventory.html#character-loadout-record"
+                      >CharacterLoadoutRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-naming-policy">
+                  <code
+                    ><a href="data-inventory.html#character-naming-policy"
+                      >CharacterNamingPolicy</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="character-race">
+                  <code><a href="data-inventory.html#character-race">CharacterRace</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="character-selection-snapshot">
+                  <code
+                    ><a href="data-inventory.html#character-selection-snapshot"
+                      >CharacterSelectionSnapshot</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="class-definition">
+                  <code><a href="data-inventory.html#class-definition">ClassDefinition</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="client-settings">
+                  <code><a href="data-inventory.html#client-settings">ClientSettings</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-acceptance-request">
+                  <code
+                    ><a href="data-inventory.html#craft-acceptance-request"
+                      >CraftAcceptanceRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-batch-quote">
+                  <code><a href="data-inventory.html#craft-batch-quote">CraftBatchQuote</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-escrow-record">
+                  <code
+                    ><a href="data-inventory.html#craft-escrow-record">CraftEscrowRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-job-record">
+                  <code><a href="data-inventory.html#craft-job-record">CraftJobRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-cancellation-request">
+                  <code
+                    ><a href="data-inventory.html#craft-order-cancellation-request"
+                      >CraftOrderCancellationRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-claim-request">
+                  <code
+                    ><a href="data-inventory.html#craft-order-claim-request"
+                      >CraftOrderClaimRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-record">
+                  <code><a href="data-inventory.html#craft-order-record">CraftOrderRecord</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="craft-quote-request">
+                  <code
+                    ><a href="data-inventory.html#craft-quote-request">CraftQuoteRequest</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-definition">
+                  <code
+                    ><a href="data-inventory.html#equipment-definition"
+                      >EquipmentDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-set-record">
+                  <code
+                    ><a href="data-inventory.html#equipment-set-record">EquipmentSetRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="faction">
+                  <code><a href="data-inventory.html#faction">Faction</a></code> — Existing · Fully
+                  Defined
+                </li>
+                <li data-inventory-id="faction-definition">
+                  <code
+                    ><a href="data-inventory.html#faction-definition">FactionDefinition</a></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="input-action">
+                  <code><a href="data-inventory.html#input-action">InputAction</a></code> — Proposed
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="input-binding-configuration">
+                  <code
+                    ><a href="data-inventory.html#input-binding-configuration"
+                      >InputBindingConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-budget-configuration">
+                  <code
+                    ><a href="data-inventory.html#item-budget-configuration"
+                      >ItemBudgetConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-definition">
+                  <code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-effect-definition">
+                  <code
+                    ><a href="data-inventory.html#item-effect-definition"
+                      >ItemEffectDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="market-fee-configuration">
+                  <code
+                    ><a href="data-inventory.html#market-fee-configuration"
+                      >MarketFeeConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-listing-record">
+                  <code
+                    ><a href="data-inventory.html#market-listing-record"
+                      >MarketListingRecord</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="market-purchase-request">
+                  <code
+                    ><a href="data-inventory.html#market-purchase-request"
+                      >MarketPurchaseRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-search-request">
+                  <code
+                    ><a href="data-inventory.html#market-search-request"
+                      >MarketSearchRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="market-search-response">
+                  <code
+                    ><a href="data-inventory.html#market-search-response"
+                      >MarketSearchResponse</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="material-definition">
+                  <code
+                    ><a href="data-inventory.html#material-definition">MaterialDefinition</a></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="playstyle-contract">
+                  <code
+                    ><a href="data-inventory.html#playstyle-contract">PlaystyleContract</a></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="profession-definition">
+                  <code
+                    ><a href="data-inventory.html#profession-definition"
+                      >ProfessionDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="race-definition">
+                  <code><a href="data-inventory.html#race-definition">RaceDefinition</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-definition">
+                  <code><a href="data-inventory.html#recipe-definition">RecipeDefinition</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-ingredient">
+                  <code><a href="data-inventory.html#recipe-ingredient">RecipeIngredient</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-result-preview">
+                  <code
+                    ><a href="data-inventory.html#recipe-result-preview"
+                      >RecipeResultPreview</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recraft-request">
+                  <code><a href="data-inventory.html#recraft-request">RecraftRequest</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-type">
+                  <code><a href="data-inventory.html#resource-type">ResourceType</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="service-work-request">
+                  <code
+                    ><a href="data-inventory.html#service-work-request">ServiceWorkRequest</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="specialization">
+                  <code><a href="data-inventory.html#specialization">Specialization</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="specialization-definition">
+                  <code
+                    ><a href="data-inventory.html#specialization-definition"
+                      >SpecializationDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="specialization-selection-request">
+                  <code
+                    ><a href="data-inventory.html#specialization-selection-request"
+                      >SpecializationSelectionRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="talent-build-record">
+                  <code
+                    ><a href="data-inventory.html#talent-build-record">TalentBuildRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="talent-node-definition">
+                  <code
+                    ><a href="data-inventory.html#talent-node-definition"
+                      >TalentNodeDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="telegraph-definition">
+                  <code
+                    ><a href="data-inventory.html#telegraph-definition"
+                      >TelegraphDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="visual-presentation-definition">
+                  <code
+                    ><a href="data-inventory.html#visual-presentation-definition"
+                      >VisualPresentationDefinition</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="world-entry-request">
+                  <code
+                    ><a href="data-inventory.html#world-entry-request">WorldEntryRequest</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+              </ul>
+            </section>
+            <!-- data-inventory:end -->
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#character-creation">Character creation</a
+          ><a href="#talent-and-specialization-screens">Talent and specialization screens</a
+          ><a href="#rendering-and-camera">Rendering and camera</a
+          ><a href="#combat-display">Combat display</a
+          ><a href="#profession-and-market-display">Profession and market display</a
+          ><a href="#accessibility-and-input">Accessibility and input</a
+          ><a href="#readiness-tests">Readiness tests</a>
+          <a data-inventory-toc href="#data">Data</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

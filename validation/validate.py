@@ -17,7 +17,7 @@ from build_development_roadmap import generated_page_paths, load
 
 ROADMAP_TESTS = {'test_development_roadmap', 'test_data_inventory'}
 CONTRACT_TESTS = {'test_data_inventory', 'test_data_model', 'test_reviewed_contracts'}
-FULL_CHECKS = ('aggregate', 'python', 'browser-cleanup', 'browser', 'engine-artifacts')
+FULL_CHECKS = ('html-format', 'aggregate', 'python', 'browser-cleanup', 'browser', 'engine-artifacts')
 
 
 def changed_files(root=ROOT, base='origin/main'):
@@ -72,9 +72,9 @@ def select_checks(paths, root=ROOT):
             return 'full', [], 'Unknown or cross-cutting dependency: ' + path
     if shared_changed:
         tests.update({'test_data_inventory'} if tests else ROADMAP_TESTS | CONTRACT_TESTS)
-    checks = ['aggregate', 'python', 'engine-artifacts']
+    checks = ['html-format', 'aggregate', 'python', 'engine-artifacts']
     if browser:
-        checks.insert(2, 'browser')
+        checks.insert(3, 'browser')
     return 'fast', sorted(tests), checks
 
 
@@ -83,6 +83,7 @@ def commands(mode, tests, checks, report_dir=None, documentation_only=False):
     python_tests = ([sys.executable, '-m', 'unittest', 'discover', '-s', 'validation', '-p', 'test_*.py']
                     if mode == 'full' else [sys.executable, '-m', 'unittest', *tests])
     available = {
+        'html-format': ['npm', 'run', 'format:check'],
         'aggregate': [sys.executable, 'validation/run_checks.py', '--read-only'],
         'python': [*python_tests, *durations],
         'browser-cleanup': ['node', '--test', 'validation/test_browser_cleanup.mjs'],

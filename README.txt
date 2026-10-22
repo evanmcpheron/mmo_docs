@@ -67,8 +67,9 @@ Iterate: python3 validation/validate.py --mode fast
 Final PR gate (also the default): python3 validation/validate.py --mode full
 Requires Python 3.10+ (3.12+ reports slow unittest durations), Git, Node 22+
 and installed Chrome/Chromium. Set BRIARWAKE_CHROME_BIN when autodetection cannot
-find the browser. Missing prerequisites fail explicitly. No downloads or Python
-packages are required. These commands verify documentation, never gameplay.
+find the browser. Run npm ci once after checkout to install the locked Prettier
+development dependency. Missing prerequisites fail explicitly. No Python packages
+or browser downloads are required. These commands verify documentation, never gameplay.
 
 FAST combines committed branch changes since the merge base with origin/main,
 staged changes, unstaged changes and untracked files, including both sides of
@@ -125,6 +126,18 @@ in validation/data-inventory-browser-checks.json: actual offline file navigation
 canonical definitions, filters/search, feature links, roadmap epics, mobile layout,
 print visibility and reading with JavaScript disabled, using an isolated installed
 Chrome profile.
+
+HTML FORMATTING
+Run npm run format to format all HTML pages and sources/*.html.inc fragments.
+Run npm run format:check to check formatting without changing files. Both FAST
+and FULL validation include this check; CI installs Prettier with npm ci.
+.prettierrc.json owns the shared two-space indentation and 100-column wrapping
+used by the CLI, editor integrations and both Python generators. Formatting is
+limited to HTML; scripts, stylesheets, JSON contracts and retained evidence keep
+their existing formats. Node and npm ci are also required when generating or
+checking generated pages. Reading the published reference still needs only a browser.
+Format manually edited feature HTML before recording its explicit page review.
+Rebuilding either generator preserves formatted output for readable Git diffs.
 
 DATA EDITING
 HTML is a static published snapshot. Editing JSON does not automatically update
@@ -340,7 +353,8 @@ Check without writing: python3 scripts/build_data_inventory.py --check
 Focused consistency check: python3 validation/check_data_inventory.py
 Iterative checks: python3 validation/validate.py --mode fast
 Comprehensive PR gate: python3 validation/validate.py --mode full
-All Python commands require Python 3.10+ and the standard library only.
+Python requires version 3.10+ and the standard library only; generated HTML uses
+the local Prettier installed by npm ci through Node 22+.
 The browser check uses Node 22+ and installed Chrome/Chromium without downloads.
 Set BRIARWAKE_CHROME_BIN if needed. Use --report-dir to retain fresh evidence
 separately from historical rendering-only and inventory browser records.

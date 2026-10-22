@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 
 from build_data_inventory import Document, navigation
+from html_format import format_pages
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGE = 'guide/development-roadmap.html'
@@ -184,10 +185,10 @@ def shell(data, page, title, description, body, toc, root=ROOT, phase=None, epic
             '<span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main>')
     template = (root / 'guide/networking.html').read_text(encoding='utf-8')
     template = re.sub(r'\saria-current(?:="[^"]*"|=page)', '', template)
-    template = re.sub(r'<title>.*?</title>', lambda _: f'<title>{escape(title)} · Briarwake Development Roadmap</title>', template, count=1)
-    template = re.sub(r'<meta name="description" content="[^"]*">', lambda _: f'<meta name="description" content="{escape(description, quote=True)}">', template, count=1)
-    template = template.replace('<link rel="stylesheet" href="../assets/styles.css">', '<link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css">')
-    template = re.sub(r'<span class="section-label">.*?</span>', '<span class="section-label">Development planning</span>', template, count=1)
+    template = re.sub(r'<title>.*?</title>', lambda _: f'<title>{escape(title)} · Briarwake Development Roadmap</title>', template, count=1, flags=re.S)
+    template = re.sub(r'<meta\s+name="description"\s+content="[^"]*"\s*/?>', lambda _: f'<meta name="description" content="{escape(description, quote=True)}">', template, count=1)
+    template = re.sub(r'<link\s+rel="stylesheet"\s+href="../assets/styles.css"\s*/?>', lambda match: match.group() + '<link rel="stylesheet" href="../assets/roadmap.css">', template, count=1)
+    template = re.sub(r'<span class="section-label">.*?</span\s*>', '<span class="section-label">Development planning</span>', template, count=1, flags=re.S)
     template = re.sub(r'<main\b.*?</main>', lambda _: main, template, count=1, flags=re.S)
     toc_html = '<aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p>' + ''.join(
         f'<a href="#{escape(anchor)}">{escape(label)}</a>' for anchor, label in toc) + '</aside>'
@@ -526,14 +527,14 @@ def render_audit(data, root=ROOT):
 
 
 def generated_pages(data, root=ROOT):
-    return {PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
+    return format_pages({PAGE: render(data, root), **{phase_page(p): render_phase(data, p, root) for p in data['phases']},
             **{epic_page(data, e['id']): render_epic(data, e, root) for e in data['epics']},
             **{ticket_page(t['id']): render_ticket(data, t, root) for t in data['tickets']},
             REFERENCE_PAGES['milestones'][0]: render_milestones(data, root),
             REFERENCE_PAGES['sequencing-decisions'][0]: render_decisions(data, root),
             REFERENCE_PAGES['coverage'][0]: render_coverage(data, root),
             REFERENCE_PAGES['maintenance'][0]: render_maintenance(data, root),
-            REFERENCE_PAGES['audit'][0]: render_audit(data, root)}
+            REFERENCE_PAGES['audit'][0]: render_audit(data, root)})
 
 
 def main():

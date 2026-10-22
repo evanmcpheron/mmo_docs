@@ -20,7 +20,7 @@ class SelectionTests(unittest.TestCase):
                 mode, tests, checks = select_checks([path])
                 self.assertEqual('fast', mode)
                 self.assertEqual(ROADMAP_TESTS, set(tests))
-                self.assertTrue({'aggregate', 'browser', 'engine-artifacts'} <= set(checks))
+                self.assertTrue({'html-format', 'aggregate', 'browser', 'engine-artifacts'} <= set(checks))
 
     def test_contracts_and_schema_outputs_require_model_regressions_and_browser(self):
         for path in ('sources/data-inventory.json', 'sources/data-model.schema.json',
@@ -78,6 +78,7 @@ class SelectionTests(unittest.TestCase):
     def test_full_plan_contains_every_existing_gate_and_no_duplicate_standalone_checks(self):
         plan = dict(commands('full', [], FULL_CHECKS))
         self.assertEqual(set(FULL_CHECKS), set(plan))
+        self.assertEqual(['npm', 'run', 'format:check'], plan['html-format'])
         self.assertIn('validation/run_checks.py', plan['aggregate'])
         self.assertIn('--read-only', plan['aggregate'])
         self.assertNotIn('--scope', plan['aggregate'])

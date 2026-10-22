@@ -244,7 +244,7 @@ try {
       const node = document.getElementById(epic.id);
       const criteria = epic.acceptance_criteria.every((text, index) => {
         const row = document.getElementById(epic.id + '-AC-' + (index + 1));
-        return row && row.textContent.includes(text) && row.querySelector('a').hash === '#' + row.id;
+        return row && row.textContent.replace(/\\s+/g, ' ').includes(text) && row.querySelector('a').hash === '#' + row.id;
       });
       const dependencies = ${JSON.stringify(epic.hard_dependencies.map(epicHref))}.every(href => [...node.querySelectorAll('a')].some(link => link.href.endsWith(href)));
       const previous = document.querySelector('.roadmap-epic-nav a[rel="prev"]');
@@ -347,7 +347,7 @@ try {
     check(`No-JavaScript ${phase.id} epic and criterion links remain usable`, await evaluate(`(() => {
       const row = document.getElementById(${JSON.stringify(epics[0].id + '-AC-1')});
       row.querySelector('a').click();
-      return document.querySelector(':target') === row && row.textContent.includes(${JSON.stringify(epics[0].acceptance_criteria[0])}) && row.getBoundingClientRect().height > 0;
+      return document.querySelector(':target') === row && row.textContent.replace(/\\s+/g, ' ').includes(${JSON.stringify(epics[0].acceptance_criteria[0])}) && row.getBoundingClientRect().height > 0;
     })()`));
   }
   await navigate(epicPath('BW-097') + '#BW-097-AC-1');
