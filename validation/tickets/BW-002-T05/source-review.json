@@ -1,0 +1,84 @@
+{
+  "ticket": "BW-002-T05",
+  "date": "2026-10-21",
+  "review_result": "Passed",
+  "docs_main": "e48795bd312109e790dfa62f40a2e70f66e06544",
+  "game_main": "3186d587385dfaaf3ba6ce0451f2144fd390d995",
+  "content_version": "2.3.0-design",
+  "definitions_sha256": "30e80df478e89a119b9ac899938eb89f4c10a871c825036673374dbed675421a",
+  "stable_inventory_ids": true,
+  "stable_existing_enum_members": true,
+  "unchanged_prototype_payloads": {
+    "data/materials.json": {
+      "unchanged": true,
+      "sha256": "f34c65fec3b4f28703abf546087066ac30cc6875844aebd82b829e1edf2e7ca0"
+    },
+    "data/recipes.json": {
+      "unchanged": true,
+      "sha256": "e2bfc9fb33812b51ece8c5784c696eff3bb7dbeb80143d67cfdfecc74365aa45"
+    },
+    "data/item_examples.json": {
+      "unchanged": true,
+      "sha256": "b7441cd099824a89c7fedb9ca9163ee2f75e1e2e7f3cca29cccb63ae189e98c1"
+    }
+  },
+  "snapshot_changed_keys": [
+    "content_version"
+  ],
+  "snapshot_definition_count": 51,
+  "snapshot_semantic_sha256": "0390e8f4848660a5ddeedd0e4ab7ab9969370bd9e2a12dbe6f80ac50c433957f",
+  "snapshot_samples_sha256": "2dd09d486be3f5b8514fe69f94281a46a2b3b378c2e7eb3cc044b58670f296ca",
+  "positive_records": 22,
+  "structural_rejection_cases": 21,
+  "semantic_cases_not_executed": 12,
+  "arithmetic_examples": 4,
+  "authority_review": "Material/recipe/vendor/salvage definitions are versioned content. Original material snapshots belong to existing durable transactional ItemLineageRecord/CraftSettlementRecord owners; ItemInstance remains an authorized view. No new service, mutable owner or game implementation was introduced.",
+  "mechanics_review": [
+    "guide/items.html",
+    "guide/economy.html",
+    "guide/professions.html",
+    "guide/crafting-orders.html",
+    "All 16 profession purpose/supply/safeguard sections, including Mining prospecting and Jewelcrafting/Enchanting conversion constraints."
+  ],
+  "consumer_review": [
+    "tools/extract_content_contracts.py selects no economic definitions; current 51-definition closure/fingerprints are unchanged.",
+    "Source/Briarwake/ContentAdmission/ContentAdmission.cpp admits only existing ability/resource/cooldown families; ContentActivation.cpp rejects economic activation.",
+    "Existing material-kind recipe outputs have no reverse identity mapping; existing prototype payloads intentionally remain economically unconfigured."
+  ],
+  "ac_review": [
+    {
+      "criterion": 1,
+      "result": "Passed",
+      "artifacts": [
+        "owner-decisions.json",
+        "guide/items.html#economic-contracts-2-3"
+      ],
+      "reason": "Explicit one-to-one namespace mapping and immutable actual-consumption shares cover alternative recipes, output quantities and ownership/lifecycle without implicit ID equivalence."
+    },
+    {
+      "criterion": 2,
+      "result": "Passed",
+      "artifacts": [
+        "contract-samples.json",
+        "contract-tests.log"
+      ],
+      "reason": "Canonical explicit classification, per-unit quarter cap, rare/earned/bound exclusions, zero gold/progress, route declarations and missing-value disabling are represented or constrained. Textual semantic gates are not executed by structural validation."
+    },
+    {
+      "criterion": 3,
+      "result": "Passed",
+      "artifacts": [
+        "contract-tests.log",
+        "model-tests.log"
+      ],
+      "reason": "Owner approved a versioned migration boundary; stable IDs/enum encodings and unchanged prototype data were checked. Canonical schema/sample tests pass; final generated-output/browser/full checks are retained separately before delivery."
+    }
+  ],
+  "review_checklist": {
+    "scope": "Only economic contracts, ordinary mechanics, fixture isolation, scoped examples, generated tracking, snapshot revision and evidence changed.",
+    "cpp_unreal_networking": "N/A: no C++/Actor/reflection/map/gameplay/transport implementation changed. Descriptor/module/targets/plugin/toolchain were inspected; snapshot compatibility is checked independently.",
+    "comments": "Only concise test docstrings; no standards edits or narrated implementation comments.",
+    "unrelated_work": "Both checkouts were clean initially; task branches use exact fetched main revisions. No stash/reset/copy/worktree or unrelated file change.",
+    "runtime_limits": "No graph, economic mutation, durable lifecycle, connected peers, database migration, balance or capacity pass is claimed."
+  }
+}

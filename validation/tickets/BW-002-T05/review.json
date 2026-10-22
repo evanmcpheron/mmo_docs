@@ -1,0 +1,99 @@
+{
+  "ticket": "BW-002-T05",
+  "date": "2026-10-21",
+  "result": "Passed",
+  "scope": "Owner-reviewed contract resolution only; not economic runtime acceptance.",
+  "criteria": [
+    {
+      "criterion": 1,
+      "result": "Passed",
+      "artifacts": [
+        "owner-decisions.json",
+        "guide/items.html#economic-contracts-2-3"
+      ],
+      "reason": "Explicit one-to-one namespace mapping and immutable actual-consumption shares cover alternative recipes, output quantities and ownership/lifecycle without implicit ID equivalence."
+    },
+    {
+      "criterion": 2,
+      "result": "Passed",
+      "artifacts": [
+        "contract-samples.json",
+        "contract-tests.log"
+      ],
+      "reason": "Canonical explicit classification, per-unit quarter cap, rare/earned/bound exclusions, zero gold/progress, route declarations and missing-value disabling are represented or constrained. Textual semantic gates are not executed by structural validation."
+    },
+    {
+      "criterion": 3,
+      "result": "Passed",
+      "artifacts": [
+        "contract-tests.log",
+        "model-tests.log",
+        "docs-final/validation-summary.json"
+      ],
+      "reason": "Stable IDs/enum encodings and unchanged prototype payloads verified; current canonical/model/sample checks, both generated-output checks, all 99 Python regressions, 243 consistency checks, four cleanup tests and 296 browser assertions pass. Native FULL preserves compatibility after the snapshot revision refresh."
+    }
+  ],
+  "owner_decisions": "owner-decisions.json",
+  "source_review": "source-review.json",
+  "focused_checks": [
+    "python3 -m unittest discover -s validation -p test_economic_contracts.py -v: 6 tests passed; contract-tests.log",
+    "python3 -m unittest discover -s validation -p test_data_model.py -v: 16 tests passed; model-tests.log"
+  ],
+  "final_docs_verification": {
+    "command": "python3 validation/validate.py --report-dir validation/tickets/BW-002-T05/docs-final",
+    "result": "Passed",
+    "artifact": "docs-final/validation-summary.json",
+    "python_tests": 99,
+    "aggregate_checks": 243,
+    "browser_assertions": 296,
+    "cleanup_tests": 4,
+    "seconds": 48.051,
+    "tested_revision": "e48795bd312109e790dfa62f40a2e70f66e06544",
+    "tested_working_changes": "Task canonical definitions, scoped fixture validator/tests, mechanics and generated tracking; retained reports and final delivery metadata add no behavior.",
+    "tested_input_sha256": {
+      "README.txt": "fa3c25a5deb780096c62c08d4eda2515e000c6c379cc622aa9bd0a28bdfb8d6c",
+      "sources/data-inventory.json": "8a0cea18cb36c389a7c28a9f2776b4cb3c3ad7e313947978003cca70d33b96a0",
+      "sources/development-roadmap.json": "f26651064e30bfc8530528e30f74ee309f9b7d64f287ec4410cf5090c9bc1544",
+      "sources/data-model.schema.json": "3b0000242affb181f9b72430496861933196f83ba960e5254289faa98546de94",
+      "scripts/data_model.py": "0e77a0f681c626180dd92cae4840104a2ce77ab2eb6352ec67d6e44a3bafaaf1",
+      "validation/test_data_model.py": "098d6b1cb06d086ca77a23b444db8efc1167bfe5c2b641345b8676e68925ec88",
+      "validation/test_economic_contracts.py": "5d85903c389bf3f7690bcf7b83850f33469506c97afb9574a36767c6703c203c",
+      "guide/items.html": "92b17f1d2b41af8a18d11309229a7f5931dae1c99f42335527a161e83fdbdb73",
+      "guide/crafting-orders.html": "528af677efa43310a0f182251012a4f44063a10dc150bce3abd34ccb355e0355",
+      "guide/professions.html": "650eb8db347ee7f0b7d577e7913db1b7b93b00b54931ee43c2b51cbf61fa8277",
+      "validation/tickets/BW-002-T05/contract-samples.json": "7a169815569425144eb489978916e8aae83e5b6281116131e95fe6d471051198"
+    },
+    "scope_note": "Final FULL rerun follows the final clarification that T06/T07 execute native admission, while durable lifecycle/database implementation remains later work. Evidence-only copies and delivery metadata do not invalidate the tested source inputs."
+  },
+  "game_verification": {
+    "command": "python3 tools/validate.py --mode fast --output artifacts/bw-002-t05/native-fast",
+    "requested_mode": "FAST",
+    "executed_mode": "FULL",
+    "result": "Passed",
+    "checks": 25,
+    "seconds": 473.431,
+    "artifact": "native/validation-summary.json",
+    "tested_revision": "3186d587385dfaaf3ba6ce0451f2144fd390d995",
+    "delivered_revision": "c9f2fce19dcc6fcb590a754c12dbb8c46c5121ce",
+    "source_sha256": "24826dd41296d2328334206a69d65845a0a279beeaf06594766e9eaacfcc5a52",
+    "working_changes": "Exact content_version-only snapshot plus compatibility note; same native source identity in committed delivery. No repeat of unchanged expensive stages is needed."
+  },
+  "unverified": [
+    "12 semantic admission examples are specification only; T06/T07 must execute the native economic gate.",
+    "No economic mutation, persistence, database migration, connected peers, production prices, playtesting or capacity proof."
+  ],
+  "bases": {
+    "game": "3186d587385dfaaf3ba6ce0451f2144fd390d995",
+    "docs": "e48795bd312109e790dfa62f40a2e70f66e06544"
+  },
+  "parent_review": "parent-review.json",
+  "generated_view_review": "generated-view-review.json",
+  "related_prs": {
+    "game": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/8",
+    "docs_branch": "docs/bw-002-t05-economy-contracts"
+  },
+  "bases_rechecked_before_delivery": {
+    "game": "3186d587385dfaaf3ba6ce0451f2144fd390d995",
+    "docs": "e48795bd312109e790dfa62f40a2e70f66e06544"
+  }
+}

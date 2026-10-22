@@ -273,7 +273,7 @@ def _sample_errors(definitions_json, bindings_json, source_texts):
     bindings = json.loads(bindings_json)
     sources = {path: json.loads(source) for path, source in source_texts}
     samples = []
-    catalogs = {}
+    catalogs_by_scope = {}
     member_targets = set()
 
     def collect_members(schema):
@@ -286,9 +286,13 @@ def _sample_errors(definitions_json, bindings_json, source_texts):
     for schema in defs.values():
         collect_members(schema)
     for binding in bindings:
+        scope = binding.get('catalog_scope', 'shipped')
+        if not isinstance(scope, str) or not re.fullmatch(r'[a-z][a-z0-9-]*', scope):
+            return (f'{binding}: invalid sample catalog scope',)
         path = binding['path']
         values = selected_values(sources[path], binding['selector'])
         samples.append((binding, values))
+        catalogs = catalogs_by_scope.setdefault(scope, {})
         ids = {v['id'] for v in values if isinstance(v, dict) and isinstance(v.get('id'), str)}
         if ids:
             catalogs.setdefault(binding['type'], set()).update(ids)
@@ -304,6 +308,9 @@ def _sample_errors(definitions_json, bindings_json, source_texts):
         if binding['type'] not in defs:
             errors.append(f'{binding}: missing sample type')
             continue
+        catalogs = {name: set(ids) for name, ids in catalogs_by_scope.get('shipped', {}).items()}
+        for name, ids in catalogs_by_scope[binding.get('catalog_scope', 'shipped')].items():
+            catalogs.setdefault(name, set()).update(ids)
         for index, value in enumerate(values):
             errors.extend(instance_errors(value, defs[binding['type']], defs,
                           f'{binding["path"]}{binding["selector"]}[{index}]', catalogs))

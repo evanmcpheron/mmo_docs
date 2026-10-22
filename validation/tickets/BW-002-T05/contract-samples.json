@@ -1,0 +1,1565 @@
+{
+  "purpose": "Finite contract-only examples; prices are synthetic test values, not production balance. No graph/lifecycle execution or content enablement is claimed.",
+  "valid": {
+    "MaterialDefinition": [
+      {
+        "id": "fixture.material.common",
+        "name": "common contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "unbound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.common",
+          "classification": "common",
+          "export_restricted": false
+        }
+      },
+      {
+        "id": "fixture.material.rare",
+        "name": "rare contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "unbound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.rare",
+          "classification": "rare",
+          "export_restricted": false
+        }
+      },
+      {
+        "id": "fixture.material.earned",
+        "name": "earned contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "character_bound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.earned",
+          "classification": "earned",
+          "export_restricted": false
+        }
+      },
+      {
+        "id": "fixture.material.bound",
+        "name": "bound contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "character_bound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.bound",
+          "classification": "common",
+          "export_restricted": false
+        }
+      },
+      {
+        "id": "fixture.material.starter",
+        "name": "starter contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "character_bound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.starter",
+          "classification": "common",
+          "export_restricted": true
+        }
+      }
+    ],
+    "ItemDefinition": [
+      {
+        "id": "fixture.inventory.common",
+        "name": "common inventory fixture",
+        "kind": "material",
+        "grade": "standard",
+        "binding": "unbound",
+        "stack_limit": 200,
+        "required_character_level": 1,
+        "power_policy": "no_combat_power",
+        "definition_status": "contract_fixture_only_not_runtime_ready"
+      },
+      {
+        "id": "fixture.inventory.rare",
+        "name": "rare inventory fixture",
+        "kind": "material",
+        "grade": "standard",
+        "binding": "unbound",
+        "stack_limit": 200,
+        "required_character_level": 1,
+        "power_policy": "no_combat_power",
+        "definition_status": "contract_fixture_only_not_runtime_ready"
+      },
+      {
+        "id": "fixture.inventory.earned",
+        "name": "earned inventory fixture",
+        "kind": "material",
+        "grade": "standard",
+        "binding": "character_bound",
+        "stack_limit": 200,
+        "required_character_level": 1,
+        "power_policy": "no_combat_power",
+        "definition_status": "contract_fixture_only_not_runtime_ready"
+      },
+      {
+        "id": "fixture.inventory.bound",
+        "name": "bound inventory fixture",
+        "kind": "material",
+        "grade": "standard",
+        "binding": "character_bound",
+        "stack_limit": 200,
+        "required_character_level": 1,
+        "power_policy": "no_combat_power",
+        "definition_status": "contract_fixture_only_not_runtime_ready"
+      },
+      {
+        "id": "fixture.inventory.starter",
+        "name": "starter inventory fixture",
+        "kind": "material",
+        "grade": "standard",
+        "binding": "character_bound",
+        "stack_limit": 200,
+        "required_character_level": 1,
+        "power_policy": "no_combat_power",
+        "definition_status": "contract_fixture_only_not_runtime_ready"
+      }
+    ],
+    "RecipeDefinition": [
+      {
+        "id": "fixture.recipe.primary",
+        "profession_id": "blacksmithing",
+        "name": "primary contract fixture",
+        "band": 1,
+        "required_skill": 1,
+        "station_required": true,
+        "craft_seconds": 3,
+        "grade": "standard",
+        "inputs": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 24
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "quantity": 8
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "quantity": 8,
+            "must_be_customer_owned": true
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "quantity": 8,
+            "must_be_customer_owned": true
+          }
+        ],
+        "output_item_id": "item.blacksmithing.b1.metal_weapon",
+        "output_quantity": 2,
+        "customer_level_target": 1,
+        "factions": [
+          "good",
+          "evil"
+        ],
+        "quality_randomness": false,
+        "commissionable": true,
+        "binding_result": "character_bound",
+        "recipe_source": "trainer",
+        "status": "contract_fixture_only_not_runtime_ready",
+        "result_preview": {
+          "name": "Metal weapon — band 1",
+          "binding": "character_bound",
+          "effect": {
+            "operation": "EQUIP_BUDGET",
+            "configuration_required": false,
+            "configuration_policy": "one_secondary_choice_no_extra_budget",
+            "prototype": true
+          }
+        },
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "currency_cost": 0
+      },
+      {
+        "id": "fixture.recipe.alternate",
+        "profession_id": "blacksmithing",
+        "name": "alternate contract fixture",
+        "band": 1,
+        "required_skill": 1,
+        "station_required": true,
+        "craft_seconds": 3,
+        "grade": "standard",
+        "inputs": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 40
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "quantity": 8
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "quantity": 8,
+            "must_be_customer_owned": true
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "quantity": 8,
+            "must_be_customer_owned": true
+          }
+        ],
+        "output_item_id": "item.blacksmithing.b1.metal_weapon",
+        "output_quantity": 2,
+        "customer_level_target": 1,
+        "factions": [
+          "good",
+          "evil"
+        ],
+        "quality_randomness": false,
+        "commissionable": true,
+        "binding_result": "character_bound",
+        "recipe_source": "trainer",
+        "status": "contract_fixture_only_not_runtime_ready",
+        "result_preview": {
+          "name": "Metal weapon — band 1",
+          "binding": "character_bound",
+          "effect": {
+            "operation": "EQUIP_BUDGET",
+            "configuration_required": false,
+            "configuration_policy": "one_secondary_choice_no_extra_budget",
+            "prototype": true
+          }
+        },
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "currency_cost": 0
+      }
+    ],
+    "CraftMaterialProvenance": [
+      {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      {
+        "operation_key": "fixture.craft.alternate",
+        "recipe_id": "fixture.recipe.alternate",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 40,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      }
+    ],
+    "ItemLineageRecord": [
+      {
+        "item_id": "fixture.result.primary",
+        "operation": {
+          "operation_key": "fixture.craft.primary",
+          "account_id": "fixture.account",
+          "character_id": "fixture.character",
+          "content_version": "2.3.0-design"
+        },
+        "recipe_id": "fixture.recipe.primary",
+        "consumed_items": [
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.0",
+              "expected_version": 1
+            },
+            "quantity": 22
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.1",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.2",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.3",
+              "expected_version": 1
+            },
+            "quantity": 8
+          }
+        ],
+        "previous_definition_id": null,
+        "resulting_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "previous_version": null,
+        "resulting_version": 1,
+        "removed_enhancement_ids": [],
+        "retained_enhancement_ids": [],
+        "added_enhancement_ids": [],
+        "material_provenance": {
+          "operation_key": "fixture.craft.primary",
+          "recipe_id": "fixture.recipe.primary",
+          "recipe_content_version": "2.3.0-design",
+          "rules_version": "fixture-rules-1",
+          "output_quantity": 2,
+          "consumed_materials": [
+            {
+              "material_id": "fixture.material.common",
+              "item_definition_id": "fixture.inventory.common",
+              "quantity": 22,
+              "classification": "common",
+              "binding": "unbound",
+              "export_restricted": false
+            },
+            {
+              "material_id": "fixture.material.rare",
+              "item_definition_id": "fixture.inventory.rare",
+              "quantity": 8,
+              "classification": "rare",
+              "binding": "unbound",
+              "export_restricted": false
+            },
+            {
+              "material_id": "fixture.material.earned",
+              "item_definition_id": "fixture.inventory.earned",
+              "quantity": 8,
+              "classification": "earned",
+              "binding": "character_bound",
+              "export_restricted": false
+            },
+            {
+              "material_id": "fixture.material.bound",
+              "item_definition_id": "fixture.inventory.bound",
+              "quantity": 8,
+              "classification": "common",
+              "binding": "character_bound",
+              "export_restricted": false
+            }
+          ]
+        }
+      },
+      {
+        "item_id": "fixture.result.alternate",
+        "operation": {
+          "operation_key": "fixture.craft.alternate",
+          "account_id": "fixture.account",
+          "character_id": "fixture.character",
+          "content_version": "2.3.0-design"
+        },
+        "recipe_id": "fixture.recipe.alternate",
+        "consumed_items": [
+          {
+            "item": {
+              "item_id": "fixture.consumed.alternate.0",
+              "expected_version": 1
+            },
+            "quantity": 40
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.alternate.1",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.alternate.2",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.alternate.3",
+              "expected_version": 1
+            },
+            "quantity": 8
+          }
+        ],
+        "previous_definition_id": null,
+        "resulting_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "previous_version": null,
+        "resulting_version": 1,
+        "removed_enhancement_ids": [],
+        "retained_enhancement_ids": [],
+        "added_enhancement_ids": [],
+        "material_provenance": {
+          "operation_key": "fixture.craft.alternate",
+          "recipe_id": "fixture.recipe.alternate",
+          "recipe_content_version": "2.3.0-design",
+          "rules_version": "fixture-rules-1",
+          "output_quantity": 2,
+          "consumed_materials": [
+            {
+              "material_id": "fixture.material.common",
+              "item_definition_id": "fixture.inventory.common",
+              "quantity": 40,
+              "classification": "common",
+              "binding": "unbound",
+              "export_restricted": false
+            },
+            {
+              "material_id": "fixture.material.rare",
+              "item_definition_id": "fixture.inventory.rare",
+              "quantity": 8,
+              "classification": "rare",
+              "binding": "unbound",
+              "export_restricted": false
+            },
+            {
+              "material_id": "fixture.material.earned",
+              "item_definition_id": "fixture.inventory.earned",
+              "quantity": 8,
+              "classification": "earned",
+              "binding": "character_bound",
+              "export_restricted": false
+            },
+            {
+              "material_id": "fixture.material.bound",
+              "item_definition_id": "fixture.inventory.bound",
+              "quantity": 8,
+              "classification": "common",
+              "binding": "character_bound",
+              "export_restricted": false
+            }
+          ]
+        }
+      }
+    ],
+    "SalvageRule": [
+      {
+        "id": "fixture.salvage",
+        "item_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "common_material_returns": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 6
+          }
+        ],
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "provenance_policy": "actual_consumption_per_unit_v1",
+        "gold_return": 0,
+        "profession_progress_units": 0
+      }
+    ],
+    "VendorOfferDefinition": [
+      {
+        "id": "fixture.offer",
+        "item_definition_id": "fixture.inventory.common",
+        "quantity": 4,
+        "purchase_price": 17,
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        }
+      }
+    ],
+    "VendorPricingConfiguration": [
+      {
+        "id": "fixture.pricing",
+        "sellback_by_item": {
+          "fixture.inventory.common": 1,
+          "item.blacksmithing.b1.metal_weapon": 2
+        },
+        "repair_pricing_rule_id": "proportional_missing_durability_v1",
+        "repair_pricing": {
+          "basis": "vendor_purchase_value",
+          "full_repair_fraction": 0.1,
+          "minimum_nonzero_cost": 1,
+          "rounding": "ceil"
+        },
+        "sellback_route": {
+          "guaranteed": true,
+          "repeatable": true
+        }
+      }
+    ],
+    "EconomicRoutePolicy": [
+      {
+        "guaranteed": true,
+        "repeatable": true
+      },
+      {
+        "guaranteed": false,
+        "repeatable": true
+      },
+      {
+        "guaranteed": true,
+        "repeatable": false
+      }
+    ]
+  },
+  "structural_rejections": [
+    {
+      "id": "missing-material-item_definition_id",
+      "type": "EconomicMaterialPolicy",
+      "record": {
+        "classification": "common",
+        "export_restricted": false
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-material-classification",
+      "type": "EconomicMaterialPolicy",
+      "record": {
+        "item_definition_id": "fixture.inventory.common",
+        "export_restricted": false
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-material-export_restricted",
+      "type": "EconomicMaterialPolicy",
+      "record": {
+        "item_definition_id": "fixture.inventory.common",
+        "classification": "common"
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "grade-is-not-economic-class",
+      "type": "EconomicMaterialPolicy",
+      "record": {
+        "item_definition_id": "fixture.inventory.common",
+        "classification": "standard",
+        "export_restricted": false
+      },
+      "expected_error": "invalid serialized enum"
+    },
+    {
+      "id": "unknown-item-reference",
+      "type": "EconomicMaterialPolicy",
+      "record": {
+        "item_definition_id": "fixture.inventory.missing",
+        "classification": "common",
+        "export_restricted": false
+      },
+      "expected_error": "unresolved content identity"
+    },
+    {
+      "id": "missing-route-guaranteed",
+      "type": "EconomicRoutePolicy",
+      "record": {
+        "repeatable": true
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-route-repeatable",
+      "type": "EconomicRoutePolicy",
+      "record": {
+        "guaranteed": true
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-provenance-operation_key",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-provenance-recipe_id",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-provenance-recipe_content_version",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-provenance-rules_version",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-provenance-output_quantity",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "missing-provenance-consumed_materials",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2
+      },
+      "expected_error": "missing required field"
+    },
+    {
+      "id": "zero-output_quantity",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 0,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      "expected_error": "minimum"
+    },
+    {
+      "id": "empty-consumed-basis",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": []
+      },
+      "expected_error": "minItems"
+    },
+    {
+      "id": "zero-consumed-quantity",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 0,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          }
+        ]
+      },
+      "expected_error": "minimum"
+    },
+    {
+      "id": "nonzero-salvage-gold_return",
+      "type": "SalvageRule",
+      "record": {
+        "id": "fixture.salvage",
+        "item_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "common_material_returns": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 6
+          }
+        ],
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "provenance_policy": "actual_consumption_per_unit_v1",
+        "gold_return": 1,
+        "profession_progress_units": 0
+      },
+      "expected_error": "discriminator"
+    },
+    {
+      "id": "nonzero-salvage-profession_progress_units",
+      "type": "SalvageRule",
+      "record": {
+        "id": "fixture.salvage",
+        "item_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "common_material_returns": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 6
+          }
+        ],
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "provenance_policy": "actual_consumption_per_unit_v1",
+        "gold_return": 0,
+        "profession_progress_units": 1
+      },
+      "expected_error": "discriminator"
+    },
+    {
+      "id": "unsupported-salvage-basis",
+      "type": "SalvageRule",
+      "record": {
+        "id": "fixture.salvage",
+        "item_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "common_material_returns": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 6
+          }
+        ],
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "provenance_policy": "current_recipe_lookup",
+        "gold_return": 0,
+        "profession_progress_units": 0
+      },
+      "expected_error": "discriminator"
+    },
+    {
+      "id": "unknown-sellback-key",
+      "type": "VendorPricingConfiguration",
+      "record": {
+        "id": "fixture.pricing",
+        "sellback_by_item": {
+          "fixture.inventory.missing": 0
+        },
+        "repair_pricing_rule_id": "proportional_missing_durability_v1",
+        "repair_pricing": {
+          "basis": "vendor_purchase_value",
+          "full_repair_fraction": 0.1,
+          "minimum_nonzero_cost": 1,
+          "rounding": "ceil"
+        },
+        "sellback_route": {
+          "guaranteed": true,
+          "repeatable": true
+        }
+      },
+      "expected_error": "unresolved content identity"
+    },
+    {
+      "id": "zero-recipe-output",
+      "type": "RecipeDefinition",
+      "record": {
+        "id": "fixture.recipe.primary",
+        "profession_id": "blacksmithing",
+        "name": "primary contract fixture",
+        "band": 1,
+        "required_skill": 1,
+        "station_required": true,
+        "craft_seconds": 3,
+        "grade": "standard",
+        "inputs": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 24
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "quantity": 8
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "quantity": 8
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "quantity": 8
+          }
+        ],
+        "output_item_id": "item.blacksmithing.b1.metal_weapon",
+        "output_quantity": 0,
+        "customer_level_target": 1,
+        "factions": [
+          "good",
+          "evil"
+        ],
+        "quality_randomness": false,
+        "commissionable": true,
+        "binding_result": "bind_on_equip",
+        "recipe_source": "trainer",
+        "status": "contract_fixture_only_not_runtime_ready",
+        "result_preview": {
+          "name": "Metal weapon — band 1",
+          "binding": "bind_on_equip",
+          "effect": {
+            "operation": "EQUIP_BUDGET",
+            "configuration_required": false,
+            "configuration_policy": "one_secondary_choice_no_extra_budget",
+            "prototype": true
+          }
+        },
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "currency_cost": 0
+      },
+      "expected_error": "minimum"
+    }
+  ],
+  "semantic_admission_expectations": [
+    {
+      "id": "duplicate-reverse-mapping",
+      "type": "MaterialDefinition",
+      "record": {
+        "id": "fixture.material.rare",
+        "name": "rare contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "unbound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.common",
+          "classification": "rare",
+          "export_restricted": false
+        }
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Two materials cannot map to one inventory item."
+    },
+    {
+      "id": "mapping-stack-conflict",
+      "type": "MaterialDefinition",
+      "record": {
+        "id": "fixture.material.common",
+        "name": "common contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "unbound",
+        "stack_limit": 199,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.common",
+          "classification": "common",
+          "export_restricted": false
+        }
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Material/item stack limits disagree."
+    },
+    {
+      "id": "mapping-binding-conflict",
+      "type": "MaterialDefinition",
+      "record": {
+        "id": "fixture.material.common",
+        "name": "common contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "character_bound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only",
+        "economic_policy": {
+          "item_definition_id": "fixture.inventory.common",
+          "classification": "common",
+          "export_restricted": false
+        }
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Material/item binding disagrees."
+    },
+    {
+      "id": "legacy-mapping-unresolved",
+      "type": "MaterialDefinition",
+      "record": {
+        "id": "fixture.material.common",
+        "name": "common contract fixture",
+        "band": 1,
+        "family": "reagent",
+        "binding": "unbound",
+        "stack_limit": 200,
+        "source": "contract_fixture_only"
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Absent mapping/class is not an inferred identity/common default."
+    },
+    {
+      "id": "null-original-basis",
+      "type": "ItemLineageRecord",
+      "record": {
+        "item_id": "fixture.result.primary",
+        "operation": {
+          "operation_key": "fixture.craft.primary",
+          "account_id": "fixture.account",
+          "character_id": "fixture.character",
+          "content_version": "2.3.0-design"
+        },
+        "recipe_id": "fixture.recipe.primary",
+        "consumed_items": [
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.0",
+              "expected_version": 1
+            },
+            "quantity": 22
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.1",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.2",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.3",
+              "expected_version": 1
+            },
+            "quantity": 8
+          }
+        ],
+        "previous_definition_id": null,
+        "resulting_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "previous_version": null,
+        "resulting_version": 1,
+        "removed_enhancement_ids": [],
+        "retained_enhancement_ids": [],
+        "added_enhancement_ids": [],
+        "material_provenance": null
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "No proved original input; do not reverse lookup any alternate recipe."
+    },
+    {
+      "id": "legacy-original-basis",
+      "type": "ItemLineageRecord",
+      "record": {
+        "item_id": "fixture.result.primary",
+        "operation": {
+          "operation_key": "fixture.craft.primary",
+          "account_id": "fixture.account",
+          "character_id": "fixture.character",
+          "content_version": "2.3.0-design"
+        },
+        "recipe_id": "fixture.recipe.primary",
+        "consumed_items": [
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.0",
+              "expected_version": 1
+            },
+            "quantity": 22
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.1",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.2",
+              "expected_version": 1
+            },
+            "quantity": 8
+          },
+          {
+            "item": {
+              "item_id": "fixture.consumed.primary.3",
+              "expected_version": 1
+            },
+            "quantity": 8
+          }
+        ],
+        "previous_definition_id": null,
+        "resulting_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "previous_version": null,
+        "resulting_version": 1,
+        "removed_enhancement_ids": [],
+        "retained_enhancement_ids": [],
+        "added_enhancement_ids": []
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Legacy absence does not authorize salvage or a zero-input basis."
+    },
+    {
+      "id": "rare-return-declaration",
+      "type": "SalvageRule",
+      "record": {
+        "id": "fixture.salvage",
+        "item_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "common_material_returns": [
+          {
+            "material_id": "fixture.material.rare",
+            "quantity": 6
+          }
+        ],
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "provenance_policy": "actual_consumption_per_unit_v1",
+        "gold_return": 0,
+        "profession_progress_units": 0
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Rare material cannot be a declared common return."
+    },
+    {
+      "id": "legacy-missing-zero-output",
+      "type": "SalvageRule",
+      "record": {
+        "id": "fixture.salvage",
+        "item_definition_id": "item.blacksmithing.b1.metal_weapon",
+        "common_material_returns": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 6
+          }
+        ],
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        },
+        "provenance_policy": "actual_consumption_per_unit_v1",
+        "profession_progress_units": 0
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Missing gold output is unconfigured, not implicit zero."
+    },
+    {
+      "id": "unsupported-route-guaranteed",
+      "type": "VendorOfferDefinition",
+      "record": {
+        "id": "fixture.offer",
+        "item_definition_id": "fixture.inventory.common",
+        "quantity": 4,
+        "purchase_price": 17,
+        "economic_route": {
+          "guaranteed": false,
+          "repeatable": true
+        }
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "A finite/stochastic declaration needs its own bounded contract/proof; never silently omit an enabled edge."
+    },
+    {
+      "id": "unsupported-route-repeatable",
+      "type": "VendorOfferDefinition",
+      "record": {
+        "id": "fixture.offer",
+        "item_definition_id": "fixture.inventory.common",
+        "quantity": 4,
+        "purchase_price": 17,
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": false
+        }
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "A finite/stochastic declaration needs its own bounded contract/proof; never silently omit an enabled edge."
+    },
+    {
+      "id": "missing-conversion-cost",
+      "type": "RecipeDefinition",
+      "record": {
+        "id": "fixture.recipe.primary",
+        "profession_id": "blacksmithing",
+        "name": "primary contract fixture",
+        "band": 1,
+        "required_skill": 1,
+        "station_required": true,
+        "craft_seconds": 3,
+        "grade": "standard",
+        "inputs": [
+          {
+            "material_id": "fixture.material.common",
+            "quantity": 24
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "quantity": 8
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "quantity": 8
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "quantity": 8
+          }
+        ],
+        "output_item_id": "item.blacksmithing.b1.metal_weapon",
+        "output_quantity": 2,
+        "customer_level_target": 1,
+        "factions": [
+          "good",
+          "evil"
+        ],
+        "quality_randomness": false,
+        "commissionable": true,
+        "binding_result": "bind_on_equip",
+        "recipe_source": "trainer",
+        "status": "contract_fixture_only_not_runtime_ready",
+        "result_preview": {
+          "name": "Metal weapon — band 1",
+          "binding": "bind_on_equip",
+          "effect": {
+            "operation": "EQUIP_BUDGET",
+            "configuration_required": false,
+            "configuration_policy": "one_secondary_choice_no_extra_budget",
+            "prototype": true
+          }
+        },
+        "economic_route": {
+          "guaranteed": true,
+          "repeatable": true
+        }
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Missing unavoidable currency cost cannot default to zero."
+    },
+    {
+      "id": "starter-descendant-export",
+      "type": "CraftMaterialProvenance",
+      "record": {
+        "operation_key": "fixture.craft.primary",
+        "recipe_id": "fixture.recipe.primary",
+        "recipe_content_version": "2.3.0-design",
+        "rules_version": "fixture-rules-1",
+        "output_quantity": 2,
+        "consumed_materials": [
+          {
+            "material_id": "fixture.material.common",
+            "item_definition_id": "fixture.inventory.common",
+            "quantity": 22,
+            "classification": "common",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.rare",
+            "item_definition_id": "fixture.inventory.rare",
+            "quantity": 8,
+            "classification": "rare",
+            "binding": "unbound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.earned",
+            "item_definition_id": "fixture.inventory.earned",
+            "quantity": 8,
+            "classification": "earned",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.bound",
+            "item_definition_id": "fixture.inventory.bound",
+            "quantity": 8,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": false
+          },
+          {
+            "material_id": "fixture.material.starter",
+            "item_definition_id": "fixture.inventory.starter",
+            "quantity": 4,
+            "classification": "common",
+            "binding": "character_bound",
+            "export_restricted": true
+          }
+        ]
+      },
+      "future_admission": "Reject",
+      "execution": "Not Executed; T06/T07",
+      "required_finding": "Any starter restriction forbids the product from currency sellback/material salvage/export."
+    }
+  ],
+  "arithmetic_review": [
+    {
+      "label": "primary-after-savings",
+      "eligible_consumed": 22,
+      "output_quantity": 2,
+      "per_unit_cap": 6,
+      "units_salvaged": 2,
+      "expected_per_unit": 2,
+      "expected_total": 4
+    },
+    {
+      "label": "alternate-recipe-same-item",
+      "eligible_consumed": 40,
+      "output_quantity": 2,
+      "per_unit_cap": 6,
+      "units_salvaged": 2,
+      "expected_per_unit": 5,
+      "expected_total": 10
+    },
+    {
+      "label": "fractional-share-round-per-unit",
+      "eligible_consumed": 7,
+      "output_quantity": 2,
+      "per_unit_cap": 6,
+      "units_salvaged": 2,
+      "expected_per_unit": 0,
+      "expected_total": 0
+    },
+    {
+      "label": "configured-cap-below-quarter",
+      "eligible_consumed": 40,
+      "output_quantity": 2,
+      "per_unit_cap": 1,
+      "units_salvaged": 2,
+      "expected_per_unit": 1,
+      "expected_total": 2
+    }
+  ],
+  "lifecycle_review": [
+    "Trade and split preserve identical per-unit basis; merge requires identical original operation and basis.",
+    "Recraft preserves original basis; additional consumed inputs do not enlarge entitlement.",
+    "Rare/earned and character/account-bound consumed rows contribute zero; finished binding alone is not input binding.",
+    "An empty return list is explicit no returns; missing configuration/provenance is unavailable.",
+    "Destroy selected units and commit returns once; database and live lifecycle execution are later implementation beyond the T06/T07 admission gate."
+  ]
+}

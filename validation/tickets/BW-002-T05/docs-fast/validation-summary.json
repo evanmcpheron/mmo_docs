@@ -1,0 +1,93 @@
+{
+  "revision": "e48795bd312109e790dfa62f40a2e70f66e06544",
+  "main_revision": "e48795bd312109e790dfa62f40a2e70f66e06544",
+  "requested_mode": "fast",
+  "executed_mode": "full",
+  "reason": "Unknown or cross-cutting dependency: guide/crafting-orders.html",
+  "merge_base": "e48795bd312109e790dfa62f40a2e70f66e06544",
+  "changed_files": [
+    "assets/search-index.js",
+    "data/character_catalog.json",
+    "data/manifest.json",
+    "guide/crafting-orders.html",
+    "guide/data-inventory.html",
+    "guide/items.html",
+    "guide/professions.html",
+    "guide/roadmap-bw-002-t05.html",
+    "guide/roadmap-bw-002.html",
+    "sources/data-inventory.json",
+    "sources/data-model.schema.json",
+    "sources/development-roadmap.json",
+    "validation/data-model-review.txt",
+    "validation/test_economic_contracts.py",
+    "validation/tickets/BW-002-T05/contract-samples.json",
+    "validation/tickets/BW-002-T05/owner-decisions.json"
+  ],
+  "checks": [
+    {
+      "name": "aggregate",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/run_checks.py",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/tickets/BW-002-T05/docs-fast/report.json"
+      ],
+      "exit_code": 0,
+      "seconds": 9.928
+    },
+    {
+      "name": "python",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py",
+        "--durations",
+        "15"
+      ],
+      "exit_code": 0,
+      "seconds": 26.005
+    },
+    {
+      "name": "browser-cleanup",
+      "command": [
+        "node",
+        "--test",
+        "validation/test_browser_cleanup.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 2.747
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "validation/check_inventory_browser.mjs",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/tickets/BW-002-T05/docs-fast/data-inventory-browser-checks.json",
+        "--screenshots",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-tmp/screenshots"
+      ],
+      "exit_code": 0,
+      "seconds": 16.186
+    },
+    {
+      "name": "engine-artifacts",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/check_engine_artifacts.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.056
+    }
+  ],
+  "deferred": [],
+  "passed": true,
+  "seconds": 54.922
+}
