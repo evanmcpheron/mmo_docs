@@ -130,12 +130,13 @@
   "main_recheck": {
     "game": "b510a720d1d34daf6add724ca391cd241c49e3c7",
     "documentation": "d5e4fc3d7e48c0865aa2573b2198b367f828f482",
-    "result": "Both freshly fetched main heads remain unchanged before PR delivery."
+    "result": "Both freshly fetched main heads remain unchanged before PR delivery.",
+    "verified_at": "2026-10-22T17:40:27.669597+00:00"
   },
   "log_retention": "Original JSON retained unchanged, including UTF-16 metric reports; UTF-8 projections are supplied for review. Logs are losslessly gzip-compressed. artifact-manifest.json binds source/raw/stored hashes. Binaries/packages stay in the existing GAME_ROOT/artifacts build directories.",
   "artifact_integrity_review": {
     "result": "Passed",
-    "retained_files": 277,
+    "retained_files": 278,
     "summary": "Every copied native/log artifact was scanned for synthetic private sentinels; originals and lossless compressed copies are bound by SHA-256. No package or project copy is retained in the docs repository.",
     "task_owned_staging_metadata_excluded": 39
   },
@@ -147,6 +148,31 @@
     "result": "Passed",
     "requested_mode": "fast",
     "executed_mode": "full",
-    "summary": "Before final evidence review/trimming, FAST selected FULL and passed 243 aggregate checks, 100 Python tests, four cleanup tests and 298 browser checks. Default FULL follows for the final documentation revision."
+    "summary": "Before final evidence review/trimming, FAST selected FULL and passed 243 aggregate checks, 100 Python tests, four cleanup tests and 298 browser checks. The final committed source revision also passes default FULL as recorded below."
+  },
+  "documentation_verification": {
+    "result": "Passed",
+    "tested_revision": "1d93d59c61d7a76de8529894c9f3e82f616fe83c",
+    "main_revision": "d5e4fc3d7e48c0865aa2573b2198b367f828f482",
+    "requested_mode": "full",
+    "executed_mode": "full",
+    "seconds": 96.081,
+    "aggregate_checks_passed": 243,
+    "python_tests_passed": 100,
+    "browser_cleanup_tests_passed": 4,
+    "browser_checks_passed": 298,
+    "artifacts": [
+      "documentation-full/validation-summary.json",
+      "documentation-full/report.json",
+      "documentation-full/data-inventory-browser-checks.json",
+      "documentation-full-console.log.gz"
+    ],
+    "commands": [
+      "python3 scripts/build_development_roadmap.py",
+      "python3 scripts/build_data_inventory.py --review-roadmap",
+      "python3 validation/validate.py --mode fast --report-dir validation/tickets/BW-003-T04/documentation-fast",
+      "python3 validation/validate.py --report-dir validation/tickets/BW-003-T04/documentation-full"
+    ],
+    "scope": "Default FULL passes at the recorded committed documentation revision. The following evidence-only commit adds these execution reports, their console log and review metadata. Canonical definitions, roadmap source, generated HTML/search and validator inputs remain unchanged."
   }
 }
