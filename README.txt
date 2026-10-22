@@ -22,8 +22,8 @@ The documentation remains readable with JavaScript disabled; live search and
 filters require JavaScript. Dense tables scroll horizontally on small screens.
 
 PACKAGE CONTENTS
-179 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
-seven BW-002 ticket pages, five BW-003 ticket pages and one native BW-001 execution ticket,
+208 HTML pages: 37 system/catalog/planning chapters, 97 individual epic pages,
+42 ticket pages (13 foundation tickets plus 29 first-multiplayer-milestone tickets),
 12 class pages, 16 profession pages, 3 full catalogs, and the main index.
 Versioned JSON: 330 named abilities, 1,764 character talent nodes,
 37 specialization playstyle contracts, 11 races / 12 faction-race selections,
@@ -215,6 +215,18 @@ and T05 integrated verification remain unimplemented.
 The generated ready list now contains BW-003, BW-018, BW-004, BW-005 and BW-006;
 BW-002 leaves it. Overall progress is 2/97 epics (2.1%). Foundations and all
 milestones remain In Progress. Generated views own readiness/progress calculations.
+
+Before every epic split, read the mandatory reuse assessment in the registry's
+maintenance guidance, published at guide/roadmap-maintenance.html. This applies
+to workspace and repository-local split-epic skills. Inspect relevant engine,
+plugin and project owners/evidence, map every AC to additional work, then split.
+The dated capability assessment and multiplayer coverage matrix on that page
+record the 22 October 2026 review; recheck affected inputs before relying on it.
+BW-004 through BW-013, BW-028 and BW-083 now have 29 focused planning tickets;
+all begin Not Started. No gameplay progress or parent criteria changed. BW-003
+T02 through T05 received targeted reuse corrections; completed tickets and
+evidence are preserved. Native builds/Steam/peer/workload checks remain future
+completion evidence, outside ordinary documentation generation.
 
 Store tickets in the registry's tickets list with stable IDs, parent_epic,
 exact epic_criteria anchors, dependencies, scope, out_of_scope, observable

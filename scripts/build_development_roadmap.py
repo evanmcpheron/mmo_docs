@@ -264,6 +264,9 @@ def render_epic(data, epic, root=ROOT):
         parts.append('<p><strong>Recorded evidence:</strong> None. Required evidence above describes future verification.</p>')
     parts.append(f'<p><strong>Blockers:</strong> {escape("; ".join(epic["blockers"])) if epic["blockers"] else "None recorded; see hard prerequisites."}</p>')
     parts.append('<h2 id="ticket-planning">Ticket planning</h2>')
+    parts.append('<p>Before creating or revising tickets, apply the ' +
+                 link(REFERENCE_PAGES['maintenance'][0], page, 'mandatory reuse assessment', 'maintenance') +
+                 '. Inspect existing owners and evidence, then map every criterion to the additional work and verification required.</p>')
     tickets = [t for t in data['tickets'] if t['parent_epic'] == identifier]
     if tickets:
         parts.append('<p>Execute these tickets in dependency order. Ticket statuses are tracked separately; '
@@ -503,11 +506,13 @@ def render_maintenance(data, root=ROOT):
     page = REFERENCE_PAGES['maintenance'][0]
     parts = ['<h2 id="maintenance">Updating statuses and evidence</h2>']
     parts.extend(f'<p>{escape(paragraph)}</p>' for paragraph in data['maintenance'])
+    parts.append((root / 'sources/roadmap-reuse-review.html.inc').read_text(encoding='utf-8'))
     parts.append('<h2 id="commands">Rebuild and validate</h2><pre><code>python3 scripts/build_development_roadmap.py\npython3 scripts/build_data_inventory.py --review-roadmap\npython3 validation/validate.py --mode fast\npython3 validation/validate.py --mode full</code></pre>')
     parts.append('<p>Commit the registry and generated outputs together. The roadmap builder owns the dashboard, phase indexes, individual epic pages and reference pages; '
                  'the inventory builder owns shared navigation, search and manifest outputs. Reading requires neither a build step nor JavaScript.</p>')
-    return shell(data, page, 'Updating roadmap progress', 'Maintain epic statuses, blockers and completion evidence without reorganizing the roadmap.',
-                 parts, [('maintenance', 'Statuses and evidence'), ('commands', 'Rebuild and validate')], root)
+    return shell(data, page, 'Roadmap progress and ticket decomposition', 'Maintain evidence-based ticket decomposition, epic statuses, blockers and completion evidence.',
+                 parts, [('maintenance', 'Statuses, evidence and decomposition'), ('reuse-assessment', 'Capability assessment'),
+                         ('multiplayer-coverage', 'Multiplayer epic coverage'), ('commands', 'Rebuild and validate')], root)
 
 
 def render_audit(data, root=ROOT):

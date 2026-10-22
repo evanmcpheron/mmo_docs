@@ -14,7 +14,7 @@ This repository owns the gameplay design, data contracts and development roadmap
 
 - Use Unreal Engine 5 native C++ for authoritative gameplay in the separate project; Blueprint may supplement assets and presentation.
 - Verify and pin the engine release, compiler, target platforms and dedicated server build configuration before implementation.
-- The owner has replication plugins available, but their names, versions, licenses, compatibility and coverage are unknown. Do not assume installation or invent capabilities. Evaluate built-in Unreal replication and actual plugins before proposing custom infrastructure.
+- Before any epic decomposition, follow the mandatory reuse assessment in `sources/development-roadmap.json` under `maintenance`, published at `guide/roadmap-maintenance.html`. This applies even when a workspace skill initiates the split. Inspect relevant engine/plugin implementation, project owners, completed dependencies and retained evidence before proposing additional work. The dated multiplayer assessment on that page is a starting point to recheck, not proof of current integration.
 - Ticket decomposition is allowed now. Running an implementation ticket requires a real game repository explicitly supplied or verified, project instructions and executed game tests. No game epic or ticket can be marked Complete based on documentation checks.
 
 ## Engineering standards
@@ -24,6 +24,8 @@ Follow the existing Python, HTML and JSON conventions. Keep code readable, maint
 ## Development and validation
 
 Read the task, canonical sources and directly relevant code/tests first; follow dependencies when needed instead of repeatedly scanning generated chapters. Work in small coherent increments. Preserve acceptance criteria, security checks, engineering standards and truthful evidence.
+
+Ticket scopes must identify reusable owners, genuinely new work and evidence gaps; exact `epic_criteria` links must collectively cover every parent criterion. Reuse never removes authorization, sequencing, idempotency or recipient privacy gates. Keep all planning in the existing roadmap registry and use its current coverage/dependency/link/freshness checks; do not add a parallel registry or require game builds for routine ticket authoring.
 
 During implementation, run FAST and correct failures with the smallest relevant command it reports. Regenerate affected outputs only after canonical sources change, using the commands in `README.txt`. FAST checks freshness without rebuilding or refreshing review fingerprints. Unknown files, shared infrastructure or uncertain dependency impact require FULL.
 

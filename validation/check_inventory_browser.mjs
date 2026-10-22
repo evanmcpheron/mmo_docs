@@ -252,7 +252,8 @@ try {
       return document.querySelectorAll('.roadmap-epic').length === 1 && node && criteria && dependencies
         && document.querySelector('.breadcrumb').textContent.includes(${JSON.stringify(epicPhase.get(epic.id).title)})
         && Boolean(previous) === ${index > 0} && Boolean(next) === ${index + 1 < roadmap.epics.length}
-        && document.getElementById('ticket-planning') && document.documentElement.scrollWidth <= innerWidth;
+        && document.querySelector('#ticket-planning + p a')?.href.endsWith('roadmap-maintenance.html#maintenance')
+        && document.documentElement.scrollWidth <= innerWidth;
     })()`));
   }
   const crossPhaseEpic = roadmap.epics.find(epic => epic.hard_dependencies.some(id => epicPhase.get(id).id !== epic.phase));
@@ -267,6 +268,11 @@ try {
   for (const path of referencePages) {
     await navigate(path);
     check(`${path.split('/').pop()} renders offline with current roadmap navigation`, await evaluate(`document.querySelector('.article-body').textContent.trim().length > 300 && [...document.querySelectorAll('.roadmap-nav a[aria-current="page"]')].some(link => link.href === location.href) && document.documentElement.scrollWidth <= innerWidth`));
+    if (path.endsWith('roadmap-maintenance.html')) {
+      check('Mandatory decomposition guidance includes the capability assessment and epic coverage', await evaluate(`document.querySelector('.article-body').textContent.includes('Mandatory reuse assessment before every epic decomposition') && ['reuse-assessment', 'multiplayer-sessions-review', 'native-unreal-reuse', 'multiplayer-coverage'].every(id => document.getElementById(id)?.getBoundingClientRect().height > 0)`));
+      await scrollRoadmap('reuse-assessment');
+      await captureRoadmap('reuse-assessment-desktop');
+    }
   }
   await captureRoadmap('audit-desktop');
   await navigate('guide/development-roadmap.html');
@@ -294,6 +300,10 @@ try {
   for (const path of [...roadmap.phases.map(phasePath), ...referencePages]) {
     await navigate(path);
     check(`Mobile ${path.split('/').pop()} has no body overflow`, await evaluate('document.documentElement.scrollWidth <= innerWidth'));
+    if (path.endsWith('roadmap-maintenance.html')) {
+      await scrollRoadmap('multiplayer-coverage');
+      await captureRoadmap('reuse-coverage-mobile');
+    }
   }
   await captureRoadmap('audit-mobile');
   await navigate(phasePath(roadmap.phases[0]));
@@ -321,6 +331,8 @@ try {
   await captureRoadmap('audit-print');
   await command('Emulation.setEmulatedMedia', { media: '' });
   await command('Emulation.setScriptExecutionDisabled', { value: true });
+  await navigate('guide/roadmap-maintenance.html#multiplayer-coverage');
+  check('Reuse assessment and coverage deep link remain readable without JavaScript', await evaluate(`document.querySelector(':target')?.id === 'multiplayer-coverage' && document.getElementById('reuse-assessment').getBoundingClientRect().height > 0`));
   await navigate('guide/development-roadmap.html');
   await navigate('guide/roadmap-audit.html#RA-007');
   check('Audit deep link and report remain readable without JavaScript', await evaluate(`document.querySelector(':target')?.id === 'RA-007' && document.querySelector('h1').textContent === 'Roadmap Audit' && document.getElementById('readiness').getBoundingClientRect().height > 0`));

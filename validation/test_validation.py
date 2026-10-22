@@ -14,6 +14,7 @@ from validate import (CONTRACT_TESTS, FULL_CHECKS, ROADMAP_TESTS, ROOT, changed_
 class SelectionTests(unittest.TestCase):
     def test_roadmap_inputs_and_generated_pages_require_link_inventory_and_browser_checks(self):
         for path in ('sources/development-roadmap.json', 'sources/roadmap-audit.html.inc',
+                     'sources/roadmap-reuse-review.html.inc',
                      'guide/roadmap-bw-001.html', 'guide/development-roadmap.html'):
             with self.subTest(path=path):
                 mode, tests, checks = select_checks([path])

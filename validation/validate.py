@@ -44,6 +44,7 @@ def select_checks(paths, root=ROOT):
     try:
         registry = load_registry(root)
         roadmap = {'sources/development-roadmap.json', 'sources/roadmap-audit.html.inc',
+                   'sources/roadmap-reuse-review.html.inc',
                    *generated_page_paths(load(root))}
         contracts = {'sources/data-inventory.json', 'sources/data-model.schema.json',
                      INVENTORY_PAGE, 'validation/data-model-review.txt'}
