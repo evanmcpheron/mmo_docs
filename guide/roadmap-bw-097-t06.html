@@ -276,8 +276,9 @@
               <h3>Launch command or scene</h3>
               <pre><code>Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.
 python3 tools/check_baseline.py build
-&quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log
-The executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.</code></pre>
+&quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log
+Use Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.
+The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
@@ -290,17 +291,16 @@ The executable and build command exist. The reference level, fixture controls an
                   ARM64. Recheck identities when executing.
                 </li>
                 <li>
-                  Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future
-                  filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning
-                  time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the
-                  installed engine and remains the baseline startup map. T01 supplies the separate
-                  reference level and its complete fixture setup without replacing bootstrap
-                  defaults.
+                  Planning history 2026-10-22: no game map existed during decomposition. T01
+                  subsequently authored /Game/Tests/Camera/L_BW097_Reference
+                  (Content/Tests/Camera/L_BW097_Reference.umap), DA_BW097_CameraDefaults and two M_
+                  materials. Use the current package above; the former proposed BW097_Reference name
+                  is superseded. /Engine/Maps/Entry remains the baseline startup map.
                 </li>
                 <li>
                   Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py
-                  and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The
-                  current native source SHA-256
+                  and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete.
+                  Planning provenance: the then-current native source SHA-256
                   fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained
                   validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence;
                   it is not camera, GPU, connected-client or visual evidence.

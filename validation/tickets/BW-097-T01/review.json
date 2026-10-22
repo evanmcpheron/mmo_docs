@@ -1,0 +1,150 @@
+{
+  "ticket": "BW-097-T01",
+  "result": "Passed",
+  "tested_game_revision": "5e41287311d493141fd7a6effb5680cedfa7ae37",
+  "implementation_revision": "a7a7990f04bc39cd35f609c1969a59f487a46b78",
+  "task_bases": {
+    "game": "f90e86a741df3dc778af61d79944289baffbd7af",
+    "documentation": "8a82c3471317f0d7af8739f0fb3aa199d69420f5"
+  },
+  "native_source_sha256": "c74650ac30719511adadbc28ad1ff9435730dc6a1615726b7608d2723a03b826",
+  "scope": "Isolated native camera reference scene and validated editor-visible tuning. Owner delegated T01/T02/T03 scope judgment; transition/wheel/orbit values persist here, active behaviors stay in T02/T03.",
+  "commands": [
+    "python3 tools/validate.py --mode fast --output artifacts/bw-097-t01/fast-01 (executed FULL fallback for new/shared files; stopped for diagnosed route precision failure)",
+    "python3 -m unittest discover -s tools -p test_*.py",
+    "python3 tools/check_content_admission.py --suite all --output artifacts/bw-097-t01/native-02",
+    "python3 tools/validate.py --output artifacts/bw-097-t01/full-04",
+    "'/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor' '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/Briarwake.uproject' /Game/Tests/Camera/L_BW097_Reference -game -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -NoLiveCoding '-ExecCmds=HighResShot 1280x720' '-abslog=/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw-097-t01/standalone-final.log'"
+  ],
+  "native_full": {
+    "result": "Passed",
+    "artifact": "game-validation-summary.json",
+    "raw_reports": "game-full-reports.tar.gz",
+    "stages": 46,
+    "seconds": 860.324,
+    "source_stable": true,
+    "python_tests": 66,
+    "selected_native_tests": 10,
+    "not_run": [
+      "Connected server/two-client, RPC/replication and persistence harnesses are not implemented.",
+      "Shipping, other platforms and the separate Client-only target have no verified procedure.",
+      "Clean/cold builds require removing existing caches or copying the project; neither is authorized.",
+      "Visible packaged-client presentation remains a manual check."
+    ]
+  },
+  "editor": {
+    "result": "Passed",
+    "artifacts": [
+      "editor-final-verification.json",
+      "editor-persistence-verification.json",
+      "authored-settings.json",
+      "restored-defaults.json",
+      "all-tuning-controls.png",
+      "reopened-preset.png",
+      "overview-authored.png",
+      "close-authored.png"
+    ],
+    "mechanism": "Unreal MCP property tools execute actual reflected editor PreEditChange/PostEditChangeProperty; raw transcript records all groups, live camera/arm properties, invalid width/FOV/pitch/duration rejection, retained diagnostics, recovery, save after StopPIE, actual editor process reopen equality and reset/save.",
+    "applicability": "Editor authoring/validation/persistence code and all configuration defaults match the final source. These captures precede only the explicit horizontal FOV-axis override in Rig.Initialize. Final rendered standalone repeats the default view after that correction. No OS pointer-focus or orbit-capture pass is claimed."
+  },
+  "criteria": {
+    "1": {
+      "result": "Passed",
+      "artifacts": [
+        "standalone-final-verification.json",
+        "standalone-final-1280.png",
+        "native-automation-index.json",
+        "native-automation-run.json"
+      ],
+      "summary": "Fresh Metal-rendered map opens with controlled pawn, default orthographic camera, floor cross and three anchors; current native routes/lifecycle tests exercise real bound route/reset delegates and preserve facing. Versioned assets resolve without external project Actor dependencies."
+    },
+    "2": {
+      "result": "Passed",
+      "artifacts": [
+        "editor-final-verification.json",
+        "editor-persistence-verification.json",
+        "native-automation-index.json"
+      ],
+      "summary": "One reflected Data Asset exposes all settings with units. Live endpoint/collision/UI settings are previewable; every authored group survives actual editor process restart. Invalid editor and typed nonfinite/range input reject atomically and recover. T02/T03 active transition/wheel/orbit behavior remains unimplemented by approved scope clarification."
+    },
+    "3": {
+      "result": "Passed",
+      "artifacts": [
+        "host-hardware.json",
+        "game-validation-summary.json",
+        "standalone-final-verification.json"
+      ],
+      "summary": "Versioned game docs/camera-reference.md records settings, input/UI locations, host/toolchain/display matrix, independent UI and predeclared budgets. Only actual 1280x720 render and editor/native checks are passing; larger/non-16:9/high-DPI readability and performance remain proposed. FULL verifies baseline Entry startup and packaged Game/Server controls; reference routes have no authoritative gameplay or replication."
+    }
+  },
+  "parent_review": {
+    "epic": "BW-097",
+    "status": "In Progress",
+    "hard_dependencies": {
+      "BW-001": "Complete",
+      "BW-003": "Complete"
+    },
+    "retained_prerequisite_evidence": "Unchanged baseline/server and fixture owners preserve the established BW-001/BW-003 evidence. Current FULL reruns builds, exact selected native tests, fixture aggregates/failure controls, packaging, baseline startup and server controls against the new source identity.",
+    "criteria": {
+      "1": {
+        "result": "Passed",
+        "artifact": "review.json",
+        "summary": "T01 supplies the reproducible native scene, real environment/settings/UI/input record and proposed display matrix; active scroll/orbit remains assigned to T02/T03."
+      },
+      "2": {
+        "result": "Not verified",
+        "remaining": "T02 reversible scroll/projection continuity and T04 supported-size/high-DPI readability."
+      },
+      "3": {
+        "result": "Not verified",
+        "remaining": "T03 held middle-mouse yaw/pitch/release/focus/capture behavior across routes and transitions."
+      },
+      "4": {
+        "result": "Not verified",
+        "remaining": "T04 representative models/equipment/terrain, hazards, markers, bright/dark silhouette and accessibility review."
+      },
+      "5": {
+        "result": "Not verified",
+        "remaining": "T05 world picking/ground preview, UI capture, occlusion/layered floors/privacy and authoritative movement/aim boundary fixtures."
+      },
+      "6": {
+        "result": "Not verified",
+        "remaining": "T06 cooked reference scene, target configuration replay, motion captures, actual CPU/GPU/memory and supported quality decisions."
+      }
+    },
+    "children": {
+      "BW-097-T01": "Complete",
+      "BW-097-T02": "Not Started",
+      "BW-097-T03": "Not Started",
+      "BW-097-T04": "Not Started",
+      "BW-097-T05": "Not Started",
+      "BW-097-T06": "Not Started"
+    },
+    "downstream": "BW-098 remains Not Started and not dependency-ready until BW-095 and BW-097 are Complete."
+  },
+  "review_checklist": {
+    "scope_correctness": "Passed: inspected actual pinned UE/module/targets, registry contracts, related design and explicit owner scope; errors, invalid/duplicate edits and scene lifecycle covered.",
+    "ownership_clean_code": "Passed: FReferenceCameraSettings owns validation; one Data Asset owns authored defaults; rig owns presentation/follow; pawn owns isolated routes/input; HUD only renders. No new manager/framework, global Actor searches or parallel gameplay definitions.",
+    "cpp_unreal": "Passed: typed contracts, UObject GC properties, explicit owned-component initialization/tick prerequisites, logic in cpp, no unchecked casts/reflection in native feature; native UHT/compile/link/module and actual asset loads execute.",
+    "naming_comments": "Passed: Unreal A/U/F/E type prefixes, PascalCase, b booleans, matching type/file ownership; L_/DA_/M_ assets; conventional lowercase feat/docs branches. One intent comment explains prevented duplicate pawn spawn.",
+    "network_security": "N/A for RPC/auth/recipient checks: no networking or authoritative state introduced. Nonreplicated standalone-only Development fixture rejects networked/Server/Test/Shipping activation and normal cooks exclude /Game/Tests; existing headless Server checks execute.",
+    "performance": "No profiling claim. Stable owned references are cached, inactive ticks disabled, no per-frame loads/world searches/I/O; constant-size validation supports live editor edits. Proposed budgets require T06 measurements.",
+    "verification": "Passed for declared T01 scope: current native FULL plus actual editor restart/property and rendered evidence. Connected multiplayer, OS capture, art/readability, high-DPI certification and cooked camera/performance checks remain unverified in their tickets.",
+    "safe_changes": "Passed: task branches in existing checkouts; no project copies, worktrees, standards edits, dependency installs, baseline-map changes or unrelated asset resaves. Temporary descriptor used only with explicit approval and restored byte for byte; concurrent user camera edit was backed up and restored only after approval.",
+    "mandatory_questions": "Single validation owner and explicit input-to-local-route/presentation trace are findable. New classes separate real Unreal ownership/lifetimes. No client-controlled value enters authority. Passing claims link actual executions; proposed tests remain unverified."
+  },
+  "history": [
+    "Early build/test iteration corrected a missing math constant, relative test includes, double-precision diagonal normalization and explicit BeginPlay dispatch in the minimal test world. Historical failed/stopped runs are not current evidence.",
+    "full-01 stopped for staged EOF whitespace; corrected before full-02. full-02 stopped for approved committed-descriptor validation. full-03 stopped after the source-stability guard correctly detected a concurrent editor asset save. User approved documented-default restoration; saved package remains under workspace artifacts. full-04 is the current complete stable run.",
+    "The initial documentation FAST command executed FULL fallback for evidence paths. Aggregate/browser checks passed, but two synthetic roadmap tests reset BW-003 while leaving the newly Complete T01 dependent ticket in place. Their fixtures now reset progress consistently before exercising the original unchanged assertions and validator; all 32 focused roadmap regressions pass. Fresh default documentation FULL follows the fix."
+  ],
+  "documentation_validation": {
+    "result": "Passed",
+    "artifact": "documentation-gates.json",
+    "default_full": "documentation-full/validation-summary.json",
+    "python_tests": 100,
+    "actual_browser": true,
+    "seconds": 104.584,
+    "working_tree_based_on": "8a82c3471317f0d7af8739f0fb3aa199d69420f5"
+  }
+}

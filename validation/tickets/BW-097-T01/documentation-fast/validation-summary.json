@@ -1,0 +1,133 @@
+{
+  "revision": "8a82c3471317f0d7af8739f0fb3aa199d69420f5",
+  "main_revision": "8a82c3471317f0d7af8739f0fb3aa199d69420f5",
+  "requested_mode": "fast",
+  "executed_mode": "full",
+  "reason": "Unknown or cross-cutting dependency: validation/tickets/BW-097-T01/all-tuning-controls.png",
+  "merge_base": "8a82c3471317f0d7af8739f0fb3aa199d69420f5",
+  "changed_files": [
+    "assets/search-index.js",
+    "guide/development-roadmap.html",
+    "guide/roadmap-bw-001.html",
+    "guide/roadmap-bw-002.html",
+    "guide/roadmap-bw-003.html",
+    "guide/roadmap-bw-018.html",
+    "guide/roadmap-bw-020.html",
+    "guide/roadmap-bw-028.html",
+    "guide/roadmap-bw-095.html",
+    "guide/roadmap-bw-097-t01.html",
+    "guide/roadmap-bw-097-t02.html",
+    "guide/roadmap-bw-097-t03.html",
+    "guide/roadmap-bw-097-t04.html",
+    "guide/roadmap-bw-097-t05.html",
+    "guide/roadmap-bw-097-t06.html",
+    "guide/roadmap-bw-097.html",
+    "guide/roadmap-bw-098.html",
+    "guide/roadmap-foundations.html",
+    "sources/data-inventory.json",
+    "sources/development-roadmap.json",
+    "validation/tickets/BW-097-T01/all-tuning-controls.png",
+    "validation/tickets/BW-097-T01/asset-restoration.json",
+    "validation/tickets/BW-097-T01/authored-settings.json",
+    "validation/tickets/BW-097-T01/close-authored.png",
+    "validation/tickets/BW-097-T01/descriptor-validation-swap.json",
+    "validation/tickets/BW-097-T01/editor-evidence.log.gz",
+    "validation/tickets/BW-097-T01/editor-final-verification.json",
+    "validation/tickets/BW-097-T01/editor-persistence-verification.json",
+    "validation/tickets/BW-097-T01/editor-persistence.log.gz",
+    "validation/tickets/BW-097-T01/full-04.log.gz",
+    "validation/tickets/BW-097-T01/game-full-archive-manifest.json",
+    "validation/tickets/BW-097-T01/game-full-reports.tar.gz",
+    "validation/tickets/BW-097-T01/game-validation-summary.json",
+    "validation/tickets/BW-097-T01/generated-views.json",
+    "validation/tickets/BW-097-T01/host-hardware.json",
+    "validation/tickets/BW-097-T01/native-automation-index.json",
+    "validation/tickets/BW-097-T01/native-automation-run.json",
+    "validation/tickets/BW-097-T01/overview-authored.png",
+    "validation/tickets/BW-097-T01/redirector-cleanup.json",
+    "validation/tickets/BW-097-T01/reopened-preset.png",
+    "validation/tickets/BW-097-T01/restored-defaults.json",
+    "validation/tickets/BW-097-T01/review.json",
+    "validation/tickets/BW-097-T01/standalone-final-1280.png",
+    "validation/tickets/BW-097-T01/standalone-final-verification.json",
+    "validation/tickets/BW-097-T01/standalone-final.log.gz",
+    "validation/tickets/BW-097-T01/warning-review.json"
+  ],
+  "checks": [
+    {
+      "name": "html-format",
+      "command": [
+        "npm",
+        "run",
+        "format:check"
+      ],
+      "exit_code": 0,
+      "seconds": 7.347
+    },
+    {
+      "name": "aggregate",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/run_checks.py",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/tickets/BW-097-T01/documentation-fast/report.json"
+      ],
+      "exit_code": 0,
+      "seconds": 20.605
+    },
+    {
+      "name": "python",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py",
+        "--durations",
+        "15"
+      ],
+      "exit_code": 1,
+      "seconds": 64.16
+    },
+    {
+      "name": "browser-cleanup",
+      "command": [
+        "node",
+        "--test",
+        "validation/test_browser_cleanup.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 2.489
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "validation/check_inventory_browser.mjs",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/tickets/BW-097-T01/documentation-fast/data-inventory-browser-checks.json",
+        "--screenshots",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-tmp/screenshots"
+      ],
+      "exit_code": 0,
+      "seconds": 15.874
+    },
+    {
+      "name": "engine-artifacts",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/check_engine_artifacts.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.066
+    }
+  ],
+  "deferred": [],
+  "passed": false,
+  "seconds": 110.541
+}
