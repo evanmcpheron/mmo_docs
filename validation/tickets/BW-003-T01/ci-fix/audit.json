@@ -1,0 +1,41 @@
+{
+  "ticket": "BW-003-T01",
+  "completed_at": "2026-10-22T14:17:37.389774+00:00",
+  "revision": "1c2fa03a221ce4d8a27573e3823b8213f93fc5bb",
+  "source_sha256": "0e1ee107c47ab182bc4979324a576dd1c00cbb52a4e67a11742e7ef3a5f4af5a",
+  "main_revision": "32a98048e29a0cacea61a6f02f33ad609bc3d84e",
+  "changed_files": [
+    "tools/test_runtime_fixtures.py"
+  ],
+  "cause": "The wrapper regression mocked toolchain and binary checks but read ignored Binaries/Mac/UnrealEditor.modules from the real host. Ubuntu CI has no local Unreal build outputs.",
+  "fix": "Stub only the module-metadata read and assert the expected synthetic module reaches the binary-identity boundary. Native assertion/report verification and every existing test assertion remain active; production wrapper and C++ are unchanged.",
+  "reproduction": {
+    "before": "before.log.gz",
+    "after": "after.log.gz",
+    "script": "without-build-outputs.py",
+    "before_result": "37 tests, three failing control subcases",
+    "after_result": "All 37 tests pass with Path.read_text/read_bytes blocked under Binaries/"
+  },
+  "hosted_ci": {
+    "before": "https://github.com/evanmcpheron/BriarwakeUnreal/actions/runs/39791509899/job/119868498547",
+    "after": "https://github.com/evanmcpheron/BriarwakeUnreal/actions/runs/39792683232",
+    "result": "Passed",
+    "artifact": "ci-success.json"
+  },
+  "native_full": {
+    "result": "Passed",
+    "checks": 32,
+    "artifact": "full/validation-summary.json"
+  },
+  "boundary_checks": "boundary-checks.json",
+  "package_isolation": "package-isolation.json",
+  "evidence_applicability": "Only the Python unit-test host boundary changed. Canonical inputs, production wrapper, native tests and admission owners are unchanged. A fresh default FULL nevertheless rebuilds the new source identity and re-executes all prerequisite/fixture/control/Game/Server checks; original dated evidence remains preserved.",
+  "status_review": "T01 remains Complete. Parent BW-003 remains In Progress with AC1 verified; T02-T05 and all downstream epics retain their independent statuses. No replay, diagnostics, metrics, connectivity or persistence completion is claimed.",
+  "merge_protection": "merge-protection.json: docs main now requires the GitHub Actions documentation check on an up-to-date PR, including admins, with zero human approvals. Private Unreal protection is pending at owner request after GitHub returned a plan restriction.",
+  "not_run": [
+    "Connected server/two-client, RPC/replication and persistence harnesses are not implemented.",
+    "Shipping, other platforms and the separate Client-only target have no verified procedure.",
+    "Clean/cold builds require removing existing caches or copying the project; neither is authorized.",
+    "Visible packaged-client presentation remains a manual check."
+  ]
+}

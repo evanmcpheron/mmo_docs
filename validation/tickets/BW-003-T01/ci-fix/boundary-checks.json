@@ -1,0 +1,184 @@
+{
+  "command": [
+    "artifacts/bw003-t01-report-controls.py",
+    "--run",
+    "artifacts/bw003-t01-ci-fix/full/fixture-evidence",
+    "--output",
+    "artifacts/bw003-t01-ci-fix/boundary-checks"
+  ],
+  "source_sha256": "0e1ee107c47ab182bc4979324a576dd1c00cbb52a4e67a11742e7ef3a5f4af5a",
+  "actual_report_verified": true,
+  "native_report": "artifacts/bw003-t01-ci-fix/full/fixture-evidence/native/fixture-evidence.json",
+  "mutations": [
+    {
+      "case": "stale_nonce",
+      "rejected": true,
+      "error": "Stale or foreign native assertion report identity"
+    },
+    {
+      "case": "foreign_source",
+      "rejected": true,
+      "error": "Stale or foreign native assertion report identity"
+    },
+    {
+      "case": "missing_assertion",
+      "rejected": true,
+      "error": "Missing, duplicate or foreign native assertions"
+    },
+    {
+      "case": "duplicate_assertion",
+      "rejected": true,
+      "error": "Missing, duplicate or foreign native assertions"
+    },
+    {
+      "case": "missing_testcheck",
+      "rejected": true,
+      "error": "TestCheck records differ from actual native assertions"
+    },
+    {
+      "case": "unknown_scenario",
+      "rejected": true,
+      "error": "Authored specification was modified"
+    },
+    {
+      "case": "missing_runner",
+      "rejected": true,
+      "error": "Foreign or incomplete executed evidence"
+    },
+    {
+      "case": "null_runner",
+      "rejected": true,
+      "error": "Foreign or incomplete executed evidence"
+    },
+    {
+      "case": "null_time",
+      "rejected": true,
+      "error": "Completion requires an actual UTC instant"
+    },
+    {
+      "case": "invalid_utc",
+      "rejected": true,
+      "error": "day 30 must be in range 1..28 for month 2 in year 2026"
+    },
+    {
+      "case": "foreign_rules",
+      "rejected": true,
+      "error": "Foreign or incomplete executed evidence"
+    },
+    {
+      "case": "duplicate_fixture",
+      "rejected": true,
+      "error": "Missing or duplicate executed fixtures"
+    }
+  ],
+  "reused_output": {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+      "tools/check_runtime_fixtures.py",
+      "--suite",
+      "evidence",
+      "--output",
+      "artifacts/bw003-t01-ci-fix/full/fixture-evidence"
+    ],
+    "exit_status": 1,
+    "unchanged": true,
+    "error": "FileExistsError: [Errno 17] File exists: '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/bw003-t01-ci-fix/full/fixture-evidence'"
+  },
+  "unavailable_engine": [
+    {
+      "control": "assertion-failure",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "tools/check_runtime_fixtures.py",
+        "--suite",
+        "evidence",
+        "--control",
+        "assertion-failure",
+        "--engine",
+        "artifacts/deliberately-unavailable-engine",
+        "--output",
+        "artifacts/bw003-t01-ci-fix/boundary-checks/unavailable-assertion-failure"
+      ],
+      "exit_status": 1,
+      "control_verified": false,
+      "stage": "preflight",
+      "error": "[Errno 2] No such file or directory: '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/deliberately-unavailable-engine/Engine/Build/Build.version'"
+    },
+    {
+      "control": "missing-report",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "tools/check_runtime_fixtures.py",
+        "--suite",
+        "evidence",
+        "--control",
+        "missing-report",
+        "--engine",
+        "artifacts/deliberately-unavailable-engine",
+        "--output",
+        "artifacts/bw003-t01-ci-fix/boundary-checks/unavailable-missing-report"
+      ],
+      "exit_status": 1,
+      "control_verified": false,
+      "stage": "preflight",
+      "error": "[Errno 2] No such file or directory: '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/deliberately-unavailable-engine/Engine/Build/Build.version'"
+    },
+    {
+      "control": "load-failure",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "tools/check_runtime_fixtures.py",
+        "--suite",
+        "evidence",
+        "--control",
+        "load-failure",
+        "--engine",
+        "artifacts/deliberately-unavailable-engine",
+        "--output",
+        "artifacts/bw003-t01-ci-fix/boundary-checks/unavailable-load-failure"
+      ],
+      "exit_status": 1,
+      "control_verified": false,
+      "stage": "preflight",
+      "error": "[Errno 2] No such file or directory: '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/deliberately-unavailable-engine/Engine/Build/Build.version'"
+    },
+    {
+      "control": "startup-failure",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "tools/check_runtime_fixtures.py",
+        "--suite",
+        "evidence",
+        "--control",
+        "startup-failure",
+        "--engine",
+        "artifacts/deliberately-unavailable-engine",
+        "--output",
+        "artifacts/bw003-t01-ci-fix/boundary-checks/unavailable-startup-failure"
+      ],
+      "exit_status": 1,
+      "control_verified": false,
+      "stage": "preflight",
+      "error": "[Errno 2] No such file or directory: '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/deliberately-unavailable-engine/Engine/Build/Build.version'"
+    },
+    {
+      "control": "timeout",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "tools/check_runtime_fixtures.py",
+        "--suite",
+        "evidence",
+        "--control",
+        "timeout",
+        "--engine",
+        "artifacts/deliberately-unavailable-engine",
+        "--output",
+        "artifacts/bw003-t01-ci-fix/boundary-checks/unavailable-timeout"
+      ],
+      "exit_status": 1,
+      "control_verified": false,
+      "stage": "preflight",
+      "error": "[Errno 2] No such file or directory: '/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/artifacts/deliberately-unavailable-engine/Engine/Build/Build.version'"
+    }
+  ]
+}

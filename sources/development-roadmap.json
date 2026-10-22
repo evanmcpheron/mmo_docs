@@ -377,7 +377,7 @@
       ],
       "status": "In Progress",
       "blockers": [],
-      "ordering_rationale": "BW-003-T01 is Complete at game 288616e6957042aee3c4a18315334fb72589918d (native source SHA-256 5d9e956478cf79658de6ca891b5e760669243700aa0ed3fc39b8430a50a2be61). Evidence covers immutable native content-admission execution, separate canonical FixtureRunEvidence/TestCheck records, stage-specific controls, timeout cleanup and clean recovery. BW-001/BW-002 stay Complete; admission owners, all 79 prior canonical definitions and seven prerequisite tests retain semantics and pass current FULL. Parent AC1 passes. Seeded context/control isolation (AC2/T02), correlated redacted diagnostics (AC3/T03), bounded measurements (AC4/T04) and T05 integrated review remain unimplemented. T02 is now eligible; T03/T04 require T02 and T05 requires both. BW-003 stays In Progress and Dependency-ready. BW-097/BW-095/BW-012 stay Not Started with BW-003 unmet. Approved local-probe/logical-recipient/payload-byte scope and all connected gameplay/persistence/capacity limitations remain unchanged.",
+      "ordering_rationale": "BW-003-T01 is Complete at game 288616e6957042aee3c4a18315334fb72589918d (native source SHA-256 5d9e956478cf79658de6ca891b5e760669243700aa0ed3fc39b8430a50a2be61). Evidence covers immutable native content-admission execution, separate canonical FixtureRunEvidence/TestCheck records, stage-specific controls, timeout cleanup and clean recovery. BW-001/BW-002 stay Complete; admission owners, all 79 prior canonical definitions and seven prerequisite tests retain semantics and pass current FULL. Parent AC1 passes. Seeded context/control isolation (AC2/T02), correlated redacted diagnostics (AC3/T03), bounded measurements (AC4/T04) and T05 integrated review remain unimplemented. T02 is now eligible; T03/T04 require T02 and T05 requires both. BW-003 stays In Progress and Dependency-ready. BW-097/BW-095/BW-012 stay Not Started with BW-003 unmet. Approved local-probe/logical-recipient/payload-byte scope and all connected gameplay/persistence/capacity limitations remain unchanged. Follow-up at game 1c2fa03a221ce4d8a27573e3823b8213f93fc5bb fixes the hosted-CI test boundary without changing runtime owners; real Ubuntu CI and refreshed default FULL pass. Current native source SHA-256 is 0e1ee107c47ab182bc4979324a576dd1c00cbb52a4e67a11742e7ef3a5f4af5a.",
       "verified_evidence": [
         {
           "criteria": [
@@ -387,6 +387,15 @@
           "revision": "BriarwakeUnreal 288616e6957042aee3c4a18315334fb72589918d; native source SHA-256 5d9e956478cf79658de6ca891b5e760669243700aa0ed3fc39b8430a50a2be61",
           "result": "Passed",
           "summary": "Parent AC1 passes from T01 actual fixture revisions, runner, results and assertion evidence separated from authored specifications. AC2 through AC4 and T05 integration remain unimplemented; parent stays In Progress."
+        },
+        {
+          "criteria": [
+            1
+          ],
+          "artifact": "validation/tickets/BW-003-T01/ci-fix/audit.json",
+          "revision": "BriarwakeUnreal 1c2fa03a221ce4d8a27573e3823b8213f93fc5bb; native source SHA-256 0e1ee107c47ab182bc4979324a576dd1c00cbb52a4e67a11742e7ef3a5f4af5a",
+          "result": "Passed",
+          "summary": "Current native FULL re-verifies parent AC1 after the test-only CI fix. Immutable fixture execution evidence still passes; AC2-AC4 and T05 integration remain unfinished."
         }
       ],
       "phase": "phase-foundations"
@@ -5442,6 +5451,15 @@
           "revision": "BriarwakeUnreal 288616e6957042aee3c4a18315334fb72589918d; native source SHA-256 5d9e956478cf79658de6ca891b5e760669243700aa0ed3fc39b8430a50a2be61",
           "result": "Passed",
           "summary": "Default FULL passes all 32 stages, 37 Python tests, original seven-test / 3,584-content-assertion aggregates, two fresh 61-check fixture runs, all five stage-specific failure controls/timeout cleanup, and normal Game/Server build/package/startup plus fixture exclusion."
+        },
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-003-T01/ci-fix/audit.json",
+          "revision": "BriarwakeUnreal 1c2fa03a221ce4d8a27573e3823b8213f93fc5bb; native source SHA-256 0e1ee107c47ab182bc4979324a576dd1c00cbb52a4e67a11742e7ef3a5f4af5a",
+          "result": "Passed",
+          "summary": "CI follow-up removes the regression test dependency on local Unreal build output. All 37 tests pass with Binaries reads blocked and on the real Ubuntu runner; refreshed default FULL passes all 32 stages, controls/recovery and normal package checks. Original native behavior and assertions are unchanged."
         }
       ]
     },
