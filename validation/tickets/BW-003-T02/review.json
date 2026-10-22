@@ -143,5 +143,30 @@
     "game": "683448383bb9c15580442e23be344bec357eb104",
     "documentation": "19f858ae2de08726e4142deeca3a036893343c38",
     "result": "Both fetched main heads unchanged before delivery; task branches remain based on those exact heads."
+  },
+  "documentation_verification": {
+    "result": "Passed",
+    "tested_revision": "4cbcb1351e37f36ec8a585c9ca6a2344e861b540",
+    "main_revision": "19f858ae2de08726e4142deeca3a036893343c38",
+    "requested_mode": "full",
+    "executed_mode": "full",
+    "seconds": 53.886,
+    "artifacts": [
+      "documentation-full/validation-summary.json",
+      "documentation-full/report.json",
+      "documentation-full/data-inventory-browser-checks.json"
+    ],
+    "commands": [
+      "python3 scripts/build_development_roadmap.py",
+      "python3 scripts/build_data_inventory.py --review-roadmap",
+      "python3 validation/validate.py --mode fast --report-dir validation/tickets/BW-003-T02/documentation-fast",
+      "python3 validation/validate.py --report-dir validation/tickets/BW-003-T02/documentation-full"
+    ],
+    "scope": "Full documentation validation including generated freshness and actual offline browser checks. Final report/metadata additions do not change registry definitions, roadmap sources or generated page bytes."
+  },
+  "artifact_integrity_review": {
+    "result": "Passed",
+    "verified_artifacts": 186,
+    "summary": "Every retained runtime artifact SHA-256 matches artifact-manifest.json. Compressed logs decompress to their recorded original SHA-256."
   }
 }
