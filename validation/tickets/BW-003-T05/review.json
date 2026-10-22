@@ -192,7 +192,7 @@
     "failure_and_lifecycle": "Passed: exact child identity/assertion checks, five attributable aggregate controls, atomic existing native controls, fresh world lifecycle/reset/timeout cleanup and preserved outputs.",
     "git_and_storage": "Reviewed: clean existing checkouts, task branches from exact fetched main heads; no worktree, clone, project snapshot, cache deletion, auto-stash or unrelated changes.",
     "warnings": "Passed within reviewed scope: current Game compiler/staging warning set exactly matches T04 (missing MetalShaderConverter include and pre-package staged-build notice); warning-review.json retains the comparison. Native automation passes zero-warning gates. No warning settings/exclusions changed.",
-    "verification": "Default FULL passes every supported automated stage; documentation FULL and PR verification recorded separately."
+    "verification": "Passed: native default FULL passes 46 supported stages / 66 Python regressions / two 242-assertion aggregates. Documentation default FULL passes 243 aggregate checks / 100 Python regressions / four cleanup tests / 298 actual browser checks. Not-run capabilities and approved scope remain explicit."
   },
   "historical_iteration": "The first four native suites passed but aggregate loading rejected a Unicode metrics report under a UTF-8 assumption. Byte-based JSON decoding and regression coverage fixed it. Additional reuse review caught comparison of 59 canonical TestChecks against 61 native assertions; the dispatcher was stopped only after its current native child finished, the count boundary was corrected/tested, and the complete final FULL was rerun. Earlier outputs remain historical and are not claimed as current passing FULL evidence.",
   "completed_at": "2026-10-22T18:29:04.416483+00:00",
@@ -385,8 +385,8 @@
   "main_recheck": {
     "game": "9804d8a08cc45b712dd3582adac5d901119c30f8",
     "documentation": "3f0fa19aead31265032ad48a99fd3c9927aaa4d7",
-    "result": "Both freshly fetched authoritative main heads remain at the exact recorded task bases.",
-    "verified_at": "2026-10-22T18:33:41.931698+00:00"
+    "result": "Both freshly fetched authoritative main heads remain unchanged before PR delivery.",
+    "verified_at": "2026-10-22T18:37:46.088123+00:00"
   },
   "artifact_integrity_review": {
     "result": "Passed",
@@ -400,5 +400,30 @@
     "artifact": "generated-views.json",
     "checks": 34,
     "summary": "Actual local hub/foundations/parent/all-five-tickets/dependents/milestones/search/inventory/manifest inspected. Local regeneration is not deployment."
+  },
+  "documentation_verification": {
+    "result": "Passed",
+    "tested_revision": "2110dfd751c21dd151969e8cd1e2ae6e9a97af0a",
+    "main_revision": "3f0fa19aead31265032ad48a99fd3c9927aaa4d7",
+    "requested_mode": "full",
+    "executed_mode": "full",
+    "seconds": 99.102,
+    "aggregate_checks_passed": 243,
+    "python_tests_passed": 100,
+    "browser_cleanup_tests_passed": 4,
+    "browser_checks_passed": 298,
+    "artifacts": [
+      "documentation-full/validation-summary.json",
+      "documentation-full/report.json",
+      "documentation-full/data-inventory-browser-checks.json",
+      "documentation-full-console.log.gz"
+    ],
+    "commands": [
+      "python3 scripts/build_development_roadmap.py",
+      "python3 scripts/build_data_inventory.py --review-roadmap",
+      "python3 validation/validate.py --mode fast --report-dir validation/tickets/BW-003-T05/documentation-fast",
+      "python3 validation/validate.py --report-dir validation/tickets/BW-003-T05/documentation-full"
+    ],
+    "scope": "Default FULL passed at the recorded committed documentation revision. The following evidence-only commit adds these execution reports, compressed console output and review metadata. Canonical definitions, roadmap source, generated HTML/search and validator inputs remain unchanged."
   }
 }

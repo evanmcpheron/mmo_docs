@@ -1,0 +1,86 @@
+{
+  "revision": "2110dfd751c21dd151969e8cd1e2ae6e9a97af0a",
+  "main_revision": "3f0fa19aead31265032ad48a99fd3c9927aaa4d7",
+  "requested_mode": "full",
+  "executed_mode": "full",
+  "reason": "Comprehensive verification requested",
+  "merge_base": null,
+  "changed_files": [],
+  "checks": [
+    {
+      "name": "html-format",
+      "command": [
+        "npm",
+        "run",
+        "format:check"
+      ],
+      "exit_code": 0,
+      "seconds": 6.238
+    },
+    {
+      "name": "aggregate",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/run_checks.py",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/tickets/BW-003-T05/documentation-full/report.json"
+      ],
+      "exit_code": 0,
+      "seconds": 19.231
+    },
+    {
+      "name": "python",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "validation",
+        "-p",
+        "test_*.py",
+        "--durations",
+        "15"
+      ],
+      "exit_code": 0,
+      "seconds": 60.376
+    },
+    {
+      "name": "browser-cleanup",
+      "command": [
+        "node",
+        "--test",
+        "validation/test_browser_cleanup.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 2.563
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "validation/check_inventory_browser.mjs",
+        "--read-only",
+        "--report",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/validation/tickets/BW-003-T05/documentation-full/data-inventory-browser-checks.json",
+        "--screenshots",
+        "/Users/le-evanmcpheron/Documents/Unreal Projects/BriarwakeUnreal/mmo_docs/.git/validation-tmp/screenshots"
+      ],
+      "exit_code": 0,
+      "seconds": 10.627
+    },
+    {
+      "name": "engine-artifacts",
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/bin/python3",
+        "validation/check_engine_artifacts.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.066
+    }
+  ],
+  "deferred": [],
+  "passed": true,
+  "seconds": 99.102
+}
