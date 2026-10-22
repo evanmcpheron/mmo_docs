@@ -1,1 +1,350 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Prove the remaining state families, local isolation, simple distributed handoff and safe versioned updates."><title>5. Bounded mechanics and safe world evolution · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Unreal C++ &amp; networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span>5. Bounded mechanics and safe world evolution</div><h1>5. Bounded mechanics and safe world evolution</h1><p class="page-description">Prove the remaining state families, local isolation, simple distributed handoff and safe versioned updates.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html" aria-current="page">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><nav class="roadmap-phase-nav" aria-label="Phase navigation (top)"><a href="roadmap-opening.html">← 4. First complete persistent player journey</a><a href="roadmap-roster.html">6. Complete roster and beginner certification →</a></nav><h2 id="phase-extended-state">Phase objective and completion</h2><p>Prove the remaining state families, local isolation, simple distributed handoff and safe versioned updates.</p><p><progress max="100" value="0.0" aria-label="5. Bounded mechanics and safe world evolution"></progress> <span>0/12 complete · 0%</span></p><p><strong>Phase status:</strong> Not Started. Complete only when all 12 epics below are Complete with verified evidence.</p><p>Family fixtures and initial transfer/update proofs pass; the comprehensive advanced-state regression is BW-089, not inferred here. The combined-mechanic multiplayer/workload probe passes before broad kit certification.</p><p><strong>Integrated completion milestone:</strong> <a href="roadmap-milestones.html#milestone-extended-state">Bounded state and world evolution proof</a>. Its full prerequisites and integration evidence must also pass; individual components do not prove their integration.</p><p>Hard dependencies are required for completion. Recommended predecessors are scheduling preferences. Other phases are not global start barriers. <a href="roadmap-decisions.html#reading-guide">How to read this roadmap</a>.</p><h2 id="epic-index">Epics in this phase</h2><ol class="roadmap-contents"><li><a href="roadmap-bw-036.html#BW-036" id="BW-036" class="roadmap-legacy-link">BW-036 · Authorized fishing sessions</a> <span class="badge">Not Started</span><p>Resolve fishing catches from a validated interaction instead of a client-selected reward.</p></li><li><a href="roadmap-bw-038.html#BW-038" id="BW-038" class="roadmap-legacy-link">BW-038 · Profession mastery and activation changes</a> <span class="badge">Not Started</span><p>Apply bounded production choices without refill, rounding or switching exploits.</p></li><li><a href="roadmap-bw-040.html#BW-040" id="BW-040" class="roadmap-legacy-link">BW-040 · Owned mobile pets and summon commands</a> <span class="badge">Not Started</span><p>Support controlled mobile companions within shared simulation and output budgets.</p></li><li><a href="roadmap-bw-041.html#BW-041" id="BW-041" class="roadmap-legacy-link">BW-041 · Bounded static combat deployables</a> <span class="badge">Not Started</span><p>Make traps, totems and linked combat objects behave as finite owned effects.</p></li><li><a href="roadmap-bw-042.html#BW-042" id="BW-042" class="roadmap-legacy-link">BW-042 · Validated combat forms</a> <span class="badge">Not Started</span><p>Change form without duplicating attributes, resources or equipment power.</p></li><li><a href="roadmap-bw-044.html#BW-044" id="BW-044" class="roadmap-legacy-link">BW-044 · Persistent delayed-damage debt</a> <span class="badge">Not Started</span><p>Prove deferred damage remains owed through build and session changes.</p></li><li><a href="roadmap-bw-046.html#BW-046" id="BW-046" class="roadmap-legacy-link">BW-046 · Periodic effect budget transformations</a> <span class="badge">Not Started</span><p>Allow extension, spreading and consumption without duplicating remaining periodic output.</p></li><li><a href="roadmap-bw-096.html#BW-096" id="BW-096" class="roadmap-legacy-link">BW-096 · Integrated advanced-mechanic multiplayer probe</a> <span class="badge">Not Started</span><p>Validate interacting state families and their representative network workload before broad kit certification multiplies them.</p></li><li><a href="roadmap-bw-081.html#BW-081" id="BW-081" class="roadmap-legacy-link">BW-081 · Private instance membership and lifecycle</a> <span class="badge">Not Started</span><p>Provide isolated group-owned encounter spaces with controlled admission, departure and reset.</p></li><li><a href="roadmap-bw-082.html#BW-082" id="BW-082" class="roadmap-legacy-link">BW-082 · Fenced cross-process character handoff</a> <span class="badge">Not Started</span><p>Transfer a character between two authoritative processes while preserving one owner and committed economic state.</p></li><li><a href="roadmap-bw-088.html#BW-088" id="BW-088" class="roadmap-legacy-link">BW-088 · Versioned deployment, database migration and rollback</a> <span class="badge">Not Started</span><p>Deploy and replace the small initial service/world deployment without incompatible state or partial economic rollback.</p></li><li><a href="roadmap-bw-091.html#BW-091" id="BW-091" class="roadmap-legacy-link">BW-091 · Content-version migration and readiness admission</a> <span class="badge">Not Started</span><p>Safely replace enabled gameplay content without silently repurposing IDs or leaving illegal builds/items.</p></li></ol><p id="epics">Open an epic for its full scope, dependencies, acceptance criteria, verification and ticket planning.</p><p><strong>Direct prerequisites from other phases:</strong> <a href="roadmap-bw-034.html#BW-034">BW-034</a>, <a href="roadmap-bw-037.html#BW-037">BW-037</a>, <a href="roadmap-bw-028.html#BW-028">BW-028</a>, <a href="roadmap-bw-045.html#BW-045">BW-045</a>, <a href="roadmap-bw-027.html#BW-027">BW-027</a>, <a href="roadmap-bw-022.html#BW-022">BW-022</a>, <a href="roadmap-bw-043.html#BW-043">BW-043</a>, <a href="roadmap-bw-083.html#BW-083">BW-083</a>, <a href="roadmap-bw-016.html#BW-016">BW-016</a>, <a href="roadmap-bw-030.html#BW-030">BW-030</a>, <a href="roadmap-bw-080.html#BW-080">BW-080</a>, <a href="roadmap-bw-087.html#BW-087">BW-087</a>, <a href="roadmap-bw-024.html#BW-024">BW-024</a></p><nav class="roadmap-phase-nav" aria-label="Phase navigation (bottom)"><a href="roadmap-opening.html">← 4. First complete persistent player journey</a><a href="roadmap-roster.html">6. Complete roster and beginner certification →</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#phase-extended-state">Objective and completion</a><a href="#epic-index">Epic index</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Prove the remaining state families, local isolation, simple distributed handoff and safe versioned updates."
+    />
+    <title>5. Bounded mechanics and safe world evolution · Briarwake Development Roadmap</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span>5. Bounded
+            mechanics and safe world evolution
+          </div>
+          <h1>5. Bounded mechanics and safe world evolution</h1>
+          <p class="page-description">
+            Prove the remaining state families, local isolation, simple distributed handoff and safe
+            versioned updates.
+          </p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html" aria-current="page"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <nav class="roadmap-phase-nav" aria-label="Phase navigation (top)">
+              <a href="roadmap-opening.html">← 4. First complete persistent player journey</a
+              ><a href="roadmap-roster.html">6. Complete roster and beginner certification →</a>
+            </nav>
+            <h2 id="phase-extended-state">Phase objective and completion</h2>
+            <p>
+              Prove the remaining state families, local isolation, simple distributed handoff and
+              safe versioned updates.
+            </p>
+            <p>
+              <progress
+                max="100"
+                value="0.0"
+                aria-label="5. Bounded mechanics and safe world evolution"
+              ></progress>
+              <span>0/12 complete · 0%</span>
+            </p>
+            <p>
+              <strong>Phase status:</strong> Not Started. Complete only when all 12 epics below are
+              Complete with verified evidence.
+            </p>
+            <p>
+              Family fixtures and initial transfer/update proofs pass; the comprehensive
+              advanced-state regression is BW-089, not inferred here. The combined-mechanic
+              multiplayer/workload probe passes before broad kit certification.
+            </p>
+            <p>
+              <strong>Integrated completion milestone:</strong>
+              <a href="roadmap-milestones.html#milestone-extended-state"
+                >Bounded state and world evolution proof</a
+              >. Its full prerequisites and integration evidence must also pass; individual
+              components do not prove their integration.
+            </p>
+            <p>
+              Hard dependencies are required for completion. Recommended predecessors are scheduling
+              preferences. Other phases are not global start barriers.
+              <a href="roadmap-decisions.html#reading-guide">How to read this roadmap</a>.
+            </p>
+            <h2 id="epic-index">Epics in this phase</h2>
+            <ol class="roadmap-contents">
+              <li>
+                <a href="roadmap-bw-036.html#BW-036" id="BW-036" class="roadmap-legacy-link"
+                  >BW-036 · Authorized fishing sessions</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Resolve fishing catches from a validated interaction instead of a client-selected
+                  reward.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-038.html#BW-038" id="BW-038" class="roadmap-legacy-link"
+                  >BW-038 · Profession mastery and activation changes</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Apply bounded production choices without refill, rounding or switching exploits.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-040.html#BW-040" id="BW-040" class="roadmap-legacy-link"
+                  >BW-040 · Owned mobile pets and summon commands</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Support controlled mobile companions within shared simulation and output budgets.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-041.html#BW-041" id="BW-041" class="roadmap-legacy-link"
+                  >BW-041 · Bounded static combat deployables</a
+                >
+                <span class="badge">Not Started</span>
+                <p>Make traps, totems and linked combat objects behave as finite owned effects.</p>
+              </li>
+              <li>
+                <a href="roadmap-bw-042.html#BW-042" id="BW-042" class="roadmap-legacy-link"
+                  >BW-042 · Validated combat forms</a
+                >
+                <span class="badge">Not Started</span>
+                <p>Change form without duplicating attributes, resources or equipment power.</p>
+              </li>
+              <li>
+                <a href="roadmap-bw-044.html#BW-044" id="BW-044" class="roadmap-legacy-link"
+                  >BW-044 · Persistent delayed-damage debt</a
+                >
+                <span class="badge">Not Started</span>
+                <p>Prove deferred damage remains owed through build and session changes.</p>
+              </li>
+              <li>
+                <a href="roadmap-bw-046.html#BW-046" id="BW-046" class="roadmap-legacy-link"
+                  >BW-046 · Periodic effect budget transformations</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Allow extension, spreading and consumption without duplicating remaining periodic
+                  output.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-096.html#BW-096" id="BW-096" class="roadmap-legacy-link"
+                  >BW-096 · Integrated advanced-mechanic multiplayer probe</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Validate interacting state families and their representative network workload
+                  before broad kit certification multiplies them.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-081.html#BW-081" id="BW-081" class="roadmap-legacy-link"
+                  >BW-081 · Private instance membership and lifecycle</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Provide isolated group-owned encounter spaces with controlled admission, departure
+                  and reset.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-082.html#BW-082" id="BW-082" class="roadmap-legacy-link"
+                  >BW-082 · Fenced cross-process character handoff</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Transfer a character between two authoritative processes while preserving one
+                  owner and committed economic state.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-088.html#BW-088" id="BW-088" class="roadmap-legacy-link"
+                  >BW-088 · Versioned deployment, database migration and rollback</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Deploy and replace the small initial service/world deployment without incompatible
+                  state or partial economic rollback.
+                </p>
+              </li>
+              <li>
+                <a href="roadmap-bw-091.html#BW-091" id="BW-091" class="roadmap-legacy-link"
+                  >BW-091 · Content-version migration and readiness admission</a
+                >
+                <span class="badge">Not Started</span>
+                <p>
+                  Safely replace enabled gameplay content without silently repurposing IDs or
+                  leaving illegal builds/items.
+                </p>
+              </li>
+            </ol>
+            <p id="epics">
+              Open an epic for its full scope, dependencies, acceptance criteria, verification and
+              ticket planning.
+            </p>
+            <p>
+              <strong>Direct prerequisites from other phases:</strong>
+              <a href="roadmap-bw-034.html#BW-034">BW-034</a>,
+              <a href="roadmap-bw-037.html#BW-037">BW-037</a>,
+              <a href="roadmap-bw-028.html#BW-028">BW-028</a>,
+              <a href="roadmap-bw-045.html#BW-045">BW-045</a>,
+              <a href="roadmap-bw-027.html#BW-027">BW-027</a>,
+              <a href="roadmap-bw-022.html#BW-022">BW-022</a>,
+              <a href="roadmap-bw-043.html#BW-043">BW-043</a>,
+              <a href="roadmap-bw-083.html#BW-083">BW-083</a>,
+              <a href="roadmap-bw-016.html#BW-016">BW-016</a>,
+              <a href="roadmap-bw-030.html#BW-030">BW-030</a>,
+              <a href="roadmap-bw-080.html#BW-080">BW-080</a>,
+              <a href="roadmap-bw-087.html#BW-087">BW-087</a>,
+              <a href="roadmap-bw-024.html#BW-024">BW-024</a>
+            </p>
+            <nav class="roadmap-phase-nav" aria-label="Phase navigation (bottom)">
+              <a href="roadmap-opening.html">← 4. First complete persistent player journey</a
+              ><a href="roadmap-roster.html">6. Complete roster and beginner certification →</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#phase-extended-state">Objective and completion</a
+          ><a href="#epic-index">Epic index</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

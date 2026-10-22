@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import NamedTuple
 from urllib.parse import unquote, urlsplit
 from data_model import model_errors, schema_bundle, review_report, schema_children
+from html_format import format_pages
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PAGE = 'guide/data-inventory.html'
@@ -23,7 +24,7 @@ ROADMAP_EXCLUSION = ('Development planning, dependencies, acceptance criteria an
 CATEGORIES = {'Enum': 'Enums', 'Interface': 'Interfaces', 'Schema': 'Schemas'}
 DATA_START = '<!-- data-inventory:start -->'
 DATA_END = '<!-- data-inventory:end -->'
-DATA_BLOCK = re.compile(re.escape(DATA_START) + r'.*?' + re.escape(DATA_END), re.S)
+DATA_BLOCK = re.compile(r'\s*' + re.escape(DATA_START) + r'.*?' + re.escape(DATA_END) + r'\s*', re.S)
 ENTRY_KEYS = {'id', 'name', 'category', 'status', 'definition_status', 'canonical_page',
               'feature_pages', 'evidence', 'review_status', 'review_issues', 'definition',
               'responsibility', 'authority', 'modeling_notes', 'references', 'definition_extent',
@@ -57,7 +58,8 @@ class Document(HTMLParser):
 
     def handle_endtag(self, tag):
         if self.heading and tag == self.heading[0]:
-            self.headings.append(tuple(self.heading))
+            tag, anchor, title = self.heading
+            self.headings.append((tag, anchor, ' '.join(title.split())))
             self.heading = None
         if tag == 'main':
             self.main = False
@@ -295,22 +297,22 @@ def data_section(page, entries):
 
 def navigation(source, page):
     # Normalize shared navigation on every generated page.
-    source = re.sub(r'(<a\b[^>]*href="(?:\.\./)?guide/networking\.html"[^>]*>).*?(</a>)',
+    source = re.sub(r'(<a\b[^>]*href="(?:\.\./)?guide/networking\.html"[^>]*>).*?(</a\s*>)',
                     lambda match: match.group(1) + 'Unreal C++ &amp; networking' + match.group(2),
                     source, count=1, flags=re.S)
-    source = re.sub(r'<a data-inventory-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
+    source = re.sub(r'\s*<a\s+data-inventory-nav\b[^>]*>.*?</a\s*>', '', source, flags=re.S)
     current = ' aria-current="page"' if page == INVENTORY_PAGE else ''
     address = posixpath.relpath(INVENTORY_PAGE, posixpath.dirname(page) or '.')
     link = f'<a data-inventory-nav href="{address}"{current}>Data Inventory</a>'
     if source.count('<p>Catalogs</p>') != 1:
         raise ValueError(f'{page}: expected one Catalogs navigation group')
     source = source.replace('<p>Catalogs</p>', '<p>Catalogs</p>' + link)
-    source = re.sub(r'<a data-roadmap-nav\b[^>]*>.*?</a>', '', source, flags=re.S)
+    source = re.sub(r'\s*<a\s+data-roadmap-nav\b[^>]*>.*?</a\s*>', '', source, flags=re.S)
     current = ' aria-current="page"' if page == ROADMAP_PAGE else (
         ' aria-current="location"' if page.startswith('guide/roadmap-') else '')
     address = posixpath.relpath(ROADMAP_PAGE, posixpath.dirname(page) or '.')
     link = f'<a data-roadmap-nav href="{address}"{current}>Development Roadmap</a>'
-    source, count = re.subn(r'(<a class="nav-home\b[^>]*>.*?</a>)', r'\1' + link, source, flags=re.S)
+    source, count = re.subn(r'(<a\s+class="nav-home\b[^>]*>.*?</a\s*>)', r'\1' + link, source, flags=re.S)
     if count != 1:
         raise ValueError(f'{page}: expected one Overview navigation link')
     return source
@@ -496,8 +498,8 @@ def inventory_body(registry):
 
 def inventory_page(registry, template):
     prefix = template.split('<main', 1)[0]
-    prefix = re.sub(r'<title>.*?</title>', '<title>Data Inventory · MMORPG Reference v2</title>', prefix)
-    prefix = re.sub(r'<meta name="description"[^>]*>', '<meta name="description" content="Canonical data definitions, reviewed decisions and future Briarwake implementation work.">', prefix)
+    prefix = re.sub(r'<title>.*?</title>', '<title>Data Inventory · MMORPG Reference v2</title>', prefix, flags=re.S)
+    prefix = re.sub(r'<meta\s+name="description"[^>]*>', '<meta name="description" content="Canonical data definitions, reviewed decisions and future Briarwake implementation work.">', prefix)
     prefix = re.sub(r' aria-current=(?:"page"|page)', '', prefix)
     prefix = prefix.replace('<span class="section-label">Engineering</span>', '<span class="section-label">Catalogs</span>')
     footer = re.search(r'<footer class="page-footer">.*?</footer>', template, re.S).group()
@@ -513,16 +515,18 @@ def expected_outputs(registry, root=ROOT):
         source = strip_data((root / page).read_text(encoding='utf-8'))
         entries = [e for e in registry['entries'] if page in e['feature_pages']]
         if entries:
-            if source.count('</div><footer class="page-footer">') != 1:
+            boundary = r'</div>\s*(?=<footer class="page-footer">)'
+            if len(re.findall(boundary, source)) != 1:
                 raise ValueError(f'{page}: expected one article/footer boundary')
-            source = source.replace('</div><footer class="page-footer">', data_section(page, entries) + '</div><footer class="page-footer">')
-        source = re.sub(r'<a data-inventory-toc\b[^>]*>.*?</a>', '', source, flags=re.S)
+            source = re.sub(boundary, lambda match: data_section(page, entries) + match.group(), source)
+        source = re.sub(r'\s*<a\s+data-inventory-toc\b[^>]*>.*?</a\s*>', '', source, flags=re.S)
         if entries:
             source, count = re.subn(r'(<aside class="page-toc".*?)(</aside>)', r'\1<a data-inventory-toc href="#data">Data</a>\2', source, flags=re.S)
             if count != 1:
                 raise ValueError(f'{page}: expected one page contents navigation')
         outputs[page] = navigation(source, page)
     outputs[INVENTORY_PAGE] = inventory_page(registry, (root / 'guide/networking.html').read_text(encoding='utf-8'))
+    outputs = format_pages(outputs)
     search_path = root / 'assets/search-index.js'
     search = json.loads(search_path.read_text(encoding='utf-8').removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
     search = [r for r in search if r.get('source') not in ('data-inventory', 'development-roadmap')]

@@ -1,105 +1,712 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Crafting &amp; commissions · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a aria-current=page href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Unreal C++ &amp; networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Economy</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div><h1>Crafting &amp; commissions</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<h2 id="direct-crafting-lifecycle">Direct crafting lifecycle</h2>
-<p>Select recipe → preview exact output and costs → validate recipe/station/skill/slots → quote inventory versions → accept → reserve inputs → run channel or job → atomically consume inputs, create result and grant profession progress → deliver → acknowledge.</p>
-<p>A job has a stable ID and state: <code>quoted</code>, <code>reserved</code>, <code>in_progress</code>, <code>committed</code>, <code>delivered</code>, <code>cancelled</code> or <code>failed</code>. A retry returns the existing result for its idempotency key. It never creates a second item or grants another skill point.</p>
-<p>Short personal crafts reserve inputs at acceptance and commit at channel completion. Cancellation before commit releases the reservation and grants no output or skill. A server crash before commit releases or resumes the reservation according to the stored state. A crash after commit redelivers the existing result. No outcome depends on whether the client saw the final animation.</p>
-<p><strong>Original material basis:</strong> The durable transactional owner commits <code>ItemLineageRecord.material_provenance</code> atomically with consumed inputs, output quantities and settlement. It snapshots the actual recipe/content and independent rules revisions, actual material-to-item mapping, classification, consumed-instance binding and starter export restriction after authorized mastery savings. Destroyed input IDs alone are insufficient proof. Every output unit receives its equal rational share of the same complete committed basis; retries cannot allocate another share. Preserve archived content so later recipe changes cannot reinterpret it. Recraft/service events retain the original basis without adding their new inputs to salvage entitlement. See the <a href="items.html#economic-contracts-2-3">salvage rounding and migration contract</a>.</p>
-<h2 id="customer-commissions">Customer commissions</h2>
-<p>Support public fixed-tip orders and private addressed orders. A customer chooses exact blueprint, allowed configuration, required result grade, recipient, supplied materials, permitted crafter-supplied materials, maximum commission and expiry. Default expiry is 48 hours. A quote clearly shows which costs are not supplied and cannot be exceeded after acceptance.</p>
-<p>Public orders do not require blind bidding. Crafters browse eligible work and claim one through an atomic lease. A ten-minute renewable lease is an initial default; a worker may not reserve unlimited orders. The contract cannot be altered after the crafter begins. A cancelled or expired uncommitted order returns customer escrow to a delivery container.</p>
-<p>A customer-bound challenge component stays owned by the customer inside escrow. It is usable only for that contract. The final item is created directly for the customer; the crafter receives commission and legitimate profession progress. The crafter never gains a tradable copy, appearance unlock or salvage right merely by performing the job.</p>
-<h2 id="recrafting-and-service-work">Recrafting and service work</h2>
-<p>Recrafting references one exact item instance and version. The item is unavailable for equip, market, mail or trade during the job. Commit updates that instance, increments its version and records the old/new definition and enhancement decisions. An optimistic-version conflict aborts before consumption.</p>
-<p>Enchanting, socket replacement, repair, instrument configuration and similar services use the same contract machinery. The customer previews the result and any destroyed enhancement. Never implement these as a series of unprotected direct trades.</p>
-<h2 id="settlement-invariants">Settlement invariants</h2>
-<p>For a successful job, inputs are consumed once, output is created once, commission is moved once, fees are destroyed once, and skill progress is awarded once. Total currency changes by exactly the declared fee. Every consumed material quantity belongs to one valid reservation.</p>
-<p>Database transactions and constraints enforce local integrity. Use stable item IDs, unique operation keys, nonnegative quantities and a versioned owner/container record. A transactional outbox records committed deliveries and notifications alongside the settlement. A network acknowledgment is not proof of database commit. PostgreSQL's isolation and constraint documentation informs this design; serialization failures require retries of the whole transaction. See <a href="sources.html">Sources S4</a>(sources.html#s4) and <a href="sources.html">Sources S5</a>(sources.html#s5).</p>
-<h2 id="inventory-full-and-disconnect-behavior">Inventory-full and disconnect behavior</h2>
-<p>A full bag redirects committed output to durable delivery; it does not roll back only half the craft. A disconnected customer may receive a completed order. A disconnected crafter cannot continue an ordinary short-channel craft unless a persisted asynchronous job type explicitly allows it. Initial launch crafts are short synchronous jobs; long offline manufacturing is deferred.</p>
-<p>Claiming a delivery validates ownership and item version and transfers it atomically. Repeated claims return the prior status. A notification can be lost without losing the item.</p>
-<h2 id="fraud-and-exploit-controls">Fraud and exploit controls</h2>
-<p>Log recipe version, material provenance, crafter, customer, item lineage, commission, mastery snapshot and operation key. Rate-limit quote/claim/cancel operations. Detect repeated self-dealing or alt orders for analytics, but do not ban ordinary crafting for one's own alts merely because it is efficient. There are no commission-specific infinite skill or currency rewards to farm.</p>
-<p>Never refund consumed inputs after a result was committed unless an administrative reversal also removes or compensates the output through an audited operation. Support staff cannot edit a database quantity without provenance. Large exploit incidents need a reconciliation tool, not an indiscriminate rollback of unrelated players.</p>
-<h2 id="acceptance-tests">Acceptance tests</h2>
-<p>Two crafters claim the same order; buyer cancels as crafter commits; inventory fills mid-channel; the server crashes before and after commit; a bound core is offered to a different contract; a recipe is retired during a job; a material-saving bonus changes; the client retries settlement 100 times. The correct result is one valid settlement or no settlement, never duplication or disappearing escrow.</p>
-<!-- data-inventory:start -->
-<section class="data-inventory" aria-labelledby="data">
-<h2 id="data">Data</h2>
-<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
-<h3 id="data-enums">Enums</h3>
-<ul>
-<li data-inventory-id="craft-job-state"><code><a href="data-inventory.html#craft-job-state">CraftJobState</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="craft-order-state"><code><a href="data-inventory.html#craft-order-state">CraftOrderState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-visibility"><code><a href="data-inventory.html#craft-order-visibility">CraftOrderVisibility</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="enhancement-category"><code><a href="data-inventory.html#enhancement-category">EnhancementCategory</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-container-kind"><code><a href="data-inventory.html#inventory-container-kind">InventoryContainerKind</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-binding-state"><code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-grade"><code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-transfer-operation"><code><a href="data-inventory.html#item-transfer-operation">ItemTransferOperation</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="profession-band"><code><a href="data-inventory.html#profession-band">ProfessionBand</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="service-operation-type"><code><a href="data-inventory.html#service-operation-type">ServiceOperationType</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-interfaces">Interfaces</h3>
-<ul>
-<li data-inventory-id="craft-confirmation-state"><code><a href="data-inventory.html#craft-confirmation-state">CraftConfirmationState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-job"><code><a href="data-inventory.html#craft-job">CraftJob</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-lease"><code><a href="data-inventory.html#craft-order-lease">CraftOrderLease</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-quote"><code><a href="data-inventory.html#craft-quote">CraftQuote</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-result-preview"><code><a href="data-inventory.html#craft-result-preview">CraftResultPreview</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="efficiency-remainder"><code><a href="data-inventory.html#efficiency-remainder">EfficiencyRemainder</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="enhancement-instance"><code><a href="data-inventory.html#enhancement-instance">EnhancementInstance</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-availability-state"><code><a href="data-inventory.html#inventory-availability-state">InventoryAvailabilityState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-container"><code><a href="data-inventory.html#inventory-container">InventoryContainer</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-instance"><code><a href="data-inventory.html#item-instance">ItemInstance</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-transfer-eligibility"><code><a href="data-inventory.html#item-transfer-eligibility">ItemTransferEligibility</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="mastery-bonus-snapshot"><code><a href="data-inventory.html#mastery-bonus-snapshot">MasteryBonusSnapshot</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="profession-mastery-allocation"><code><a href="data-inventory.html#profession-mastery-allocation">ProfessionMasteryAllocation</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="profession-progress"><code><a href="data-inventory.html#profession-progress">ProfessionProgress</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="profession-selection-state"><code><a href="data-inventory.html#profession-selection-state">ProfessionSelectionState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="recipe-browser-state"><code><a href="data-inventory.html#recipe-browser-state">RecipeBrowserState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="recipe-configuration"><code><a href="data-inventory.html#recipe-configuration">RecipeConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="wallet-state"><code><a href="data-inventory.html#wallet-state">WalletState</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-schemas">Schemas</h3>
-<ul>
-<li data-inventory-id="administrative-action-record"><code><a href="data-inventory.html#administrative-action-record">AdministrativeActionRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="administrative-permission-policy"><code><a href="data-inventory.html#administrative-permission-policy">AdministrativePermissionPolicy</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="asset-freeze-record"><code><a href="data-inventory.html#asset-freeze-record">AssetFreezeRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-acceptance-request"><code><a href="data-inventory.html#craft-acceptance-request">CraftAcceptanceRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-batch-quote"><code><a href="data-inventory.html#craft-batch-quote">CraftBatchQuote</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-escrow-record"><code><a href="data-inventory.html#craft-escrow-record">CraftEscrowRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-job-record"><code><a href="data-inventory.html#craft-job-record">CraftJobRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-cancellation-request"><code><a href="data-inventory.html#craft-order-cancellation-request">CraftOrderCancellationRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-claim-request"><code><a href="data-inventory.html#craft-order-claim-request">CraftOrderClaimRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-order-record"><code><a href="data-inventory.html#craft-order-record">CraftOrderRecord</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="craft-quote-request"><code><a href="data-inventory.html#craft-quote-request">CraftQuoteRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="craft-settlement-record"><code><a href="data-inventory.html#craft-settlement-record">CraftSettlementRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="delivery-claim-request"><code><a href="data-inventory.html#delivery-claim-request">DeliveryClaimRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="delivery-record"><code><a href="data-inventory.html#delivery-record">DeliveryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="economy-metric-record"><code><a href="data-inventory.html#economy-metric-record">EconomyMetricRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="economy-reconciliation-report"><code><a href="data-inventory.html#economy-reconciliation-report">EconomyReconciliationReport</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="equipment-definition"><code><a href="data-inventory.html#equipment-definition">EquipmentDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="fraud-reversal-record"><code><a href="data-inventory.html#fraud-reversal-record">FraudReversalRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-operation-request"><code><a href="data-inventory.html#inventory-operation-request">InventoryOperationRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-operation-result"><code><a href="data-inventory.html#inventory-operation-result">InventoryOperationResult</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="inventory-record"><code><a href="data-inventory.html#inventory-record">InventoryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-definition"><code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-effect-definition"><code><a href="data-inventory.html#item-effect-definition">ItemEffectDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="item-lineage-record"><code><a href="data-inventory.html#item-lineage-record">ItemLineageRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="item-ownership-record"><code><a href="data-inventory.html#item-ownership-record">ItemOwnershipRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="known-recipe-record"><code><a href="data-inventory.html#known-recipe-record">KnownRecipeRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="mail-delivery-record"><code><a href="data-inventory.html#mail-delivery-record">MailDeliveryRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="material-definition"><code><a href="data-inventory.html#material-definition">MaterialDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="operation-receipt"><code><a href="data-inventory.html#operation-receipt">OperationReceipt</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="profession-definition"><code><a href="data-inventory.html#profession-definition">ProfessionDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recipe-definition"><code><a href="data-inventory.html#recipe-definition">RecipeDefinition</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recipe-ingredient"><code><a href="data-inventory.html#recipe-ingredient">RecipeIngredient</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recipe-result-preview"><code><a href="data-inventory.html#recipe-result-preview">RecipeResultPreview</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="recraft-request"><code><a href="data-inventory.html#recraft-request">RecraftRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="service-work-request"><code><a href="data-inventory.html#service-work-request">ServiceWorkRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="transactional-outbox-record"><code><a href="data-inventory.html#transactional-outbox-record">TransactionalOutboxRecord</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-transaction-request"><code><a href="data-inventory.html#vendor-transaction-request">VendorTransactionRequest</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="vendor-transaction-response"><code><a href="data-inventory.html#vendor-transaction-response">VendorTransactionResponse</a></code> — Proposed · Fully Defined</li>
-</ul>
-</section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#direct-crafting-lifecycle">Direct crafting lifecycle</a><a href="#customer-commissions">Customer commissions</a><a href="#recrafting-and-service-work">Recrafting and service work</a><a href="#settlement-invariants">Settlement invariants</a><a href="#inventory-full-and-disconnect-behavior">Inventory-full and disconnect behavior</a><a href="#fraud-and-exploit-controls">Fraud and exploit controls</a><a href="#acceptance-tests">Acceptance tests</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Crafting &amp; commissions · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a aria-current="page" href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Economy</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Economy</div>
+          <h1>Crafting &amp; commissions</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <h2 id="direct-crafting-lifecycle">Direct crafting lifecycle</h2>
+            <p>
+              Select recipe → preview exact output and costs → validate recipe/station/skill/slots →
+              quote inventory versions → accept → reserve inputs → run channel or job → atomically
+              consume inputs, create result and grant profession progress → deliver → acknowledge.
+            </p>
+            <p>
+              A job has a stable ID and state: <code>quoted</code>, <code>reserved</code>,
+              <code>in_progress</code>, <code>committed</code>, <code>delivered</code>,
+              <code>cancelled</code> or <code>failed</code>. A retry returns the existing result for
+              its idempotency key. It never creates a second item or grants another skill point.
+            </p>
+            <p>
+              Short personal crafts reserve inputs at acceptance and commit at channel completion.
+              Cancellation before commit releases the reservation and grants no output or skill. A
+              server crash before commit releases or resumes the reservation according to the stored
+              state. A crash after commit redelivers the existing result. No outcome depends on
+              whether the client saw the final animation.
+            </p>
+            <p>
+              <strong>Original material basis:</strong> The durable transactional owner commits
+              <code>ItemLineageRecord.material_provenance</code> atomically with consumed inputs,
+              output quantities and settlement. It snapshots the actual recipe/content and
+              independent rules revisions, actual material-to-item mapping, classification,
+              consumed-instance binding and starter export restriction after authorized mastery
+              savings. Destroyed input IDs alone are insufficient proof. Every output unit receives
+              its equal rational share of the same complete committed basis; retries cannot allocate
+              another share. Preserve archived content so later recipe changes cannot reinterpret
+              it. Recraft/service events retain the original basis without adding their new inputs
+              to salvage entitlement. See the
+              <a href="items.html#economic-contracts-2-3">salvage rounding and migration contract</a
+              >.
+            </p>
+            <h2 id="customer-commissions">Customer commissions</h2>
+            <p>
+              Support public fixed-tip orders and private addressed orders. A customer chooses exact
+              blueprint, allowed configuration, required result grade, recipient, supplied
+              materials, permitted crafter-supplied materials, maximum commission and expiry.
+              Default expiry is 48 hours. A quote clearly shows which costs are not supplied and
+              cannot be exceeded after acceptance.
+            </p>
+            <p>
+              Public orders do not require blind bidding. Crafters browse eligible work and claim
+              one through an atomic lease. A ten-minute renewable lease is an initial default; a
+              worker may not reserve unlimited orders. The contract cannot be altered after the
+              crafter begins. A cancelled or expired uncommitted order returns customer escrow to a
+              delivery container.
+            </p>
+            <p>
+              A customer-bound challenge component stays owned by the customer inside escrow. It is
+              usable only for that contract. The final item is created directly for the customer;
+              the crafter receives commission and legitimate profession progress. The crafter never
+              gains a tradable copy, appearance unlock or salvage right merely by performing the
+              job.
+            </p>
+            <h2 id="recrafting-and-service-work">Recrafting and service work</h2>
+            <p>
+              Recrafting references one exact item instance and version. The item is unavailable for
+              equip, market, mail or trade during the job. Commit updates that instance, increments
+              its version and records the old/new definition and enhancement decisions. An
+              optimistic-version conflict aborts before consumption.
+            </p>
+            <p>
+              Enchanting, socket replacement, repair, instrument configuration and similar services
+              use the same contract machinery. The customer previews the result and any destroyed
+              enhancement. Never implement these as a series of unprotected direct trades.
+            </p>
+            <h2 id="settlement-invariants">Settlement invariants</h2>
+            <p>
+              For a successful job, inputs are consumed once, output is created once, commission is
+              moved once, fees are destroyed once, and skill progress is awarded once. Total
+              currency changes by exactly the declared fee. Every consumed material quantity belongs
+              to one valid reservation.
+            </p>
+            <p>
+              Database transactions and constraints enforce local integrity. Use stable item IDs,
+              unique operation keys, nonnegative quantities and a versioned owner/container record.
+              A transactional outbox records committed deliveries and notifications alongside the
+              settlement. A network acknowledgment is not proof of database commit. PostgreSQL's
+              isolation and constraint documentation informs this design; serialization failures
+              require retries of the whole transaction. See
+              <a href="sources.html">Sources S4</a>(sources.html#s4) and
+              <a href="sources.html">Sources S5</a>(sources.html#s5).
+            </p>
+            <h2 id="inventory-full-and-disconnect-behavior">
+              Inventory-full and disconnect behavior
+            </h2>
+            <p>
+              A full bag redirects committed output to durable delivery; it does not roll back only
+              half the craft. A disconnected customer may receive a completed order. A disconnected
+              crafter cannot continue an ordinary short-channel craft unless a persisted
+              asynchronous job type explicitly allows it. Initial launch crafts are short
+              synchronous jobs; long offline manufacturing is deferred.
+            </p>
+            <p>
+              Claiming a delivery validates ownership and item version and transfers it atomically.
+              Repeated claims return the prior status. A notification can be lost without losing the
+              item.
+            </p>
+            <h2 id="fraud-and-exploit-controls">Fraud and exploit controls</h2>
+            <p>
+              Log recipe version, material provenance, crafter, customer, item lineage, commission,
+              mastery snapshot and operation key. Rate-limit quote/claim/cancel operations. Detect
+              repeated self-dealing or alt orders for analytics, but do not ban ordinary crafting
+              for one's own alts merely because it is efficient. There are no commission-specific
+              infinite skill or currency rewards to farm.
+            </p>
+            <p>
+              Never refund consumed inputs after a result was committed unless an administrative
+              reversal also removes or compensates the output through an audited operation. Support
+              staff cannot edit a database quantity without provenance. Large exploit incidents need
+              a reconciliation tool, not an indiscriminate rollback of unrelated players.
+            </p>
+            <h2 id="acceptance-tests">Acceptance tests</h2>
+            <p>
+              Two crafters claim the same order; buyer cancels as crafter commits; inventory fills
+              mid-channel; the server crashes before and after commit; a bound core is offered to a
+              different contract; a recipe is retired during a job; a material-saving bonus changes;
+              the client retries settlement 100 times. The correct result is one valid settlement or
+              no settlement, never duplication or disappearing escrow.
+            </p>
+            <!-- data-inventory:start -->
+            <section class="data-inventory" aria-labelledby="data">
+              <h2 id="data">Data</h2>
+              <p>
+                Follow a type name to its canonical members, properties, constraints and review
+                decisions. Definitions are generated from one shared registry.
+              </p>
+              <h3 id="data-enums">Enums</h3>
+              <ul>
+                <li data-inventory-id="craft-job-state">
+                  <code><a href="data-inventory.html#craft-job-state">CraftJobState</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-state">
+                  <code><a href="data-inventory.html#craft-order-state">CraftOrderState</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-visibility">
+                  <code
+                    ><a href="data-inventory.html#craft-order-visibility"
+                      >CraftOrderVisibility</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="enhancement-category">
+                  <code
+                    ><a href="data-inventory.html#enhancement-category"
+                      >EnhancementCategory</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-container-kind">
+                  <code
+                    ><a href="data-inventory.html#inventory-container-kind"
+                      >InventoryContainerKind</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-binding-state">
+                  <code><a href="data-inventory.html#item-binding-state">ItemBindingState</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-grade">
+                  <code><a href="data-inventory.html#item-grade">ItemGrade</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="item-transfer-operation">
+                  <code
+                    ><a href="data-inventory.html#item-transfer-operation"
+                      >ItemTransferOperation</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="profession-band">
+                  <code><a href="data-inventory.html#profession-band">ProfessionBand</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="service-operation-type">
+                  <code
+                    ><a href="data-inventory.html#service-operation-type"
+                      >ServiceOperationType</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-interfaces">Interfaces</h3>
+              <ul>
+                <li data-inventory-id="craft-confirmation-state">
+                  <code
+                    ><a href="data-inventory.html#craft-confirmation-state"
+                      >CraftConfirmationState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-job">
+                  <code><a href="data-inventory.html#craft-job">CraftJob</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-lease">
+                  <code><a href="data-inventory.html#craft-order-lease">CraftOrderLease</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-quote">
+                  <code><a href="data-inventory.html#craft-quote">CraftQuote</a></code> — Proposed ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="craft-result-preview">
+                  <code
+                    ><a href="data-inventory.html#craft-result-preview">CraftResultPreview</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="efficiency-remainder">
+                  <code
+                    ><a href="data-inventory.html#efficiency-remainder"
+                      >EfficiencyRemainder</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="enhancement-instance">
+                  <code
+                    ><a href="data-inventory.html#enhancement-instance"
+                      >EnhancementInstance</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-availability-state">
+                  <code
+                    ><a href="data-inventory.html#inventory-availability-state"
+                      >InventoryAvailabilityState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-container">
+                  <code
+                    ><a href="data-inventory.html#inventory-container">InventoryContainer</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-instance">
+                  <code><a href="data-inventory.html#item-instance">ItemInstance</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-transfer-eligibility">
+                  <code
+                    ><a href="data-inventory.html#item-transfer-eligibility"
+                      >ItemTransferEligibility</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="mastery-bonus-snapshot">
+                  <code
+                    ><a href="data-inventory.html#mastery-bonus-snapshot"
+                      >MasteryBonusSnapshot</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="profession-mastery-allocation">
+                  <code
+                    ><a href="data-inventory.html#profession-mastery-allocation"
+                      >ProfessionMasteryAllocation</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="profession-progress">
+                  <code
+                    ><a href="data-inventory.html#profession-progress">ProfessionProgress</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="profession-selection-state">
+                  <code
+                    ><a href="data-inventory.html#profession-selection-state"
+                      >ProfessionSelectionState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-browser-state">
+                  <code
+                    ><a href="data-inventory.html#recipe-browser-state">RecipeBrowserState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-configuration">
+                  <code
+                    ><a href="data-inventory.html#recipe-configuration"
+                      >RecipeConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="wallet-state">
+                  <code><a href="data-inventory.html#wallet-state">WalletState</a></code> — Proposed
+                  · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-schemas">Schemas</h3>
+              <ul>
+                <li data-inventory-id="administrative-action-record">
+                  <code
+                    ><a href="data-inventory.html#administrative-action-record"
+                      >AdministrativeActionRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="administrative-permission-policy">
+                  <code
+                    ><a href="data-inventory.html#administrative-permission-policy"
+                      >AdministrativePermissionPolicy</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="asset-freeze-record">
+                  <code
+                    ><a href="data-inventory.html#asset-freeze-record">AssetFreezeRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-acceptance-request">
+                  <code
+                    ><a href="data-inventory.html#craft-acceptance-request"
+                      >CraftAcceptanceRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-batch-quote">
+                  <code><a href="data-inventory.html#craft-batch-quote">CraftBatchQuote</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-escrow-record">
+                  <code
+                    ><a href="data-inventory.html#craft-escrow-record">CraftEscrowRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-job-record">
+                  <code><a href="data-inventory.html#craft-job-record">CraftJobRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-cancellation-request">
+                  <code
+                    ><a href="data-inventory.html#craft-order-cancellation-request"
+                      >CraftOrderCancellationRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-claim-request">
+                  <code
+                    ><a href="data-inventory.html#craft-order-claim-request"
+                      >CraftOrderClaimRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-order-record">
+                  <code><a href="data-inventory.html#craft-order-record">CraftOrderRecord</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="craft-quote-request">
+                  <code
+                    ><a href="data-inventory.html#craft-quote-request">CraftQuoteRequest</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="craft-settlement-record">
+                  <code
+                    ><a href="data-inventory.html#craft-settlement-record"
+                      >CraftSettlementRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="delivery-claim-request">
+                  <code
+                    ><a href="data-inventory.html#delivery-claim-request"
+                      >DeliveryClaimRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="delivery-record">
+                  <code><a href="data-inventory.html#delivery-record">DeliveryRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="economy-metric-record">
+                  <code
+                    ><a href="data-inventory.html#economy-metric-record"
+                      >EconomyMetricRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="economy-reconciliation-report">
+                  <code
+                    ><a href="data-inventory.html#economy-reconciliation-report"
+                      >EconomyReconciliationReport</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="equipment-definition">
+                  <code
+                    ><a href="data-inventory.html#equipment-definition"
+                      >EquipmentDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="fraud-reversal-record">
+                  <code
+                    ><a href="data-inventory.html#fraud-reversal-record"
+                      >FraudReversalRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-operation-request">
+                  <code
+                    ><a href="data-inventory.html#inventory-operation-request"
+                      >InventoryOperationRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-operation-result">
+                  <code
+                    ><a href="data-inventory.html#inventory-operation-result"
+                      >InventoryOperationResult</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="inventory-record">
+                  <code><a href="data-inventory.html#inventory-record">InventoryRecord</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-definition">
+                  <code><a href="data-inventory.html#item-definition">ItemDefinition</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-effect-definition">
+                  <code
+                    ><a href="data-inventory.html#item-effect-definition"
+                      >ItemEffectDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="item-lineage-record">
+                  <code
+                    ><a href="data-inventory.html#item-lineage-record">ItemLineageRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="item-ownership-record">
+                  <code
+                    ><a href="data-inventory.html#item-ownership-record"
+                      >ItemOwnershipRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="known-recipe-record">
+                  <code
+                    ><a href="data-inventory.html#known-recipe-record">KnownRecipeRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="mail-delivery-record">
+                  <code
+                    ><a href="data-inventory.html#mail-delivery-record">MailDeliveryRecord</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="material-definition">
+                  <code
+                    ><a href="data-inventory.html#material-definition">MaterialDefinition</a></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="operation-receipt">
+                  <code><a href="data-inventory.html#operation-receipt">OperationReceipt</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="profession-definition">
+                  <code
+                    ><a href="data-inventory.html#profession-definition"
+                      >ProfessionDefinition</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-definition">
+                  <code><a href="data-inventory.html#recipe-definition">RecipeDefinition</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-ingredient">
+                  <code><a href="data-inventory.html#recipe-ingredient">RecipeIngredient</a></code>
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recipe-result-preview">
+                  <code
+                    ><a href="data-inventory.html#recipe-result-preview"
+                      >RecipeResultPreview</a
+                    ></code
+                  >
+                  — Existing · Fully Defined
+                </li>
+                <li data-inventory-id="recraft-request">
+                  <code><a href="data-inventory.html#recraft-request">RecraftRequest</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="service-work-request">
+                  <code
+                    ><a href="data-inventory.html#service-work-request">ServiceWorkRequest</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="transactional-outbox-record">
+                  <code
+                    ><a href="data-inventory.html#transactional-outbox-record"
+                      >TransactionalOutboxRecord</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-transaction-request">
+                  <code
+                    ><a href="data-inventory.html#vendor-transaction-request"
+                      >VendorTransactionRequest</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="vendor-transaction-response">
+                  <code
+                    ><a href="data-inventory.html#vendor-transaction-response"
+                      >VendorTransactionResponse</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+              </ul>
+            </section>
+            <!-- data-inventory:end -->
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#direct-crafting-lifecycle">Direct crafting lifecycle</a
+          ><a href="#customer-commissions">Customer commissions</a
+          ><a href="#recrafting-and-service-work">Recrafting and service work</a
+          ><a href="#settlement-invariants">Settlement invariants</a
+          ><a href="#inventory-full-and-disconnect-behavior"
+            >Inventory-full and disconnect behavior</a
+          ><a href="#fraud-and-exploit-controls">Fraud and exploit controls</a
+          ><a href="#acceptance-tests">Acceptance tests</a>
+          <a data-inventory-toc href="#data">Data</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

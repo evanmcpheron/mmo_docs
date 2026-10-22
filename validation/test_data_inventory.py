@@ -14,8 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from build_data_inventory import (CATEGORIES, DATA_START, INVENTORY_PAGE, content_fingerprint,
                                   ROADMAP_PAGE, document_metadata, expected_outputs, load_registry, review_pages,
-                                  roadmap_search, stale_outputs, validate_registry)
+                                  navigation, roadmap_search, stale_outputs, validate_registry)
 from build_development_roadmap import anchor_page, epic_page, generated_page_paths, phase_page
+from html_format import format_pages
 
 
 class Element:
@@ -61,6 +62,21 @@ class InventoryTests(unittest.TestCase):
     def test_registry_and_generated_output_are_current(self):
         self.assertEqual([], validate_registry(self.registry))
         self.assertEqual([], stale_outputs(expected_outputs(self.registry)))
+
+    def test_navigation_preserves_neighbors_with_wrapped_tag_closures(self):
+        source = ('<nav><a\n class="nav-home" href="../index.html">Overview</a\n>'
+                  '<a\n data-roadmap-nav href="old.html">Old roadmap</a\n>'
+                  '<a href="../guide/networking.html">Old networking label</a\n>'
+                  '<a href="interface.html">Interface</a><p>Catalogs</p>'
+                  '<a\n data-inventory-nav href="old-inventory.html">Old inventory</a\n>'
+                  '<a href="../catalog/abilities.html">Abilities</a></nav>')
+        page = 'guide/example.html'
+        first = format_pages({page: navigation(source, page)})
+        links = [node for node in Tree(first[page]).elements if node.tag == 'a']
+        self.assertEqual(['../index.html', 'development-roadmap.html', '../guide/networking.html',
+                          'interface.html', 'data-inventory.html', '../catalog/abilities.html'],
+                         [node.attrs['href'] for node in links])
+        self.assertEqual(first, format_pages({page: navigation(first[page], page)}))
 
     def test_planning_reference_navigation_search_and_counts(self):
         roadmap = json.loads((ROOT / 'sources/development-roadmap.json').read_text())

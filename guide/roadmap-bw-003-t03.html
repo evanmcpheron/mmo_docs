@@ -1,4 +1,258 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Implementation ticket for BW-003."><title>BW-003-T03 · Correlate probe rejections and commits in redacted diagnostics · Briarwake Development Roadmap</title><link rel="stylesheet" href="../assets/styles.css"><link rel="stylesheet" href="../assets/roadmap.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html" aria-current="location">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a  href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a href="../guide/networking.html">Unreal C++ &amp; networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Development planning</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span><a href="development-roadmap.html">Development roadmap</a><span>/</span><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><span>/</span><a href="roadmap-bw-003.html#BW-003">BW-003</a><span>/</span>BW-003-T03</div><h1>BW-003-T03 · Correlate probe rejections and commits in redacted diagnostics</h1><p class="page-description">Implementation ticket for BW-003.</p><div class="article-body"><nav class="roadmap-nav" aria-label="Development roadmap"><a href="development-roadmap.html">Dashboard</a><a href="roadmap-milestones.html">Milestones</a><a href="roadmap-decisions.html">Sequencing decisions</a><a href="roadmap-coverage.html">Coverage and open decisions</a><a href="roadmap-maintenance.html">Updating progress</a><a href="roadmap-audit.html">Roadmap Audit</a><details class="roadmap-phase-picker"><summary>All phases</summary><div><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a><a href="roadmap-persistent-character.html">3. Recoverable combat and personal state</a><a href="roadmap-opening.html">4. First complete persistent player journey</a><a href="roadmap-extended-state.html">5. Bounded mechanics and safe world evolution</a><a href="roadmap-roster.html">6. Complete roster and beginner certification</a><a href="roadmap-services.html">7. Player exchanges and profession services</a><a href="roadmap-full-experiences.html">8. Full progression, cooperative and competitive experiences</a><a href="roadmap-release.html">9. Measured capacity and production acceptance</a></div></details></nav><article class="roadmap-ticket" id="BW-003-T03"><p><span class="badge">Complete</span> · Parent epic: <a href="roadmap-bw-003.html#BW-003">BW-003 · Repeatable runtime fixtures and diagnostics</a></p><p><strong>Epic acceptance criteria:</strong> <a href="roadmap-bw-003.html#BW-003-AC-3">BW-003-AC-3</a></p><h2 id="scope">Implementation scope</h2><ul><li>Emit diagnostics at the T02 authoritative probe decision/commit owner and correlate them through the existing T01 evidence writer. Use a single origin for run/scenario/action IDs, sequence/tick/time, build/engine/content/rules revisions and the fixture owner epoch. There is no production command/diagnostic owner to extend yet; keep the new owner within this bounded test path.</li><li>Include explicit rejected, committed and duplicate/retry observations with no fabricated commit on rejection. Correlate a synthetic non-economic queued action to its one committed effect; reuse FixtureAssertion idempotency with null receipt ID where applicable and TestCheck for diagnostic assertions. Do not issue CommandResponse or SessionOwnershipRecord payloads that pretend the production systems exist; preserve their documented authority boundaries.</li><li>Use an allowlisted shareable diagnostic projection. Add synthetic secret/private-state sentinels and hostile/oversized text in rejected input; ensure serialized reports, native logs, stdout/stderr and shareable samples do not disclose them. Bound field lengths/record volume and report overflow observably. Add a diagnostics suite and missing-correlation/redaction negative controls; preserve raw private execution details only when safe and required, never log arbitrary input blobs.</li><li>Reuse the context probe and T01 output/evidence owner for this local diagnostic experiment. Production BW-004 command admission and BW-010 cast commitment remain separate consumers of the documented correlation policy; do not promote this test-only probe into a parallel gameplay authority or logging framework.</li></ul><h3>Out of scope</h3><ul><li>Production log transport, retention dashboards, authentication/session infrastructure, economic audit trails or private gameplay data modeling.</li><li>Changing canonical command outcomes, rejection enums or world ownership contracts for a diagnostic probe.</li></ul><h2 id="dependencies">Dependencies</h2><p><strong>Hard prerequisites:</strong> <a href="roadmap-bw-003-t02.html#BW-003-T02">BW-003-T02</a></p><h2 id="acceptance-criteria">Acceptance criteria</h2><ol class="roadmap-acceptance"><li id="BW-003-T03-AC-1"><a href="#BW-003-T03-AC-1" class="roadmap-criterion-link">AC 1</a><p>An accepted probe action has one attributable commit and matching correlation IDs/revisions; a rejected action reports a reason without mutation; a retried synthetic action has one committed effect. Distinct owner epochs/runs cannot silently join each other.</p></li><li id="BW-003-T03-AC-2"><a href="#BW-003-T03-AC-2" class="roadmap-criterion-link">AC 2</a><p>The shareable sample connects every observation to its actual run, action and build/content/rules/owner context. Missing/foreign correlation fields or a forged commit make verification fail.</p></li><li id="BW-003-T03-AC-3"><a href="#BW-003-T03-AC-3" class="roadmap-criterion-link">AC 3</a><p>Synthetic credentials, hidden identifiers and private input sentinels are absent from all retained/shareable output surfaces. Malformed or oversized text and output overflow produce bounded safe diagnostics; a planted leak is detected by the redaction control.</p></li></ol><h2 id="manual-test">Manual verification</h2><p>Run from the Briarwake implementation repository. The commands, test worlds and fixtures below are deliverables of this ticket and its prerequisites; these are unexecuted test instructions.</p><h3>Launch command or scene</h3><pre><code>Working directory: GAME_ROOT (the workspace containing Briarwake.uproject).
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-003." />
+    <title>
+      BW-003-T03 · Correlate probe rejections and commits in redacted diagnostics · Briarwake
+      Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-003.html#BW-003">BW-003</a><span>/</span>BW-003-T03
+          </div>
+          <h1>BW-003-T03 · Correlate probe rejections and commits in redacted diagnostics</h1>
+          <p class="page-description">Implementation ticket for BW-003.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-003-T03">
+              <p>
+                <span class="badge">Complete</span> · Parent epic:
+                <a href="roadmap-bw-003.html#BW-003"
+                  >BW-003 · Repeatable runtime fixtures and diagnostics</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-003.html#BW-003-AC-3">BW-003-AC-3</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Emit diagnostics at the T02 authoritative probe decision/commit owner and
+                  correlate them through the existing T01 evidence writer. Use a single origin for
+                  run/scenario/action IDs, sequence/tick/time, build/engine/content/rules revisions
+                  and the fixture owner epoch. There is no production command/diagnostic owner to
+                  extend yet; keep the new owner within this bounded test path.
+                </li>
+                <li>
+                  Include explicit rejected, committed and duplicate/retry observations with no
+                  fabricated commit on rejection. Correlate a synthetic non-economic queued action
+                  to its one committed effect; reuse FixtureAssertion idempotency with null receipt
+                  ID where applicable and TestCheck for diagnostic assertions. Do not issue
+                  CommandResponse or SessionOwnershipRecord payloads that pretend the production
+                  systems exist; preserve their documented authority boundaries.
+                </li>
+                <li>
+                  Use an allowlisted shareable diagnostic projection. Add synthetic
+                  secret/private-state sentinels and hostile/oversized text in rejected input;
+                  ensure serialized reports, native logs, stdout/stderr and shareable samples do not
+                  disclose them. Bound field lengths/record volume and report overflow observably.
+                  Add a diagnostics suite and missing-correlation/redaction negative controls;
+                  preserve raw private execution details only when safe and required, never log
+                  arbitrary input blobs.
+                </li>
+                <li>
+                  Reuse the context probe and T01 output/evidence owner for this local diagnostic
+                  experiment. Production BW-004 command admission and BW-010 cast commitment remain
+                  separate consumers of the documented correlation policy; do not promote this
+                  test-only probe into a parallel gameplay authority or logging framework.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Production log transport, retention dashboards, authentication/session
+                  infrastructure, economic audit trails or private gameplay data modeling.
+                </li>
+                <li>
+                  Changing canonical command outcomes, rejection enums or world ownership contracts
+                  for a diagnostic probe.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-003-t02.html#BW-003-T02">BW-003-T02</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-003-T03-AC-1">
+                  <a href="#BW-003-T03-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    An accepted probe action has one attributable commit and matching correlation
+                    IDs/revisions; a rejected action reports a reason without mutation; a retried
+                    synthetic action has one committed effect. Distinct owner epochs/runs cannot
+                    silently join each other.
+                  </p>
+                </li>
+                <li id="BW-003-T03-AC-2">
+                  <a href="#BW-003-T03-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    The shareable sample connects every observation to its actual run, action and
+                    build/content/rules/owner context. Missing/foreign correlation fields or a
+                    forged commit make verification fail.
+                  </p>
+                </li>
+                <li id="BW-003-T03-AC-3">
+                  <a href="#BW-003-T03-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Synthetic credentials, hidden identifiers and private input sentinels are absent
+                    from all retained/shareable output surfaces. Malformed or oversized text and
+                    output overflow produce bounded safe diagnostics; a planted leak is detected by
+                    the redaction control.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, test worlds and
+                fixtures below are deliverables of this ticket and its prerequisites; these are
+                unexecuted test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: GAME_ROOT (the workspace containing Briarwake.uproject).
 python3 tools/check_baseline.py build
 python3 tools/check_runtime_fixtures.py --suite diagnostics
 python3 tools/check_runtime_fixtures.py --suite diagnostics --control missing-correlation
@@ -6,4 +260,193 @@ python3 tools/check_runtime_fixtures.py --suite diagnostics --control foreign-co
 python3 tools/check_runtime_fixtures.py --suite diagnostics --control forged-commit
 python3 tools/check_runtime_fixtures.py --suite diagnostics --control redaction-leak
 python3 tools/check_runtime_fixtures.py --suite diagnostics
-python3 tools/validate.py</code></pre><h3>Setup</h3><ol><li>Use the existing GAME_ROOT evanmcpheron/BriarwakeUnreal checkout and DOCS_ROOT at GAME_ROOT/mmo_docs. Task branches start directly from fetched game main 4daa408d776516a5a1339af21cb423cb4adf2c2b and docs main f2e29fcc58ed558de7b021fc3e02deffab2c085e. Preserve previous evidence and build directories; do not create project copies, remove caches or resave assets.</li><li>Use tools/toolchain.lock.json: UE 5.8.3 installed CL 58210709, pinned patched source commit 396c9f059903aed5fec78ecd3d437a40c6415368 for Server, Xcode 27A266a and macOS ARM64 Development. The runner verifies toolchain, snapshot, source/module identity and fresh output paths before executing UnrealEditor-Cmd with NullRHI and Briarwake.RuntimeFixtures.Diagnostics. No interactive editor/MCP bridge is needed.</li><li>FRuntimeFixtureContext remains the only finite test queue/decision/commit owner. FRuntimeFixtureEvidence allocates runner/scenario provenance through the existing writer. FContentRevisions consumes content/rules revisions from fixtures/config/server.valid.json; fixtures/runtime/context.json owns the canonical empty FixtureWorldContext. The snapshot adds FixtureAssertion and its six-definition closure addition without changing the 92 prior definitions or sample bindings. TestCheck and the idempotency assertion with null economic receipt retain canonical shapes. No CommandResponse or SessionOwnershipRecord production payload is issued.</li><li>The probe uses transient UWorlds under WITH_EDITOR &amp;&amp; WITH_DEV_AUTOMATION_TESTS. Correlation strings have a 128-character ASCII identifier bound; derived action IDs are bounded by those inputs. At most 32 steps, four queued effects, 60 fixture seconds and 12 diagnostic records per reset are supported. The output scanner limits each file to 16 MiB and the complete scan to 64 MiB. These are test-path bounds, not production admission policy.</li></ol><h3>Actions</h3><ol><li>Execute the clean suite in a fresh default artifacts directory. Inspect native/fixture-diagnostics.json, automation/index.json, engine.log, combined child stdout/stderr process.log, shareable-sample.json and run.json. Verify the exact 44 native assertions and 41 wrapper mutation checks; run.json binds source, module, inputs and actual environment.</li><li>Trace first and next-epoch scenarios. Each queues action 0, retries before and after the one-second commitment, and rejects secret/private input, oversized and hostile text, unknown action references and foreign run/owner-epoch retries. The verifier checks every ordered decision, safe rejection reason, exact correlation projection and one committed effect. Scenario IDs remain distinct even for the overflow execution in the original epoch.</li><li>Inspect the 32-rejection overflow case: exactly 12 diagnostic records, 20 visibly dropped records, no committed effect or queued work, and further input rejected without state change. Inspect missing/invalid correlation and canonical idempotency field checks, including required nullable receipt, negative count, wrong type and unknown field.</li><li>Run each of the four control commands. Each executes successful native automation, then corrupts only an in-memory copy of its actual output. Missing/foreign context and a forged commit fail verification. The planted synthetic leak fails the scanner in memory and is never written into retained artifacts. Expect nonzero wrapper exit, status Failed, native assertion_result Passed and control_verified true; missing tools or an unrelated failure cannot satisfy a control.</li><li>Run a fresh clean recovery and default game FULL. Compare deterministic effects across independent runner nonces; inspect exact child controls, old fixture/prerequisite regressions, normal Game/source-Server builds/packages/startup and binary/package exclusion. All retained output, including wrapper stage logs, must pass the sentinel audit.</li></ol><h3>Expected results</h3><ol><li>Clean diagnostic execution and recovery pass with exact run/scenario/action/source/engine/content/rules/world/owner attribution. Rejection produces no effect; retry has exactly one committed non-economic effect with null receipt. Missing or foreign fields, fabricated commits, duplicate effects and mixed scenarios fail verification.</li><li>Synthetic credential, hidden-ID and private-input sentinels remain absent from all retained/shareable outputs. Hostile/oversized rejection and diagnostic overflow remain bounded and observable. Negative controls fail for their intended reason and clean recovery passes. No production networking, persistence, economic authority, metrics or capacity certification is implied.</li></ol><h3>Reset</h3><ol><li>Allow the runner to destroy/GC its transient UWorld and release test-owned queue, clock, random and diagnostic state. Any timed-out child process is terminated by the existing owned-process wrapper; retain timeout as failed/unverified rather than claiming assertions passed.</li><li>Rerun into a new default artifacts directory or a fresh --output under GAME_ROOT/artifacts. Previous output paths are rejected. Controls change only in-memory output copies; never overwrite evidence or modify canonical sources, maps, assets, plugins or normal launch settings to reset a run.</li></ol><h2 id="verification">Completion evidence and blockers</h2><p><strong>Required evidence:</strong> Retain native correlated accepted/rejected/retry traces, sanitized sample, output-sentinel checks, invalid/overflow controls and clean recovery linked to exact run and source revisions.</p><p><strong>Blockers:</strong> None recorded; see dependencies.</p><ul><li><a href="../validation/tickets/BW-003-T03/review.json">Current native diagnostic execution and recovery pass 44 native assertions and 41 actual-report corruption checks per run. Accepted/rejected/retried actions have exact run/action/build/content/rules/owner attribution and one committed non-economic effect per epoch scenario. Missing/foreign correlation, forged commit and planted-leak controls reject specifically; all retained output surfaces pass synthetic-sentinel scans. Hostile/oversized text, bounded overflow and world teardown are verified. Default FULL passes every supported stage; production networking/metrics/persistence remain outside scope.</a> — AC 1, 2, 3; Passed; revision BriarwakeUnreal 09ba34772796c1d38e21eb665a614a752cbb2642; native source SHA-256 73b7777eda9f9a7dce8cf4cf801ad8e9f32ca6e47d778eb94bf939674afeb5e1</li></ul><h2 id="documentation">Related documentation</h2><p><a href="../guide/roadmap-bw-003.html#BW-003">Parent epic</a>; <a href="../guide/operations.html#content-tools">Fixture context and test control</a>; <a href="../guide/testing.html">Runtime verification requirements</a>; <a href="../guide/networking.html#security-and-observability">Security and observability</a>; <a href="../guide/data-inventory.html#shared-FixtureRunEvidence">FixtureRunEvidence</a>; <a href="../guide/data-inventory.html#shared-FixtureAssertion">FixtureAssertion</a>; <a href="../guide/data-inventory.html#command-response">CommandResponse authority boundary</a>; <a href="../guide/data-inventory.html#session-ownership-record">SessionOwnershipRecord boundary</a>; <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>; <a href="../guide/roadmap-bw-001.html#BW-001">Reproducible project prerequisite</a>; <a href="../guide/roadmap-bw-002.html#BW-002">Authority and admission prerequisite</a>; <a href="../guide/roadmap-maintenance.html#maintenance">Dated reuse assessment and required decomposition workflow</a>; <a href="../guide/data-inventory.html#shared-FixtureWorldContext">FixtureWorldContext</a>; <a href="../guide/data-inventory.html#server-configuration">ServerConfiguration consumed revision source</a></p></article><nav class="roadmap-epic-nav" aria-label="Tickets in execution order"><a href="roadmap-bw-003-t02.html#BW-003-T02">Previous: BW-003-T02</a><a href="roadmap-bw-003-t04.html#BW-003-T04">Next: BW-003-T04</a></nav></div><footer class="page-footer"><a href="development-roadmap.html">Roadmap dashboard</a><span>Planning reference · evidence required for completion</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a><a href="#acceptance-criteria">Acceptance criteria</a><a href="#manual-test">Manual verification</a><a href="#verification">Completion evidence</a><a href="#documentation">Related documentation</a></aside></div></div></body></html>
+python3 tools/validate.py</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use the existing GAME_ROOT evanmcpheron/BriarwakeUnreal checkout and DOCS_ROOT at
+                  GAME_ROOT/mmo_docs. Task branches start directly from fetched game main
+                  4daa408d776516a5a1339af21cb423cb4adf2c2b and docs main
+                  f2e29fcc58ed558de7b021fc3e02deffab2c085e. Preserve previous evidence and build
+                  directories; do not create project copies, remove caches or resave assets.
+                </li>
+                <li>
+                  Use tools/toolchain.lock.json: UE 5.8.3 installed CL 58210709, pinned patched
+                  source commit 396c9f059903aed5fec78ecd3d437a40c6415368 for Server, Xcode 27A266a
+                  and macOS ARM64 Development. The runner verifies toolchain, snapshot,
+                  source/module identity and fresh output paths before executing UnrealEditor-Cmd
+                  with NullRHI and Briarwake.RuntimeFixtures.Diagnostics. No interactive editor/MCP
+                  bridge is needed.
+                </li>
+                <li>
+                  FRuntimeFixtureContext remains the only finite test queue/decision/commit owner.
+                  FRuntimeFixtureEvidence allocates runner/scenario provenance through the existing
+                  writer. FContentRevisions consumes content/rules revisions from
+                  fixtures/config/server.valid.json; fixtures/runtime/context.json owns the
+                  canonical empty FixtureWorldContext. The snapshot adds FixtureAssertion and its
+                  six-definition closure addition without changing the 92 prior definitions or
+                  sample bindings. TestCheck and the idempotency assertion with null economic
+                  receipt retain canonical shapes. No CommandResponse or SessionOwnershipRecord
+                  production payload is issued.
+                </li>
+                <li>
+                  The probe uses transient UWorlds under WITH_EDITOR &amp;&amp;
+                  WITH_DEV_AUTOMATION_TESTS. Correlation strings have a 128-character ASCII
+                  identifier bound; derived action IDs are bounded by those inputs. At most 32
+                  steps, four queued effects, 60 fixture seconds and 12 diagnostic records per reset
+                  are supported. The output scanner limits each file to 16 MiB and the complete scan
+                  to 64 MiB. These are test-path bounds, not production admission policy.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Execute the clean suite in a fresh default artifacts directory. Inspect
+                  native/fixture-diagnostics.json, automation/index.json, engine.log, combined child
+                  stdout/stderr process.log, shareable-sample.json and run.json. Verify the exact 44
+                  native assertions and 41 wrapper mutation checks; run.json binds source, module,
+                  inputs and actual environment.
+                </li>
+                <li>
+                  Trace first and next-epoch scenarios. Each queues action 0, retries before and
+                  after the one-second commitment, and rejects secret/private input, oversized and
+                  hostile text, unknown action references and foreign run/owner-epoch retries. The
+                  verifier checks every ordered decision, safe rejection reason, exact correlation
+                  projection and one committed effect. Scenario IDs remain distinct even for the
+                  overflow execution in the original epoch.
+                </li>
+                <li>
+                  Inspect the 32-rejection overflow case: exactly 12 diagnostic records, 20 visibly
+                  dropped records, no committed effect or queued work, and further input rejected
+                  without state change. Inspect missing/invalid correlation and canonical
+                  idempotency field checks, including required nullable receipt, negative count,
+                  wrong type and unknown field.
+                </li>
+                <li>
+                  Run each of the four control commands. Each executes successful native automation,
+                  then corrupts only an in-memory copy of its actual output. Missing/foreign context
+                  and a forged commit fail verification. The planted synthetic leak fails the
+                  scanner in memory and is never written into retained artifacts. Expect nonzero
+                  wrapper exit, status Failed, native assertion_result Passed and control_verified
+                  true; missing tools or an unrelated failure cannot satisfy a control.
+                </li>
+                <li>
+                  Run a fresh clean recovery and default game FULL. Compare deterministic effects
+                  across independent runner nonces; inspect exact child controls, old
+                  fixture/prerequisite regressions, normal Game/source-Server
+                  builds/packages/startup and binary/package exclusion. All retained output,
+                  including wrapper stage logs, must pass the sentinel audit.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Clean diagnostic execution and recovery pass with exact
+                  run/scenario/action/source/engine/content/rules/world/owner attribution. Rejection
+                  produces no effect; retry has exactly one committed non-economic effect with null
+                  receipt. Missing or foreign fields, fabricated commits, duplicate effects and
+                  mixed scenarios fail verification.
+                </li>
+                <li>
+                  Synthetic credential, hidden-ID and private-input sentinels remain absent from all
+                  retained/shareable outputs. Hostile/oversized rejection and diagnostic overflow
+                  remain bounded and observable. Negative controls fail for their intended reason
+                  and clean recovery passes. No production networking, persistence, economic
+                  authority, metrics or capacity certification is implied.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Allow the runner to destroy/GC its transient UWorld and release test-owned queue,
+                  clock, random and diagnostic state. Any timed-out child process is terminated by
+                  the existing owned-process wrapper; retain timeout as failed/unverified rather
+                  than claiming assertions passed.
+                </li>
+                <li>
+                  Rerun into a new default artifacts directory or a fresh --output under
+                  GAME_ROOT/artifacts. Previous output paths are rejected. Controls change only
+                  in-memory output copies; never overwrite evidence or modify canonical sources,
+                  maps, assets, plugins or normal launch settings to reset a run.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Retain native correlated accepted/rejected/retry
+                traces, sanitized sample, output-sentinel checks, invalid/overflow controls and
+                clean recovery linked to exact run and source revisions.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-003-T03/review.json"
+                    >Current native diagnostic execution and recovery pass 44 native assertions and
+                    41 actual-report corruption checks per run. Accepted/rejected/retried actions
+                    have exact run/action/build/content/rules/owner attribution and one committed
+                    non-economic effect per epoch scenario. Missing/foreign correlation, forged
+                    commit and planted-leak controls reject specifically; all retained output
+                    surfaces pass synthetic-sentinel scans. Hostile/oversized text, bounded overflow
+                    and world teardown are verified. Default FULL passes every supported stage;
+                    production networking/metrics/persistence remain outside scope.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision BriarwakeUnreal
+                  09ba34772796c1d38e21eb665a614a752cbb2642; native source SHA-256
+                  73b7777eda9f9a7dce8cf4cf801ad8e9f32ca6e47d778eb94bf939674afeb5e1
+                </li>
+              </ul>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-003.html#BW-003">Parent epic</a>;
+                <a href="../guide/operations.html#content-tools">Fixture context and test control</a
+                >; <a href="../guide/testing.html">Runtime verification requirements</a>;
+                <a href="../guide/networking.html#security-and-observability"
+                  >Security and observability</a
+                >;
+                <a href="../guide/data-inventory.html#shared-FixtureRunEvidence"
+                  >FixtureRunEvidence</a
+                >;
+                <a href="../guide/data-inventory.html#shared-FixtureAssertion">FixtureAssertion</a>;
+                <a href="../guide/data-inventory.html#command-response"
+                  >CommandResponse authority boundary</a
+                >;
+                <a href="../guide/data-inventory.html#session-ownership-record"
+                  >SessionOwnershipRecord boundary</a
+                >; <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>;
+                <a href="../guide/roadmap-bw-001.html#BW-001">Reproducible project prerequisite</a>;
+                <a href="../guide/roadmap-bw-002.html#BW-002"
+                  >Authority and admission prerequisite</a
+                >;
+                <a href="../guide/roadmap-maintenance.html#maintenance"
+                  >Dated reuse assessment and required decomposition workflow</a
+                >;
+                <a href="../guide/data-inventory.html#shared-FixtureWorldContext"
+                  >FixtureWorldContext</a
+                >;
+                <a href="../guide/data-inventory.html#server-configuration"
+                  >ServerConfiguration consumed revision source</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-003-t02.html#BW-003-T02">Previous: BW-003-T02</a
+              ><a href="roadmap-bw-003-t04.html#BW-003-T04">Next: BW-003-T04</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,172 +1,581 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Mechanics, governing rules, edge cases and acceptance criteria."><title>Attributes &amp; formulas · MMORPG Reference v2</title><link rel="stylesheet" href="../assets/styles.css"><script defer src="../assets/search-index.js"></script><script defer src="../assets/app.js"></script></head><body data-root="../"><a class="skip-link" href="#main">Skip to content</a><aside class="sidebar" id="navigation"><a class="brand" href="../index.html"><span class="brand-mark">M</span><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a><div class="version">v2.0 · Mechanics only</div><nav aria-label="Reference navigation"><a class="nav-home " href="../index.html">Overview</a><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a><div class="nav-group"><p>Foundation</p><a  href="../guide/decisions.html">Design decisions</a><a href="../guide/character-creation.html">Character creation &amp; beginner area</a><a  href="../guide/races-factions.html">Races & faction rules</a><a  href="../guide/progression.html">Levels & talent points</a><a  href="../guide/playstyles.html">Specializations & playstyles</a></div><div class="nav-group"><p>Combat</p><a aria-current=page href="../guide/attributes.html">Attributes & formulas</a><a  href="../guide/combat.html">Combat mechanics</a><a  href="../guide/status-effects.html">Statuses, control & summons</a><a  href="../guide/execution.html">Ability execution contracts</a><a  href="../guide/pvp-encounters.html">PvP & encounter rules</a></div><div class="nav-group"><p>Economy</p><a  href="../guide/items.html">Equipment & itemization</a><a  href="../guide/professions.html">Profession system</a><a  href="../guide/crafting-orders.html">Crafting & commissions</a><a  href="../guide/economy.html">Bazaar & economy</a></div><div class="nav-group"><p>Engineering</p><a  href="../guide/networking.html">Unreal C++ &amp; networking</a><a  href="../guide/interface.html">Interface & accessibility</a><a  href="../guide/operations.html">Supporting gameplay</a></div><div class="nav-group"><p>Validation</p><a  href="../guide/audit.html">Audit & open gates</a><a  href="../guide/testing.html">Validation & test plan</a><a  href="../guide/sources.html">Sources & provenance</a><a  href="../guide/glossary.html">Mechanics glossary</a></div><details class="nav-list" ><summary>Classes <span>12</span></summary><a  href="../classes/warrior.html">Warrior</a><a  href="../classes/paladin.html">Paladin</a><a  href="../classes/cleric.html">Cleric</a><a  href="../classes/mage.html">Mage</a><a  href="../classes/necromancer.html">Necromancer</a><a  href="../classes/bard.html">Bard</a><a  href="../classes/rogue.html">Rogue</a><a  href="../classes/ranger.html">Ranger</a><a  href="../classes/druid.html">Druid</a><a  href="../classes/shaman.html">Shaman</a><a  href="../classes/monk.html">Monk</a><a  href="../classes/warlock.html">Warlock</a></details><details class="nav-list" ><summary>Professions <span>16</span></summary><a  href="../professions/blacksmithing.html">Blacksmithing</a><a  href="../professions/leatherworking.html">Leatherworking</a><a  href="../professions/tailoring.html">Tailoring</a><a  href="../professions/alchemy.html">Alchemy</a><a  href="../professions/enchanting.html">Enchanting</a><a  href="../professions/engineering.html">Engineering</a><a  href="../professions/woodworking.html">Woodworking</a><a  href="../professions/jewelcrafting.html">Jewelcrafting</a><a  href="../professions/inscription.html">Inscription</a><a  href="../professions/mining.html">Mining</a><a  href="../professions/herbalism.html">Herbalism</a><a  href="../professions/skinning.html">Skinning</a><a  href="../professions/forestry.html">Forestry</a><a  href="../professions/cooking.html">Cooking</a><a  href="../professions/fishing.html">Fishing</a><a  href="../professions/first_aid.html">First Aid</a></details><div class="nav-group"><p>Catalogs</p><a data-inventory-nav href="data-inventory.html">Data Inventory</a><a  href="../catalog/abilities.html">Abilities</a><a  href="../catalog/talents.html">Talents</a><a  href="../catalog/recipes.html">Recipes</a></div></nav><div class="sidebar-footer">Design proposal<br>Updated 16 October 2026</div></aside><div class="workspace"><header class="topbar"><button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button><span class="section-label">Combat</span><div class="search-wrap"><label for="site-search" class="visually-hidden">Search all reference content</label><input id="site-search" type="search" placeholder="Search rules, abilities, recipes…" autocomplete="off" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" hidden></div></div><button class="print-button" type="button">Print</button></header><div class="page-layout"><main id="main" tabindex="-1"><div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Combat</div><h1>Attributes &amp; formulas</h1><p class="page-description">Mechanics, governing rules, edge cases and acceptance criteria.</p><div class="article-body">
-<p>The formulas on this page are <strong>original prototype rules</strong>. They resolve the missing mathematical foundation in v1. They have arithmetic tests, but have not been balance-tested in a playable MMORPG. Tune constants through versioned data rather than changing individual formulas casually.</p>
-<h2 id="units-and-numerical-precision">Units and numerical precision</h2>
-<p>One world unit is one authored tile width, retained as a logical distance unit for the 3D presentation. A 32-pixel tile is only an example rendering choice, not the art target or a combat constant. Distances are measured between server-owned foot anchors on the declared floor, adjusted by the declared collision radii. Movement and aim remain continuous; client model scale, camera projection and pixel snapping do not change authoritative geometry. The existing eight <code>SpriteDirection</code> values are preview heading presets, not a restriction on model animation or aim.</p>
-<p>A proposed simulation rate is 30 ticks per second. Durations become <code>ceil(seconds × tick_rate)</code> ticks. Keep resource and intermediate combat values at fixed-point thousandths, carry fractions, and round health changes once at final resolution. Never allow client floating-point rounding to authorize damage, healing or item counts.</p>
-<h2 id="primary-attributes">Primary attributes</h2><p><strong>Formula configuration scope:</strong> AttributeFormulaConfiguration exports only its listed typed scalar coefficients. A required recognized rules_version selects all other documented formulas, caps, recovery rules and rounding. Changing those fixed rules requires a new formula revision; absent parameters never acquire implicit values.</p>
-<table>
-<thead>
-<tr>
-<th>Attribute</th>
-<th>Mechanical purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Strength</td>
-<td>Primary power for Warrior and martial Paladin specializations</td>
-</tr>
-<tr>
-<td>Agility</td>
-<td>Primary power for Rogue, Ranger, martial Bard, martial Monk and physical Druid specializations</td>
-</tr>
-<tr>
-<td>Intellect</td>
-<td>Primary power for spellcasters and all healer specializations</td>
-</tr>
-<tr>
-<td>Stamina</td>
-<td>Maximum health</td>
-</tr>
-<tr>
-<td>Spirit</td>
-<td>Resource recovery; does not grant an independent damage multiplier</td>
-</tr>
-</tbody>
-</table>
-<p>For each attribute <code>a</code>:</p>
-<p><code>base_a = 10 + growth_a × (effective_level − 1)</code></p>
-<p><code>nonracial_a = max(0, (base_a + gear_a + flat_buff_a) × (1 + capped_percent_a))</code></p>
-<p><code>effective_a = max(1, nonracial_a + fixed_racial_offset_a)</code></p>
-<p>Primary growth is 3, stamina growth is 2, and all other growth is 1. No specialization uses Stamina or Spirit as its primary attack attribute. A healer Paladin uses Intellect; its shared weapon effects resolve through that specialization's power conversion rather than forcing a second Strength equipment set.</p>
-<p>Racial offsets are applied last. Temporary percentage buffs cannot amplify them. Downscaling recomputes the base from effective level instead of multiplying the entire original stat sheet.</p>
-<h2 id="derived-values">Derived values</h2>
-<table>
-<thead>
-<tr>
-<th>Value</th>
-<th>Prototype formula</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Combat power <code>P</code></td>
-<td><code>20 + 3L + 1.5 × primary_attribute</code></td>
-</tr>
-<tr>
-<td>Maximum health</td>
-<td><code>(80 + 32L + 10 × stamina) × role_health_multiplier</code></td>
-</tr>
-<tr>
-<td>Tank health multiplier</td>
-<td>1.30 while a valid tank specialization and required defensive form are active</td>
-</tr>
-<tr>
-<td>Other health multiplier</td>
-<td>1.00</td>
-</tr>
-<tr>
-<td>Maximum mana</td>
-<td><code>100 + 20L + 8 × intellect</code></td>
-</tr>
-<tr>
-<td>Mana recovery in combat</td>
-<td><code>0.005 × max_mana + 0.02 × spirit</code> per second</td>
-</tr>
-<tr>
-<td>Mana recovery out of combat</td>
-<td>4 × combat recovery after six seconds without hostile participation</td>
-</tr>
-<tr>
-<td>Energy / Focus</td>
-<td>100 maximum; <code>10 + min(2, 0.01 × spirit)</code> per second</td>
-</tr>
-<tr>
-<td>Rage</td>
-<td>100 maximum; active generators grant 8 on a successful eligible action; no passive in-combat recovery</td>
-</tr>
-<tr>
-<td>Cadence (DPS Bard)</td>
-<td>100 maximum; 8 per second; eligible generators can add 8</td>
-</tr>
-<tr>
-<td>Haste-sensitive recovery</td>
-<td>Energy/Focus/Cadence recovery × <code>(1 + haste)</code>; mana recovery and Rage are not haste-scaled</td>
-</tr>
-</tbody>
-</table>
-<p>Healer specializations use Mana as the sustained resource. Minstrel adds Harmony as its secondary meter; Lifewalker adds Chi. Their DPS specializations keep their non-mana systems. This corrects the earlier risk of healers having unlimited throughput from free, quickly regenerating energy.</p>
-<p>Secondary meters—charges, marks, Guard, Bloom, Harmony, Bond and similar mechanics—have separate class-page policies. They are not five separate full-size resource bars on every character. Where class and specialization describe the same meter with different names, use one stored resource and one UI meter, not two competing versions.</p>
-<h2 id="damage-and-weapon-normalization">Damage and weapon normalization</h2>
-<p><code>normalized_weapon_damage = 2.0 × equipped_weapon_DPS</code></p>
-<p><code>raw_damage = flat_amount + power_coefficient × P + weapon_coefficient × normalized_weapon_damage</code></p>
-<p>Spell-only attacks use a weapon coefficient of zero. A weapon attack may use both terms. For dual wield, item budgets split the same total allowed weapon DPS across the two hands; do not add two full two-handed weapon budgets. Auto-attacks use actual weapon speed: <code>swing_damage = weapon_DPS × swing_seconds</code>. An attack-speed increase changes frequency, not the stored weapon DPS.</p>
-<p>A default martial generator starts at <code>0.55P + 0.65 × normalized_weapon_damage</code>. A normal cast-time spell starts at <code>1.10P</code>. These are individual attack profiles, not complete rotation DPS estimates. Multi-hit actions split one authored total across hits; they do not repeat the full coefficient per visual strike.</p>
-<p>Physical, fire, frost, arcane, radiant, decay and sonic are descriptive damage schools. Physical uses Armor. Other schools use Ward in the first implementation. Do not add six separate mandatory resistance equipment sets. Bleeds are physical and use Armor unless an explicit tested ability says otherwise. Player-accessible unmitigated “true damage” is excluded from the baseline.</p>
-<h2 id="critical-strikes-and-haste">Critical strikes and haste</h2>
-<p>Let <code>K(L) = 10 + 2L</code>.</p>
-<p><code>critical_chance = min(0.35, 0.05 + 0.30 × critical_rating / (critical_rating + K))</code></p>
-<p><code>haste = min(0.30, 0.30 × haste_rating / (haste_rating + K))</code></p>
-<p><code>mastery_bonus = min(0.20, 0.20 × mastery_rating / (mastery_rating + K))</code></p>
-<p>Direct damage and direct healing can critically strike for 1.50× in PvE and 1.25× in PvP. Periodic effects and shields do not critically strike by default. Mastery applies only to the specialization's declared output family, not globally to every effect, resource gain, crowd-control duration and pet component at once.</p>
-<p><code>effective_cast_time = base_cast_time / (1 + haste)</code></p>
-<p><code>effective_GCD = max(1.0 seconds, 1.25 seconds / (1 + haste))</code></p>
-<p>Haste does not reduce every cooldown or extend every status. A cooldown requires an explicit <code>haste_scaled</code> flag. Damage-over-time duration and tick count remain fixed in the baseline; adding haste to them requires a deliberate budget change, not accidental extra ticks.</p>
-<p>No random accuracy or hit-rating tax is included initially. A valid target-locked attack hits unless blocked by a declared defense, immunity or targeting failure. Skillshots use server geometry. Facing, line of sight and positioning provide counterplay without a second unexplained random-miss layer.</p>
-<h2 id="armor-ward-and-mitigation">Armor, Ward and mitigation</h2>
-<p><code>K_defense = 100 + 25 × attacker_effective_level</code></p>
-<p><code>armor_reduction = min(0.60, armor / (armor + K_defense))</code></p>
-<p><code>ward_reduction = min(0.60, ward / (ward + K_defense))</code></p>
-<p>Use only the applicable defense. Same-category defensive effects select the strongest; independently allowed reductions multiply. Combined reduction before shields is capped at 80%, excluding clearly identified temporary encounter immunities.</p>
-<p>For example, 30% Armor reduction and a 20% defensive effect produce <code>1 − (0.70 × 0.80) = 44%</code> reduction, not 50%. A separate 10% permitted reduction produces 49.6%, not 60%.</p>
-<p>Active blocking protects a declared frontal arc and attack category. The starter block profile reduces eligible frontal physical damage by 50% for four seconds with an eight-second cooldown. It does not randomly block spells behind the tank. Active parry reduces the next eligible direct physical hit by 50% within two seconds; a talent must explicitly extend its attack categories.</p>
-<h2 id="healing-and-absorption">Healing and absorption</h2>
-<p><code>raw_healing = flat_amount + healing_coefficient × P</code></p>
-<p>Healer-role abilities use their full authored coefficient. Shared off-role heals normally use 0.35× that healer-equivalent coefficient. A specialization may intentionally budget stronger self-recovery, but cannot receive full healer throughput and full DPS simultaneously without a tradeoff.</p>
-<p><code>effective_healing = min(missing_health, healing_after_modifiers)</code></p>
-<p>Only effective healing generates ordinary healing threat or healing-derived resources. Overhealing cannot be farmed on healthy allies. Absorbs generate prevention credit when consumed, not merely when applied. Per-source shields normally cap at 30% of recipient maximum health; all ordinary shield capacity on one recipient caps at 50%. Reapplication follows the status stacking rules.</p>
-<p>Healing critical rolls are independent per direct target. Area heals sort by missing-health percentage, then entity ID, within eligible recipients and target limits. This policy is server-side and visible in the tooltip.</p>
-<h2 id="resolution-order">Resolution order</h2>
-<p>Validate → select targets → compute base amount → apply source modifiers → roll eligible critical → apply recipient mitigation → consume recipient absorbs → transfer permitted residual damage → apply local delayed-damage mechanics → subtract health → resolve death → emit bounded triggered events.</p>
-<p>Transferred damage is already mitigated. It cannot be reduced by the protector's Armor a second time, redirected again, or generate resources from another transfer. A protector's ordinary absorb may consume it, but immunity cannot turn a transfer into a free cancellation: an ineligible immune protector causes the transfer to fail and leaves damage on the original target.</p>
-<p>Delayed damage is a debt, not prevention. It cannot be staggered again or inherit Armor again. Only an explicit debt-clearing ability can remove it. Leaving combat, disconnecting, changing form or loading a build does not erase the ledger.</p>
-<h2 id="worked-arithmetic">Worked arithmetic</h2>
-<p>A level-60 caster with 180 primary attribute from gear has <code>primary = 10 + 3×59 + 180 = 367</code>, so <code>P = 750.5</code>. A 1.10P spell produces 825.55 raw damage. Against 800 Ward at attacker level 60, reduction is <code>800 / (800 + 1600) = 1/3</code>. Noncritical damage is 550.37 before final rounding. A 1.5× critical produces 825.55 after Ward.</p>
-<p>The same caster with a +2 racial Intellect offset has <code>P = 753.5</code>; the difference is approximately 0.40% before breakpoints and rounding. At level 1 without gear, <code>P = 38</code>; +2 primary adds 3 power, or approximately 7.89%. This produces the intended early-game distinction and much smaller late-game influence without a racial multiplier.</p>
-<p>A tank with 268 Stamina at level 60 has <code>(80 + 1920 + 2680) × 1.30 = 6,084</code> maximum health. The non-tank equivalent is 4,680. A +2 Stamina racial adds 20 health before the tank-role multiplier; the racial addition itself is not percentage-amplified in attribute calculation, although derived health naturally uses the role formula.</p>
-<h2 id="balance-measurements-not-promises">Balance measurements, not promises</h2>
-<p>Initial targets: ordinary equal-level solo enemies should usually take 8–15 seconds, healer resource pressure should be evident over sustained encounters, and avoidable hazards should reward movement rather than require racial advantages. These targets need actual class rotations, enemy definitions, gear distributions and network conditions. The included arithmetic checks cannot establish time-to-kill, build parity, faction parity or an MMO population capacity.</p>
-<h2 id="before-specialization-selection">Before specialization selection</h2>
-<p>The class record defines the level-1 primary attribute. Warrior and Paladin start with Strength; Bard, Rogue, Ranger and Monk with Agility; Cleric, Mage, Necromancer, Druid, Shaman and Warlock with Intellect. At level 10, the selected specialization recalculates primary-stat growth without granting additional attribute points or a second simultaneous primary bonus.</p>
-<!-- data-inventory:start -->
-<section class="data-inventory" aria-labelledby="data">
-<h2 id="data">Data</h2>
-<p>Follow a type name to its canonical members, properties, constraints and review decisions. Definitions are generated from one shared registry.</p>
-<h3 id="data-enums">Enums</h3>
-<ul>
-<li data-inventory-id="attribute-type"><code><a href="data-inventory.html#attribute-type">AttributeType</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="combat-role"><code><a href="data-inventory.html#combat-role">CombatRole</a></code> — Existing · Fully Defined</li>
-<li data-inventory-id="damage-school"><code><a href="data-inventory.html#damage-school">DamageSchool</a></code> — Existing · Fully Defined</li>
-</ul>
-<h3 id="data-interfaces">Interfaces</h3>
-<ul>
-<li data-inventory-id="absorb-state"><code><a href="data-inventory.html#absorb-state">AbsorbState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="attribute-set"><code><a href="data-inventory.html#attribute-set">AttributeSet</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-result"><code><a href="data-inventory.html#combat-result">CombatResult</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="damage-ledger"><code><a href="data-inventory.html#damage-ledger">DamageLedger</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="damage-transfer-state"><code><a href="data-inventory.html#damage-transfer-state">DamageTransferState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="derived-combat-stats"><code><a href="data-inventory.html#derived-combat-stats">DerivedCombatStats</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="periodic-effect-schedule"><code><a href="data-inventory.html#periodic-effect-schedule">PeriodicEffectSchedule</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-pool-state"><code><a href="data-inventory.html#resource-pool-state">ResourcePoolState</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="status-instance"><code><a href="data-inventory.html#status-instance">StatusInstance</a></code> — Proposed · Fully Defined</li>
-</ul>
-<h3 id="data-schemas">Schemas</h3>
-<ul>
-<li data-inventory-id="attribute-formula-configuration"><code><a href="data-inventory.html#attribute-formula-configuration">AttributeFormulaConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="combat-rules-configuration"><code><a href="data-inventory.html#combat-rules-configuration">CombatRulesConfiguration</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-definition"><code><a href="data-inventory.html#resource-definition">ResourceDefinition</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-gain-rule"><code><a href="data-inventory.html#resource-gain-rule">ResourceGainRule</a></code> — Proposed · Fully Defined</li>
-<li data-inventory-id="resource-type"><code><a href="data-inventory.html#resource-type">ResourceType</a></code> — Existing · Fully Defined</li>
-</ul>
-</section>
-<!-- data-inventory:end --></div><footer class="page-footer"><a href="../guide/audit.html">Readiness and open gates</a><span>Version 2.2 · Prototype mechanics, not certified balance</span><a href="#main">Back to top ↑</a></footer></main><aside class="page-toc" aria-label="On this page"><p>ON THIS PAGE</p><a href="#units-and-numerical-precision">Units and numerical precision</a><a href="#primary-attributes">Primary attributes</a><a href="#derived-values">Derived values</a><a href="#damage-and-weapon-normalization">Damage and weapon normalization</a><a href="#critical-strikes-and-haste">Critical strikes and haste</a><a href="#armor-ward-and-mitigation">Armor, Ward and mitigation</a><a href="#healing-and-absorption">Healing and absorption</a><a href="#resolution-order">Resolution order</a><a href="#worked-arithmetic">Worked arithmetic</a><a href="#balance-measurements-not-promises">Balance measurements, not promises</a><a href="#before-specialization-selection">Before specialization selection</a><a data-inventory-toc href="#data">Data</a></aside></div></div></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mechanics, governing rules, edge cases and acceptance criteria."
+    />
+    <title>Attributes &amp; formulas · MMORPG Reference v2</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html">Development Roadmap</a>
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a aria-current="page" href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Combat</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb"><a href="../index.html">Reference</a><span>/</span>Combat</div>
+          <h1>Attributes &amp; formulas</h1>
+          <p class="page-description">
+            Mechanics, governing rules, edge cases and acceptance criteria.
+          </p>
+          <div class="article-body">
+            <p>
+              The formulas on this page are <strong>original prototype rules</strong>. They resolve
+              the missing mathematical foundation in v1. They have arithmetic tests, but have not
+              been balance-tested in a playable MMORPG. Tune constants through versioned data rather
+              than changing individual formulas casually.
+            </p>
+            <h2 id="units-and-numerical-precision">Units and numerical precision</h2>
+            <p>
+              One world unit is one authored tile width, retained as a logical distance unit for the
+              3D presentation. A 32-pixel tile is only an example rendering choice, not the art
+              target or a combat constant. Distances are measured between server-owned foot anchors
+              on the declared floor, adjusted by the declared collision radii. Movement and aim
+              remain continuous; client model scale, camera projection and pixel snapping do not
+              change authoritative geometry. The existing eight <code>SpriteDirection</code> values
+              are preview heading presets, not a restriction on model animation or aim.
+            </p>
+            <p>
+              A proposed simulation rate is 30 ticks per second. Durations become
+              <code>ceil(seconds × tick_rate)</code> ticks. Keep resource and intermediate combat
+              values at fixed-point thousandths, carry fractions, and round health changes once at
+              final resolution. Never allow client floating-point rounding to authorize damage,
+              healing or item counts.
+            </p>
+            <h2 id="primary-attributes">Primary attributes</h2>
+            <p>
+              <strong>Formula configuration scope:</strong> AttributeFormulaConfiguration exports
+              only its listed typed scalar coefficients. A required recognized rules_version selects
+              all other documented formulas, caps, recovery rules and rounding. Changing those fixed
+              rules requires a new formula revision; absent parameters never acquire implicit
+              values.
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Attribute</th>
+                  <th>Mechanical purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Strength</td>
+                  <td>Primary power for Warrior and martial Paladin specializations</td>
+                </tr>
+                <tr>
+                  <td>Agility</td>
+                  <td>
+                    Primary power for Rogue, Ranger, martial Bard, martial Monk and physical Druid
+                    specializations
+                  </td>
+                </tr>
+                <tr>
+                  <td>Intellect</td>
+                  <td>Primary power for spellcasters and all healer specializations</td>
+                </tr>
+                <tr>
+                  <td>Stamina</td>
+                  <td>Maximum health</td>
+                </tr>
+                <tr>
+                  <td>Spirit</td>
+                  <td>Resource recovery; does not grant an independent damage multiplier</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>For each attribute <code>a</code>:</p>
+            <p><code>base_a = 10 + growth_a × (effective_level − 1)</code></p>
+            <p>
+              <code
+                >nonracial_a = max(0, (base_a + gear_a + flat_buff_a) × (1 +
+                capped_percent_a))</code
+              >
+            </p>
+            <p><code>effective_a = max(1, nonracial_a + fixed_racial_offset_a)</code></p>
+            <p>
+              Primary growth is 3, stamina growth is 2, and all other growth is 1. No specialization
+              uses Stamina or Spirit as its primary attack attribute. A healer Paladin uses
+              Intellect; its shared weapon effects resolve through that specialization's power
+              conversion rather than forcing a second Strength equipment set.
+            </p>
+            <p>
+              Racial offsets are applied last. Temporary percentage buffs cannot amplify them.
+              Downscaling recomputes the base from effective level instead of multiplying the entire
+              original stat sheet.
+            </p>
+            <h2 id="derived-values">Derived values</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Value</th>
+                  <th>Prototype formula</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Combat power <code>P</code></td>
+                  <td><code>20 + 3L + 1.5 × primary_attribute</code></td>
+                </tr>
+                <tr>
+                  <td>Maximum health</td>
+                  <td><code>(80 + 32L + 10 × stamina) × role_health_multiplier</code></td>
+                </tr>
+                <tr>
+                  <td>Tank health multiplier</td>
+                  <td>
+                    1.30 while a valid tank specialization and required defensive form are active
+                  </td>
+                </tr>
+                <tr>
+                  <td>Other health multiplier</td>
+                  <td>1.00</td>
+                </tr>
+                <tr>
+                  <td>Maximum mana</td>
+                  <td><code>100 + 20L + 8 × intellect</code></td>
+                </tr>
+                <tr>
+                  <td>Mana recovery in combat</td>
+                  <td><code>0.005 × max_mana + 0.02 × spirit</code> per second</td>
+                </tr>
+                <tr>
+                  <td>Mana recovery out of combat</td>
+                  <td>4 × combat recovery after six seconds without hostile participation</td>
+                </tr>
+                <tr>
+                  <td>Energy / Focus</td>
+                  <td>100 maximum; <code>10 + min(2, 0.01 × spirit)</code> per second</td>
+                </tr>
+                <tr>
+                  <td>Rage</td>
+                  <td>
+                    100 maximum; active generators grant 8 on a successful eligible action; no
+                    passive in-combat recovery
+                  </td>
+                </tr>
+                <tr>
+                  <td>Cadence (DPS Bard)</td>
+                  <td>100 maximum; 8 per second; eligible generators can add 8</td>
+                </tr>
+                <tr>
+                  <td>Haste-sensitive recovery</td>
+                  <td>
+                    Energy/Focus/Cadence recovery × <code>(1 + haste)</code>; mana recovery and Rage
+                    are not haste-scaled
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Healer specializations use Mana as the sustained resource. Minstrel adds Harmony as
+              its secondary meter; Lifewalker adds Chi. Their DPS specializations keep their
+              non-mana systems. This corrects the earlier risk of healers having unlimited
+              throughput from free, quickly regenerating energy.
+            </p>
+            <p>
+              Secondary meters—charges, marks, Guard, Bloom, Harmony, Bond and similar
+              mechanics—have separate class-page policies. They are not five separate full-size
+              resource bars on every character. Where class and specialization describe the same
+              meter with different names, use one stored resource and one UI meter, not two
+              competing versions.
+            </p>
+            <h2 id="damage-and-weapon-normalization">Damage and weapon normalization</h2>
+            <p><code>normalized_weapon_damage = 2.0 × equipped_weapon_DPS</code></p>
+            <p>
+              <code
+                >raw_damage = flat_amount + power_coefficient × P + weapon_coefficient ×
+                normalized_weapon_damage</code
+              >
+            </p>
+            <p>
+              Spell-only attacks use a weapon coefficient of zero. A weapon attack may use both
+              terms. For dual wield, item budgets split the same total allowed weapon DPS across the
+              two hands; do not add two full two-handed weapon budgets. Auto-attacks use actual
+              weapon speed: <code>swing_damage = weapon_DPS × swing_seconds</code>. An attack-speed
+              increase changes frequency, not the stored weapon DPS.
+            </p>
+            <p>
+              A default martial generator starts at
+              <code>0.55P + 0.65 × normalized_weapon_damage</code>. A normal cast-time spell starts
+              at <code>1.10P</code>. These are individual attack profiles, not complete rotation DPS
+              estimates. Multi-hit actions split one authored total across hits; they do not repeat
+              the full coefficient per visual strike.
+            </p>
+            <p>
+              Physical, fire, frost, arcane, radiant, decay and sonic are descriptive damage
+              schools. Physical uses Armor. Other schools use Ward in the first implementation. Do
+              not add six separate mandatory resistance equipment sets. Bleeds are physical and use
+              Armor unless an explicit tested ability says otherwise. Player-accessible unmitigated
+              “true damage” is excluded from the baseline.
+            </p>
+            <h2 id="critical-strikes-and-haste">Critical strikes and haste</h2>
+            <p>Let <code>K(L) = 10 + 2L</code>.</p>
+            <p>
+              <code
+                >critical_chance = min(0.35, 0.05 + 0.30 × critical_rating / (critical_rating +
+                K))</code
+              >
+            </p>
+            <p><code>haste = min(0.30, 0.30 × haste_rating / (haste_rating + K))</code></p>
+            <p>
+              <code>mastery_bonus = min(0.20, 0.20 × mastery_rating / (mastery_rating + K))</code>
+            </p>
+            <p>
+              Direct damage and direct healing can critically strike for 1.50× in PvE and 1.25× in
+              PvP. Periodic effects and shields do not critically strike by default. Mastery applies
+              only to the specialization's declared output family, not globally to every effect,
+              resource gain, crowd-control duration and pet component at once.
+            </p>
+            <p><code>effective_cast_time = base_cast_time / (1 + haste)</code></p>
+            <p><code>effective_GCD = max(1.0 seconds, 1.25 seconds / (1 + haste))</code></p>
+            <p>
+              Haste does not reduce every cooldown or extend every status. A cooldown requires an
+              explicit <code>haste_scaled</code> flag. Damage-over-time duration and tick count
+              remain fixed in the baseline; adding haste to them requires a deliberate budget
+              change, not accidental extra ticks.
+            </p>
+            <p>
+              No random accuracy or hit-rating tax is included initially. A valid target-locked
+              attack hits unless blocked by a declared defense, immunity or targeting failure.
+              Skillshots use server geometry. Facing, line of sight and positioning provide
+              counterplay without a second unexplained random-miss layer.
+            </p>
+            <h2 id="armor-ward-and-mitigation">Armor, Ward and mitigation</h2>
+            <p><code>K_defense = 100 + 25 × attacker_effective_level</code></p>
+            <p><code>armor_reduction = min(0.60, armor / (armor + K_defense))</code></p>
+            <p><code>ward_reduction = min(0.60, ward / (ward + K_defense))</code></p>
+            <p>
+              Use only the applicable defense. Same-category defensive effects select the strongest;
+              independently allowed reductions multiply. Combined reduction before shields is capped
+              at 80%, excluding clearly identified temporary encounter immunities.
+            </p>
+            <p>
+              For example, 30% Armor reduction and a 20% defensive effect produce
+              <code>1 − (0.70 × 0.80) = 44%</code> reduction, not 50%. A separate 10% permitted
+              reduction produces 49.6%, not 60%.
+            </p>
+            <p>
+              Active blocking protects a declared frontal arc and attack category. The starter block
+              profile reduces eligible frontal physical damage by 50% for four seconds with an
+              eight-second cooldown. It does not randomly block spells behind the tank. Active parry
+              reduces the next eligible direct physical hit by 50% within two seconds; a talent must
+              explicitly extend its attack categories.
+            </p>
+            <h2 id="healing-and-absorption">Healing and absorption</h2>
+            <p><code>raw_healing = flat_amount + healing_coefficient × P</code></p>
+            <p>
+              Healer-role abilities use their full authored coefficient. Shared off-role heals
+              normally use 0.35× that healer-equivalent coefficient. A specialization may
+              intentionally budget stronger self-recovery, but cannot receive full healer throughput
+              and full DPS simultaneously without a tradeoff.
+            </p>
+            <p><code>effective_healing = min(missing_health, healing_after_modifiers)</code></p>
+            <p>
+              Only effective healing generates ordinary healing threat or healing-derived resources.
+              Overhealing cannot be farmed on healthy allies. Absorbs generate prevention credit
+              when consumed, not merely when applied. Per-source shields normally cap at 30% of
+              recipient maximum health; all ordinary shield capacity on one recipient caps at 50%.
+              Reapplication follows the status stacking rules.
+            </p>
+            <p>
+              Healing critical rolls are independent per direct target. Area heals sort by
+              missing-health percentage, then entity ID, within eligible recipients and target
+              limits. This policy is server-side and visible in the tooltip.
+            </p>
+            <h2 id="resolution-order">Resolution order</h2>
+            <p>
+              Validate → select targets → compute base amount → apply source modifiers → roll
+              eligible critical → apply recipient mitigation → consume recipient absorbs → transfer
+              permitted residual damage → apply local delayed-damage mechanics → subtract health →
+              resolve death → emit bounded triggered events.
+            </p>
+            <p>
+              Transferred damage is already mitigated. It cannot be reduced by the protector's Armor
+              a second time, redirected again, or generate resources from another transfer. A
+              protector's ordinary absorb may consume it, but immunity cannot turn a transfer into a
+              free cancellation: an ineligible immune protector causes the transfer to fail and
+              leaves damage on the original target.
+            </p>
+            <p>
+              Delayed damage is a debt, not prevention. It cannot be staggered again or inherit
+              Armor again. Only an explicit debt-clearing ability can remove it. Leaving combat,
+              disconnecting, changing form or loading a build does not erase the ledger.
+            </p>
+            <h2 id="worked-arithmetic">Worked arithmetic</h2>
+            <p>
+              A level-60 caster with 180 primary attribute from gear has
+              <code>primary = 10 + 3×59 + 180 = 367</code>, so <code>P = 750.5</code>. A 1.10P spell
+              produces 825.55 raw damage. Against 800 Ward at attacker level 60, reduction is
+              <code>800 / (800 + 1600) = 1/3</code>. Noncritical damage is 550.37 before final
+              rounding. A 1.5× critical produces 825.55 after Ward.
+            </p>
+            <p>
+              The same caster with a +2 racial Intellect offset has <code>P = 753.5</code>; the
+              difference is approximately 0.40% before breakpoints and rounding. At level 1 without
+              gear, <code>P = 38</code>; +2 primary adds 3 power, or approximately 7.89%. This
+              produces the intended early-game distinction and much smaller late-game influence
+              without a racial multiplier.
+            </p>
+            <p>
+              A tank with 268 Stamina at level 60 has
+              <code>(80 + 1920 + 2680) × 1.30 = 6,084</code> maximum health. The non-tank equivalent
+              is 4,680. A +2 Stamina racial adds 20 health before the tank-role multiplier; the
+              racial addition itself is not percentage-amplified in attribute calculation, although
+              derived health naturally uses the role formula.
+            </p>
+            <h2 id="balance-measurements-not-promises">Balance measurements, not promises</h2>
+            <p>
+              Initial targets: ordinary equal-level solo enemies should usually take 8–15 seconds,
+              healer resource pressure should be evident over sustained encounters, and avoidable
+              hazards should reward movement rather than require racial advantages. These targets
+              need actual class rotations, enemy definitions, gear distributions and network
+              conditions. The included arithmetic checks cannot establish time-to-kill, build
+              parity, faction parity or an MMO population capacity.
+            </p>
+            <h2 id="before-specialization-selection">Before specialization selection</h2>
+            <p>
+              The class record defines the level-1 primary attribute. Warrior and Paladin start with
+              Strength; Bard, Rogue, Ranger and Monk with Agility; Cleric, Mage, Necromancer, Druid,
+              Shaman and Warlock with Intellect. At level 10, the selected specialization
+              recalculates primary-stat growth without granting additional attribute points or a
+              second simultaneous primary bonus.
+            </p>
+            <!-- data-inventory:start -->
+            <section class="data-inventory" aria-labelledby="data">
+              <h2 id="data">Data</h2>
+              <p>
+                Follow a type name to its canonical members, properties, constraints and review
+                decisions. Definitions are generated from one shared registry.
+              </p>
+              <h3 id="data-enums">Enums</h3>
+              <ul>
+                <li data-inventory-id="attribute-type">
+                  <code><a href="data-inventory.html#attribute-type">AttributeType</a></code> —
+                  Existing · Fully Defined
+                </li>
+                <li data-inventory-id="combat-role">
+                  <code><a href="data-inventory.html#combat-role">CombatRole</a></code> — Existing ·
+                  Fully Defined
+                </li>
+                <li data-inventory-id="damage-school">
+                  <code><a href="data-inventory.html#damage-school">DamageSchool</a></code> —
+                  Existing · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-interfaces">Interfaces</h3>
+              <ul>
+                <li data-inventory-id="absorb-state">
+                  <code><a href="data-inventory.html#absorb-state">AbsorbState</a></code> — Proposed
+                  · Fully Defined
+                </li>
+                <li data-inventory-id="attribute-set">
+                  <code><a href="data-inventory.html#attribute-set">AttributeSet</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-result">
+                  <code><a href="data-inventory.html#combat-result">CombatResult</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="damage-ledger">
+                  <code><a href="data-inventory.html#damage-ledger">DamageLedger</a></code> —
+                  Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="damage-transfer-state">
+                  <code
+                    ><a href="data-inventory.html#damage-transfer-state"
+                      >DamageTransferState</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="derived-combat-stats">
+                  <code
+                    ><a href="data-inventory.html#derived-combat-stats">DerivedCombatStats</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="periodic-effect-schedule">
+                  <code
+                    ><a href="data-inventory.html#periodic-effect-schedule"
+                      >PeriodicEffectSchedule</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-pool-state">
+                  <code
+                    ><a href="data-inventory.html#resource-pool-state">ResourcePoolState</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="status-instance">
+                  <code><a href="data-inventory.html#status-instance">StatusInstance</a></code> —
+                  Proposed · Fully Defined
+                </li>
+              </ul>
+              <h3 id="data-schemas">Schemas</h3>
+              <ul>
+                <li data-inventory-id="attribute-formula-configuration">
+                  <code
+                    ><a href="data-inventory.html#attribute-formula-configuration"
+                      >AttributeFormulaConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="combat-rules-configuration">
+                  <code
+                    ><a href="data-inventory.html#combat-rules-configuration"
+                      >CombatRulesConfiguration</a
+                    ></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-definition">
+                  <code
+                    ><a href="data-inventory.html#resource-definition">ResourceDefinition</a></code
+                  >
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-gain-rule">
+                  <code><a href="data-inventory.html#resource-gain-rule">ResourceGainRule</a></code>
+                  — Proposed · Fully Defined
+                </li>
+                <li data-inventory-id="resource-type">
+                  <code><a href="data-inventory.html#resource-type">ResourceType</a></code> —
+                  Existing · Fully Defined
+                </li>
+              </ul>
+            </section>
+            <!-- data-inventory:end -->
+          </div>
+          <footer class="page-footer">
+            <a href="../guide/audit.html">Readiness and open gates</a
+            ><span>Version 2.2 · Prototype mechanics, not certified balance</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#units-and-numerical-precision">Units and numerical precision</a
+          ><a href="#primary-attributes">Primary attributes</a
+          ><a href="#derived-values">Derived values</a
+          ><a href="#damage-and-weapon-normalization">Damage and weapon normalization</a
+          ><a href="#critical-strikes-and-haste">Critical strikes and haste</a
+          ><a href="#armor-ward-and-mitigation">Armor, Ward and mitigation</a
+          ><a href="#healing-and-absorption">Healing and absorption</a
+          ><a href="#resolution-order">Resolution order</a
+          ><a href="#worked-arithmetic">Worked arithmetic</a
+          ><a href="#balance-measurements-not-promises">Balance measurements, not promises</a
+          ><a href="#before-specialization-selection">Before specialization selection</a>
+          <a data-inventory-toc href="#data">Data</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

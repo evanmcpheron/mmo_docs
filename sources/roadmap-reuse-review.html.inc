@@ -1,56 +1,676 @@
 <h2 id="reuse-assessment">Capability assessment · 22 October 2026</h2>
-<p>This is a dated source/evidence review for First Authoritative Multiplayer Interaction, not a second ticket registry or a gameplay completion record. <code>sources/development-roadmap.json</code> remains authoritative for scope, criterion coverage, dependencies and status. Recheck affected inputs before reuse. The mandatory decomposition procedure is above.</p>
-<p>Inspected game main <code>683448383bb9c15580442e23be344bec357eb104</code> and documentation main <code>46a6c70d18a80bbb0e87c74646e7297be91d2e1a</code>, fetched from each repository’s origin. The game checkout was clean and remained read-only. <a href="../validation/reuse-review/inspection.json">Inspection identities and limitations</a> record hashes, the exact native-input comparison and successful read-only verification of both installed toolchains. UE is 5.8.3: Launcher CL 58210709, source commit <code>396c9f059903aed5fec78ecd3d437a40c6415368</code> with the existing pinned build-tool patch; macOS ARM64 Development, Xcode 27.0 build 27A266a. <code>Briarwake.uproject</code> says 5.8; <code>tools/toolchain.lock.json</code> owns the precise pin.</p>
-<p><strong>Evidence boundary:</strong> no new engine builds, game runtime tests, Steam-account sessions or multiplayer measurements were executed for this documentation task. Retained executed evidence was inspected. Since the T01 tested game revision, the only game input change is <code>tools/test_runtime_fixtures.py</code>, isolating a wrapper regression from local build outputs; native source, configuration, plugin, fixture and content inputs are unchanged. This supports reuse of the recorded native results within their original scope, not a new whole-revision runtime certification.</p>
-<div class="table-scroll"><table><caption>Existing Briarwake foundations and their evidence limits</caption><thead><tr><th>Capability and classification</th><th>Implementation and executed evidence</th><th>Additional work / evidence gap</th></tr></thead><tbody>
-<tr><td><strong>Implemented and verified:</strong> native bootstrap and configuration (BW-001)</td><td><code>Source/Briarwake/ServerConfiguration.cpp</code>, <code>Briarwake.cpp</code>, module and four target rules; <code>tools/check_baseline.py</code>, <code>smoke_server.py</code>, <code>inspect_client.py</code>. <a href="../validation/tickets/BW-001-T08/final/review.json">Final bootstrap evidence</a> and later <a href="../validation/tickets/BW-003-T01/full/validation-summary.json">32-stage native FULL</a> retain Editor/Game/source-Server build, package, headless smoke, configuration rejection and package isolation.</td><td>Reuse existing checkout/build directories, identity and bounded-process handling. Separate Client-only target, Shipping and other platforms lack certification. A headless three-tick smoke is not dedicated connectivity.</td></tr>
-<tr><td><strong>Implemented and verified:</strong> canonical compatibility and content admission (BW-002)</td><td><code>Source/Briarwake/ContentAdmission/</code>: <code>FContentContracts</code>, typed <code>FAbilityCommand</code> decoding, independent revisions, <code>FContentAdmission</code>, resolved ability/talent/resource semantics and economic graph admission. <a href="../validation/tickets/BW-002-T06/parent-review.json">Five-criterion parent review</a>; clean/recovery native aggregates retain 3,584 content checks (1,284 admission, 756 readiness, 747 compatibility, 797 economy).</td><td>Reuse extraction, definitions, admission, typed intent and resolved content. Static validation and private metadata probes provide no production command dispatcher, mutable resources, ability handler, economy mutation or persistence. Enable only actually bound and proven behavior through the existing readiness owner.</td></tr>
-<tr><td><strong>Implemented and verified:</strong> attributable fixture evidence (BW-003-T01). <strong>Partially implemented:</strong> BW-003 as a whole.</td><td><code>Source/Briarwake/Tests/RuntimeFixtureEvidence.*</code>, <code>RuntimeFixtureTests.cpp</code>, <code>tools/check_runtime_fixtures.py</code>. <a href="../validation/tickets/BW-003-T01/review.json">T01 review</a>: 61 native checks, actual admission versus execution findings, transient UWorld teardown, five failure controls and recovery.</td><td>Extend the same evidence owner for seeded context/control isolation, correlated redacted diagnostics, local payload/queue measurements and aggregate verification (T02–T05). The owner-approved local probe does not measure connected peers or wire bytes. Preserve completed T01 unchanged.</td></tr>
-<tr><td><strong>Missing:</strong> authoritative world/character, session admission, targeting, resource, cast, combat, recipient policy and gameplay UI owners</td><td>Focused inventory of <code>Source/Briarwake/</code>, module dependencies, <code>Config/</code> and <code>Content/</code>; <a href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/docs/authority-and-lifecycles.md">existing authority/lifecycle map</a>. Default map is <code>/Engine/Maps/Entry</code>; no project gameplay .umap exists.</td><td>Implement only the game-specific owners and integration below. Authored schemas, configuration fields, completed content admission and built plugin binaries do not establish these gameplay behaviors.</td></tr>
-</tbody></table></div>
-<h3 id="multiplayer-sessions-review">MultiplayerSessions: available session code, incomplete dedicated integration</h3>
-<p>The supplied plugin is version 1 / VersionName 1.0, Runtime/Default, with content and OnlineSubsystem/OnlineSubsystemSteam dependencies. The descriptor has no engine compatibility declaration; <code>Installed: false</code> is descriptor metadata, not evidence of absence. Its source and menu asset are present. <code>Briarwake.uproject</code> has no explicit Plugins list; the game module has no direct dependency on this plugin. Retained build logs establish its earlier actual compilation/load, not an explicit Steam provider selection in current configuration.</p>
-<p>Initialization is lazy: create/find call <code>IsValidSessionInterface</code> to obtain the default subsystem’s session interface; join/destroy require an already-valid interface. The constructor binds delegates without acquiring the backend. Invalid create/find returns without broadcasting failure. There is no explicit subsystem Initialize/Deinitialize implementation. BW-004-T01 must verify initialization order, callback completion and shutdown for its selected route.</p>
-<p>Primary source: <a href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessionsSubsystem.cpp">MultiplayerSessionsSubsystem.cpp</a> and its <a href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Public/MultiplayerSessionsSubsystem.h">public contract</a>; <a href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/Menu.cpp">Menu.cpp</a>, <code>Menu.h</code>, plugin descriptor/build rules and project <code>Config/DefaultEngine.ini</code>.</p>
-<div class="table-scroll"><table><caption>Plugin responsibilities, observed limitations and bounded verification</caption><thead><tr><th>Area / classification</th><th>Observed implementation</th><th>Required verification or extension</th></tr></thead><tbody>
-<tr><td>Create, discover, join, destroy: <strong>Implemented but unverified</strong> as connected behavior</td><td><code>UMultiplayerSessionsSubsystem</code> wraps <code>IOnlineSession</code>. Create sets public capacity, advertisement, presence, lobbies, MatchType and BuildUniqueId=1; find uses SEARCH_LOBBIES and a configurable result limit. Completion delegates forward create/find/join/destroy outcomes and clear handles.</td><td>BW-004-T01 exercises successful and failed operations on the selected backend, no results, incompatible build, reconnect and independent teardown. Reuse adequate calls/delegates; fix only demonstrated gaps. BuildUniqueId=1 does not implement canonical protocol/content negotiation.</td></tr>
-<tr><td>Steam: <strong>Provided by Unreal or a plugin</strong>; project integration <strong>Partially implemented</strong></td><td>Plugin build/descriptor depends on OnlineSubsystemSteam; runtime resolves the default <code>IOnlineSubsystem::Get()</code>. NULL selects LAN flags. Current project configuration contains no explicit Steam provider, app ID, Steam net driver or authentication setup.</td><td>Record the backend actually selected, supported pinned target, authorized test accounts/app configuration and credential handling. A NULL/LAN/direct connection test cannot certify Steam. If account/platform access is unavailable, retain an explicit not-run Steam gap; do not invent credentials or install another session plugin.</td></tr>
-<tr><td>Dedicated versus listen: <strong>Unknown or incompatible</strong> for the supplied headless path</td><td>Create/find/join dereference a first local player’s preferred net ID. A dedicated server has no local player. Create enables presence/lobbies without a dedicated setting; the menu appends <code>?listen</code> and calls ServerTravel. This is evidence of a listen-oriented example, not a dedicated implementation.</td><td>BW-004-T01 must establish a headless-safe route using the existing subsystem/native session interfaces, with no widget or local-player dependency. Verify dedicated advertisement/join if selected, supported failure behavior and no gameplay authority from listen-host identity. Do not recreate functioning session operations.</td></tr>
-<tr><td>Travel, replacement and teardown: <strong>Partially implemented</strong></td><td>Create calls DestroySession for an existing session but continues into CreateSession before destruction completes; the destroy callback can create again. Menu join ignores the result enum and resolved-connect-string success before ClientTravel. MenuTearDown only removes UI/restores input. StartSession and its callback are empty; menu start/destroy handlers are empty. No subsystem Deinitialize delegate cleanup or explicit network/travel failure recovery is present.</td><td>Exercise create-after-destroy ordering, unavailable subsystem/null local player, failed join/address resolution, repeated menu setup, callback lifetime, travel failure, disconnect and shutdown. Ensure one operation/outcome and recoverable UI; implement only lifecycle gaps needed by the selected route. Start/end registration support is a gap to resolve only if required for that route.</td></tr>
-<tr><td>UI dependency: <strong>Implemented and verified</strong> for compilation only; gameplay use <strong>Implemented but unverified</strong></td><td><code>UMenu</code> binds HostButton/JoinButton, viewport and input mode; default lobby path is the absent example <code>/Game/ThirdPersonCPP/Maps/Lobby</code>. The subsystem API is C++, independent of the widget. <a href="../validation/tickets/BW-001-T08/final/plugin-blueprints/process.log">Retained Blueprint compile</a> passes <code>/MultiplayerSessions/WBP_MenuWidget</code>; <a href="../validation/tickets/BW-001-T08/final/game-build/process.log">Game build</a> compiles Module.MultiplayerSessions.</td><td>Use verified project test fixtures and explicit map paths. Do not require example widgets on a server, resave unrelated assets, or infer a playable menu/session test from successful Blueprint compilation.</td></tr>
-<tr><td>Authentication, command authority and game-state replication: <strong>Missing</strong> from this plugin</td><td>No trusted test-credential verification, character ownership epoch, per-command authorization/limits/idempotency, gameplay Character movement, combat, private-state projection or workload evidence exists in this source.</td><td>BW-004-T02/T03 own admission/replay; later domain epics own gameplay. Steam/session membership, RPC ownership and reliable delivery are insufficient authorization. The plugin is not a custom replication framework or MMO networking solution.</td></tr>
-</tbody></table></div>
+<p>
+  This is a dated source/evidence review for First Authoritative Multiplayer Interaction, not a
+  second ticket registry or a gameplay completion record.
+  <code>sources/development-roadmap.json</code> remains authoritative for scope, criterion coverage,
+  dependencies and status. Recheck affected inputs before reuse. The mandatory decomposition
+  procedure is above.
+</p>
+<p>
+  Inspected game main <code>683448383bb9c15580442e23be344bec357eb104</code> and documentation main
+  <code>46a6c70d18a80bbb0e87c74646e7297be91d2e1a</code>, fetched from each repository’s origin. The
+  game checkout was clean and remained read-only.
+  <a href="../validation/reuse-review/inspection.json">Inspection identities and limitations</a>
+  record hashes, the exact native-input comparison and successful read-only verification of both
+  installed toolchains. UE is 5.8.3: Launcher CL 58210709, source commit
+  <code>396c9f059903aed5fec78ecd3d437a40c6415368</code> with the existing pinned build-tool patch;
+  macOS ARM64 Development, Xcode 27.0 build 27A266a. <code>Briarwake.uproject</code> says 5.8;
+  <code>tools/toolchain.lock.json</code> owns the precise pin.
+</p>
+<p>
+  <strong>Evidence boundary:</strong> no new engine builds, game runtime tests, Steam-account
+  sessions or multiplayer measurements were executed for this documentation task. Retained executed
+  evidence was inspected. Since the T01 tested game revision, the only game input change is
+  <code>tools/test_runtime_fixtures.py</code>, isolating a wrapper regression from local build
+  outputs; native source, configuration, plugin, fixture and content inputs are unchanged. This
+  supports reuse of the recorded native results within their original scope, not a new
+  whole-revision runtime certification.
+</p>
+<div class="table-scroll">
+  <table>
+    <caption>
+      Existing Briarwake foundations and their evidence limits
+    </caption>
+    <thead>
+      <tr>
+        <th>Capability and classification</th>
+        <th>Implementation and executed evidence</th>
+        <th>Additional work / evidence gap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong>Implemented and verified:</strong> native bootstrap and configuration (BW-001)
+        </td>
+        <td>
+          <code>Source/Briarwake/ServerConfiguration.cpp</code>, <code>Briarwake.cpp</code>, module
+          and four target rules; <code>tools/check_baseline.py</code>, <code>smoke_server.py</code>,
+          <code>inspect_client.py</code>.
+          <a href="../validation/tickets/BW-001-T08/final/review.json">Final bootstrap evidence</a>
+          and later
+          <a href="../validation/tickets/BW-003-T01/full/validation-summary.json"
+            >32-stage native FULL</a
+          >
+          retain Editor/Game/source-Server build, package, headless smoke, configuration rejection
+          and package isolation.
+        </td>
+        <td>
+          Reuse existing checkout/build directories, identity and bounded-process handling. Separate
+          Client-only target, Shipping and other platforms lack certification. A headless three-tick
+          smoke is not dedicated connectivity.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Implemented and verified:</strong> canonical compatibility and content admission
+          (BW-002)
+        </td>
+        <td>
+          <code>Source/Briarwake/ContentAdmission/</code>: <code>FContentContracts</code>, typed
+          <code>FAbilityCommand</code> decoding, independent revisions,
+          <code>FContentAdmission</code>, resolved ability/talent/resource semantics and economic
+          graph admission.
+          <a href="../validation/tickets/BW-002-T06/parent-review.json"
+            >Five-criterion parent review</a
+          >; clean/recovery native aggregates retain 3,584 content checks (1,284 admission, 756
+          readiness, 747 compatibility, 797 economy).
+        </td>
+        <td>
+          Reuse extraction, definitions, admission, typed intent and resolved content. Static
+          validation and private metadata probes provide no production command dispatcher, mutable
+          resources, ability handler, economy mutation or persistence. Enable only actually bound
+          and proven behavior through the existing readiness owner.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Implemented and verified:</strong> attributable fixture evidence (BW-003-T01).
+          <strong>Partially implemented:</strong> BW-003 as a whole.
+        </td>
+        <td>
+          <code>Source/Briarwake/Tests/RuntimeFixtureEvidence.*</code>,
+          <code>RuntimeFixtureTests.cpp</code>, <code>tools/check_runtime_fixtures.py</code>.
+          <a href="../validation/tickets/BW-003-T01/review.json">T01 review</a>: 61 native checks,
+          actual admission versus execution findings, transient UWorld teardown, five failure
+          controls and recovery.
+        </td>
+        <td>
+          Extend the same evidence owner for seeded context/control isolation, correlated redacted
+          diagnostics, local payload/queue measurements and aggregate verification (T02–T05). The
+          owner-approved local probe does not measure connected peers or wire bytes. Preserve
+          completed T01 unchanged.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Missing:</strong> authoritative world/character, session admission, targeting,
+          resource, cast, combat, recipient policy and gameplay UI owners
+        </td>
+        <td>
+          Focused inventory of <code>Source/Briarwake/</code>, module dependencies,
+          <code>Config/</code> and <code>Content/</code>;
+          <a
+            href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/docs/authority-and-lifecycles.md"
+            >existing authority/lifecycle map</a
+          >. Default map is <code>/Engine/Maps/Entry</code>; no project gameplay .umap exists.
+        </td>
+        <td>
+          Implement only the game-specific owners and integration below. Authored schemas,
+          configuration fields, completed content admission and built plugin binaries do not
+          establish these gameplay behaviors.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h3 id="multiplayer-sessions-review">
+  MultiplayerSessions: available session code, incomplete dedicated integration
+</h3>
+<p>
+  The supplied plugin is version 1 / VersionName 1.0, Runtime/Default, with content and
+  OnlineSubsystem/OnlineSubsystemSteam dependencies. The descriptor has no engine compatibility
+  declaration; <code>Installed: false</code> is descriptor metadata, not evidence of absence. Its
+  source and menu asset are present. <code>Briarwake.uproject</code> has no explicit Plugins list;
+  the game module has no direct dependency on this plugin. Retained build logs establish its earlier
+  actual compilation/load, not an explicit Steam provider selection in current configuration.
+</p>
+<p>
+  Initialization is lazy: create/find call <code>IsValidSessionInterface</code> to obtain the
+  default subsystem’s session interface; join/destroy require an already-valid interface. The
+  constructor binds delegates without acquiring the backend. Invalid create/find returns without
+  broadcasting failure. There is no explicit subsystem Initialize/Deinitialize implementation.
+  BW-004-T01 must verify initialization order, callback completion and shutdown for its selected
+  route.
+</p>
+<p>
+  Primary source:
+  <a
+    href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/MultiplayerSessionsSubsystem.cpp"
+    >MultiplayerSessionsSubsystem.cpp</a
+  >
+  and its
+  <a
+    href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Public/MultiplayerSessionsSubsystem.h"
+    >public contract</a
+  >;
+  <a
+    href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/683448383bb9c15580442e23be344bec357eb104/Plugins/MultiplayerSessions/Source/MultiplayerSessions/Private/Menu.cpp"
+    >Menu.cpp</a
+  >, <code>Menu.h</code>, plugin descriptor/build rules and project
+  <code>Config/DefaultEngine.ini</code>.
+</p>
+<div class="table-scroll">
+  <table>
+    <caption>
+      Plugin responsibilities, observed limitations and bounded verification
+    </caption>
+    <thead>
+      <tr>
+        <th>Area / classification</th>
+        <th>Observed implementation</th>
+        <th>Required verification or extension</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          Create, discover, join, destroy: <strong>Implemented but unverified</strong> as connected
+          behavior
+        </td>
+        <td>
+          <code>UMultiplayerSessionsSubsystem</code> wraps <code>IOnlineSession</code>. Create sets
+          public capacity, advertisement, presence, lobbies, MatchType and BuildUniqueId=1; find
+          uses SEARCH_LOBBIES and a configurable result limit. Completion delegates forward
+          create/find/join/destroy outcomes and clear handles.
+        </td>
+        <td>
+          BW-004-T01 exercises successful and failed operations on the selected backend, no results,
+          incompatible build, reconnect and independent teardown. Reuse adequate calls/delegates;
+          fix only demonstrated gaps. BuildUniqueId=1 does not implement canonical protocol/content
+          negotiation.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Steam: <strong>Provided by Unreal or a plugin</strong>; project integration
+          <strong>Partially implemented</strong>
+        </td>
+        <td>
+          Plugin build/descriptor depends on OnlineSubsystemSteam; runtime resolves the default
+          <code>IOnlineSubsystem::Get()</code>. NULL selects LAN flags. Current project
+          configuration contains no explicit Steam provider, app ID, Steam net driver or
+          authentication setup.
+        </td>
+        <td>
+          Record the backend actually selected, supported pinned target, authorized test
+          accounts/app configuration and credential handling. A NULL/LAN/direct connection test
+          cannot certify Steam. If account/platform access is unavailable, retain an explicit
+          not-run Steam gap; do not invent credentials or install another session plugin.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Dedicated versus listen: <strong>Unknown or incompatible</strong> for the supplied
+          headless path
+        </td>
+        <td>
+          Create/find/join dereference a first local player’s preferred net ID. A dedicated server
+          has no local player. Create enables presence/lobbies without a dedicated setting; the menu
+          appends <code>?listen</code> and calls ServerTravel. This is evidence of a listen-oriented
+          example, not a dedicated implementation.
+        </td>
+        <td>
+          BW-004-T01 must establish a headless-safe route using the existing subsystem/native
+          session interfaces, with no widget or local-player dependency. Verify dedicated
+          advertisement/join if selected, supported failure behavior and no gameplay authority from
+          listen-host identity. Do not recreate functioning session operations.
+        </td>
+      </tr>
+      <tr>
+        <td>Travel, replacement and teardown: <strong>Partially implemented</strong></td>
+        <td>
+          Create calls DestroySession for an existing session but continues into CreateSession
+          before destruction completes; the destroy callback can create again. Menu join ignores the
+          result enum and resolved-connect-string success before ClientTravel. MenuTearDown only
+          removes UI/restores input. StartSession and its callback are empty; menu start/destroy
+          handlers are empty. No subsystem Deinitialize delegate cleanup or explicit network/travel
+          failure recovery is present.
+        </td>
+        <td>
+          Exercise create-after-destroy ordering, unavailable subsystem/null local player, failed
+          join/address resolution, repeated menu setup, callback lifetime, travel failure,
+          disconnect and shutdown. Ensure one operation/outcome and recoverable UI; implement only
+          lifecycle gaps needed by the selected route. Start/end registration support is a gap to
+          resolve only if required for that route.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          UI dependency: <strong>Implemented and verified</strong> for compilation only; gameplay
+          use <strong>Implemented but unverified</strong>
+        </td>
+        <td>
+          <code>UMenu</code> binds HostButton/JoinButton, viewport and input mode; default lobby
+          path is the absent example <code>/Game/ThirdPersonCPP/Maps/Lobby</code>. The subsystem API
+          is C++, independent of the widget.
+          <a href="../validation/tickets/BW-001-T08/final/plugin-blueprints/process.log"
+            >Retained Blueprint compile</a
+          >
+          passes <code>/MultiplayerSessions/WBP_MenuWidget</code>;
+          <a href="../validation/tickets/BW-001-T08/final/game-build/process.log">Game build</a>
+          compiles Module.MultiplayerSessions.
+        </td>
+        <td>
+          Use verified project test fixtures and explicit map paths. Do not require example widgets
+          on a server, resave unrelated assets, or infer a playable menu/session test from
+          successful Blueprint compilation.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Authentication, command authority and game-state replication:
+          <strong>Missing</strong> from this plugin
+        </td>
+        <td>
+          No trusted test-credential verification, character ownership epoch, per-command
+          authorization/limits/idempotency, gameplay Character movement, combat, private-state
+          projection or workload evidence exists in this source.
+        </td>
+        <td>
+          BW-004-T02/T03 own admission/replay; later domain epics own gameplay. Steam/session
+          membership, RPC ownership and reliable delivery are insufficient authorization. The plugin
+          is not a custom replication framework or MMO networking solution.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <h3 id="native-unreal-reuse">Pinned native Unreal candidates and integration cost</h3>
-<p>The installed engine’s actual headers/source were inspected at the pinned version; hashes are in the inspection record. These candidates are <strong>Provided by Unreal or a plugin</strong>, not implemented Briarwake requirements. The project currently depends on Core/CoreUObject/Engine and private Json. Add no optional framework solely because it is available.</p>
-<div class="table-scroll"><table><caption>Engine fit, configuration and game-specific gaps</caption><thead><tr><th>Candidate / inspected engine path</th><th>Available fit</th><th>Remaining integration and custom-work decision</th></tr></thead><tbody>
-<tr><td>Actors/components, RPCs, ownership and relevancy: <code>Source/Runtime/Engine/Classes/GameFramework/Actor.h</code>, <code>GameModeBase.h</code>, <code>Public/Net/UnrealNetwork.h</code></td><td>Native replicated lifecycle/properties, owned RPC routing, login/logout hooks, property conditions and per-connection relevancy provide transport/lifetime foundations.</td><td>BW-004/BW-007 wire connection-derived identity and current baselines; BW-013 supplies floor/instance/authorization, private projections and revocation. Demonstrate packet absence, including initial state and correlation fields. No parallel snapshot protocol or session manager is justified by current evidence. <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-relevancy-in-unreal-engine">Epic relevancy reference</a>.</td></tr>
-<tr><td>Character movement, collision, prediction and smoothing: <code>CharacterMovementComponent.h</code> and <code>Private/Components/CharacterMovementComponent.cpp</code>; <code>MovementComponent.h</code></td><td>Character movement supplies saved moves, server processing, correction/replay and simulated-proxy smoothing. MovementComponent exposes plane constraints, safe swept movement and sliding.</td><td>BW-005 configures logical-unit conversion, immediate normalized movement, common capsule, continuous independent aim, authoritative floor/collision and acknowledgment mapping. Prove timestamp/sequence and ownership semantics without a second replay ledger. BW-008 configures/extends the same path only for demonstrated reset/reconciliation gaps. Native defaults do not certify exact 3.5 logical units/s or floor IDs. Keep server correction enabled. <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine">Epic movement reference</a>.</td></tr>
-<tr><td>Collision/navigation: engine world queries and <code>Source/Runtime/NavigationSystem/Public/NavigationSystem.h</code></td><td>Collision queries and path queries can support movement and spatial checks.</td><td>BW-005 owns world geometry; BW-009 reuses it for range/line-of-sight/protected/closed-door legality. Navigation availability is not permission to enter a floor or choose a target. Add navigation integration only for an actual route-query requirement; no new path solver.</td></tr>
-<tr><td>Timers, tags and engine state: <code>Source/Runtime/Engine/Public/TimerManager.h</code>, <code>Source/Runtime/GameplayTags/Classes/GameplayTagContainer.h</code></td><td>Engine lifetime, timer and optional tag primitives can support scoped state and notifications.</td><td>BW-006/BW-010 still need fixed-point arithmetic, authoritative tick rounding, reservations and explicit cast transitions. Timers/animation never authorize commitment. Tags are not configured domain enums; retain canonical identifiers and avoid a tag hierarchy without consumers.</td></tr>
-<tr><td>Gameplay Ability System: <code>Plugins/Runtime/GameplayAbilities/GameplayAbilities.uplugin</code></td><td>Supplied plugin offers ability/effect machinery; EnabledByDefault=false. No project module dependency or gameplay integration is present.</td><td>Evaluate exact resource/cast/commit/modifier semantics and native C++ integration cost at BW-006/BW-010 implementation, reusing the decision across both. No automatic adoption or separate GAS demonstration ticket. Fixed-point, rounding, once-only action commitment and support attribution remain requirements with either choice. Custom game rules are justified where no existing owner implements those semantics.</td></tr>
-<tr><td>Replication Graph and Iris: <code>Plugins/Runtime/ReplicationGraph/ReplicationGraph.uplugin</code>, <code>Source/Runtime/Net/Iris/IrisCore.Build.cs</code></td><td>Graph descriptor supplies a replication driver for many actors/connections, EnabledByDefault=false; Iris source/build support exists. Neither has project-specific configuration or measured need here.</td><td>Start with native relevancy/conditions and game-specific authorization. BW-013/BW-083 measurements may justify a later bounded decision; do not schedule automatic migration, a custom networking protocol or a replication wrapper.</td></tr>
-<tr><td>Automation, functional tests and network emulation: <code>Source/Developer/FunctionalTesting/Classes/FunctionalTest.h</code>, <code>Engine/NetDriver.h</code></td><td>Existing Unreal Automation is already used. PacketSimulationSettings expose lag/variance/loss/order controls.</td><td>Extend the current runner and evidence path with feature suites and bounded peer launch. Verify effective round-trip delay and settings: engine comments note order/lag option incompatibilities, so use separate scenarios or a test-only application reordering fixture where necessary. Local BW-003 serialized bytes cannot replace connected wire measurement. No duplicate validation suite.</td></tr>
-</tbody></table></div>
-<p>Session backend setup should follow the existing OSS APIs, checked against <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-session-interface-in-unreal-engine">Epic’s Session Interface</a> and <a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-steam-interface-in-unreal-engine">Steam integration documentation</a>. These references describe engine functionality; local source/configuration and executed Briarwake evidence determine completion.</p>
+<p>
+  The installed engine’s actual headers/source were inspected at the pinned version; hashes are in
+  the inspection record. These candidates are <strong>Provided by Unreal or a plugin</strong>, not
+  implemented Briarwake requirements. The project currently depends on Core/CoreUObject/Engine and
+  private Json. Add no optional framework solely because it is available.
+</p>
+<div class="table-scroll">
+  <table>
+    <caption>
+      Engine fit, configuration and game-specific gaps
+    </caption>
+    <thead>
+      <tr>
+        <th>Candidate / inspected engine path</th>
+        <th>Available fit</th>
+        <th>Remaining integration and custom-work decision</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          Actors/components, RPCs, ownership and relevancy:
+          <code>Source/Runtime/Engine/Classes/GameFramework/Actor.h</code>,
+          <code>GameModeBase.h</code>, <code>Public/Net/UnrealNetwork.h</code>
+        </td>
+        <td>
+          Native replicated lifecycle/properties, owned RPC routing, login/logout hooks, property
+          conditions and per-connection relevancy provide transport/lifetime foundations.
+        </td>
+        <td>
+          BW-004/BW-007 wire connection-derived identity and current baselines; BW-013 supplies
+          floor/instance/authorization, private projections and revocation. Demonstrate packet
+          absence, including initial state and correlation fields. No parallel snapshot protocol or
+          session manager is justified by current evidence.
+          <a
+            href="https://dev.epicgames.com/documentation/en-us/unreal-engine/actor-relevancy-in-unreal-engine"
+            >Epic relevancy reference</a
+          >.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Character movement, collision, prediction and smoothing:
+          <code>CharacterMovementComponent.h</code> and
+          <code>Private/Components/CharacterMovementComponent.cpp</code>;
+          <code>MovementComponent.h</code>
+        </td>
+        <td>
+          Character movement supplies saved moves, server processing, correction/replay and
+          simulated-proxy smoothing. MovementComponent exposes plane constraints, safe swept
+          movement and sliding.
+        </td>
+        <td>
+          BW-005 configures logical-unit conversion, immediate normalized movement, common capsule,
+          continuous independent aim, authoritative floor/collision and acknowledgment mapping.
+          Prove timestamp/sequence and ownership semantics without a second replay ledger. BW-008
+          configures/extends the same path only for demonstrated reset/reconciliation gaps. Native
+          defaults do not certify exact 3.5 logical units/s or floor IDs. Keep server correction
+          enabled.
+          <a
+            href="https://dev.epicgames.com/documentation/en-us/unreal-engine/understanding-networked-movement-in-the-character-movement-component-for-unreal-engine"
+            >Epic movement reference</a
+          >.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Collision/navigation: engine world queries and
+          <code>Source/Runtime/NavigationSystem/Public/NavigationSystem.h</code>
+        </td>
+        <td>Collision queries and path queries can support movement and spatial checks.</td>
+        <td>
+          BW-005 owns world geometry; BW-009 reuses it for range/line-of-sight/protected/closed-door
+          legality. Navigation availability is not permission to enter a floor or choose a target.
+          Add navigation integration only for an actual route-query requirement; no new path solver.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Timers, tags and engine state: <code>Source/Runtime/Engine/Public/TimerManager.h</code>,
+          <code>Source/Runtime/GameplayTags/Classes/GameplayTagContainer.h</code>
+        </td>
+        <td>
+          Engine lifetime, timer and optional tag primitives can support scoped state and
+          notifications.
+        </td>
+        <td>
+          BW-006/BW-010 still need fixed-point arithmetic, authoritative tick rounding, reservations
+          and explicit cast transitions. Timers/animation never authorize commitment. Tags are not
+          configured domain enums; retain canonical identifiers and avoid a tag hierarchy without
+          consumers.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Gameplay Ability System:
+          <code>Plugins/Runtime/GameplayAbilities/GameplayAbilities.uplugin</code>
+        </td>
+        <td>
+          Supplied plugin offers ability/effect machinery; EnabledByDefault=false. No project module
+          dependency or gameplay integration is present.
+        </td>
+        <td>
+          Evaluate exact resource/cast/commit/modifier semantics and native C++ integration cost at
+          BW-006/BW-010 implementation, reusing the decision across both. No automatic adoption or
+          separate GAS demonstration ticket. Fixed-point, rounding, once-only action commitment and
+          support attribution remain requirements with either choice. Custom game rules are
+          justified where no existing owner implements those semantics.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Replication Graph and Iris:
+          <code>Plugins/Runtime/ReplicationGraph/ReplicationGraph.uplugin</code>,
+          <code>Source/Runtime/Net/Iris/IrisCore.Build.cs</code>
+        </td>
+        <td>
+          Graph descriptor supplies a replication driver for many actors/connections,
+          EnabledByDefault=false; Iris source/build support exists. Neither has project-specific
+          configuration or measured need here.
+        </td>
+        <td>
+          Start with native relevancy/conditions and game-specific authorization. BW-013/BW-083
+          measurements may justify a later bounded decision; do not schedule automatic migration, a
+          custom networking protocol or a replication wrapper.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Automation, functional tests and network emulation:
+          <code>Source/Developer/FunctionalTesting/Classes/FunctionalTest.h</code>,
+          <code>Engine/NetDriver.h</code>
+        </td>
+        <td>
+          Existing Unreal Automation is already used. PacketSimulationSettings expose
+          lag/variance/loss/order controls.
+        </td>
+        <td>
+          Extend the current runner and evidence path with feature suites and bounded peer launch.
+          Verify effective round-trip delay and settings: engine comments note order/lag option
+          incompatibilities, so use separate scenarios or a test-only application reordering fixture
+          where necessary. Local BW-003 serialized bytes cannot replace connected wire measurement.
+          No duplicate validation suite.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  Session backend setup should follow the existing OSS APIs, checked against
+  <a
+    href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-session-interface-in-unreal-engine"
+    >Epic’s Session Interface</a
+  >
+  and
+  <a
+    href="https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-steam-interface-in-unreal-engine"
+    >Steam integration documentation</a
+  >. These references describe engine functionality; local source/configuration and executed
+  Briarwake evidence determine completion.
+</p>
 <h2 id="multiplayer-coverage">First multiplayer milestone: coverage and remaining work</h2>
-<p>Every linked epic retains its original criteria, dependencies, status and evidence. Its generated ticket-coverage table maps each exact AC to scoped remaining work. Existing completed tickets are unchanged. All 29 new tickets are Not Started with empty verified evidence. The following is a dated review of their foundations and evidence gaps; consult the registry-backed epic/ticket pages for the current plan.</p>
-<div class="table-scroll"><table><caption>Epic coverage matrix: foundation, additional work and proof</caption><thead><tr><th>Epic / available foundation</th><th>Remaining integration and game-specific behavior</th><th>Criterion coverage / evidence gaps / planning correction</th></tr></thead><tbody>
-<tr><td><a href="roadmap-bw-001.html">BW-001</a> · Complete bootstrap</td><td>Reuse native build/package, configuration, headless smoke, identity and bounded process handling.</td><td>AC1–4 retain recorded evidence. No completed ticket changes; no Steam, connected gameplay or separate Client-only claim.</td></tr>
-<tr><td><a href="roadmap-bw-002.html">BW-002</a> · Complete content boundary</td><td>Reuse canonical extraction, revision/typed decoding, readiness and static/economic admission.</td><td>AC1–5 retain recorded evidence. No completed ticket changes; runtime target/resource/authority checks remain required.</td></tr>
-<tr><td><a href="roadmap-bw-003.html">BW-003</a> · T01 verified</td><td>T02 seeded context/control isolation, T03 diagnostics, T04 local measurements, T05 integration remain.</td><td>AC1 has T01 proof; AC2→T02, AC3→T03, AC4→T04; T05 reviews all. Narrow T05 to reuse the already-integrated evidence suite/failure controls and add only cross-suite gaps. Preserve logical-recipient/payload labels.</td></tr>
-<tr><td><a href="roadmap-bw-004.html">BW-004</a> · plugin/OSS calls; native login hooks</td><td>Dedicated-safe session/travel integration; trusted test admission and bounded commands; one replay identity/outcome owner.</td><td>AC1/4→T01 session route plus T02 trusted connection; AC2→T02 limits and T03 replay; AC3→T03. Missing connected/Steam evidence becomes bounded T01 cases, not a new session subsystem.</td></tr>
-<tr><td><a href="roadmap-bw-005.html">BW-005</a> · native movement/collision</td><td>Configure movement, units, capsule, independent aim and acknowledgment mapping; extend only floor/geometry legality gaps.</td><td>AC1/2/4→T01; AC3/4→T02. Headless numeric/collision/repeat-input traces required. No custom movement transport or prediction implementation presumed.</td></tr>
-<tr><td><a href="roadmap-bw-006.html">BW-006</a> · admitted resolved content; arithmetic references</td><td>Authoritative derived values and eligibility; bounded pools, reservations and recovery. Evaluate GAS once against exact semantics.</td><td>AC1/3/4→T01; AC2/3/4→T02. Native fixed-point/rounding, cap and invalid-data fixtures required. Documentation arithmetic is a reference, not runtime evidence.</td></tr>
-<tr><td><a href="roadmap-bw-007.html">BW-007</a> · Actor lifecycle/property replication</td><td>Stable domain identity/revisions, current baseline and safe destruction; owner-private/public projection split.</td><td>AC1–3→T01, AC4→T02. Connected join/re-entry/late-join/stale and recipient-payload evidence required. T02 explicitly uses BW-006 pools; broad interest remains BW-013.</td></tr>
-<tr><td><a href="roadmap-bw-008.html">BW-008</a> · same native movement owner</td><td>Map saved moves/acknowledgments and reset history; configure correction/smoothing; measure integrated low-resolution display behavior.</td><td>AC1–3→T01 integration, AC1/2/4/5→T02 impairment/display proof. No separate custom predictor/interpolator; BW-005 owns movement legality, BW-008 owns recovery/response proof.</td></tr>
-<tr><td><a href="roadmap-bw-009.html">BW-009</a> · typed targeting policy, world queries</td><td>All admitted input modes, authoritative relation/range/floor/route checks; deterministic cycling over authorized candidates.</td><td>AC2–4→T01; AC1/4→T02. Reuse static decoding; add runtime world checks, no independent geometry or private target index.</td></tr>
-<tr><td><a href="roadmap-bw-010.html">BW-010</a> · resolved ability definitions; resources; engine timers</td><td>Acceptance/reservation/GCD; release-commit cancellation; channel/instant commitment using one cast owner and root identity.</td><td>AC1/4→T01, AC2/4→T02, AC3/4→T03. Explicit BW-004 replay and BW-006 reservation dependencies avoid competing ledgers; timers alone supply no commitment proof.</td></tr>
-<tr><td><a href="roadmap-bw-011.html">BW-011</a> · numerical contracts and committed action</td><td>One seeded numerical/effective-result owner; ordered marginal support accounting; bounded post-mitigation transfer.</td><td>AC1/2/4→T01, AC3→T02, AC1/5→T03. Retain caps/overkill/overheal, stable support ordering and immune/recursive transfer failure tests.</td></tr>
-<tr><td><a href="roadmap-bw-013.html">BW-013</a> · BW-007 projections; native relevancy</td><td>Per-recipient floor/instance/privacy policy and revocation, current producer restoration/hazards, bounded traffic scheduling.</td><td>AC1/2/5→T01, AC2/3→T02, AC4→T03. Packet absence and finite queues required. Later producers extend these same gates; synthetic scheduling probe is separate from BW-083’s actual workload.</td></tr>
-<tr><td><a href="roadmap-bw-028.html">BW-028</a> · UMG/input facilities; authoritative state owners</td><td>Rebindable intent and projection-aware ground picking; one local queue/authoritative HUD; accessible hazard/rejection feedback.</td><td>AC1/4/5→T01, AC1/2→T02, AC3/4→T03. T01 consumes BW-009 selection, T03 consumes BW-013 disclosure. The session example widget supplies no combat UI; no camera subsystem is rebuilt.</td></tr>
-<tr><td><a href="roadmap-bw-012.html">BW-012</a> · preceding domain suites and fixture runner</td><td>Wire two real clients/controlled target into one action; prove abuse rejection, privacy and late-join/loss recovery.</td><td>AC1/4→T01, AC2–4→T02. Reuse feature tests and add cross-boundary proof only. Keep BW-008/BW-018 recommended; no persistence or full opening experience required.</td></tr>
-<tr><td><a href="roadmap-bw-083.html">BW-083</a> · connected proof; emulation/fixture facilities</td><td>Repeatable real moving/action workload with joins/departures and actual telemetry; impairment/bottleneck review.</td><td>AC1/2→T01, AC3/4→T02. Distinguish wire/payload, server/render time and unavailable durable metrics. Reuse equivalent BW-008 scenarios; no capacity promise or automatic Graph/Iris work.</td></tr>
-</tbody></table></div>
+<p>
+  Every linked epic retains its original criteria, dependencies, status and evidence. Its generated
+  ticket-coverage table maps each exact AC to scoped remaining work. Existing completed tickets are
+  unchanged. All 29 new tickets are Not Started with empty verified evidence. The following is a
+  dated review of their foundations and evidence gaps; consult the registry-backed epic/ticket pages
+  for the current plan.
+</p>
+<div class="table-scroll">
+  <table>
+    <caption>
+      Epic coverage matrix: foundation, additional work and proof
+    </caption>
+    <thead>
+      <tr>
+        <th>Epic / available foundation</th>
+        <th>Remaining integration and game-specific behavior</th>
+        <th>Criterion coverage / evidence gaps / planning correction</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="roadmap-bw-001.html">BW-001</a> · Complete bootstrap</td>
+        <td>
+          Reuse native build/package, configuration, headless smoke, identity and bounded process
+          handling.
+        </td>
+        <td>
+          AC1–4 retain recorded evidence. No completed ticket changes; no Steam, connected gameplay
+          or separate Client-only claim.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-002.html">BW-002</a> · Complete content boundary</td>
+        <td>
+          Reuse canonical extraction, revision/typed decoding, readiness and static/economic
+          admission.
+        </td>
+        <td>
+          AC1–5 retain recorded evidence. No completed ticket changes; runtime
+          target/resource/authority checks remain required.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-003.html">BW-003</a> · T01 verified</td>
+        <td>
+          T02 seeded context/control isolation, T03 diagnostics, T04 local measurements, T05
+          integration remain.
+        </td>
+        <td>
+          AC1 has T01 proof; AC2→T02, AC3→T03, AC4→T04; T05 reviews all. Narrow T05 to reuse the
+          already-integrated evidence suite/failure controls and add only cross-suite gaps. Preserve
+          logical-recipient/payload labels.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-004.html">BW-004</a> · plugin/OSS calls; native login hooks</td>
+        <td>
+          Dedicated-safe session/travel integration; trusted test admission and bounded commands;
+          one replay identity/outcome owner.
+        </td>
+        <td>
+          AC1/4→T01 session route plus T02 trusted connection; AC2→T02 limits and T03 replay;
+          AC3→T03. Missing connected/Steam evidence becomes bounded T01 cases, not a new session
+          subsystem.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-005.html">BW-005</a> · native movement/collision</td>
+        <td>
+          Configure movement, units, capsule, independent aim and acknowledgment mapping; extend
+          only floor/geometry legality gaps.
+        </td>
+        <td>
+          AC1/2/4→T01; AC3/4→T02. Headless numeric/collision/repeat-input traces required. No custom
+          movement transport or prediction implementation presumed.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="roadmap-bw-006.html">BW-006</a> · admitted resolved content; arithmetic
+          references
+        </td>
+        <td>
+          Authoritative derived values and eligibility; bounded pools, reservations and recovery.
+          Evaluate GAS once against exact semantics.
+        </td>
+        <td>
+          AC1/3/4→T01; AC2/3/4→T02. Native fixed-point/rounding, cap and invalid-data fixtures
+          required. Documentation arithmetic is a reference, not runtime evidence.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-007.html">BW-007</a> · Actor lifecycle/property replication</td>
+        <td>
+          Stable domain identity/revisions, current baseline and safe destruction;
+          owner-private/public projection split.
+        </td>
+        <td>
+          AC1–3→T01, AC4→T02. Connected join/re-entry/late-join/stale and recipient-payload evidence
+          required. T02 explicitly uses BW-006 pools; broad interest remains BW-013.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-008.html">BW-008</a> · same native movement owner</td>
+        <td>
+          Map saved moves/acknowledgments and reset history; configure correction/smoothing; measure
+          integrated low-resolution display behavior.
+        </td>
+        <td>
+          AC1–3→T01 integration, AC1/2/4/5→T02 impairment/display proof. No separate custom
+          predictor/interpolator; BW-005 owns movement legality, BW-008 owns recovery/response
+          proof.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-009.html">BW-009</a> · typed targeting policy, world queries</td>
+        <td>
+          All admitted input modes, authoritative relation/range/floor/route checks; deterministic
+          cycling over authorized candidates.
+        </td>
+        <td>
+          AC2–4→T01; AC1/4→T02. Reuse static decoding; add runtime world checks, no independent
+          geometry or private target index.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="roadmap-bw-010.html">BW-010</a> · resolved ability definitions; resources; engine
+          timers
+        </td>
+        <td>
+          Acceptance/reservation/GCD; release-commit cancellation; channel/instant commitment using
+          one cast owner and root identity.
+        </td>
+        <td>
+          AC1/4→T01, AC2/4→T02, AC3/4→T03. Explicit BW-004 replay and BW-006 reservation
+          dependencies avoid competing ledgers; timers alone supply no commitment proof.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-011.html">BW-011</a> · numerical contracts and committed action</td>
+        <td>
+          One seeded numerical/effective-result owner; ordered marginal support accounting; bounded
+          post-mitigation transfer.
+        </td>
+        <td>
+          AC1/2/4→T01, AC3→T02, AC1/5→T03. Retain caps/overkill/overheal, stable support ordering
+          and immune/recursive transfer failure tests.
+        </td>
+      </tr>
+      <tr>
+        <td><a href="roadmap-bw-013.html">BW-013</a> · BW-007 projections; native relevancy</td>
+        <td>
+          Per-recipient floor/instance/privacy policy and revocation, current producer
+          restoration/hazards, bounded traffic scheduling.
+        </td>
+        <td>
+          AC1/2/5→T01, AC2/3→T02, AC4→T03. Packet absence and finite queues required. Later
+          producers extend these same gates; synthetic scheduling probe is separate from BW-083’s
+          actual workload.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="roadmap-bw-028.html">BW-028</a> · UMG/input facilities; authoritative state
+          owners
+        </td>
+        <td>
+          Rebindable intent and projection-aware ground picking; one local queue/authoritative HUD;
+          accessible hazard/rejection feedback.
+        </td>
+        <td>
+          AC1/4/5→T01, AC1/2→T02, AC3/4→T03. T01 consumes BW-009 selection, T03 consumes BW-013
+          disclosure. The session example widget supplies no combat UI; no camera subsystem is
+          rebuilt.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="roadmap-bw-012.html">BW-012</a> · preceding domain suites and fixture runner
+        </td>
+        <td>
+          Wire two real clients/controlled target into one action; prove abuse rejection, privacy
+          and late-join/loss recovery.
+        </td>
+        <td>
+          AC1/4→T01, AC2–4→T02. Reuse feature tests and add cross-boundary proof only. Keep
+          BW-008/BW-018 recommended; no persistence or full opening experience required.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="roadmap-bw-083.html">BW-083</a> · connected proof; emulation/fixture facilities
+        </td>
+        <td>
+          Repeatable real moving/action workload with joins/departures and actual telemetry;
+          impairment/bottleneck review.
+        </td>
+        <td>
+          AC1/2→T01, AC3/4→T02. Distinguish wire/payload, server/render time and unavailable durable
+          metrics. Reuse equivalent BW-008 scenarios; no capacity promise or automatic Graph/Iris
+          work.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <h3 id="reuse-review-integrity">Review and validation boundary</h3>
-<p>No parent criterion, gameplay contract, canonical schema, epic dependency or completed record is removed or relaxed. The new ticket dependency edges make actual consumers explicit without serializing independent movement/attribute work behind connectivity. Repeated AC links partition implementation and integrated evidence; they do not assign two implementations of the same rule. BW-003-T05 consumes completed T01 controls and proves only new aggregate failure modes. Future game work must keep identity, sequence, idempotency, private projections and server-authoritative transitions at their established boundaries.</p>
-<p>Routine decomposition uses focused source inspection and applicable retained evidence. Expensive native/peer/Steam/workload tests above are future implementation completion evidence, not prerequisites for generating planning pages. Run documentation generation and the existing FAST/FULL aggregate below; it already checks schema shape, graph ordering, complete parent-criterion coverage, links, search and generated freshness. Documentation validation never upgrades the capability classifications or gameplay progress.</p>
+<p>
+  No parent criterion, gameplay contract, canonical schema, epic dependency or completed record is
+  removed or relaxed. The new ticket dependency edges make actual consumers explicit without
+  serializing independent movement/attribute work behind connectivity. Repeated AC links partition
+  implementation and integrated evidence; they do not assign two implementations of the same rule.
+  BW-003-T05 consumes completed T01 controls and proves only new aggregate failure modes. Future
+  game work must keep identity, sequence, idempotency, private projections and server-authoritative
+  transitions at their established boundaries.
+</p>
+<p>
+  Routine decomposition uses focused source inspection and applicable retained evidence. Expensive
+  native/peer/Steam/workload tests above are future implementation completion evidence, not
+  prerequisites for generating planning pages. Run documentation generation and the existing
+  FAST/FULL aggregate below; it already checks schema shape, graph ordering, complete
+  parent-criterion coverage, links, search and generated freshness. Documentation validation never
+  upgrades the capability classifications or gameplay progress.
+</p>
