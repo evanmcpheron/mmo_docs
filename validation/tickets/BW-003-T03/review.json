@@ -169,5 +169,27 @@
   "generated_view_review": "generated-views.json records actual inspection of the dashboard, foundations, parent, all five tickets, downstream BW-097/BW-095/BW-012, milestones, search and inventory planning metadata. T03 is Complete; parent remains In Progress/Dependency-ready, T05 still lacks T04 and epic completion remains 2/97 (2.1%). These are local generated outputs, not a deployed Pages update.",
   "related_pull_requests": {
     "game": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/12"
+  },
+  "documentation_verification": {
+    "result": "Passed",
+    "tested_revision": "f9b3548b87fe1d9d69dbd19eff3756306fd001d8",
+    "main_revision": "f2e29fcc58ed558de7b021fc3e02deffab2c085e",
+    "requested_mode": "full",
+    "executed_mode": "full",
+    "seconds": 52.373,
+    "aggregate_checks_passed": 243,
+    "browser_checks_passed": 298,
+    "artifacts": [
+      "documentation-full/validation-summary.json",
+      "documentation-full/report.json",
+      "documentation-full/data-inventory-browser-checks.json"
+    ],
+    "commands": [
+      "python3 scripts/build_development_roadmap.py",
+      "python3 scripts/build_data_inventory.py --review-roadmap",
+      "python3 validation/validate.py --mode fast --report-dir validation/tickets/BW-003-T03/documentation-fast",
+      "python3 validation/validate.py --report-dir validation/tickets/BW-003-T03/documentation-full"
+    ],
+    "scope": "Default FULL passes at the recorded documentation revision. The final evidence-only commit adds these reports and review metadata without changing canonical definitions, roadmap source, generated page/search bytes or validator inputs."
   }
 }
