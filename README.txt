@@ -185,10 +185,13 @@ the existing game FULL route. T01 is Complete with 61 native checks, separate ca
 five stage-specific failure controls and clean recovery. Default game FULL
 passes all 32 stages; 37 Python tests and the original seven-test / 3,584-content-
 assertion aggregates pass. Evidence is retained under validation/tickets/BW-003-T01/.
-T02 and T03 are now Complete: seeded context replay/control isolation and correlated
-redacted diagnostics have current native evidence. T04 measurements and T05
-integrated verification remain Not Started. Current evidence is retained under
-validation/tickets/BW-003-T03/.
+All five BW-003 tickets are Complete. T05 joins all four existing suites in two
+independent native aggregates, rejects omitted/failed/stale/foreign/partial child
+evidence and preserves every prerequisite/control/package gate. The current
+default FULL passes all 46 supported stages and 66 Python regressions; each
+aggregate passes 242 native assertions. Current evidence and the parent review
+are retained under validation/tickets/BW-003-T05/. Earlier T01-T04 evidence remains
+historical and applicable to their unchanged native owners.
 The owner selected a local probe with logical recipients and explicitly labeled
 serialized payload bytes; this does not certify connected clients or wire traffic.
 BW-002 has seven tickets, T01 through T07: authority/lifecycle review, canonical
@@ -225,15 +228,17 @@ Complete at the recorded native source identity. Previous dated evidence under
 validation/tickets/BW-002-T01/ through BW-002-T05/ remains historical; current
 review, exact build/runtime/control/package artifacts and limitations are under
 validation/tickets/BW-002-T06/. This certifies content admission, with no production
-gameplay handler or transactional economic authority. BW-003 is In Progress: parent AC1/AC2/AC3 have passing T01/T02/T03 evidence.
-T02 seeded replay/control isolation and T03 correlated redacted diagnostics are Complete.
-T04 measurements and T05 integrated verification remain Not Started. T04 has a complete
-prerequisite; T05 still requires T04. Current native FULL and the parent review
-are in validation/tickets/BW-003-T03/; no connected-peer or production gameplay
-certification is claimed.
-The generated ready list now contains BW-003, BW-018, BW-004, BW-005 and BW-006;
-BW-002 leaves it. Overall progress is 2/97 epics (2.1%). Foundations and all
-milestones remain In Progress. Generated views own readiness/progress calculations.
+gameplay handler or transactional economic authority. BW-003 is Complete after its own four-criterion review and all five tickets.
+Current native aggregates, controls, replay comparison, package isolation and
+BW-001/BW-002 regressions pass at the recorded source/toolchain identity. This
+certifies only the approved finite local probe, logical recipients and serialized
+payload bytes; connected peers, production gameplay, durability and capacity
+remain independent future work.
+The generated ready list now contains BW-097, BW-095, BW-018, BW-004, BW-005 and
+BW-006; BW-003 leaves it. BW-097/BW-095 remain Not Started, while BW-012 still has
+unmet action-system prerequisites. Overall progress is 3/97 epics (3.1%).
+Foundations are 3/6 complete (50%); foundations and all milestones remain
+In Progress. Generated views own readiness/progress calculations.
 
 Before every epic split, read the mandatory reuse assessment in the registry's
 maintenance guidance, published at guide/roadmap-maintenance.html. This applies

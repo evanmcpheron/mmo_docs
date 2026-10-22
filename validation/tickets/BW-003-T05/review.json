@@ -1,0 +1,404 @@
+{
+  "ticket": "BW-003-T05",
+  "result": "Passed",
+  "tested_game_revision": "03f16be061e5f6f1991d1fa86f1d560cda3ab90b",
+  "task_bases": {
+    "game": "9804d8a08cc45b712dd3582adac5d901119c30f8",
+    "documentation": "3f0fa19aead31265032ad48a99fd3c9927aaa4d7"
+  },
+  "native_source_sha256": "fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72",
+  "scope": "Test-only local probe processing ticks; serialized payload bytes for logical test recipients. No wire, database or capacity measurement.",
+  "environment": {
+    "engine": "5.8.3-58210709+++UE5+Release-5.8",
+    "compiler": "21.0.0 (clang-2100.3.34.2)",
+    "cpu": "Apple M2 Max",
+    "os": "27.0",
+    "platform": "MacEditor",
+    "configuration": "Development"
+  },
+  "commands": [
+    "python3 -m unittest discover -s tools -p test_*.py",
+    "python3 tools/validate.py --mode fast --explain",
+    "python3 tools/validate.py --output artifacts/bw-003-t05-final-full"
+  ],
+  "fast_selection": "Plan inspection selected FULL for shared runner inputs. Focused Python/native iteration and default FULL actually executed; no FAST test pass is inferred from --explain.",
+  "native_full": {
+    "result": "Passed",
+    "artifact": "full/validation-summary.json",
+    "stages": 46,
+    "seconds": 967.534,
+    "python_tests": 66,
+    "source_stable": true,
+    "not_run": [
+      "Connected server/two-client, RPC/replication and persistence harnesses are not implemented.",
+      "Shipping, other platforms and the separate Client-only target have no verified procedure.",
+      "Clean/cold builds require removing existing caches or copying the project; neither is authorized.",
+      "Visible packaged-client presentation remains a manual check."
+    ]
+  },
+  "aggregates": {
+    "result": "Passed",
+    "artifacts": [
+      "full/fixture-all/manifest.json",
+      "full/aggregate-recovery/manifest.json"
+    ],
+    "native_assertions_per_aggregate": {
+      "evidence": 61,
+      "context": 82,
+      "diagnostics": 44,
+      "metrics": 55
+    },
+    "independent_child_nonces": true,
+    "deterministic_outcomes_equal": true,
+    "comparison": {
+      "aggregate": "../fixture-all",
+      "deterministic_outcomes_equal": true,
+      "independent_child_nonces": true,
+      "excluded": "Wall-clock/run/scenario/action IDs and processing durations"
+    }
+  },
+  "controls": {
+    "omitted-child": {
+      "result": "Passed: intended rejection observed",
+      "detection": "omitted-child: all: Expected each required suite exactly once, in order",
+      "artifact": "full/aggregate-omitted-child/run.json"
+    },
+    "failed-child": {
+      "result": "Passed: intended rejection observed",
+      "detection": "failed-child: evidence: Child report is not Passed",
+      "artifact": "full/aggregate-failed-child/run.json"
+    },
+    "stale-context": {
+      "result": "Passed: intended rejection observed",
+      "detection": "stale-context: context: Child source or fixture context identity is stale",
+      "artifact": "full/aggregate-stale-context/run.json"
+    },
+    "foreign-context": {
+      "result": "Passed: intended rejection observed",
+      "detection": "foreign-context: context: Native fixture belongs to another owner/world context",
+      "artifact": "full/aggregate-foreign-context/run.json"
+    },
+    "partial-report": {
+      "result": "Passed: intended rejection observed",
+      "detection": "partial-report: metrics: Missing measurement report metadata",
+      "artifact": "full/aggregate-partial-report/run.json"
+    }
+  },
+  "boundary_checks": {
+    "result": "Passed",
+    "checks": 15,
+    "artifact": "boundary-checks.json"
+  },
+  "criteria": {
+    "1": {
+      "result": "Passed",
+      "artifacts": [
+        "full/fixture-all/manifest.json",
+        "boundary-checks.json"
+      ],
+      "summary": "All four fresh native suites and exact current identities are required. Missing/failed/stale/foreign/partial child evidence is rejected separately from startup/load/build failure."
+    },
+    "2": {
+      "result": "Passed",
+      "artifacts": [
+        "full/aggregate-recovery/manifest.json",
+        "full/aggregate-recovery/run.json"
+      ],
+      "summary": "Independent complete aggregate replay passes with correlated actions, actual redaction assertions and raw workload/environment-linked duration/entity/recipient/FIFO measurements."
+    },
+    "3": {
+      "result": "Passed",
+      "artifacts": [
+        "full/validation-summary.json",
+        "boundary-checks.json"
+      ],
+      "summary": "All five new controls reject specifically, reusing the actual T01 assertion control; the other four T01 stage controls still execute once. Fresh aggregate recovery, output preservation and every BW-001/BW-002/package gate pass."
+    },
+    "4": {
+      "result": "Passed",
+      "artifacts": [
+        "review.json"
+      ],
+      "summary": "The parent review maps its own four criteria to actual retained evidence, complete prerequisites and all five children before status reconciliation. Independent downstream work and approved limitations are preserved."
+    }
+  },
+  "parent_review": {
+    "epic": "BW-003",
+    "status": "Complete",
+    "criteria": {
+      "1": {
+        "result": "Passed",
+        "artifacts": [
+          "full/fixture-all/children/evidence/native/fixture-evidence.json",
+          "full/fixture-assertion-failure/run.json"
+        ],
+        "summary": "Executed immutable fixture IDs/specifications, actual admission results and separate real runner/time/revision evidence. Canonical specifications remain unexecuted; 61 native assertions / 59 TestChecks per clean evidence execution."
+      },
+      "2": {
+        "result": "Passed",
+        "artifacts": [
+          "full/fixture-all/children/context/native/fixture-context.json",
+          "full/aggregate-recovery/manifest.json",
+          "full/context-isolation/run.json"
+        ],
+        "summary": "Two independent complete runs reproduce seeded context, ordered acceptance/rejection/effects and reset. Atomic invalid-input controls and actual normal Game/Server launch/binary/decoded-Pak fixture exclusion pass."
+      },
+      "3": {
+        "result": "Passed",
+        "artifacts": [
+          "full/fixture-all/children/diagnostics/shareable-sample.json",
+          "full/diagnostics-redaction-leak/run.json",
+          "full/aggregate-recovery/run.json"
+        ],
+        "summary": "Accepted/rejected/retried actions have exact source/build/content/rules/owner/scenario correlation, one commit, bounded overflow and safe diagnostics. Every retained output is scanned; all four diagnostic controls and fresh recovery pass."
+      },
+      "4": {
+        "result": "Passed",
+        "artifacts": [
+          "full/fixture-all/children/metrics/native/fixture-metrics.json",
+          "full/fixture-all/children/metrics/recomputed-metrics.json"
+        ],
+        "summary": "Actual monotonic processing durations, empty-world entities, unequal logical-recipient UTF-8 serialized payload bytes and FIFO depths retain workload/environment/revision context. Independent recomputation, bounds/empty/reset/tampering controls and recovery pass within the owner-approved local-probe boundary."
+      }
+    },
+    "hard_dependencies": {
+      "BW-001": "Complete",
+      "BW-002": "Complete"
+    },
+    "children": {
+      "BW-003-T01": "Complete",
+      "BW-003-T02": "Complete",
+      "BW-003-T03": "Complete",
+      "BW-003-T04": "Complete",
+      "BW-003-T05": "Complete"
+    },
+    "remaining_integration": [],
+    "limitations": "Finite native test-only local probe, logical recipients and serialized payload bytes. No connected-client, wire-traffic, database, production-gameplay, durability or launch-capacity certification."
+  },
+  "prerequisite_applicability": {
+    "BW-001": "Complete: current Editor/Game/source-Server builds, packages, startup/smoke, inspection, assertion/process/compiler controls and recovery pass.",
+    "BW-002": "Complete: canonical contracts and C++ admission owners are unchanged. The original seven-test aggregate and recovery each execute all 3,584 exact content assertions.",
+    "BW-003-T01": "Complete: actual current evidence, all five stage controls and clean aggregate recovery pass.",
+    "BW-003-T02": "Complete: current seeded replay/reset, invalid-input controls and normal packaged isolation pass.",
+    "BW-003-T03": "Complete: current correlated/redacted actions, all four controls and recovery pass.",
+    "BW-003-T04": "Complete: current raw measurements, 83 independent mutation checks per metric run, both controls and recovery pass."
+  },
+  "review_checklist": {
+    "scope_and_ownership": "Reviewed: only Python suite aggregation/verification, its regressions and requested documentation/tracking changed. Existing native rule, context, evidence, diagnostic and measurement owners remain unchanged.",
+    "maintainability": "Reviewed: the aggregate helper owns report joining/reuse/controls only; each existing suite verifier remains the calculation/rule owner. No new framework, dependency or production abstraction.",
+    "contracts_and_authority": "Reviewed: canonical identifiers, definitions, required/null fields, typed assertion variants and authority boundaries remain unchanged; no partial ValidationReport/ServerMetricRecord is invented.",
+    "cpp_headers_and_assets": "N/A to implementation: no C++, header, reflected type, Actor, Blueprint, map, asset, plugin or configuration changes. Actual native compile/link/automation/package gates still execute.",
+    "networking": "N/A to new behavior: no RPC, replication, durable mutation or transport change. Existing real Game/Server fixture-control/package isolation passes; connectivity remains unimplemented.",
+    "failure_and_lifecycle": "Passed: exact child identity/assertion checks, five attributable aggregate controls, atomic existing native controls, fresh world lifecycle/reset/timeout cleanup and preserved outputs.",
+    "git_and_storage": "Reviewed: clean existing checkouts, task branches from exact fetched main heads; no worktree, clone, project snapshot, cache deletion, auto-stash or unrelated changes.",
+    "warnings": "Passed within reviewed scope: current Game compiler/staging warning set exactly matches T04 (missing MetalShaderConverter include and pre-package staged-build notice); warning-review.json retains the comparison. Native automation passes zero-warning gates. No warning settings/exclusions changed.",
+    "verification": "Default FULL passes every supported automated stage; documentation FULL and PR verification recorded separately."
+  },
+  "historical_iteration": "The first four native suites passed but aggregate loading rejected a Unicode metrics report under a UTF-8 assumption. Byte-based JSON decoding and regression coverage fixed it. Additional reuse review caught comparison of 59 canonical TestChecks against 61 native assertions; the dispatcher was stopped only after its current native child finished, the count boundary was corrected/tested, and the complete final FULL was rerun. Earlier outputs remain historical and are not claimed as current passing FULL evidence.",
+  "completed_at": "2026-10-22T18:29:04.416483+00:00",
+  "log_retention": "artifact-manifest.json binds original/stored bytes; original native JSON and manifest links are intact, logs are losslessly compressed and UTF-8 metric projections accompany originals. Packages remain only in existing game artifact outputs.",
+  "progress": {
+    "overall": {
+      "total": 97,
+      "complete": 3,
+      "percentage": 3.1,
+      "status": "In Progress",
+      "counts": {
+        "Not Started": 94,
+        "In Progress": 0,
+        "Blocked": 0,
+        "Complete": 3
+      }
+    },
+    "ready_epics": [
+      "BW-097",
+      "BW-095",
+      "BW-018",
+      "BW-004",
+      "BW-005",
+      "BW-006"
+    ],
+    "foundations": {
+      "total": 6,
+      "complete": 3,
+      "percentage": 50.0,
+      "status": "In Progress",
+      "counts": {
+        "Not Started": 3,
+        "In Progress": 0,
+        "Blocked": 0,
+        "Complete": 3
+      }
+    },
+    "milestones": {
+      "milestone-foundations": {
+        "total": 6,
+        "complete": 3,
+        "percentage": 50.0,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 3,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      },
+      "milestone-first-action": {
+        "total": 15,
+        "complete": 3,
+        "percentage": 20.0,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 12,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      },
+      "milestone-persistent-character": {
+        "total": 25,
+        "complete": 2,
+        "percentage": 8.0,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 23,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 2
+        }
+      },
+      "milestone-opening": {
+        "total": 46,
+        "complete": 3,
+        "percentage": 6.5,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 43,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      },
+      "milestone-extended-state": {
+        "total": 49,
+        "complete": 3,
+        "percentage": 6.1,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 46,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      },
+      "milestone-roster": {
+        "total": 53,
+        "complete": 3,
+        "percentage": 5.7,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 50,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      },
+      "milestone-services": {
+        "total": 44,
+        "complete": 3,
+        "percentage": 6.8,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 41,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      },
+      "milestone-full-experiences": {
+        "total": 86,
+        "complete": 3,
+        "percentage": 3.5,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 83,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      },
+      "milestone-production": {
+        "total": 97,
+        "complete": 3,
+        "percentage": 3.1,
+        "status": "In Progress",
+        "counts": {
+          "Not Started": 94,
+          "In Progress": 0,
+          "Blocked": 0,
+          "Complete": 3
+        }
+      }
+    },
+    "downstream": {
+      "BW-097": "Not Started",
+      "BW-095": "Not Started",
+      "BW-012": "Not Started"
+    }
+  },
+  "canonical_preservation": {
+    "result": "Passed",
+    "snapshot_byte_identical_to_task_base": true,
+    "snapshot_sha256": "4fbc50ae4bcd3e37c2fec20bc75d833abb465118a443706cd854bc487995e3e7",
+    "canonical_definitions_unchanged": true,
+    "entries": 501,
+    "shared_definitions": 70
+  },
+  "implementation_paths": [
+    "README.md",
+    "docs/runtime-fixtures.md",
+    "tools/check_runtime_fixtures.py",
+    "tools/runtime_fixture_aggregate.py",
+    "tools/test_runtime_fixture_aggregate.py",
+    "tools/test_runtime_fixture_context.py",
+    "tools/test_runtime_fixture_diagnostics.py",
+    "tools/test_runtime_fixture_metrics.py",
+    "tools/test_runtime_fixtures.py",
+    "tools/validate.py"
+  ],
+  "documentation_iteration": {
+    "result": "Passed",
+    "requested_mode": "fast",
+    "executed_mode": "full",
+    "seconds": 109.733,
+    "aggregate_checks": 243,
+    "browser_checks": 298,
+    "python_tests": 100,
+    "summary": "FAST selected FULL and passed before final evidence trimming/review. Default FULL will verify the committed final documentation source.",
+    "artifacts": [
+      "documentation-fast/validation-summary.json",
+      "documentation-fast/report.json",
+      "documentation-fast/data-inventory-browser-checks.json",
+      "documentation-fast-console.log.gz"
+    ]
+  },
+  "main_recheck": {
+    "game": "9804d8a08cc45b712dd3582adac5d901119c30f8",
+    "documentation": "3f0fa19aead31265032ad48a99fd3c9927aaa4d7",
+    "result": "Both freshly fetched authoritative main heads remain at the exact recorded task bases.",
+    "verified_at": "2026-10-22T18:33:41.931698+00:00"
+  },
+  "artifact_integrity_review": {
+    "result": "Passed",
+    "retained_files": 274,
+    "stored_bytes": 7383461,
+    "excluded_task_owned_staging_metadata": 36,
+    "summary": "Every retained stored/raw SHA-256 was rechecked; native manifest artifact hashes remain intact. Only this task-owned copied Xcode/cook/staging metadata was omitted; original game outputs and earlier evidence are preserved."
+  },
+  "generated_view_review": {
+    "result": "Passed",
+    "artifact": "generated-views.json",
+    "checks": 34,
+    "summary": "Actual local hub/foundations/parent/all-five-tickets/dependents/milestones/search/inventory/manifest inspected. Local regeneration is not deployment."
+  }
+}
