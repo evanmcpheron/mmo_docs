@@ -93,6 +93,37 @@ class ModelTests(unittest.TestCase):
         self.rejected_model(registry, 'undefined type reference')
         self.rejected_model(registry, 'inconsistent dependency metadata')
 
+    def test_fixture_catalog_cannot_resolve_a_shipped_reference(self):
+        registry = {
+            'shared_definitions': {},
+            'entries': [
+                {'name': 'Target', 'definition': {'type': 'object', 'properties': {'id': {'type': 'string'}}}},
+                {'name': 'Reference', 'definition': {'type': 'string', 'x-reference': {'target': 'Target'}}},
+            ],
+            'sample_bindings': [
+                {'path': 'shipped.json', 'selector': '/targets/*', 'type': 'Target'},
+                {'path': 'shipped.json', 'selector': '/references/*', 'type': 'Reference'},
+                {'path': 'fixture.json', 'selector': '/targets/*', 'type': 'Target', 'catalog_scope': 'fixture'},
+                {'path': 'fixture.json', 'selector': '/references/*', 'type': 'Reference', 'catalog_scope': 'fixture'},
+            ],
+        }
+        with tempfile.TemporaryDirectory(dir=ROOT / '.git') as directory:
+            root = Path(directory)
+            shipped = root / 'shipped.json'
+            shipped.write_text('{"targets":[{"id":"production"}],"references":["production"]}')
+            (root / 'fixture.json').write_text(
+                '{"targets":[{"id":"example"}],"references":["production","example"]}')
+            self.assertEqual([], sample_errors(registry, root))
+            shipped.write_text('{"targets":[{"id":"production"}],"references":["example"]}')
+            errors = sample_errors(registry, root)
+            self.assertEqual(1, len(errors), errors)
+            self.assertIn('shipped.json', errors[0])
+            self.assertIn('unresolved content identity', errors[0])
+            for scope in ('', None, {}, 'Invalid Scope'):
+                registry['sample_bindings'][2]['catalog_scope'] = scope
+                self.assertTrue(any('invalid sample catalog scope' in error
+                                    for error in sample_errors(registry, root)))
+
     def test_malformed_required_fields_and_untyped_containers_are_rejected(self):
         for schema in ({'type': 'object', 'properties': {}, 'required': ['absent'], 'additionalProperties': False},
                        {'type': 'array'}, {'type': 'object'}):

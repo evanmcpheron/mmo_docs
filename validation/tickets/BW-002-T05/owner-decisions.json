@@ -1,0 +1,47 @@
+{
+  "ticket": "BW-002-T05",
+  "date": "2026-10-21",
+  "source": "Explicit owner selections in this execute-ticket conversation",
+  "decisions": [
+    {
+      "topic": "Material identity",
+      "selected": "Explicit one-to-one material → item mapping",
+      "alternatives": [
+        "Keep material IDs and explicitly reference one ItemDefinition with kind=material",
+        "Unify materials into ItemDefinition with a breaking migration"
+      ],
+      "constraints": [
+        "Preserve existing material and item IDs; equal strings or names never establish identity",
+        "Validate one-to-one mapping, binding and stack-limit agreement"
+      ]
+    },
+    {
+      "topic": "Original salvage basis",
+      "selected": "Actual-consumption lineage and per-unit rounding",
+      "alternatives": [
+        "Immutable actual-consumption lineage and per-unit shares",
+        "Definition-level salvage baseline redefining original materials"
+      ],
+      "constraints": [
+        "Snapshot actual inputs after authorized mastery savings and recipe/content revision",
+        "Use actual alternate recipe; round down per material per output unit",
+        "Preserve shares across trade, split and merge; missing proof disables salvage",
+        "Rare and bound inputs return zero; recrafting retains original basis without counting the old item twice"
+      ]
+    },
+    {
+      "topic": "Admission and migration",
+      "selected": "Explicit classifications/routes and versioned migration",
+      "alternatives": [
+        "Explicit classifications, guaranteed/repeatable routes and new design content version",
+        "Keep contracts unchanged with unresolved decisions"
+      ],
+      "constraints": [
+        "Represent common/rare/earned explicitly; no inferred rarity or safe/zero default",
+        "Keep unknown routes disabled and bound starter assistance nonexportable",
+        "Preserve existing IDs/enum values; document version/migration boundary",
+        "No graph algorithm, production prices or runtime implementation in T05"
+      ]
+    }
+  ]
+}

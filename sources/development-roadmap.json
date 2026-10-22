@@ -277,7 +277,7 @@
       ],
       "status": "In Progress",
       "blockers": [],
-      "ordering_rationale": "2026-10-21: T01-T04 are Complete. Authority review preserves AC1; current 1,284 atomic/static admission checks preserve AC2; T04 unsupported-behavior and independent readiness gates satisfy AC3; rerun 747 compatibility checks preserve AC4. AC5 still needs T05 owner-reviewed material/item identity and original salvage provenance contracts, then T06 complete economic graph admission. T07 full integration remains open; the grouped six-test runner has no economic suite. Parent review is validation/tickets/BW-002-T04/parent-review.json. BW-002 remains In Progress/Dependency-ready, and its downstream epics remain ineligible.",
+      "ordering_rationale": "2026-10-21 T05 review: T01-T05 are Complete. T05 owner decisions resolve material/item identity, actual-consumption per-unit salvage provenance and explicit route inputs under 2.3.0-design. Existing boundary evidence preserves AC1; current native clean/recovery reruns preserve static admission AC2 (1,284 checks), unsupported-behavior/readiness AC3 (756 checks) and compatibility AC4 (747 checks). AC5 still requires T06 complete economic graph admission; T07 integrated economic verification remains open. BW-002 stays In Progress/Dependency-ready; downstream epics remain ineligible. Review: validation/tickets/BW-002-T05/parent-review.json.",
       "verified_evidence": [
         {
           "criteria": [
@@ -6352,14 +6352,14 @@
       "id": "BW-002-T05",
       "parent_epic": "BW-002",
       "title": "Resolve economic identity and salvage provenance contracts",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-002-AC-5"
       ],
       "scope": [
-        "Owner-selected prerequisite on 2026-10-21: resolve the missing economic contracts before implementing the complete graph gate. Review RecipeIngredient.material_id -> MaterialDefinition versus VendorOfferDefinition.item_definition_id and sellback_by_item -> ItemDefinition, and how SalvageRule proves original eligible common inputs when multiple recipes produce one item. Current schemas declare these namespaces separately and have no explicit identity bridge or original-material provenance contract.",
-        "Inspect all economy/item/profession mechanics, associated canonical definitions, catalog examples and consumers. Present precise alternatives for the material/item relationship, provenance across recipe quantities/alternate recipes, common versus rare/bound exclusions and repeatability/guaranteed-route inputs. Obtain explicit owner decisions before changing contract meanings; this ticket does not preselect new fields, IDs, schema names, price values or a graph algorithm.",
-        "After decisions, update only the relevant canonical registry definitions/shared references and associated ordinary mechanics, version/compatibility notes, review issues and finite sample bindings. Preserve stable IDs/encodings; document any explicit migration boundary. Regenerate schema/inventory/roadmap views and run all docs checks. Publish a docs PR and a linked game PR only if game-side snapshots/consumers actually change.",
+        "Owner decisions recorded on 2026-10-21 select a one-to-one MaterialDefinition economic_policy mapping to ItemDefinition(kind=material), immutable actual-consumption lineage with per-unit rounding, and explicit classifications/route declarations under 2.3.0-design. Preserve existing namespaces, IDs and enum encodings; equal strings or names never establish identity.",
+        "Review all economy/item/profession mechanics, contracts, catalog examples and consumers. Extend durable ItemLineageRecord with CraftMaterialProvenance: original recipe/content and independent rules revisions, net consumed material facts after mastery, total output units and equal rational per-unit shares. Preserve the original basis through trade/split/merge/recraft; rare/earned/bound inputs return zero. Missing proof disables salvage.",
+        "Update only the relevant canonical definitions/shared references, ordinary mechanics, compatibility notes, resolved review issue and finite scoped sample bindings. Keep unconfigured prototype routes disabled without guessed mappings, classifications or prices. Refresh the game snapshot content version only; its selected native closure/fingerprints remain unchanged. Publish linked docs/game PRs and regenerate schema/inventory/roadmap outputs.",
         "If required choices remain unanswered, record the exact unresolved decision and keep affected routes disabled; neither T05 nor AC5 becomes Complete. A Fully Defined label on existing structures does not prove this cross-contract graph input is available."
       ],
       "out_of_scope": [
@@ -6427,13 +6427,53 @@
         {
           "label": "Profession output and progression",
           "href": "guide/professions.html"
+        },
+        {
+          "label": "ItemLineageRecord",
+          "href": "guide/data-inventory.html#item-lineage-record"
+        },
+        {
+          "label": "CraftMaterialProvenance",
+          "href": "guide/data-inventory.html#shared-CraftMaterialProvenance"
+        },
+        {
+          "label": "EconomicMaterialPolicy",
+          "href": "guide/data-inventory.html#shared-EconomicMaterialPolicy"
+        },
+        {
+          "label": "EconomicRoutePolicy",
+          "href": "guide/data-inventory.html#shared-EconomicRoutePolicy"
+        },
+        {
+          "label": "Owner decisions and migration",
+          "href": "guide/items.html#economic-contracts-2-3"
         }
       ],
       "manual_test": {
-        "not_applicable": "Contract-resolution work only; no game launch/map is introduced. In DOCS_ROOT inspect decided definitions and finite positive/negative sample bindings, then execute every rebuild/check from README.txt. If a game-side snapshot changes, verify its canonical extraction from GAME_ROOT using the actual T02 command. Graph behavior remains planned and unverified until T06."
+        "not_applicable": "Contract-only ticket; no Actor, map, gameplay handler, graph gate or editor bridge is introduced. From DOCS_ROOT: python3 -m unittest discover -s validation -p test_economic_contracts.py; python3 -m unittest discover -s validation -p test_data_model.py; python3 scripts/build_development_roadmap.py; python3 scripts/build_data_inventory.py --review-roadmap --review-page guide/items.html --review-page guide/crafting-orders.html --review-page guide/professions.html; python3 validation/validate.py --mode fast; python3 validation/validate.py. Inspect owner-decisions.json, contract-samples.json and review.json under validation/tickets/BW-002-T05/. From GAME_ROOT: python3 tools/extract_content_contracts.py --check; python3 tools/validate.py --mode fast (snapshot changes correctly escalate to FULL). Expected: structural positives pass, malformed inputs reject, semantic admission cases remain explicitly Not Executed, and native compatibility remains unchanged. Reset: let owned bounded processes exit; preserve canonical inputs and prior evidence. T06/T07 must execute native economic admission; durable lifecycle behavior remains later work."
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2
+          ],
+          "artifact": "validation/tickets/BW-002-T05/source-review.json",
+          "revision": "docs base e48795bd312109e790dfa62f40a2e70f66e06544 with T05 changes; definitions SHA-256 30e80df478e89a119b9ac899938eb89f4c10a871c825036673374dbed675421a",
+          "result": "Passed",
+          "summary": "Owner selected explicit one-to-one material/item identity, immutable actual-consumption per-unit provenance and explicit economic classifications/route declarations. Reviewed canonical constraints cover alternative recipes, quantities, rare/earned/bound exclusions, zero salvage gold/progress and missing-input disabling. Six focused contract tests pass 22 positive records, 21 structural rejection cases and four arithmetic examples; 12 semantic admission cases remain explicitly Not Executed for T06/T07."
+        },
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "validation/tickets/BW-002-T05/review.json",
+          "revision": "docs base e48795bd312109e790dfa62f40a2e70f66e06544 with T05 changes; definitions SHA-256 30e80df478e89a119b9ac899938eb89f4c10a871c825036673374dbed675421a",
+          "result": "Passed",
+          "summary": "2.3.0-design documents the approved activation/migration boundary while preserving all 501 inventory IDs, existing enum members and byte-identical prototype material/recipe/item payloads. Current canonical sample/model checks pass, including fixture-catalog isolation; generated-output and final FULL evidence is retained with the review. Game snapshot changes only content_version; no economic runtime implementation or pass is implied."
+        }
+      ]
     },
     {
       "id": "BW-002-T06",

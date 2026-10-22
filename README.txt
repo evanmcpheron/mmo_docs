@@ -1,4 +1,4 @@
-MMORPG GAMEPLAY REFERENCE — VERSION 2.2
+MMORPG GAMEPLAY REFERENCE — VERSION 2.3
 Mechanics and architecture reference for a planned Unreal Engine 5 native C++ MMORPG
 
 OPEN THE REFERENCE
@@ -176,9 +176,10 @@ documentation/source review. T02 is Complete with 22-definition canonical extrac
 controls. T03 is Complete with 140 immutable fixtures and 1,284 native atomic/static
 admission checks per clean/recovery run. T04 is Complete with 74 native readiness
 cases / 756 checks, private earned gate evidence and normal-package isolation.
-T05-T07 remain Not Started. T05 resolves
-the missing material/item identity bridge and original salvage provenance before
-T06 implements its graph gate; no new economic fields or price values are assumed.
+T05 is Complete with owner-selected 2.3.0-design contracts for explicit
+material/item mapping, actual per-unit consumption lineage and route declarations.
+T06/T07 remain Not Started; no graph gate, production prices or economic execution
+is certified by these contract changes.
 BW-001-T08 tracks the native bootstrap without reusing retired legacy ticket IDs.
 The owner selected evanmcpheron/BriarwakeUnreal; its task branch includes the supplied
 engineering docs and MultiplayerSessions Steam plugin. Actual Editor/Game builds,
@@ -276,6 +277,17 @@ security/operations contracts, fixture expectations and the first PvP rules.
 Required content parameters remain explicit; a concrete art/map/price record is
 future content production, not an unanswered question about its schema.
 
+The 2.3.0-design economic review preserves existing identifiers/encodings and
+prototype payloads. EconomicMaterialPolicy supplies the one-to-one material/item
+mapping and explicit common/rare/earned and export-restriction metadata.
+CraftMaterialProvenance preserves actual consumed quantities and per-unit shares
+in durable lineage; salvage rounds each material down for each output unit.
+EconomicRoutePolicy declares guaranteed/repeatable behavior without certifying
+admission. Legacy optional absence remains readable but disables affected routes;
+new content requires capability/version review. No production values or historical
+provenance are inferred. See guide/items.html#economic-contracts-2-3 and the
+owner decision record under validation/tickets/BW-002-T05/.
+
 Briarwake targets Unreal Engine 5 native C++, with Blueprint assets used where
 suitable. The dated workspace inspection above records the local starter and
 remaining implementation prerequisites. This phase writes documentation and
@@ -333,6 +345,8 @@ local link/anchor problems, changed source text and generated output drift.
 Every sample binding validates all selected records, including individual ability
 overrides and embedded catalog copies, against the same canonical schema. Typed
 content references are checked against shipped catalogs where those exist.
+Sample bindings with catalog_scope can see shipped identities and their own named
+fixture scope; shipped bindings cannot resolve references through fixture IDs.
 The focused standard-library validator supports exactly the keywords used here;
 it fails on unsupported keywords rather than claiming full JSON Schema support.
 It does not execute textual invariants, symbolic wire encodings or gameplay.

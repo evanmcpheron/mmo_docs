@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "content_version": "2.2.0-design",
+  "content_version": "2.3.0-design",
   "title": "Data Inventory",
   "pages": [
     {
@@ -395,7 +395,7 @@
       "title": "Crafting & commissions",
       "kind": "Feature",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "b7a5ec0912194e2ddf9b0847d01b5bdc61767f89ca0e0860176fadda854a6066",
+      "reviewed_content_sha256": "dc0cb25249b5488e6e63cc04e178e6629fc4be7ef3483ac53f92857d8fa0343c",
       "reviewed_sections": [
         "direct-crafting-lifecycle",
         "customer-commissions",
@@ -501,7 +501,7 @@
       "title": "Equipment & itemization",
       "kind": "Feature",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "cf776ab06f300e86de3a147658e0822e915953447b60fcd04063343765e44f3a",
+      "reviewed_content_sha256": "173c0ae0e0466fa90d1ebc9385792b4b7dcbc8ba0baefbdeb1f5b9371f9c8dbe",
       "reviewed_sections": [
         "equipment-model",
         "explicit-item-budgets",
@@ -510,6 +510,7 @@
         "gems-enchants-and-set-effects",
         "upgrades-and-recrafting",
         "durability-salvage-and-demand",
+        "economic-contracts-2-3",
         "inventory-correctness",
         "acceptance-gates"
       ]
@@ -573,7 +574,7 @@
       "title": "Profession system",
       "kind": "Feature",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "74cb3c5191483fb9aec66beb6635b3abcec781785db804e672d92c58cc946683",
+      "reviewed_content_sha256": "3ae37ebdeeb7db886a73415c5dd40be17c44d271a56c8b4672eef868ad2f44f4",
       "reviewed_sections": [
         "design-objective",
         "profession-slots",
@@ -768,7 +769,7 @@
       "exclusion_reason": "Development planning, dependencies, acceptance criteria and implementation progress; existing feature chapters retain canonical gameplay contracts.",
       "title": "BW-002-T05 · Resolve economic identity and salvage provenance contracts",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "f6bd4ddb95eb3faf2ae31a291eeb8d788ee83bdc2902a56db0f4e49d680edd4f",
+      "reviewed_content_sha256": "f70927c475319b0b8bbd9958af9904ff92aa6469ed24c447fa52ae54f6d77317",
       "reviewed_sections": [
         "scope",
         "dependencies",
@@ -816,7 +817,7 @@
       "exclusion_reason": "Development planning, dependencies, acceptance criteria and implementation progress; existing feature chapters retain canonical gameplay contracts.",
       "title": "BW-002 · Authority boundaries and content admission",
       "review_status": "Reviewed",
-      "reviewed_content_sha256": "074df07cdac4ba3c4f833d581a77bf0d840fcf7e5c9b4aee5eb7d024f59c1e04",
+      "reviewed_content_sha256": "ed37a7d06ba989cbcdd96291447e3f1797c046660f01dd010216798b43d96b65",
       "reviewed_sections": [
         "objective",
         "dependencies",
@@ -3853,6 +3854,40 @@
       ],
       "recommendation": "Use explicit personal equipment-container placement. Equip and unequip carry one versioned item, quantity one, the slot, expected equipment revision and expected destination-container revision. Atomically update canonical ownership and all slot references.",
       "impact": "Equipped items occupy no bag slots. Two-handed occupancy is atomic; insufficient capacity for unequipped or displaced items rejects the whole transaction."
+    },
+    {
+      "id": "economic-identity-and-provenance",
+      "question": "How do material and inventory namespaces resolve, and how does salvage prove original common inputs for alternative recipes and multiple output units?",
+      "entries": [
+        "MaterialDefinition",
+        "ItemDefinition",
+        "RecipeDefinition",
+        "RecipeIngredient",
+        "SalvageRule",
+        "VendorOfferDefinition",
+        "VendorPricingConfiguration",
+        "ItemLineageRecord",
+        "ItemInstance",
+        "CraftSettlementRecord",
+        "CraftJobRecord"
+      ],
+      "references": [
+        "guide/items.html#durability-salvage-and-demand",
+        "guide/crafting-orders.html#direct-crafting-lifecycle",
+        "guide/professions.html#materials-and-old-tier-relevance",
+        "validation/tickets/BW-002-T05/owner-decisions.json"
+      ],
+      "state": "resolved",
+      "alternatives": [
+        "Explicit one-to-one material-to-item mapping with actual-consumption lineage.",
+        "Unify namespaces through a breaking migration and/or redefine salvage against a static definition baseline."
+      ],
+      "recommendation": "Owner selected explicit mapping, immutable actual-consumption shares with per-material/per-unit downward rounding, explicit material classifications and guaranteed/repeatable route declarations. 2.3.0-design preserves IDs/encodings; legacy records remain readable but economically disabled without reviewed metadata/proof.",
+      "impact": "Contract-only resolution. Preserve 55 material prototypes and 257 recipes/items without inventing classifications, prices or bindings. Passive material effects may be absent. Native graph admission remains T06/T07; durable economic lifecycle execution is later work.",
+      "completion_criteria": [
+        "Retained owner selections and reviewed canonical contracts with migration notes and positive/negative structural samples.",
+        "Future implementation: enforce every semantic invariant and execute complete economic graph/lifecycle tests before activation."
+      ]
     }
   ],
   "entries": [
@@ -18585,6 +18620,7 @@
         "guide/economy.html#matching-and-settlement",
         "guide/interface.html#profession-and-market-display",
         "guide/items.html#binding-and-acquisition",
+        "guide/items.html#economic-contracts-2-3",
         "guide/items.html#inventory-correctness",
         "guide/operations.html#guilds-banks-and-communication"
       ],
@@ -18663,7 +18699,8 @@
         "x-invariants": [
           "Globally unique item_id; quantity > 0 for an extant instance. Durability is null for non-durable items.",
           "Definition, binding, grade and all stack-relevant attributes must match before merging. Ownership is one canonical record; consumer views reference this instance.",
-          "Equipped instances have quantity one and canonical equipment-container ownership; equipment views do not embed another mutable instance."
+          "Equipped instances have quantity one and canonical equipment-container ownership; equipment views do not embed another mutable instance.",
+          "Stack-relevant attributes include immutable CraftMaterialProvenance. Durable lineage owns that basis; ItemInstance is a view, not a second writable provenance copy. Trade/split/merge retain per-unit entitlement and inherited starter export restrictions."
         ],
         "x-identity": "See its named identity field; content and runtime identity namespaces never overlap."
       },
@@ -18673,7 +18710,8 @@
         "Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.",
         "Runtime ItemInstance is an authorized view of durable instance/ownership state, not a second writable inventory. grade derives from current definition; binding records the current instance transition, not initial blueprint policy.",
         "Instance version and ownership version identify the same atomic revision; intentionally retained for optimistic ownership validation.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
         "EnhancementInstance",
@@ -18694,6 +18732,7 @@
         "guide/economy.html#matching-and-settlement",
         "guide/interface.html#profession-and-market-display",
         "guide/items.html#binding-and-acquisition",
+        "guide/items.html#economic-contracts-2-3",
         "guide/items.html#inventory-correctness",
         "guide/operations.html#guilds-banks-and-communication"
       ],
@@ -34262,6 +34301,7 @@
       "feature_pages": [
         "guide/crafting-orders.html",
         "guide/interface.html",
+        "guide/items.html",
         "professions/alchemy.html",
         "professions/blacksmithing.html",
         "professions/cooking.html",
@@ -34277,6 +34317,7 @@
       "evidence": [
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "professions/alchemy.html#representative-recipe-blueprints",
         "professions/blacksmithing.html#representative-recipe-blueprints",
         "professions/cooking.html#representative-recipe-blueprints",
@@ -34320,14 +34361,16 @@
         "additionalProperties": false,
         "description": "Craft job record.",
         "x-invariants": [
-          "Stored state decides precommit release/resume and postcommit redelivery. No short offline craft continues without explicit asynchronous type."
+          "Stored state decides precommit release/resume and postcommit redelivery. No short offline craft continues without explicit asynchronous type.",
+          "Retain the accepted recipe_content_version and archive its material mappings/classification. Settlement creates immutable actual-consumption lineage; later recipe or mastery changes never reinterpret the original salvage basis."
         ]
       },
       "responsibility": "persistent record",
       "authority": "durable transactional service",
       "modeling_notes": [
         "Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
         "CraftJob",
@@ -34337,6 +34380,7 @@
       "reviewed_against": [
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "professions/alchemy.html#representative-recipe-blueprints",
         "professions/blacksmithing.html#representative-recipe-blueprints",
         "professions/cooking.html#representative-recipe-blueprints",
@@ -34790,6 +34834,7 @@
       "canonical_page": "guide/crafting-orders.html#settlement-invariants",
       "feature_pages": [
         "guide/crafting-orders.html",
+        "guide/items.html",
         "professions/blacksmithing.html",
         "professions/jewelcrafting.html",
         "professions/leatherworking.html",
@@ -34799,6 +34844,7 @@
       "evidence": [
         "guide/crafting-orders.html#fraud-and-exploit-controls",
         "guide/crafting-orders.html#settlement-invariants",
+        "guide/items.html#economic-contracts-2-3",
         "professions/blacksmithing.html#representative-recipe-blueprints",
         "professions/jewelcrafting.html#representative-recipe-blueprints",
         "professions/leatherworking.html#representative-recipe-blueprints",
@@ -34905,14 +34951,16 @@
         "additionalProperties": false,
         "description": "Craft settlement record.",
         "x-invariants": [
-          "Consume/create/commission/fee/progress each exactly once in one transaction; total currency change equals negative fee. Mastery snapshot documents accepted result."
+          "Consume/create/commission/fee/progress each exactly once in one transaction; total currency change equals negative fee. Mastery snapshot documents accepted result.",
+          "For salvage-eligible crafted output, commit checked material_provenance lineage with actual consumed quantities after mastery savings, recipe content/rules revisions and total output units in the same transaction. No client result or quote alone proves provenance."
         ]
       },
       "responsibility": "persistent record",
       "authority": "durable transactional service",
       "modeling_notes": [
         "Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
         "CharacterRecord",
@@ -34931,6 +34979,7 @@
       "reviewed_against": [
         "guide/crafting-orders.html#fraud-and-exploit-controls",
         "guide/crafting-orders.html#settlement-invariants",
+        "guide/items.html#economic-contracts-2-3",
         "professions/blacksmithing.html#representative-recipe-blueprints",
         "professions/jewelcrafting.html#representative-recipe-blueprints",
         "professions/leatherworking.html#representative-recipe-blueprints",
@@ -41175,6 +41224,7 @@
         "guide/crafting-orders.html#customer-commissions",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/items.html#equipment-model",
         "guide/items.html#explicit-item-budgets",
         "guide/operations.html#content-tools",
@@ -41332,7 +41382,7 @@
               },
               "effect": {
                 "$ref": "#/$defs/ItemEffectDefinition",
-                "description": "Effect."
+                "description": "Optional existing explicit use effect. Passive raw materials need no fabricated operation; an absent effect grants no item-use behavior."
               },
               "grade": {
                 "$ref": "#/$defs/ItemGrade",
@@ -41367,7 +41417,6 @@
             "required": [
               "binding",
               "definition_status",
-              "effect",
               "grade",
               "id",
               "kind",
@@ -41440,14 +41489,17 @@
           }
         ],
         "description": "Existing ItemDefinition record format, preserving every field in the shipped corpus.",
-        "x-invariants": []
+        "x-invariants": [
+          "Every material-kind item participating in economics resolves through exactly one explicit MaterialDefinition economic_policy. Binding and stack_limit agree; grade never determines common/rare/earned classification. Passive material records may omit effect; all existing effect encodings remain unchanged."
+        ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
       "modeling_notes": [
         "Requiredness follows the common fields in all shipped variants, with conditional variant rules added below. This documents the existing snapshot; prose intent does not execute.",
         "Existing keys, representations and content values are preserved; this shape does not certify missing secondary behavior.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
         "EquipmentDefinition",
@@ -41464,6 +41516,7 @@
         "guide/crafting-orders.html#customer-commissions",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/items.html#equipment-model",
         "guide/items.html#explicit-item-budgets",
         "guide/operations.html#content-tools",
@@ -42327,6 +42380,7 @@
       ],
       "evidence": [
         "guide/crafting-orders.html#fraud-and-exploit-controls",
+        "guide/items.html#economic-contracts-2-3",
         "guide/items.html#upgrades-and-recrafting"
       ],
       "definition": {
@@ -42439,6 +42493,18 @@
             },
             "uniqueItems": true,
             "description": "Enhancement instances applied by this committed operation."
+          },
+          "material_provenance": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CraftMaterialProvenance",
+                "description": "Original committed per-unit craft basis."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional legacy field; null means no proved craft basis, never a safe zero-input craft. Required and nonnull for salvage."
           }
         },
         "required": [
@@ -42457,16 +42523,20 @@
         "additionalProperties": false,
         "description": "Item lineage record.",
         "x-invariants": [
-          "Recraft preserves stable item ID and advances version; record old/new definition and enhancement decisions. Append-only provenance; not another item inventory."
+          "Recraft preserves stable item ID and advances version; record old/new definition and enhancement decisions. Append-only provenance; not another item inventory.",
+          "The durable transactional owner records material_provenance atomically with original consumption and output creation, preserving archived recipe/mapping/rules facts after input destruction. It references the original basis on later item versions; no second mutable item ownership is introduced.",
+          "Missing or null basis keeps salvage disabled. Do not backfill from current recipes, equal IDs, names or the cheapest/most expensive alternate recipe; migrate only from retained authoritative original consumption evidence."
         ]
       },
       "responsibility": "persistent record",
       "authority": "durable transactional service",
       "modeling_notes": [
         "Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
+        "CraftMaterialProvenance",
         "DurableContext",
         "EnhancementInstance",
         "Id",
@@ -42479,6 +42549,7 @@
       "definition_extent": "Complete",
       "reviewed_against": [
         "guide/crafting-orders.html#fraud-and-exploit-controls",
+        "guide/items.html#economic-contracts-2-3",
         "guide/items.html#upgrades-and-recrafting"
       ],
       "review_issues": []
@@ -44352,6 +44423,7 @@
         "catalog/recipes.html",
         "guide/crafting-orders.html",
         "guide/interface.html",
+        "guide/items.html",
         "guide/professions.html",
         "professions/alchemy.html",
         "professions/blacksmithing.html",
@@ -44375,6 +44447,7 @@
         "data/materials.json",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/professions.html#fixed-products-specialist-configurations",
         "guide/professions.html#materials-and-old-tier-relevance",
         "professions/alchemy.html#useful-in-every-level-band",
@@ -44424,6 +44497,10 @@
           "stack_limit": {
             "type": "integer",
             "description": "Existing stack limit."
+          },
+          "economic_policy": {
+            "$ref": "#/$defs/EconomicMaterialPolicy",
+            "description": "Optional for reading legacy prototypes; complete policy is mandatory before any material economic route is enabled."
           }
         },
         "required": [
@@ -44436,16 +44513,22 @@
           "stack_limit"
         ],
         "additionalProperties": false,
-        "description": "Existing MaterialDefinition record format, preserving every field in the shipped corpus."
+        "description": "Existing MaterialDefinition record format, preserving every field in the shipped corpus.",
+        "x-invariants": [
+          "Preserve existing material IDs and their namespace. Resolve RecipeIngredient.material_id through economic_policy.item_definition_id for vendor, sellback, inventory and conversion nodes; equal strings/names never establish identity.",
+          "Absent economic_policy means unconfigured and keeps every affected economic route disabled. No class, identity, export eligibility or price is inferred for the existing catalog."
+        ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
       "modeling_notes": [
         "Requiredness follows the common fields in all shipped variants, with conditional variant rules added below. This documents the existing snapshot; prose intent does not execute.",
         "Existing keys, representations and content values are preserved; this shape does not certify missing secondary behavior.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
+        "EconomicMaterialPolicy",
         "ItemBindingState",
         "MaterialFamily",
         "ProfessionBand"
@@ -44456,6 +44539,7 @@
         "data/materials.json",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/professions.html#fixed-products-specialist-configurations",
         "guide/professions.html#materials-and-old-tier-relevance",
         "professions/alchemy.html#useful-in-every-level-band",
@@ -48139,6 +48223,7 @@
         "catalog/recipes.html",
         "guide/crafting-orders.html",
         "guide/interface.html",
+        "guide/items.html",
         "guide/operations.html",
         "guide/professions.html",
         "professions/alchemy.html",
@@ -48159,6 +48244,7 @@
         "guide/crafting-orders.html#customer-commissions",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/operations.html#content-tools",
         "guide/professions.html#fixed-products-specialist-configurations",
         "professions/alchemy.html#representative-recipe-blueprints",
@@ -48233,7 +48319,8 @@
           },
           "output_quantity": {
             "type": "integer",
-            "description": "Existing output quantity."
+            "description": "Existing output quantity.",
+            "minimum": 1
           },
           "profession_id": {
             "description": "Existing profession id.",
@@ -48270,6 +48357,14 @@
           "status": {
             "type": "string",
             "description": "Existing status."
+          },
+          "economic_route": {
+            "$ref": "#/$defs/EconomicRoutePolicy",
+            "description": "Mandatory declaration before enabling this recipe as an economic conversion, independent of recipe_source."
+          },
+          "currency_cost": {
+            "$ref": "#/$defs/CurrencyAmount",
+            "description": "Explicit unavoidable NPC currency cost per recipe execution, including zero; player commissions are transfers, not a guaranteed currency source."
           }
         },
         "required": [
@@ -48294,16 +48389,23 @@
           "status"
         ],
         "additionalProperties": false,
-        "description": "Existing RecipeDefinition record format, preserving every field in the shipped corpus."
+        "description": "Existing RecipeDefinition record format, preserving every field in the shipped corpus.",
+        "x-invariants": [
+          "Economic admission requires economic_route and currency_cost plus all material mappings, complete positive input/output quantities, explicit binding/eligibility and supported deterministic execution. Missing values disable the route; recipe acquisition source does not establish output repeatability.",
+          "output_item_id resolves to ItemDefinition. A material output must have the unique reverse MaterialDefinition mapping. The complete graph accounts for every output_quantity and every authorized mastery configuration/remainder, not just base requirements."
+        ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
       "modeling_notes": [
         "Requiredness follows the common fields in all shipped variants, with conditional variant rules added below. This documents the existing snapshot; prose intent does not execute.",
         "Existing keys, representations and content values are preserved; this shape does not certify missing secondary behavior.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
+        "CurrencyAmount",
+        "EconomicRoutePolicy",
         "Faction",
         "Id",
         "ItemBindingState",
@@ -48324,6 +48426,7 @@
         "guide/crafting-orders.html#customer-commissions",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/operations.html#content-tools",
         "guide/professions.html#fixed-products-specialist-configurations",
         "professions/alchemy.html#representative-recipe-blueprints",
@@ -48351,6 +48454,7 @@
         "catalog/recipes.html",
         "guide/crafting-orders.html",
         "guide/interface.html",
+        "guide/items.html",
         "guide/professions.html",
         "professions/alchemy.html",
         "professions/blacksmithing.html",
@@ -48370,6 +48474,7 @@
         "guide/crafting-orders.html#customer-commissions",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/professions.html#fixed-products-specialist-configurations",
         "professions/alchemy.html#representative-recipe-blueprints",
         "professions/blacksmithing.html#representative-recipe-blueprints",
@@ -48409,14 +48514,18 @@
           "quantity"
         ],
         "additionalProperties": false,
-        "description": "Existing RecipeIngredient record format, preserving every field in the shipped corpus."
+        "description": "Existing RecipeIngredient record format, preserving every field in the shipped corpus.",
+        "x-invariants": [
+          "material_id resolves to MaterialDefinition, then its explicit economic_policy inventory mapping. It never refers directly to an ItemDefinition merely because IDs match. Actual consumption may differ only through authorized snapshotted mastery rules."
+        ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
       "modeling_notes": [
         "Requiredness follows the common fields in all shipped variants, with conditional variant rules added below. This documents the existing snapshot; prose intent does not execute.",
         "Existing keys, representations and content values are preserved; this shape does not certify missing secondary behavior.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "references": [
         "Id",
@@ -48429,6 +48538,7 @@
         "guide/crafting-orders.html#customer-commissions",
         "guide/crafting-orders.html#direct-crafting-lifecycle",
         "guide/interface.html#profession-and-market-display",
+        "guide/items.html#economic-contracts-2-3",
         "guide/professions.html#fixed-products-specialist-configurations",
         "professions/alchemy.html#representative-recipe-blueprints",
         "professions/blacksmithing.html#representative-recipe-blueprints",
@@ -49784,6 +49894,7 @@
       ],
       "evidence": [
         "guide/items.html#durability-salvage-and-demand",
+        "guide/items.html#economic-contracts-2-3",
         "guide/professions.html#materials-and-old-tier-relevance",
         "professions/enchanting.html#purpose-and-interdependence",
         "professions/jewelcrafting.html#purpose-and-interdependence",
@@ -49810,6 +49921,24 @@
               "$ref": "#/$defs/RecipeIngredient"
             },
             "description": "Common material returns."
+          },
+          "economic_route": {
+            "$ref": "#/$defs/EconomicRoutePolicy",
+            "description": "Required before enabling this salvage route."
+          },
+          "provenance_policy": {
+            "const": "actual_consumption_per_unit_v1",
+            "description": "Required versioned salvage basis; missing policy disables salvage."
+          },
+          "gold_return": {
+            "$ref": "#/$defs/CurrencyAmount",
+            "description": "Explicit zero currency output, required for salvage admission.",
+            "const": 0
+          },
+          "profession_progress_units": {
+            "$ref": "#/$defs/Count",
+            "description": "Explicit zero skill-progress output, required for salvage admission.",
+            "const": 0
           }
         },
         "required": [
@@ -49820,17 +49949,24 @@
         "additionalProperties": false,
         "description": "Salvage rule.",
         "x-invariants": [
-          "Destroy original; return at most 25% original eligible common materials, zero rare/bound cores, zero skill XP and gold."
+          "Destroy original; return at most 25% original eligible common materials, zero rare/bound cores, zero skill XP and gold.",
+          "All four admission fields are required before activation although legacy prototype records remain structurally readable without them. common_material_returns is a complete explicit list of per-output-unit upper caps; an empty list is known no returns, never missing configuration.",
+          "Return entries have unique common material IDs and no must_be_customer_owned flag. Resolve every return through the one-to-one inventory mapping; reject rare/earned return declarations. Apply CraftMaterialProvenance actual-input/binding eligibility and its per-unit quarter bound; do not treat the cap as proof of original materials.",
+          "Missing/unknown provenance, unsupported source/version or starter export restriction rejects salvage. Destroy the selected units and commit bounded returns atomically once. Salvage grants zero gold and zero profession progress; no bonus yield or fractional carry applies."
         ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
       "modeling_notes": [
         "Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "review_issues": [],
       "references": [
+        "Count",
+        "CurrencyAmount",
+        "EconomicRoutePolicy",
         "Id",
         "ItemDefinition",
         "RecipeIngredient"
@@ -49838,6 +49974,7 @@
       "definition_extent": "Complete",
       "reviewed_against": [
         "guide/items.html#durability-salvage-and-demand",
+        "guide/items.html#economic-contracts-2-3",
         "guide/professions.html#materials-and-old-tier-relevance",
         "professions/enchanting.html#purpose-and-interdependence",
         "professions/jewelcrafting.html#purpose-and-interdependence",
@@ -54086,7 +54223,8 @@
       "evidence": [
         "guide/character-creation.html#beginner-starting-area",
         "guide/economy.html#sustainable-demand-without-coercion",
-        "guide/items.html#durability-salvage-and-demand"
+        "guide/items.html#durability-salvage-and-demand",
+        "guide/items.html#economic-contracts-2-3"
       ],
       "definition": {
         "type": "object",
@@ -54110,7 +54248,11 @@
           },
           "purchase_price": {
             "$ref": "#/$defs/CurrencyAmount",
-            "description": "Purchase price."
+            "description": "Explicit integer minor-unit price for the entire quantity in this offer."
+          },
+          "economic_route": {
+            "$ref": "#/$defs/EconomicRoutePolicy",
+            "description": "Required explicit availability/outcome declaration before vendor purchase activation."
           }
         },
         "required": [
@@ -54122,18 +54264,21 @@
         "additionalProperties": false,
         "description": "Vendor offer definition.",
         "x-invariants": [
-          "Explicit available vendor item/quantity/price. Crafted sellback < guaranteed NPC input purchase cost to prevent loops."
+          "Explicit available vendor item/quantity/price. Crafted sellback < guaranteed NPC input purchase cost to prevent loops.",
+          "purchase_price is integer minor units for the entire offered quantity, not per unit. Admission requires economic_route, an existing item identity and a complete material mapping where applicable. Missing price or availability never defaults to zero, infinite or safe."
         ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
       "modeling_notes": [
         "Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "review_issues": [],
       "references": [
         "CurrencyAmount",
+        "EconomicRoutePolicy",
         "Id",
         "ItemDefinition"
       ],
@@ -54141,7 +54286,8 @@
       "reviewed_against": [
         "guide/character-creation.html#beginner-starting-area",
         "guide/economy.html#sustainable-demand-without-coercion",
-        "guide/items.html#durability-salvage-and-demand"
+        "guide/items.html#durability-salvage-and-demand",
+        "guide/items.html#economic-contracts-2-3"
       ]
     },
     {
@@ -54159,7 +54305,8 @@
       "evidence": [
         "guide/character-creation.html#beginner-starting-area",
         "guide/economy.html#sustainable-demand-without-coercion",
-        "guide/items.html#durability-salvage-and-demand"
+        "guide/items.html#durability-salvage-and-demand",
+        "guide/items.html#economic-contracts-2-3"
       ],
       "definition": {
         "type": "object",
@@ -54173,7 +54320,15 @@
             "additionalProperties": {
               "$ref": "#/$defs/CurrencyAmount"
             },
-            "description": "Sellback by item."
+            "description": "Sellback by item.",
+            "propertyNames": {
+              "$ref": "#/$defs/Id",
+              "description": "Item definition receiving this explicit per-unit sellback price.",
+              "x-reference": {
+                "target": "ItemDefinition",
+                "kind": "content"
+              }
+            }
           },
           "repair_pricing_rule_id": {
             "const": "proportional_missing_durability_v1",
@@ -54182,6 +54337,10 @@
           "repair_pricing": {
             "$ref": "#/$defs/RepairPricingRule",
             "description": "Complete repair quote formula parameters."
+          },
+          "sellback_route": {
+            "$ref": "#/$defs/EconomicRoutePolicy",
+            "description": "Required declaration for configured vendor sellback edges; an explicit empty table has no sellback edges."
           }
         },
         "required": [
@@ -54195,26 +54354,32 @@
         "x-invariants": [
           "For positive missing durability, cost = max(minimum_nonzero_cost, ceil(purchase_value * full_repair_fraction * missing_percentage_points / 100)); an undamaged item costs zero. Every factor is server-quoted explicit content. Unknown purchase/repair value rejects a quote rather than treating it as zero.",
           "Vendor sellback tables are explicit integer minor-unit values. Crafted sellback must stay below guaranteed NPC input purchase cost, and conversion graphs must conserve value after salvage. No NPC price is inferred from player market listings.",
-          "NPC repairs remain available; starter assistance is bound/nonexportable and cannot create tradable materials, salvage output or currency. Concrete per-item price tables remain future content production."
+          "NPC repairs remain available; starter assistance is bound/nonexportable and cannot create tradable materials, salvage output or currency. Concrete per-item price tables remain future content production.",
+          "sellback_by_item keys resolve to ItemDefinition; values are minor units per individual item unit. Each enabled sellback requires an explicit entry (zero is valid when stated) and sellback_route. Absence is unavailable, not zero. Material entries resolve the same one-to-one mapping as buys and recipes.",
+          "Reject export-restricted starter supplies and all products derived from them for currency sellback. Existing binding/transfer eligibility still applies. No player-market quote supplies a guaranteed NPC price."
         ]
       },
       "responsibility": "static content",
       "authority": "versioned content package",
       "modeling_notes": [
         "Field composition is a structural modeling inference from the linked requirements; no new gameplay behavior or balance is implied.",
-        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references."
+        "All associated feature pages and linked sections were cross-referenced for this definition; related contracts are listed in references.",
+        "BW-002-T05 owner selections (2026-10-21): explicit identity, actual per-unit provenance and versioned route declarations. Economic metadata is optional only for legacy inspection; missing admission inputs disable affected routes. Native admission remains T06/T07; durable economic execution is later work."
       ],
       "review_issues": [],
       "references": [
         "CurrencyAmount",
+        "EconomicRoutePolicy",
         "Id",
+        "ItemDefinition",
         "RepairPricingRule"
       ],
       "definition_extent": "Complete",
       "reviewed_against": [
         "guide/character-creation.html#beginner-starting-area",
         "guide/economy.html#sustainable-demand-without-coercion",
-        "guide/items.html#durability-salvage-and-demand"
+        "guide/items.html#durability-salvage-and-demand",
+        "guide/items.html#economic-contracts-2-3"
       ]
     },
     {
@@ -57802,6 +57967,181 @@
         "All wallet debits use spendable = canonical balance minus the sum of held lock amounts. A reservation moves no money; consumption performs the real ledger debit once, and release performs no credit. Lock changes increment the wallet revision atomically with request/receipt state.",
         "An active buyer request lock equals remaining_quantity times accepted unit_price and has the same expiry. Filled/cancelled/expired requests leave no held funds. Repeated receipts never consume or release another lock."
       ]
+    },
+    "EconomicMaterialClass": {
+      "type": "string",
+      "enum": [
+        "common",
+        "rare",
+        "earned"
+      ],
+      "description": "Explicit economic input classification, independent of ItemGrade, MaterialFamily and display color. Only common inputs can be eligible for salvage or mastery savings."
+    },
+    "EconomicMaterialPolicy": {
+      "type": "object",
+      "properties": {
+        "item_definition_id": {
+          "$ref": "#/$defs/Id",
+          "description": "The unique inventory definition for this material; it must have kind=material.",
+          "x-reference": {
+            "target": "ItemDefinition",
+            "kind": "content"
+          }
+        },
+        "classification": {
+          "$ref": "#/$defs/EconomicMaterialClass",
+          "description": "Author-reviewed class; never inferred from source prose or grade."
+        },
+        "export_restricted": {
+          "type": "boolean",
+          "description": "True for nonexportable starter assistance; its downstream products cannot be traded, vendored for currency or salvaged into materials."
+        }
+      },
+      "required": [
+        "item_definition_id",
+        "classification",
+        "export_restricted"
+      ],
+      "additionalProperties": false,
+      "description": "Admission metadata for one material; absence means unresolved, not common or unrestricted.",
+      "x-invariants": [
+        "Mapping is one-to-one within the complete admitted catalog. The target must exist, have kind=material, and agree with MaterialDefinition binding and stack_limit. Every enabled material ItemDefinition has exactly one reverse mapping.",
+        "Character/account-bound consumed inputs and rare/earned inputs are ineligible for salvage and common-material mastery savings regardless of export_restricted. Starter assistance is bound and export_restricted=true; its restriction propagates to every derived product and recraft."
+      ]
+    },
+    "EconomicRoutePolicy": {
+      "type": "object",
+      "properties": {
+        "guaranteed": {
+          "type": "boolean",
+          "description": "True only for a deterministic declared outcome once its authoritative inputs and eligibility hold; randomness is not a guaranteed outcome."
+        },
+        "repeatable": {
+          "type": "boolean",
+          "description": "True when the route has no finite lifetime quota; channels, cooldowns and ordinary replenishing stock do not make it finite."
+        }
+      },
+      "required": [
+        "guaranteed",
+        "repeatable"
+      ],
+      "additionalProperties": false,
+      "description": "Explicit route declaration, not an admission result or permission to activate.",
+      "x-invariants": [
+        "An enabled economic route requires both declarations plus every typed input/output, quantity, price, cost and provenance rule. Missing fields reject admission; false never means zero risk.",
+        "The initial complete guaranteed/repeatable graph gate supports only guaranteed=true and repeatable=true routes. False declarations remain disabled until a separate bounded/stochastic-source contract and admission proof exists; never omit them from an enabled graph.",
+        "Check every selected vendor buy/sell, recipe/conversion and salvage edge together, including alternative recipes, reachable mastery savings/remainders and all output units. No production graph is certified by a declaration or structural sample."
+      ]
+    },
+    "ConsumedMaterialBasis": {
+      "type": "object",
+      "properties": {
+        "material_id": {
+          "$ref": "#/$defs/Id",
+          "description": "Consumed material namespace, resolved at the committed recipe revision.",
+          "x-reference": {
+            "target": "MaterialDefinition",
+            "kind": "content"
+          }
+        },
+        "item_definition_id": {
+          "$ref": "#/$defs/Id",
+          "description": "Resolved inventory identity from the reviewed one-to-one material mapping.",
+          "x-reference": {
+            "target": "ItemDefinition",
+            "kind": "content"
+          }
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Actual units irreversibly consumed in this recipe execution after authorized savings; never quoted gross requirements."
+        },
+        "classification": {
+          "$ref": "#/$defs/EconomicMaterialClass",
+          "description": "Classification snapshotted from that committed content revision."
+        },
+        "binding": {
+          "$ref": "#/$defs/ItemBindingState",
+          "description": "Actual consumed instance binding, not just its initial definition policy."
+        },
+        "export_restricted": {
+          "type": "boolean",
+          "description": "Committed input restriction; never cleared by crafting, recrafting, trade or version changes."
+        }
+      },
+      "required": [
+        "material_id",
+        "item_definition_id",
+        "quantity",
+        "classification",
+        "binding",
+        "export_restricted"
+      ],
+      "additionalProperties": false,
+      "description": "Immutable material facts retained after consumed instances disappear.",
+      "x-invariants": [
+        "Only the durable transactional owner creates this snapshot from checked reservations and committed consumption. It must reconcile exactly with ItemLineageRecord.consumed_items and the settlement; clients cannot supply authoritative provenance.",
+        "Aggregate identical material/item/class/binding/restriction tuples exactly once. Distinct binding or restriction rows remain distinct. Unknown mappings, mismatched identities or inconsistent snapshots prevent economic use."
+      ]
+    },
+    "CraftMaterialProvenance": {
+      "type": "object",
+      "properties": {
+        "operation_key": {
+          "$ref": "#/$defs/Id",
+          "description": "Original committed craft operation key, retained when a later lineage event references this basis."
+        },
+        "recipe_id": {
+          "$ref": "#/$defs/Id",
+          "description": "Actual recipe used, including an alternate recipe; never selected by reverse output lookup.",
+          "x-reference": {
+            "target": "RecipeDefinition",
+            "kind": "content"
+          }
+        },
+        "recipe_content_version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Immutable recipe and mapping content revision; archive it rather than resolving against the current package."
+        },
+        "rules_version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Independent committed rules revision governing savings and eligibility; not a database or content revision."
+        },
+        "output_quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total units produced by this execution, including every declared output; each unit receives an equal rational share."
+        },
+        "consumed_materials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConsumedMaterialBasis",
+            "description": "One aggregated consumed-material tuple."
+          },
+          "minItems": 1,
+          "description": "Complete actual consumed material snapshot for the original execution."
+        }
+      },
+      "required": [
+        "operation_key",
+        "recipe_id",
+        "recipe_content_version",
+        "rules_version",
+        "output_quantity",
+        "consumed_materials"
+      ],
+      "additionalProperties": false,
+      "description": "Original craft basis owned by durable append-only item lineage, not a second inventory.",
+      "x-invariants": [
+        "For material m, sum quantities only of common, not character/account-bound, unrestricted rows. Per-unit share is that sum divided by output_quantity, with no intermediate rounding. Salvage per material per output unit is min(the declared per-unit return cap, floor(eligible_consumed_quantity / (4 * output_quantity))). Sum already-rounded unit returns; never round an entire stack or carry salvage fractions.",
+        "Each result unit receives this same per-unit basis, and committed result quantities sum exactly to output_quantity. Extra/mastery outputs cannot reuse a full-batch basis; output bonuses do not apply to bonus or salvaged outputs. Empty/missing provenance does not establish zero cost or permission to salvage.",
+        "Trade and split preserve the basis. Merge only units with identical immutable provenance as well as existing stack attributes; different recipe executions/bases remain separate. No trade, split, merge or retry increases entitlement.",
+        "Recraft, upgrade and enhancement events retain the original basis unchanged. Their additional inputs stay in their own audited consumed_items but do not enlarge salvage entitlement; the old item is never counted as new raw material. Noncrafted or legacy items without proved original consumption remain unsalvageable.",
+        "Any export_restricted input makes every resulting unit nonexportable and non-salvageable, even when another input is unrestricted. Bound finished gear alone does not make unrelated original common inputs bound; the consumed-input binding decides eligibility."
+      ]
     }
   },
   "sample_bindings": [
@@ -57979,6 +58319,60 @@
       "path": "data/abilities.json",
       "selector": "/*/execution/effects/*",
       "type": "EffectOperationDefinition"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/MaterialDefinition/*",
+      "type": "MaterialDefinition",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/ItemDefinition/*",
+      "type": "ItemDefinition",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/RecipeDefinition/*",
+      "type": "RecipeDefinition",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/CraftMaterialProvenance/*",
+      "type": "CraftMaterialProvenance",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/ItemLineageRecord/*",
+      "type": "ItemLineageRecord",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/SalvageRule/*",
+      "type": "SalvageRule",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/VendorOfferDefinition/*",
+      "type": "VendorOfferDefinition",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/VendorPricingConfiguration/*",
+      "type": "VendorPricingConfiguration",
+      "catalog_scope": "bw-002-t05-fixtures"
+    },
+    {
+      "path": "validation/tickets/BW-002-T05/contract-samples.json",
+      "selector": "/valid/EconomicRoutePolicy/*",
+      "type": "EconomicRoutePolicy",
+      "catalog_scope": "bw-002-t05-fixtures"
     }
   ],
   "initial_inventory_counts": {
