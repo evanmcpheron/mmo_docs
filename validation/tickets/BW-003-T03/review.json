@@ -1,0 +1,195 @@
+{
+  "ticket": "BW-003-T03",
+  "completed_at": "2026-10-22T16:34:18.961895+00:00",
+  "game_revision": "09ba34772796c1d38e21eb665a614a752cbb2642",
+  "source_sha256": "73b7777eda9f9a7dce8cf4cf801ad8e9f32ca6e47d778eb94bf939674afeb5e1",
+  "source_file_count": 86,
+  "game_main_revision": "4daa408d776516a5a1339af21cb423cb4adf2c2b",
+  "docs_main_revision": "f2e29fcc58ed558de7b021fc3e02deffab2c085e",
+  "tested_input_identity": "Native executions began from game main 4daa408d776516a5a1339af21cb423cb4adf2c2b plus the task worktree. Every retained source-file hash matches the committed implementation above; Git-only delivery does not change native inputs.",
+  "environment": {
+    "engine": {
+      "MajorVersion": 5,
+      "MinorVersion": 8,
+      "PatchVersion": 3,
+      "Changelist": 58210709,
+      "CompatibleChangelist": 55116800,
+      "IsLicenseeVersion": 0,
+      "IsPromotedBuild": 1,
+      "BranchName": "++UE5+Release-5.8"
+    },
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "os": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.14.0",
+    "engine_root": "/Users/Shared/Epic Games/UE_5.8",
+    "installed_engine": true,
+    "engine_source_revision": null
+  },
+  "commands": [
+    "python3 -m unittest discover -s tools -p test_*.py",
+    "python3 tools/extract_content_contracts.py",
+    "python3 tools/check_baseline.py build --output artifacts/bw-003-t03-final-editor-build",
+    "python3 tools/check_runtime_fixtures.py --suite diagnostics --output artifacts/bw-003-t03-strict-diagnostics",
+    "python3 tools/validate.py --mode fast --explain",
+    "python3 tools/validate.py --mode fast --output artifacts/bw-003-t03-final-full"
+  ],
+  "full_result": {
+    "result": "Passed",
+    "artifact": "full/validation-summary.json",
+    "requested_mode": "fast",
+    "executed_mode": "FULL",
+    "checks": 43,
+    "python_tests": 51,
+    "seconds": 785.673
+  },
+  "ticket_criteria": {
+    "1": {
+      "result": "Passed",
+      "artifacts": [
+        "full/diagnostics/native/fixture-diagnostics.json",
+        "full/diagnostics-recovery/native/fixture-diagnostics.json"
+      ],
+      "summary": "Two native epoch scenarios each commit one attributed non-economic effect. Retry before/after commitment changes no effect count. Private, hostile, oversized, unknown-action and foreign run/epoch input reject with explicit safe reasons. Ordered decisions/effects and canonical idempotency with null receipt are independently verified."
+    },
+    "2": {
+      "result": "Passed",
+      "artifacts": [
+        "full/diagnostics/shareable-sample.json",
+        "full/diagnostics/run.json",
+        "full/diagnostics-missing-correlation/run.json",
+        "full/diagnostics-foreign-correlation/run.json",
+        "full/diagnostics-forged-commit/run.json"
+      ],
+      "summary": "Every shareable observation has exact actual run/scenario/action/source/engine/content/rules/world/owner/tick/time context. 41 corruptions of actual reports reject, including every missing/foreign field, extra private field, missing/forged commit, duplicate effect and mixed scenario. Three explicit correlation controls fail for the exact intended verifier reason."
+    },
+    "3": {
+      "result": "Passed",
+      "artifacts": [
+        "full/diagnostics/run.json",
+        "full/diagnostics-redaction-leak/run.json",
+        "artifact-manifest.json"
+      ],
+      "summary": "All eight retained native/automation/log/stdout-stderr/sample/wrapper surfaces pass UTF-8/16/32 synthetic-sentinel scans. The planted-leak control detects a sentinel only in memory and retains no leak. 128-character correlation bounds and 12-record output bounds are exercised; 32 actual rejections expose 20 dropped diagnostics without effects or queue mutation. Required/null/invalid idempotency fields and invalid/oversized correlation inputs are tested. All retained runtime artifacts, including wrapper stage logs, are independently scanned before copying."
+    }
+  },
+  "native_assertions_per_clean_run": 44,
+  "report_mutations_per_run": 41,
+  "controls": {
+    "missing-correlation": {
+      "result": "Passed: intended verifier rejection observed",
+      "artifact": "full/diagnostics-missing-correlation/run.json",
+      "detection": "Missing or foreign diagnostic correlation or forged commit"
+    },
+    "foreign-correlation": {
+      "result": "Passed: intended verifier rejection observed",
+      "artifact": "full/diagnostics-foreign-correlation/run.json",
+      "detection": "Missing or foreign diagnostic correlation or forged commit"
+    },
+    "forged-commit": {
+      "result": "Passed: intended verifier rejection observed",
+      "artifact": "full/diagnostics-forged-commit/run.json",
+      "detection": "Missing or foreign diagnostic correlation or forged commit"
+    },
+    "redaction-leak": {
+      "result": "Passed: intended verifier rejection observed",
+      "artifact": "full/diagnostics-redaction-leak/run.json",
+      "detection": "Private sentinel detected"
+    }
+  },
+  "cross_process_comparison": {
+    "result": "Passed",
+    "distinct_nonces": true,
+    "all_scenario_effects_equal": true
+  },
+  "canonical_preservation": {
+    "result": "Passed",
+    "prior_definitions_unchanged": 92,
+    "sample_bindings_unchanged": true,
+    "added_reference_closure": [
+      "CastPhase",
+      "CombatResult",
+      "CooldownState",
+      "FixtureAssertion",
+      "ResourcePoolState",
+      "TalentValidationResult"
+    ],
+    "metadata_support": "The existing canonical text-only x-identity annotation is accepted as descriptive metadata by the extractor/native reader, rejecting a non-string annotation. No runtime identity rule or other assertion-variant gameplay is implemented."
+  },
+  "prerequisite_applicability": {
+    "BW-001": "Complete; current FULL rebuilds/links Editor, Game and pinned source-Server, cooks both packages and verifies normal startup, baseline/rejection controls and package/control isolation.",
+    "BW-002": "Complete; all 92 prior definitions and sample bindings preserved. Existing seven-test aggregate/recovery retains 3584 native content assertions. Annotation support changes no gameplay/admission rule.",
+    "BW-003-T01": "Complete; existing evidence suite, all five stage controls and recovery pass current FULL.",
+    "BW-003-T02": "Complete; existing 82-check context suite, both atomic rejection controls/recovery and actual packaged Game/Server control exclusion pass current FULL."
+  },
+  "parent_review": {
+    "epic": "BW-003",
+    "status": "In Progress",
+    "criterion_1": "Passed: current T01 executions and applicable retained evidence.",
+    "criterion_2": "Passed: current T02 replay/reset and packaged control-isolation executions.",
+    "criterion_3": "Passed: T03 current native correlated/redacted decisions, effects, controls and recovery.",
+    "criterion_4": "Unimplemented: BW-003-T04 workload-linked duration/entity/logical-recipient payload/queue measurements.",
+    "integration": "BW-003-T05 remains Not Started and still depends on incomplete T04; the fixture --suite all and integrated four-criterion review are unimplemented.",
+    "children": {
+      "BW-003-T01": "Complete",
+      "BW-003-T02": "Complete",
+      "BW-003-T03": "Complete",
+      "BW-003-T04": "Not Started",
+      "BW-003-T05": "Not Started"
+    },
+    "readiness": "BW-003 remains In Progress/Dependency-ready. T04 retains complete T02 prerequisite. T05 now has T03 complete but still lacks T04. BW-097/BW-095/BW-012 remain Not Started with BW-003 unmet. Overall epic completion remains 2/97 (2.1%); foundations and milestones remain In Progress."
+  },
+  "review_checklist": {
+    "scope_ownership": "Passed: same finite test probe and evidence writer; no new gameplay authority, production diagnostic framework or canonical contract edits. FFixtureQueuedEffect adds attribution to the existing pending queue, with no second commit owner.",
+    "cpp_contracts_lifecycle": "Passed: self-contained declaration-only headers, typed steps/queue, editor/dev guards, bounded inputs/state, transient UWorld destruction/GC and matching compile/link. No header logic or new comments.",
+    "security": "Passed within approved local scope: safe allowlisted projection excludes private input, validates bounded correlation, rejects foreign retry contexts, exposes dropped records, verifies sentinels and corruption controls. No RPC, reflection/console registration or production session/economic payload.",
+    "assets_reflection": "N/A: no reflected types, binary assets, maps or Blueprint changes; actual package startup and transient world lifecycle execute.",
+    "verification_delivery": "Passed native FULL and source stability. Git branches start at fetched exact main in existing checkouts; only task files are staged. Documentation FULL and final main recheck are recorded separately.",
+    "warnings": "Editor/source-Server builds have no compiler warnings. Game build retains the pre-existing missing MetalShaderConverter include directory warning. Native automation reports have zero warnings. Expected missing/invalid configuration controls retain the pre-existing PCG ConverterRegistry.Find shutdown ensure; positive diagnostics, isolation and server smoke pass. No warning settings or exclusions changed."
+  },
+  "not_run": [
+    "Connected server/two-client, RPC/replication and persistence harnesses are not implemented.",
+    "Shipping, other platforms and the separate Client-only target have no verified procedure.",
+    "Clean/cold builds require removing existing caches or copying the project; neither is authorized.",
+    "Visible packaged-client presentation remains a manual check."
+  ],
+  "historical_iteration": "An initial FAST invocation selected FULL and was stopped before later runtime stages when the missing FixtureAssertion closure was identified. Canonical extraction then rejected its existing x-identity annotation; narrow string-only annotation support was added. The first default FULL passed but review found that Unreal convenience readers coerce scalar types. Explicit JSON type guards and four native coercion regressions were added; The expanded diagnostic run initially failed because the wrong test loop was extended: unchanged valid idempotency records were incorrectly asserted invalid; no production assertion was weakened. The idempotency loop was restored to its four real cases and the correlation loop expanded to its eight real cases. The diagnostic wrapper also now labels completed failed native assertions as Executed/Failed, retaining their real reports; corrected recovery passes; final FAST selects the complete FULL plan at the corrected source identity and supersedes both prior iterations; no interrupted aggregate is claimed as a pass.",
+  "limitations": "Finite native local non-economic probe only. No production command/session/log transport, connected clients, wire bytes, database/persistence, measurements or capacity certification. Fixture tick is the pinned initial context tick; time is controlled fixture time, not production simulation scheduling.",
+  "log_retention": "Raw logs are retained losslessly as .log.gz; artifact-manifest.json binds original/compressed hashes. Packages remain in GAME_ROOT/artifacts; no project copies or caches are removed.",
+  "artifact_integrity_review": {
+    "result": "Passed",
+    "verified_artifacts": 251,
+    "summary": "Every retained runtime artifact matches its original/compressed SHA-256 and passes the synthetic-sentinel scan after lossless decompression, including wrapper stdout/stderr stage logs."
+  },
+  "main_recheck": {
+    "game": "4daa408d776516a5a1339af21cb423cb4adf2c2b",
+    "documentation": "f2e29fcc58ed558de7b021fc3e02deffab2c085e",
+    "result": "Both fetched remote main heads unchanged before delivery; task branches start at these exact heads."
+  },
+  "generated_view_review": "generated-views.json records actual inspection of the dashboard, foundations, parent, all five tickets, downstream BW-097/BW-095/BW-012, milestones, search and inventory planning metadata. T03 is Complete; parent remains In Progress/Dependency-ready, T05 still lacks T04 and epic completion remains 2/97 (2.1%). These are local generated outputs, not a deployed Pages update.",
+  "related_pull_requests": {
+    "game": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/12"
+  },
+  "documentation_verification": {
+    "result": "Passed",
+    "tested_revision": "f9b3548b87fe1d9d69dbd19eff3756306fd001d8",
+    "main_revision": "f2e29fcc58ed558de7b021fc3e02deffab2c085e",
+    "requested_mode": "full",
+    "executed_mode": "full",
+    "seconds": 52.373,
+    "aggregate_checks_passed": 243,
+    "browser_checks_passed": 298,
+    "artifacts": [
+      "documentation-full/validation-summary.json",
+      "documentation-full/report.json",
+      "documentation-full/data-inventory-browser-checks.json"
+    ],
+    "commands": [
+      "python3 scripts/build_development_roadmap.py",
+      "python3 scripts/build_data_inventory.py --review-roadmap",
+      "python3 validation/validate.py --mode fast --report-dir validation/tickets/BW-003-T03/documentation-fast",
+      "python3 validation/validate.py --report-dir validation/tickets/BW-003-T03/documentation-full"
+    ],
+    "scope": "Default FULL passes at the recorded documentation revision. The final evidence-only commit adds these reports and review metadata without changing canonical definitions, roadmap source, generated page/search bytes or validator inputs."
+  }
+}

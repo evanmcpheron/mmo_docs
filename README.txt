@@ -172,8 +172,10 @@ the existing game FULL route. T01 is Complete with 61 native checks, separate ca
 five stage-specific failure controls and clean recovery. Default game FULL
 passes all 32 stages; 37 Python tests and the original seven-test / 3,584-content-
 assertion aggregates pass. Evidence is retained under validation/tickets/BW-003-T01/.
-T02 is now eligible; T02 through T05 remain Not Started. Context, diagnostics,
-metrics and the integrated fixture aggregate remain unimplemented.
+T02 and T03 are now Complete: seeded context replay/control isolation and correlated
+redacted diagnostics have current native evidence. T04 measurements and T05
+integrated verification remain Not Started. Current evidence is retained under
+validation/tickets/BW-003-T03/.
 The owner selected a local probe with logical recipients and explicitly labeled
 serialized payload bytes; this does not certify connected clients or wire traffic.
 BW-002 has seven tickets, T01 through T07: authority/lifecycle review, canonical
@@ -210,11 +212,11 @@ Complete at the recorded native source identity. Previous dated evidence under
 validation/tickets/BW-002-T01/ through BW-002-T05/ remains historical; current
 review, exact build/runtime/control/package artifacts and limitations are under
 validation/tickets/BW-002-T06/. This certifies content admission, with no production
-gameplay handler or transactional economic authority. BW-003 is In Progress: parent AC1/AC2 have passing T01/T02 evidence.
-T02 seeded replay, atomic rejection/reset and packaged control isolation are Complete;
-T03 diagnostics, T04 measurements and T05 integrated verification remain unimplemented.
-T03/T04 now have complete prerequisites. Retained native FULL and the parent review
-are in validation/tickets/BW-003-T02/; no connected-peer or production gameplay
+gameplay handler or transactional economic authority. BW-003 is In Progress: parent AC1/AC2/AC3 have passing T01/T02/T03 evidence.
+T02 seeded replay/control isolation and T03 correlated redacted diagnostics are Complete.
+T04 measurements and T05 integrated verification remain Not Started. T04 has a complete
+prerequisite; T05 still requires T04. Current native FULL and the parent review
+are in validation/tickets/BW-003-T03/; no connected-peer or production gameplay
 certification is claimed.
 The generated ready list now contains BW-003, BW-018, BW-004, BW-005 and BW-006;
 BW-002 leaves it. Overall progress is 2/97 epics (2.1%). Foundations and all
