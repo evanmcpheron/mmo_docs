@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-003-T04">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">Complete</span> · Parent epic:
                 <a href="roadmap-bw-003.html#BW-003"
                   >BW-003 · Repeatable runtime fixtures and diagnostics</a
                 >
@@ -267,111 +267,107 @@
               </p>
               <h3>Launch command or scene</h3>
               <pre><code>Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).
-Planned and unverified until this ticket is implemented:
-python3 tools/check_runtime_fixtures.py --suite metrics</code></pre>
+python3 tools/check_baseline.py build
+python3 tools/check_runtime_fixtures.py --suite metrics
+python3 tools/check_runtime_fixtures.py --suite metrics --control invalid-measurement
+python3 tools/check_runtime_fixtures.py --suite metrics --control tampered-summary
+python3 tools/check_runtime_fixtures.py --suite metrics
+python3 tools/validate.py</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the existing workspace GAME_ROOT containing Briarwake.uproject
-                  (evanmcpheron/BriarwakeUnreal), with DOCS_ROOT at GAME_ROOT/mmo_docs. Planning
-                  inspection used game main 32a98048e29a0cacea61a6f02f33ad609bc3d84e and
-                  documentation main 4af095810603eb82623cb889f20f7da751d0606d. BW-001 and BW-002 are
-                  Complete; the pre-T01 70-file native source SHA-256
-                  729261345ad355570f687ccacda0b3ca38259512e0428a2ea75d17572699fb69 matches retained
-                  BW-002-T07 verification. BW-003-T01/T02/T03 now provide verified attributable
-                  execution, seeded replay/control isolation and correlated redacted diagnostics;
-                  metrics and integrated suites remain unimplemented. Recheck current evidence
-                  applicability before this ticket. Work in these existing checkouts and build
-                  directories without worktrees, project copies, cache deletion or overwriting prior
-                  evidence.
+                  Use the existing workspace game checkout and mmo_docs checkout, without project
+                  copies or cache removal. Task bases are freshly fetched game main
+                  b510a720d1d34daf6add724ca391cd241c49e3c7 and documentation main
+                  d5e4fc3d7e48c0865aa2573b2198b367f828f482. Read tools/toolchain.lock.json and
+                  docs/runtime-fixtures.md before launch; outputs must be fresh directories under
+                  GAME_ROOT/artifacts.
                 </li>
                 <li>
-                  The inspected baseline is UE 5.8.3 Launcher CL 58210709 plus pinned patched source
-                  commit 396c9f059903aed5fec78ecd3d437a40c6415368, Xcode 27.0 build 27A266a, macOS
-                  ARM64 Development. Both engines and Xcode pass the existing read-only
-                  verify_toolchain checks. tools/toolchain.lock.json owns identities.
-                  Briarwake.Build.cs uses Core/CoreUObject/Engine and private Json. Editor, Game,
-                  Client and Server target rules exist; Editor/Game/source-Server have retained
-                  execution evidence, while the separate Client-only target does not.
+                  Pinned native host: UE 5.8.3 Launcher CL 58210709, patched source engine commit
+                  396c9f059903aed5fec78ecd3d437a40c6415368, Xcode 27.0 build 27A266a, macOS ARM64
+                  Development. The wrapper verifies toolchain, embedded source identity, module hash
+                  and immutable input hashes. Both engines pass read-only toolchain verification.
                 </li>
                 <li>
-                  Reuse FServerConfiguration, FContentContracts, FValidationFinding,
-                  FContentRevisions and FContentAdmission in Source/Briarwake; the existing test
-                  boundary is WITH_EDITOR &amp;&amp; WITH_DEV_AUTOMATION_TESTS. Seven registered
-                  native tests cover two baseline cases plus encodings, revisions, atomic admission,
-                  readiness and economy. tools/check_baseline.py owns source identity, toolchain
-                  checks and bounded processes; tools/check_content_admission.py owns content
-                  reports. T01 adds tools/check_runtime_fixtures.py --suite evidence,
-                  FRuntimeFixtureEvidence and transient UWorld creation/destruction. BW-003-T02 now
-                  provides verified FRuntimeFixtureContext replay/clock/random/queue controls and
-                  normal-package isolation; BW-003-T03 now provides verified correlated/redacted
-                  diagnostics through the same probe/evidence owner; measurements remain later
-                  ticket work. The original seven-test prerequisite aggregate is preserved; the
-                  evidence suite is a separate eighth test. The private FBindingGateProbe is a
-                  metadata-readiness test, not a world/tick/traffic fixture.
+                  FRuntimeFixtureContext owns the same finite loop, FIFO, seed and clock. Metrics
+                  are optional editor/dev-only instrumentation, with no RPC/console/normal-package
+                  handler. FRuntimeFixtureEvidence writes canonical TestCheck assertions.
+                  FixtureWorldContext pins the empty transient world; entity count observes its
+                  empty visible_entities, not effects or recipients. No direct editor UI or MCP
+                  bridge is needed for the unattended automation.
                 </li>
                 <li>
-                  No project .umap exists under Content. Config/DefaultEngine.ini selects Unreal
-                  package /Engine/Maps/Entry, verified at Engine/Content/Maps/Entry.umap in both
-                  installed engines. That is an engine asset, not a project filesystem path. T01
-                  provides a transient automation UWorld with destruction/GC assertions; later
-                  suites extend that owner. MultiplayerSessions is present with
-                  OnlineSubsystem/Steam dependencies, without connected-session or replication
-                  certification.
-                </li>
-                <li>
-                  Commands run from GAME_ROOT. Existing prerequisites are python3
-                  tools/check_baseline.py build, python3 tools/check_content_admission.py --suite
-                  all and final python3 tools/validate.py; inspect their current options before
-                  execution. T01 evidence execution and its
-                  assertion/missing-report/load/startup/timeout controls are implemented. The later
-                  suite launch command below remains planned and unverified until this ticket is
-                  implemented. Each implementation ticket must document its actual native invocation
-                  and integrate affected checks into the existing validation entrypoint. Run
-                  documentation generation/validation from DOCS_ROOT using README.txt.
+                  ServerMetricRecord and Id/Instant/Count remain production references. No partial
+                  durable-service record, fabricated database counters or NetworkLoadTestRecord is
+                  emitted. FServerConfiguration and FContentRevisions supply only consumed
+                  content/rules labels; unrelated scheduling/disconnect settings do not drive this
+                  probe. Canonical definitions and the extracted contract snapshot are unchanged.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the metrics suite; inspect actual raw sample timestamps/durations,
-                  environment, workload bounds, entity definition, recipient payload
-                  encodings/hashes and queue before/after values. Independently recompute summaries
-                  and unequal recipient lengths.
+                  Run the launch commands. The metrics suite creates a transient UWorld and executes
+                  the exact Briarwake.RuntimeFixtures.Metrics test. Inspect run.json,
+                  native/fixture-metrics.json, automation/index.json and recomputed-metrics.json;
+                  parse the native JSON from bytes because Unreal may use UTF-16 with BOM. The
+                  payload text itself is measured as UTF-8 without BOM/terminator/extra newline.
                 </li>
                 <li>
-                  Inspect burst/drain/reset, empty-window and no-recipient cases. Confirm zero
-                  values represent actual empty work rather than invented unavailable subsystems.
+                  Inspect burst, empty, no-recipients and replay windows. Five t=0 submissions fill
+                  the four-entry FIFO and reject the fifth; t=0.5 preserves the backlog, t=1 drains
+                  four effects and t=2 observes it empty. Every tick records actual monotonic
+                  start/end, duration, entity count, queue before/after drain/after step,
+                  kind/fixture offset, exact logical-recipient payload text/length/SHA-1. The second
+                  recipient ID includes Unicode and its projection includes the decision, producing
+                  unequal byte lengths.
                 </li>
                 <li>
-                  Run --control invalid-measurement and --control tampered-summary, then clean
-                  again. Confirm nonfinite/negative/missing values and workload-bound violations
-                  fail visibly, and no canonical full metric or network-load success record is
-                  fabricated.
+                  Recompute payload lengths/hashes/content, FIFO transitions, mean/maximum elapsed
+                  milliseconds, maximum queue depth and byte sums per logical recipient from raw
+                  samples. Empty windows have no samples and null duration statistics; no-recipient
+                  windows still time real processing but have empty payload lists/maps. Inspect
+                  actual engine/compiler/CPU/OS/configuration plus context/revisions and
+                  runner/source identities.
+                </li>
+                <li>
+                  Both explicit controls execute passing native metrics and then corrupt only an
+                  in-memory copy. Require nonzero exit, control_verified=true and the specific
+                  invalid-number or summary-mismatch detection. Inspect verification_checks for
+                  actual missing/nonfinite/negative/incorrect-type/excessive-bound/tampered-output
+                  rejection. Finish with a fresh clean metrics run and default native FULL; check
+                  package marker/input exclusion and prerequisite regressions.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Actual raw observations support the recomputed report and measured backlog;
-                  unequal logical recipients are counted individually.
+                  Actual raw observations support both unequal logical recipients, the observed
+                  burst/drain queue and summaries. Timing is per finite probe processing step and
+                  includes payload serialization/hashing, excluding report capture. Reports state
+                  the local-probe/serialized-payload boundary; no wire/database/capacity result is
+                  inferred.
                 </li>
                 <li>
-                  Controls fail and fresh recovery passes. Reports clearly identify unavailable
-                  production/wire/database measurements.
+                  Native invalid-workload/recipient controls reject before mutation, reset clears
+                  pending work/clock/random/recipients/samples/enabled state, and seeded replay
+                  preserves rule outcomes. Explicit verifier controls fail for their intended
+                  corruption, unavailable tools never satisfy them, and fresh recovery passes.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  The runner must stop timed-out child processes and tear down its transient UWorld,
-                  fixture clock, seed, queue and test-owned state. Normal client/server launches
-                  must remain unaffected.
+                  Let each native run destroy and garbage-collect its owned transient UWorld. Probe
+                  Reset clears all test-owned state; it does not alter canonical inputs or assets.
+                  The wrapper bounds child processes and terminates timed-out owned groups.
                 </li>
                 <li>
-                  Retain previous logs/reports; rerun into a new default output directory. Controls
-                  modify only disposable inputs. Never overwrite prior evidence or modify canonical
-                  sources, user maps or assets to reset a run.
+                  Default runs choose fresh output directories and refuse existing outputs. Preserve
+                  all earlier reports, logs, packages, user edits and caches. Retain relevant raw
+                  reports and compressed logs under DOCS_ROOT/validation/tickets/BW-003-T04 for
+                  auditable evidence.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -382,10 +378,21 @@ python3 tools/check_runtime_fixtures.py --suite metrics</code></pre>
                 limitation.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-003-T04/review.json"
+                    >Default native FULL passes all 47 stages. Metrics retain 55 native assertions
+                    and 83 independently rejected report corruptions per run, actual bounded
+                    tick/entity/unequal-recipient serialized payload/FIFO samples, exact
+                    workload/context/environment metadata, empty/no-recipient/reset controls, both
+                    specific negative controls and fresh recovery. This is local probe/payload
+                    evidence, with no wire/database/capacity claim.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision BriarwakeUnreal
+                  18251dac07c07d0e4e0b9d2776980a66082141d9; native source SHA-256
+                  b650493699d785a261e083faa01bc832944b73719979e74545bf62e810fe8bd9
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-003.html#BW-003">Parent epic</a>;
@@ -410,6 +417,13 @@ python3 tools/check_runtime_fixtures.py --suite metrics</code></pre>
                 >;
                 <a href="../guide/roadmap-maintenance.html#maintenance"
                   >Dated reuse assessment and required decomposition workflow</a
+                >;
+                <a href="../guide/data-inventory.html#shared-Id">Id production metric reference</a>;
+                <a href="../guide/data-inventory.html#shared-Instant"
+                  >Instant production metric reference</a
+                >;
+                <a href="../guide/data-inventory.html#shared-Count"
+                  >Count production metric reference</a
                 >
               </p>
             </article>
