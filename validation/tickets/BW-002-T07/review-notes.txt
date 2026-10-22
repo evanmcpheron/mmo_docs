@@ -1,0 +1,67 @@
+BW-002-T07 current-main review
+
+This invocation finds T07 and BW-002 already Complete. Preserve their verified
+completion rather than restarting implementation. Game main is
+32a98048e29a0cacea61a6f02f33ad609bc3d84e; documentation starts from fetched main
+c039ebe209a3e4770b50bdcc8e2cbff165ed7c8c. The task branch changes documentation
+and audit evidence only. No game branch or new game PR is necessary.
+
+Executed from DOCS_ROOT:
+python3 validation/tickets/BW-002-T07/review_current.py --output validation/tickets/BW-002-T07/review.json
+python3 validation/tickets/BW-002-T06/check_report_controls.py --game-root .. --run validation/tickets/BW-002-T06/full/automation --output validation/tickets/BW-002-T07/report-controls.json
+python3 validation/tickets/BW-002-T06/check_report_controls.py --game-root .. --run validation/tickets/BW-002-T06/full/recovery-tests --output validation/tickets/BW-002-T07/recovery-report-controls.json
+
+Executed from GAME_ROOT:
+python3 tools/extract_content_contracts.py --check
+
+T07 criterion 1: both independently executed native sessions remain applicable.
+All 70 native inputs match, the current 79-definition canonical closure reproduces,
+all 65 retained manifest artifacts match, and the authority map is unchanged.
+Each actual report passes current native/automation verifiers: seven exact tests,
+3,584 content assertions, distinct nonces, and matching source/corpus/snapshot
+identities. Each replay rejects 29 partial/duplicate/foreign/failed mutations.
+The recovery compiler rebuild legitimately changes the module binary hash; each
+session retains its own hash, and the current module matches recovery.
+
+T07 criterion 2: all ten actual negative controls in the retained 25-stage FULL
+are rechecked with tools/validate.py's existing expected_rejection function.
+Compiler failure remains Not Executed; assertion failure remains Executed/Failed;
+timeouts and missing/stale reports remain unsuccessful. Both complete originals
+still pass, including independent recovery. No prior execution artifact is changed.
+
+T07 criterion 3: unchanged source and exact pinned toolchains preserve applicable
+Editor/Game/source-Server build, package, configuration and headless evidence.
+T06 package-isolation.json records binary marker exclusion and 2,845 Game / 2,709
+Server Pak members without fixtures. The admitted content owner still commits
+one whole selection only after semantic, economic and activation gates pass.
+Private readiness receipts remain inaccessible to ordinary candidates, tests have
+Editor/development guards, and no gameplay economic execution handler exists.
+
+T07 criterion 4 and parent review:
+BW-002 AC1: the unchanged authority map names ownership/lifecycle for movement,
+combat, durable assets, applied builds and client presentation. Missing runtime
+owners stay explicit; an admission test does not implement them.
+BW-002 AC2: 1,284 native static-admission assertions cover compatible input,
+reference/targeting/resource/version rejection and whole-selection replacement.
+BW-002 AC3: 756 native binding/readiness assertions cover unbound behavior,
+independent required receipts and stale-candidate rejection without free-text
+activation; package isolation evidence retains the normal-execution boundary.
+BW-002 AC4: 724 encoding plus 23 revision assertions preserve canonical IDs,
+optional/null semantics and independent content/rules/database revision domains.
+BW-002 AC5: 797 native economic assertions cover safe and unsafe complete graphs,
+missing required values, strict loss, salvage provenance, bounds and atomicity.
+Economic graph certification still does not grant an execution capability.
+
+All seven children and required dependencies remain Complete. BW-003, BW-018,
+BW-004, BW-005 and BW-006 remain Not Started and dependency-ready. BW-095 still
+requires BW-003. Overall progress stays 2/97 (2.1%); the foundation milestone
+stays 2/6 (33.3%), In Progress. Other milestones keep their own incomplete scopes.
+
+Review checklist: applied docs/ai/REVIEW_CHECKLIST.md. Scope, existing evidence
+owners, canonical reuse, explicit failure handling and preservation of historical
+results were reviewed. C++/Actor/RPC/database changes are N/A for this audit.
+Native FULL was reused at identical inputs, not rerun. Connected peers, RPC,
+persistence, Shipping, other platforms, Client-only target, clean/cold builds and
+visible presentation remain outside the verified scope, as recorded in review.json.
+No editor/MCP capability is required by these admission tests. Documentation
+FAST/FULL reports and generated-view inspection are retained in this directory.
