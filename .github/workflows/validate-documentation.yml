@@ -6,6 +6,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '37 6 * * 1'
 
 concurrency:
   group: documentation-${{ github.event.pull_request.number || github.run_id }}
@@ -19,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -28,13 +32,18 @@ jobs:
           cache: npm
       - name: Install pinned formatter
         run: npm ci
-      - name: Full documentation validation
-        run: python3 validation/validate.py --mode full --report-dir .git/validation-evidence
-      - name: Retain browser verification results
+      - name: Focused PR verification; browser only for affected UI dependencies
+        if: github.event_name != 'workflow_dispatch' && github.event_name != 'schedule'
+        run: python3 validation/validate.py --mode integration --gate --base ${{ github.event.pull_request.base.sha || github.event.before }} --report-dir .git/validation-evidence
+      - name: Intentional comprehensive documentation regression
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+        run: python3 validation/validate.py --mode full --gate --report-dir .git/validation-evidence
+      - name: Retain validation results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: browser-verification
+          name: documentation-verification
           path: .git/validation-evidence/
           include-hidden-files: true
+          retention-days: 14
           if-no-files-found: error

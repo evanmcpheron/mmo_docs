@@ -508,7 +508,7 @@ def render_maintenance(data, root=ROOT):
     parts = ['<h2 id="maintenance">Updating statuses and evidence</h2>']
     parts.extend(f'<p>{escape(paragraph)}</p>' for paragraph in data['maintenance'])
     parts.append((root / 'sources/roadmap-reuse-review.html.inc').read_text(encoding='utf-8'))
-    parts.append('<h2 id="commands">Rebuild and validate</h2><pre><code>python3 scripts/build_development_roadmap.py\npython3 scripts/build_data_inventory.py --review-roadmap\npython3 validation/validate.py --mode fast\npython3 validation/validate.py --mode full</code></pre>')
+    parts.append('<h2 id="commands">Rebuild and validate</h2><pre><code>python3 scripts/build_development_roadmap.py\npython3 scripts/build_data_inventory.py --review-roadmap\npython3 validation/validate.py --gate</code></pre>')
     parts.append('<p>Commit the registry and generated outputs together. The roadmap builder owns the dashboard, phase indexes, individual epic pages and reference pages; '
                  'the inventory builder owns shared navigation, search and manifest outputs. Reading requires neither a build step nor JavaScript.</p>')
     return shell(data, page, 'Roadmap progress and ticket decomposition', 'Maintain evidence-based ticket decomposition, epic statuses, blockers and completion evidence.',

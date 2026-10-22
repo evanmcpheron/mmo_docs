@@ -63,81 +63,18 @@ pinned macOS ARM64 Development matrix. Gameplay fixtures, production database, e
 connected Steam sessions and capacity remain unverified.
 
 VALIDATION
-Iterate: python3 validation/validate.py --mode fast
-Final PR gate (also the default): python3 validation/validate.py --mode full
-Requires Python 3.10+ (3.12+ reports slow unittest durations), Git, Node 22+
-and installed Chrome/Chromium. Set BRIARWAKE_CHROME_BIN when autodetection cannot
-find the browser. Run npm ci once after checkout to install the locked Prettier
-development dependency. Missing prerequisites fail explicitly. No Python packages
-or browser downloads are required. These commands verify documentation, never gameplay.
-
-FAST combines committed branch changes since the merge base with origin/main,
-staged changes, unstaged changes and untracked files, including both sides of
-renames and deleted paths. Use --base REF to explicitly select another task base.
-It always checks both generators' output freshness, both registries, all HTML
-links/anchors/search destinations, gameplay-documentation consistency and tracked
-engine artifacts. When shipped data inputs are unchanged, it explicitly defers
-allocation cases, capstone routes and allocation-example freshness to FULL.
-It selects relevant Python modules and browser verification
-from the source/generator dependency map. Browser tests are deferred for changes
-only to shipped data records; they run for rendered contracts, roadmap or shared
-generated output. Unknown/cross-cutting files, validation code, generators, test
-helpers or unreliable Git/dependency detection fall back to FULL. --explain prints
-the selected commands and deferrals without executing them. A FAST pass only
-certifies its listed checks; it never certifies comprehensive verification.
-
-FULL retains all Python regressions, JavaScript cleanup regressions, actual offline
-browser navigation/search/layout/print/no-JavaScript checks, both registries and
-generated output checks, aggregate checks, links/anchors and engine-artifact audit.
-The aggregate includes the standalone roadmap/inventory checks, so the entrypoint
-does not repeat those commands. CI runs FULL for every PR targeting main without
-path filtering. Fix failures using the reported focused command; avoid a full-suite
-rerun after every edit. FULL must pass before claiming comprehensive PR success.
-
-Both modes normally leave working-tree content unchanged. Regeneration, manual
-review and evidence updates are explicit, independent operations. To retain run
-reports in the established formats, use:
-python3 validation/validate.py --mode full --report-dir PATH
-This writes validation-summary.json, report.json and data-inventory-browser-checks.json
-under PATH. CI uploads that directory even on failure. Historical tracked evidence
-is retained; an old evidence file is not proof that a new run passed. The HTML
-evidence page records package-generation checks and is not a live execution report.
-
-Focused diagnostics remain available:
-python3 validation/check_development_roadmap.py
-python3 validation/check_data_inventory.py
-python3 -m unittest discover -s validation -p 'test_*.py'
-python3 validation/run_checks.py --read-only
-node --test validation/test_browser_cleanup.mjs
-node validation/check_inventory_browser.mjs --read-only
-python3 validation/check_engine_artifacts.py
-
-For compatibility, running run_checks.py without --read-only still explicitly
-rewrites validation/report.json and data/allocation_examples.json; it does not
-regenerate HTML. Without --read-only the standalone browser script still writes
-its historical report/screenshots. Add --report PATH to either script to retain
-a report with --read-only; --screenshots DIR explicitly requests browser images.
-Before/after timings, coverage equivalence and limitations are recorded in
-validation/performance/RESULTS.txt with raw execution logs.
-
-validation/browser-checks.json preserves the original rendering-only evidence
-and its navigation limitations. Current inventory and roadmap browser evidence is recorded
-in validation/data-inventory-browser-checks.json: actual offline file navigation,
-canonical definitions, filters/search, feature links, roadmap epics, mobile layout,
-print visibility and reading with JavaScript disabled, using an isolated installed
-Chrome profile.
+The authoritative workflow is docs/validation.md.
+Routine local work: python3 validation/validate.py
+Focused PR gate: python3 validation/validate.py --gate
+Changed browser/template/UI behavior: python3 validation/validate.py --mode integration --gate
+Intentional comprehensive regression: python3 validation/validate.py --mode full
+Unknown scope never escalates automatically. Documentation checks never execute game behavior.
 
 HTML FORMATTING
-Run npm run format to format all HTML pages and sources/*.html.inc fragments.
-Run npm run format:check to check formatting without changing files. Both FAST
-and FULL validation include this check; CI installs Prettier with npm ci.
-.prettierrc.json owns the shared two-space indentation and 100-column wrapping
-used by the CLI, editor integrations and both Python generators. Formatting is
-limited to HTML; scripts, stylesheets, JSON contracts and retained evidence keep
-their existing formats. Node and npm ci are also required when generating or
-checking generated pages. Reading the published reference still needs only a browser.
-Format manually edited feature HTML before recording its explicit page review.
-Rebuilding either generator preserves formatted output for readable Git diffs.
+Format manually changed HTML only with npx --no-install prettier --write PATH.
+The generators format their outputs and write only changed files. PR freshness
+checks do not repeat a whole-site formatter pass; FULL retains npm run format:check.
+See docs/validation.md for prerequisites, source review, manual QA and evidence retention.
 
 DATA EDITING
 HTML is a static published snapshot. Editing JSON does not automatically update
@@ -174,6 +111,9 @@ Edit an existing epic's status and verified_evidence there. Use exactly Not
 Started, In Progress, Blocked or Complete; record blockers for Blocked and actual
 evidence for Complete. Retain IDs when reordering; assign an unused BW ID when
 adding an epic, then update relevant dependencies, milestones and coverage.
+The native evidence summaries below describe their recorded revisions and stage
+counts, not current commands or current local plugin compatibility. Current policy
+is docs/validation.md and the companion game validation policy.
 BW-003 retains five native Unreal fixture tickets, BW-003-T01 through T05:
 attributable evidence, deterministic context/control isolation, redacted
 diagnostics, bounded measurements and integrated verification. T01 is ready
@@ -182,13 +122,13 @@ T05 verifies all four epic criteria. The refreshed plan reuses the current
 admission/report owners and seven native tests, preserves canonical actual
 findings versus execution-failure evidence, and integrates future suites into
 the existing game FULL route. T01 is Complete with 61 native checks, separate canonical execution evidence,
-five stage-specific failure controls and clean recovery. Default game FULL
-passes all 32 stages; 37 Python tests and the original seven-test / 3,584-content-
+five stage-specific failure controls and clean recovery. At T01's recorded revision, game FULL
+passed all 32 stages; 37 Python tests and the original seven-test / 3,584-content-
 assertion aggregates pass. Evidence is retained under validation/tickets/BW-003-T01/.
 All five BW-003 tickets are Complete. T05 joins all four existing suites in two
 independent native aggregates, rejects omitted/failed/stale/foreign/partial child
-evidence and preserves every prerequisite/control/package gate. The current
-default FULL passes all 46 supported stages and 66 Python regressions; each
+evidence and preserves every prerequisite/control/package gate. At T05's recorded revision,
+FULL passed all 46 supported stages and 66 Python regressions; each
 aggregate passes 242 native assertions. Current evidence and the parent review
 are retained under validation/tickets/BW-003-T05/. Earlier T01-T04 evidence remains
 historical and applicable to their unchanged native owners.
@@ -208,7 +148,7 @@ material/item mapping, actual per-unit consumption lineage and route declaration
 T06 is Complete with 63 complete-graph fixtures and 797 native economic checks,
 including combined-route gain, actual per-unit salvage, missing input, overflow,
 analysis limits and atomic publication. T07 is Complete: two seven-test native
-aggregates each pass all 3,584 content assertions, all 25 default FULL stages pass,
+aggregates each pass all 3,584 content assertions, all 25 recorded FULL stages passed,
 and report/build/failure/recovery plus normal Game/Server package isolation are
 verified. Evidence is retained under validation/tickets/BW-002-T06/. Production
 prices, economic mutation, persistence and connected gameplay remain unimplemented.
@@ -270,9 +210,9 @@ deliverables, not executed evidence. Ticket planning never completes an epic.
 Do not edit the generated pages or search records. Rebuild and validate with:
 python3 scripts/build_development_roadmap.py
 python3 scripts/build_data_inventory.py --review-roadmap
-python3 validation/validate.py --mode fast
+python3 validation/validate.py --mode quick
 
-Run FULL once for final PR verification as described under VALIDATION.
+Run the focused --gate command for final PR verification; follow docs/validation.md for additional risk-based checks.
 
 The roadmap builder owns the hub, phase indexes, individual epic/ticket pages and
 roadmap reference pages. The
@@ -364,8 +304,8 @@ actual passed/failed execution; schema checks never promote those states.
 Build: python3 scripts/build_data_inventory.py
 Check without writing: python3 scripts/build_data_inventory.py --check
 Focused consistency check: python3 validation/check_data_inventory.py
-Iterative checks: python3 validation/validate.py --mode fast
-Comprehensive PR gate: python3 validation/validate.py --mode full
+Iterative checks: python3 validation/validate.py --mode quick
+Intentional comprehensive regression: python3 validation/validate.py --mode full
 Python requires version 3.10+ and the standard library only; generated HTML uses
 the local Prettier installed by npm ci through Node 22+.
 The browser check uses Node 22+ and installed Chrome/Chromium without downloads.
@@ -438,13 +378,8 @@ An implementation ticket cannot be executed, tested, or marked Complete until a 
 
 CROSS-REPOSITORY VALIDATION
 The workspace game checkout owns skills/execute-ticket and skills/split-epic.
-Those skills must use this repository's FAST/FULL entrypoint after explicit
-source generation; standalone validators remain useful for diagnosing failures.
-Documentation checks do not build or test the game. Run the game's own validation
-from its verified Git root when implementation changes require it.
-
-The documentation CI job always runs FULL. A newer commit to the same PR cancels
-its superseded validation run; main pushes and manual runs are retained. This
-removes duplicate work without selecting fewer checks on the latest revision.
-Native Unreal verification belongs on the pinned game toolchain, never on the
-strength of a successful documentation or Python-only CI job.
+Follow docs/validation.md after explicit source review/generation. Reuse applicable
+unchanged game evidence; status updates require no extra Unreal execution.
+CI runs focused source/output verification on PRs, and FULL on explicit or weekly
+runs. UI/template changes select browser verification. Native Unreal evidence
+belongs on the pinned game host; Python/documentation CI cannot supply it.
