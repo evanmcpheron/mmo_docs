@@ -1,0 +1,192 @@
+{
+  "ticket": "BW-003-T01",
+  "completed_at": "2026-10-22T13:44:55.078441+00:00",
+  "game_revision": "288616e6957042aee3c4a18315334fb72589918d",
+  "game_main_revision": "32a98048e29a0cacea61a6f02f33ad609bc3d84e",
+  "docs_main_revision": "20a76fcf026fd89f05da30bc63227a40689d2fe7",
+  "source_sha256": "5d9e956478cf79658de6ca891b5e760669243700aa0ed3fc39b8430a50a2be61",
+  "source_files": 76,
+  "source_attribution": "FULL began with uncommitted task changes on the fetched main base. Commit 288616e6957042aee3c4a18315334fb72589918d contains the exact tested 76-file native/tool/input identity. Recovery and final FULL record that commit; all input identities stayed stable.",
+  "environment": {
+    "engine": {
+      "MajorVersion": 5,
+      "MinorVersion": 8,
+      "PatchVersion": 3,
+      "Changelist": 58210709,
+      "CompatibleChangelist": 55116800,
+      "IsLicenseeVersion": 0,
+      "IsPromotedBuild": 1,
+      "BranchName": "++UE5+Release-5.8"
+    },
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "os": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.14.0",
+    "engine_root": "/Users/Shared/Epic Games/UE_5.8",
+    "installed_engine": true,
+    "engine_source_revision": null
+  },
+  "module_sha256": "e4a0d932eb5e41e263cadaeeba2f14b141b242949e3b54f30918f7787fb1029d",
+  "input_sha256": {
+    "fixtures/runtime/evidence.json": "ef2f3c566f14c88b22b03a0d677bf50a265bd1260535ae52d9025ee88551e695",
+    "fixtures/content_admission/admission.json": "6df56fb82b64b72a2f1c72bcd48782215dfb346d0b8f83460f35c06874ce2b1a",
+    "fixtures/content_admission/contracts.snapshot.json": "27dc19378756841da2e2f58c8cc654ef02d290934fa593db35d5db2ba9dcee48"
+  },
+  "commands": [
+    "python3 -m unittest discover -s tools -p test_*.py",
+    "python3 tools/validate.py --mode fast --output artifacts/bw003-t01-fast",
+    "python3 tools/validate.py --output artifacts/bw003-t01-full",
+    "python3 artifacts/bw003-t01-report-controls.py --run artifacts/bw003-t01-full/fixture-evidence --output artifacts/bw003-t01-boundary-checks",
+    "python3 artifacts/bw003-t01-package-isolation.py --validation artifacts/bw003-t01-full --output artifacts/bw003-t01-package-isolation"
+  ],
+  "full_result": {
+    "artifact": "full/validation-summary.json",
+    "result": "Passed",
+    "checks": 32,
+    "python_tests": 37
+  },
+  "ticket_criteria": {
+    "1": {
+      "result": "Passed",
+      "artifacts": [
+        "full/fixture-evidence/native/fixture-evidence.json",
+        "full/fixture-assertion-failure/native/fixture-evidence.json"
+      ],
+      "summary": "Three exact immutable fixture IDs execute real FContentAdmission in a transient UWorld. Expected rejection has actual admission findings with passed execution and empty execution findings. Inverted private expectation produces actual failed assertion/run evidence; authored specifications stay unexecuted and byte-identical."
+    },
+    "2": {
+      "result": "Passed",
+      "artifacts": [
+        "full/fixture-evidence/native/fixture-evidence.json",
+        "boundary-checks.json",
+        "report-controls.py"
+      ],
+      "summary": "61 native assertions / 59 canonical TestCheck records include 11 invalid specification and eight invalid evidence cases. Twelve mutations of an actual native report are rejected. Runner/time/revisions, required fields, exact assertion sets and process timestamps are checked. Runtime envelope stays separate from ValidationReport."
+    },
+    "3": {
+      "result": "Passed",
+      "artifacts": [
+        "full/validation-summary.json",
+        "package-isolation.json",
+        "boundary-checks.json"
+      ],
+      "summary": "Two fresh clean runs pass with distinct nonces. All five controls verify exact native stages and return nonzero; timeout confirms the owned process group no longer exists. Reused outputs stay byte-identical; five unavailable-engine probes cannot satisfy controls. Normal Game/Server builds, decoded packages, startup/configuration and fixture marker exclusion pass."
+    }
+  },
+  "clean_runs": [
+    {
+      "artifact": "full/fixture-evidence/run.json",
+      "nonce": "20d4d2e4bcf64f5b8f281292fd346961",
+      "native_assertions": 61,
+      "canonical_testchecks": 59,
+      "source_sha256": "5d9e956478cf79658de6ca891b5e760669243700aa0ed3fc39b8430a50a2be61"
+    },
+    {
+      "artifact": "full/fixture-recovery/run.json",
+      "nonce": "d6a9c85d79134c79ac9a7ae2c08c8b14",
+      "native_assertions": 61,
+      "canonical_testchecks": 59,
+      "source_sha256": "5d9e956478cf79658de6ca891b5e760669243700aa0ed3fc39b8430a50a2be61"
+    }
+  ],
+  "controls": {
+    "assertion-failure": {
+      "stage": "complete",
+      "status": "Failed",
+      "runtime_execution": "Executed",
+      "assertion_result": "Failed",
+      "control_verified": true,
+      "timeout_cleanup_verified": null,
+      "exit_status": 1,
+      "error": "Executed fixture assertion failure"
+    },
+    "missing-report": {
+      "stage": "complete",
+      "status": "Failed",
+      "runtime_execution": "Executed",
+      "assertion_result": "Passed",
+      "control_verified": true,
+      "timeout_cleanup_verified": null,
+      "exit_status": 1,
+      "error": "Required native fixture report is missing; retained control execution verified"
+    },
+    "load-failure": {
+      "stage": "load",
+      "status": "Failed",
+      "runtime_execution": "Executed",
+      "assertion_result": null,
+      "control_verified": true,
+      "timeout_cleanup_verified": null,
+      "exit_status": 1,
+      "error": "Executed native load-failure"
+    },
+    "startup-failure": {
+      "stage": "startup",
+      "status": "Failed",
+      "runtime_execution": "Executed",
+      "assertion_result": null,
+      "control_verified": true,
+      "timeout_cleanup_verified": null,
+      "exit_status": 1,
+      "error": "Executed native startup-failure"
+    },
+    "timeout": {
+      "stage": "execution",
+      "status": "Failed",
+      "runtime_execution": "Executed",
+      "assertion_result": null,
+      "control_verified": true,
+      "timeout_cleanup_verified": true,
+      "exit_status": 1,
+      "error": "Owned native process timed out"
+    }
+  },
+  "prerequisite_applicability": {
+    "BW-001": "Complete; unchanged pinned build/configuration owners and current FULL Editor/Game/Server build/package/smoke/failure/recovery checks.",
+    "BW-002": "Complete; unchanged admission owners and all 79 prior canonical definitions/samples. Current clean/recovery seven-test aggregates each pass all 3,584 content assertions. TestCheck is the only added definition."
+  },
+  "parent_review": {
+    "epic": "BW-003",
+    "status": "In Progress",
+    "criterion_1": "Passed: actual revisions, runner, results and assertions separate from authored unexecuted specifications.",
+    "criterion_2": "Unimplemented: BW-003-T02 seeded context, replay and control isolation.",
+    "criterion_3": "Unimplemented: BW-003-T03 correlated redacted diagnostics.",
+    "criterion_4": "Unimplemented: BW-003-T04 workload-linked measurements.",
+    "integration": "BW-003-T05 remains Not Started; later suites still need integration and review.",
+    "children": {
+      "BW-003-T01": "Complete",
+      "BW-003-T02": "Not Started",
+      "BW-003-T03": "Not Started",
+      "BW-003-T04": "Not Started",
+      "BW-003-T05": "Not Started"
+    },
+    "dependents": "BW-097, BW-095 and BW-012 remain Not Started; BW-003 is unmet. T02 becomes dependency-ready. Epic stays dependency-ready after completed BW-001/BW-002. Foundations and milestones stay In Progress; overall completed epics stay 2/97 (2.1%)."
+  },
+  "historical_iteration": {
+    "artifact": "history/initial-assertion-control.json",
+    "result": "Failed, superseded",
+    "summary": "Initial FAST expanded to FULL and exposed Unreal exiting zero on failed automation. The orchestrator was stopped after this confirmed defect; its bounded in-flight load control completed. The corrected wrapper verifies exact native/automation failure reports and returns nonzero itself. Regression covers assertion/startup/load controls with zero child exit. Final default FULL passes all 32 stages."
+  },
+  "review_checklist": {
+    "scope_contracts_ownership": "Passed; existing rule/schema/report owners reused; no gameplay, network/save or balance change.",
+    "cpp_headers_lifecycle": "Passed; declarations only in header, editor/dev guards, transient world destruction plus GC assertion. Timeout uses owned process isolation.",
+    "build_runtime": "Passed; actual compile/link, exact automation reports, independent clean recovery and package inspection.",
+    "security_networking": "No new RPC, console/Exec/Blueprint command, secret or production control path. Fixture markers/inputs absent from Game/Server artifacts. Connected networking/persistence outside T01.",
+    "assets_reflection": "N/A: no reflected type, asset, Blueprint or map change. Existing package startup tested.",
+    "git_scope": "Existing checkout task branches; no worktrees/clones, cache deletion, standards edits or unrelated user changes.",
+    "warnings": "Existing bUseZenStore/bUseIoStore warning and unavailable non-Mac SDK diagnostics remain visible in retained logs. No warning suppression. The missing/invalid configuration rejection exits also emit the pre-existing PCG ConverterRegistry.Find shutdown ensure, reproduced in unchanged prior BW-002-T06 logs at artifacts/bw-002-t06/verified-full/server-{missing,invalid}-config/process.log. Normal fixture runs and normal server smoke pass; this unrelated engine/plugin shutdown issue is not fixed or suppressed."
+  },
+  "not_run": [
+    "Connected server/two-client, RPC/replication and persistence harnesses are not implemented.",
+    "Shipping, other platforms and the separate Client-only target have no verified procedure.",
+    "Clean/cold builds require removing existing caches or copying the project; neither is authorized.",
+    "Visible packaged-client presentation remains a manual check."
+  ],
+  "limitations": "Synthetic content admission and transient-world lifecycle only. No combat, seeded replay, correlated diagnostics, workload/network metrics, connected peers, persistence, production telemetry or complete BW-003 aggregate claimed.",
+  "documentation_iteration": {
+    "initial_report": "documentation-fast/validation-summary.json",
+    "summary": "Documentation FAST expanded to FULL; aggregate and all 296 offline browser checks passed, but three roadmap Python tests assumed BW-003 Not Started. Their synthetic fixtures now explicitly reset copied epic/ticket progress, preserving every original assertion. Focused roadmap tests pass all 32 cases. Final default FULL reports are under documentation-full/. Native inputs are unchanged; the successful native FULL remains applicable."
+  },
+  "generated_view_review": "generated-views.json records inspected hub, foundations, epic, five tickets and milestones. Overall is 2/97 (2.1%); BW-003 is In Progress and remains Dependency-ready, T01 is Complete, T02 through T05 Not Started, all milestones In Progress. Search/navigation/review fingerprints passed generated freshness and offline-browser checks.",
+  "log_retention": "Four raw native logs contain CRLF/trailing whitespace emitted by Unreal. They are retained as lossless .log.gz copies; compressed-logs.json records original/compressed hashes. Native root artifacts retain raw bytes."
+}

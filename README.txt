@@ -168,8 +168,12 @@ after completed BW-001/BW-002; T03 and T04 can follow T02 independently, then
 T05 verifies all four epic criteria. The refreshed plan reuses the current
 admission/report owners and seven native tests, preserves canonical actual
 findings versus execution-failure evidence, and integrates future suites into
-the existing game FULL route. All five tickets remain Not Started with no
-verified BW-003 evidence. Planned fixture commands remain unimplemented.
+the existing game FULL route. T01 is Complete with 61 native checks, separate canonical execution evidence,
+five stage-specific failure controls and clean recovery. Default game FULL
+passes all 32 stages; 37 Python tests and the original seven-test / 3,584-content-
+assertion aggregates pass. Evidence is retained under validation/tickets/BW-003-T01/.
+T02 is now eligible; T02 through T05 remain Not Started. Context, diagnostics,
+metrics and the integrated fixture aggregate remain unimplemented.
 The owner selected a local probe with logical recipients and explicitly labeled
 serialized payload bytes; this does not certify connected clients or wire traffic.
 BW-002 has seven tickets, T01 through T07: authority/lifecycle review, canonical
@@ -206,7 +210,8 @@ Complete at the recorded native source identity. Previous dated evidence under
 validation/tickets/BW-002-T01/ through BW-002-T05/ remains historical; current
 review, exact build/runtime/control/package artifacts and limitations are under
 validation/tickets/BW-002-T06/. This certifies content admission, with no production
-gameplay handler or transactional economic authority. BW-003 remains Not Started.
+gameplay handler or transactional economic authority. BW-003 is In Progress: parent AC1 has passing T01 evidence; AC2 through AC4
+and T05 integrated verification remain unimplemented.
 The generated ready list now contains BW-003, BW-018, BW-004, BW-005 and BW-006;
 BW-002 leaves it. Overall progress is 2/97 epics (2.1%). Foundations and all
 milestones remain In Progress. Generated views own readiness/progress calculations.
