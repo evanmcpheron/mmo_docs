@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-097." />
+    <title>
+      BW-097-T01 · Create a reproducible reference scene with Unreal UI tuning · Briarwake
+      Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-097.html#BW-097">BW-097</a><span>/</span>BW-097-T01
+          </div>
+          <h1>BW-097-T01 · Create a reproducible reference scene with Unreal UI tuning</h1>
+          <p class="page-description">Implementation ticket for BW-097.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-097-T01">
+              <p>
+                <span class="badge">Not Started</span> · Parent epic:
+                <a href="roadmap-bw-097.html#BW-097"
+                  >BW-097 · Orthographic camera and visual-readability proof</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-097.html#BW-097-AC-1">BW-097-AC-1</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Reuse assessment: Implemented and verified — BW-001 native
+                  Editor/Game/source-Server bootstrap and BW-003 attributable test evidence, at the
+                  matching source identity recorded in manual setup. Extend those owners for this
+                  feature; do not rerun unchanged native prerequisites merely to author tickets.
+                </li>
+                <li>
+                  Reuse assessment: Provided by Unreal or a plugin — UE 5.8.3 UCameraComponent,
+                  USpringArmComponent, APlayerCameraManager and Enhanced Input 1.0 are available.
+                  Config/DefaultInput.ini names EnhancedPlayerInput/EnhancedInputComponent and the
+                  engine plugin is enabled by default, but the game module currently depends only on
+                  Core/CoreUObject/Engine plus private Json. Add only the camera/input/UI
+                  dependencies actually consumed. MultiplayerSessions 1.0 supplies session/menu
+                  code, not a gameplay camera or scene.
+                </li>
+                <li>
+                  Reuse assessment: Missing — a project pawn/controller/camera owner, reference map,
+                  input actions and visual fixtures. Create the smallest native presentation
+                  component wired explicitly to a controlled reference pawn/controller, a versioned
+                  reference level and scene-only stationary/axial/diagonal routes. Reinspect before
+                  implementation and reuse any owner introduced by intervening work. Fixture routes
+                  are not production movement and camera input cannot mutate their position, facing
+                  or aim.
+                </li>
+                <li>
+                  Supply one validated editor-visible camera configuration with documented Unreal UI
+                  locations and units for every fine-tuning control: overview/close framing and
+                  focus offsets, orthographic width and perspective FOV, projection-transition
+                  policy/timing, follow smoothing, wheel step/rate, orbit
+                  sensitivity/inversion/pitch limits and collision behavior. Provide live PIE
+                  preview and save/reload of authored defaults through Details or an appropriate
+                  asset editor; preserve authored settings across restart. Reject
+                  invalid/nonfinite/inverted limits observably rather than silently fixing saved
+                  settings. Do not require C++ edits or hand-edited ini files for tuning.
+                </li>
+                <li>
+                  Start with documented adjustable reference defaults: overview pitch -55 degrees
+                  and orthographic width 2400 Unreal centimeters; close pitch -15 degrees, distance
+                  350 centimeters and FOV 70 degrees; orbit pitch bounds -80 to -10 degrees,
+                  normalized wheel step 0.1, transition duration 0.35 seconds and yaw/pitch
+                  sensitivity 0.15 degrees per mouse input unit. Complete remaining focus, follow
+                  and collision defaults from the scene proportions, state their units, and expose
+                  them in the same UI. These are proposed presentation defaults, not new world-unit
+                  or gameplay rules. T02 verifies the actual projection transition before its policy
+                  is accepted.
+                </li>
+                <li>
+                  Record host CPU/GPU/OS/display, engine/compiler, asset/configuration hashes, input
+                  mappings and a proposed reference matrix covering 1280x720, 1920x1080, a non-16:9
+                  window and native high-DPI backing scale where available. Record
+                  minimum-window/letterbox policy, independent UI scale controls and proposed
+                  CPU/GPU/memory budgets before final measurements; unavailable configurations stay
+                  unverified. This scope introduces no canonical camera wire/schema type. Preserve
+                  MovementState continuous planar/floor semantics and
+                  InputBindingConfiguration/InputBinding meanings without building a production
+                  binding editor.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Production movement/aim, combat, networking/admission, new gameplay enums/schemas,
+                  art production tools, other-platform certification and custom settings menus.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-001.html#BW-001">BW-001</a>,
+                <a href="roadmap-bw-003.html#BW-003">BW-003</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-097-T01-AC-1">
+                  <a href="#BW-097-T01-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    A fresh run opens the versioned native reference level with an explicitly
+                    controlled pawn, default elevated orthographic camera, recognizable floor/target
+                    anchors and resettable stationary/axial/diagonal routes. Record the real launch
+                    and all settings; no missing-asset or implicit external-Actor dependency
+                    remains.
+                  </p>
+                </li>
+                <li id="BW-097-T01-AC-2">
+                  <a href="#BW-097-T01-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    A developer can change and preview every camera fine-tuning parameter using
+                    Unreal UI, save a preset/default and recover it after closing/reopening the
+                    level/editor. Record the UI path, units and validation behavior. Invalid
+                    ranges/nonfinite values fail observably without corrupting the last valid
+                    configuration.
+                  </p>
+                </li>
+                <li id="BW-097-T01-AC-3">
+                  <a href="#BW-097-T01-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    The environment/display/input record distinguishes tested configurations from
+                    proposed/unavailable ones and records baseline budgets before T06. Baseline
+                    Entry map, existing native tests and server behavior remain compatible;
+                    reference routes do not establish authoritative gameplay.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, test worlds and
+                fixtures below are deliverables of this ticket and its prerequisites; these are
+                unexecuted test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.
+python3 tools/check_baseline.py build
+&quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/BW097_Reference -game -windowed -ResX=1280 -ResY=720 -log
+The executable and build command exist. The reference level, fixture controls and camera behavior are planned T01 deliverables and this launch has NOT been executed. T01 must record the actual successful editor/PIE and standalone commands. Run visual checks with rendering enabled; NullRHI cannot verify them.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Planning inspection 2026-10-22: GAME_ROOT is the workspace-root
+                  evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af;
+                  DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main
+                  5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed
+                  read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit
+                  396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS
+                  ARM64. Recheck identities when executing.
+                </li>
+                <li>
+                  Proposed Unreal package /Game/Tests/Camera/BW097_Reference maps to the future
+                  filesystem Content/Tests/Camera/BW097_Reference.umap. Neither exists at planning
+                  time; Content contains no game assets/maps. /Engine/Maps/Entry exists in the
+                  installed engine and remains the baseline startup map. T01 supplies the separate
+                  reference level and its complete fixture setup without replacing bootstrap
+                  defaults.
+                </li>
+                <li>
+                  Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py
+                  and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. The
+                  current native source SHA-256
+                  fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained
+                  validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence;
+                  it is not camera, GPU, connected-client or visual evidence.
+                </li>
+                <li>
+                  Owner direction 2026-10-22: use an isolated camera proof with declared floor
+                  anchors and authorized public entity fixtures; live movement/targeting/visibility
+                  integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and
+                  expose all fine tuning through Unreal UI. Use one validated editor-visible
+                  configuration owner and existing Unreal Details/Project Settings/material or
+                  widget controls rather than a custom settings framework.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Create/open the reference level in Unreal, build through the existing command,
+                  then execute the recorded rendered launch. Inspect stationary, axial and diagonal
+                  scene-only routes and return to reset.
+                </li>
+                <li>
+                  In the documented Unreal Details/asset UI, change each tuning group, preview it in
+                  PIE, save and reopen the editor/level. Restore the default preset. Try an invalid
+                  FOV/width, inverted pitch bounds and invalid transition duration through supported
+                  test input; inspect rejection and preserved valid state.
+                </li>
+                <li>
+                  Record the host/display/backing scale and proposed window/quality/budget matrix.
+                  Run existing focused regressions and game FAST after the integration; final game
+                  FULL is required when executing this implementation ticket.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  The reference scene launches and resets reproducibly with no missing dependencies.
+                  Every fine-tuning group has an editable Unreal UI control with saved values and
+                  actionable validation; no code/ini edit is needed. Tested/proposed settings and
+                  absent live gameplay are explicit.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Stop only the owned PIE/standalone session. Restore the reference configuration
+                  preset through Unreal UI, reset the scene-owned
+                  route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview
+                  input. Reload the reference level and repeat a clean run.
+                </li>
+                <li>
+                  Retain failed and successful captures in bounded task outputs under
+                  GAME_ROOT/artifacts with revision/settings identities. Preserve other editor
+                  sessions, prior evidence, user assets and build caches; no project copies,
+                  worktrees, cache deletion or unrelated asset resaves.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Retain actual native build/launch logs,
+                scene/config/input identities, screenshots of the Unreal tuning controls,
+                save/reload and invalid-setting results, declared display/hardware/budget matrix and
+                repeatable setup/reset. All camera runtime evidence remains unexecuted until this
+                ticket runs.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and original criteria</a>;
+                <a href="../guide/roadmap-maintenance.html#maintenance">Required reuse assessment</a
+                >;
+                <a href="../guide/interface.html#rendering-and-camera"
+                  >Rendering, camera and input</a
+                >;
+                <a href="../guide/testing.html#rendering-verification"
+                  >Camera and visual verification</a
+                >;
+                <a href="../guide/decisions.html#art-direction">Selected 3D pixel-art direction</a>;
+                <a href="../guide/roadmap-coverage.html#open-rendering"
+                  >Camera and visual configuration decision</a
+                >; <a href="../guide/data-inventory.html#movement-state">MovementState</a>;
+                <a href="../guide/data-inventory.html#input-binding-configuration"
+                  >InputBindingConfiguration</a
+                >; <a href="../guide/data-inventory.html#shared-InputBinding">InputBinding</a>;
+                <a href="../guide/data-inventory.html#shared-TestCheck">TestCheck</a>
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-097-t02.html#BW-097-T02">Next: BW-097-T02</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>
