@@ -375,9 +375,9 @@
           "href": "guide/networking.html"
         }
       ],
-      "status": "In Progress",
+      "status": "Complete",
       "blockers": [],
-      "ordering_rationale": "BW-003-T01 through T04 are Complete. Current default FULL reruns attributable fixture execution, seeded replay/reset, correlated/redacted diagnostics, bounded tick/entity/unequal-logical-recipient payload/FIFO measurements, every isolated control/recovery and normal Game/source-Server package exclusion. Parent AC1 through AC4 have scoped passing evidence. BW-003-T05 remains Not Started: the required --suite all command, two complete matching manifests and aggregate omission/failure/stale/foreign/partial-report controls are unimplemented. T05 now has both prerequisites Complete. BW-001/BW-002 remain Complete; no canonical contract or admission rule changed and all prerequisite gates pass. BW-003 remains In Progress and Dependency-ready pending T05 integration; BW-097/BW-095/BW-012 stay Not Started with BW-003 unmet. The approved local-probe/logical-recipient/serialized-payload boundary and production connectivity/gameplay/durability/capacity limitations remain unchanged.",
+      "ordering_rationale": "All five BW-003 tickets are Complete after T05 default native FULL and the four-criterion parent review. Two independent four-suite aggregates reproduce deterministic outcomes; all omitted/failed/stale/foreign/partial controls reject with matching source/context evidence, existing stage controls remain covered, and normal Game/source-Server packages exclude fixture controls/data. BW-001/BW-002 remain Complete with current applicable regressions and unchanged canonical/native owners. BW-003 leaves Dependency-ready; BW-097/BW-095 become Dependency-ready while remaining Not Started. BW-012 stays Not Started with BW-011/BW-013/BW-028 unmet. Only the approved finite local probe, logical recipients and serialized payload bytes are certified; production connectivity/gameplay/durability/capacity remain independent work.",
       "verified_evidence": [
         {
           "criteria": [
@@ -420,6 +420,18 @@
           "revision": "BriarwakeUnreal 18251dac07c07d0e4e0b9d2776980a66082141d9; native source SHA-256 b650493699d785a261e083faa01bc832944b73719979e74545bf62e810fe8bd9",
           "result": "Passed",
           "summary": "Parent AC4 passes from current T04 raw monotonic duration/entity/unequal-recipient serialized payload/FIFO measurements, independent recomputation, bounds/empty/reset/tampering controls and recovery. AC1/AC2/AC3 remain applicable and pass current T01/T02/T03 FULL stages. BW-003 stays In Progress because required T05 aggregate integration remains unimplemented."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T05/review.json",
+          "revision": "BriarwakeUnreal 03f16be061e5f6f1991d1fa86f1d560cda3ab90b; native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72",
+          "result": "Passed",
+          "summary": "All four parent criteria, hard prerequisites and all five children pass current native integration within the approved local-probe scope."
         }
       ],
       "phase": "phase-foundations"
@@ -675,7 +687,7 @@
         "Two clients agree on authoritative movement and entity identity after join, leave and re-entry.",
         "A new observer receives current state rather than depending on an earlier event it never saw.",
         "Stale or duplicate snapshots do not resurrect despawned entities or overwrite newer state.",
-        "Owner resources and private recovery state are absent from another client’s public snapshots; unavailable references fail safely."
+        "Owner resources and private recovery state are absent from another client\u2019s public snapshots; unavailable references fail safely."
       ],
       "completion_evidence": "Two-client lifecycle traces including late join and stale snapshot injection.",
       "related_docs": [
@@ -705,7 +717,7 @@
       "recommended_predecessors": [],
       "acceptance_criteria": [
         "At 0, 50, 100, 150 and 250 ms RTT, correction converges to the server position without applying acknowledged input twice.",
-        "Jitter and 1–5% packet loss do not leave permanent remote motion divergence after state delivery resumes.",
+        "Jitter and 1\u20135% packet loss do not leave permanent remote motion divergence after state delivery resumes.",
         "Collision corrections and ownership changes discard obsolete prediction history and cannot move a character through a wall.",
         "Record correction magnitude/frequency and input response for each scenario, with an explicit review of understandable failure at 250 ms.",
         "Render-camera alignment and visual interpolation do not quantize predicted or authoritative positions; slow tracking during correction and teleport/reset cases remain understandable in the selected low-resolution view."
@@ -988,7 +1000,7 @@
       "acceptance_criteria": [
         "A repeatable workload drives moving clients and implemented actions, includes burst joins/departures, and records client count, content/rules versions, hardware and measurement duration.",
         "Reports retain tick median/tail percentiles, queue depth, memory, bytes per client, rejection/duplicate counts and recovery behavior rather than connection counts alone. Record the actual client render configuration and frame timings separately so rendering cost is not mistaken for a server or bandwidth limit.",
-        "Latency runs include 0/50/100/150/250 ms RTT plus declared jitter, snapshot reordering and 1–5% loss; failures and rejected inputs remain visible.",
+        "Latency runs include 0/50/100/150/250 ms RTT plus declared jitter, snapshot reordering and 1\u20135% loss; failures and rejected inputs remain visible.",
         "The report identifies measured constraints and bounded next changes, explicitly distinguishes prototype rates from achieved capacity and records unresolved budgets before further scale claims."
       ],
       "completion_evidence": "Required future proof: reproducible workload/configuration, raw measurements and a reviewed bottleneck report tied to the tested build, with reruns for any claimed improvement.",
@@ -1803,7 +1815,7 @@
       "id": "BW-034",
       "title": "Profession enrollment and skill progression",
       "objective": "Keep profession learning independent of combat level and talent currencies.",
-      "scope": "Two manufacturing slots, two gathering slots, three universal life skills, skill 1–300 and deterministic progress accounting. Training and declared acquisition sources grant durable recipe knowledge; deactivation retains learned recipes.",
+      "scope": "Two manufacturing slots, two gathering slots, three universal life skills, skill 1\u2013300 and deterministic progress accounting. Training and declared acquisition sources grant durable recipe knowledge; deactivation retains learned recipes.",
       "hard_dependencies": [
         "BW-021"
       ],
@@ -2093,7 +2105,7 @@
     {
       "id": "BW-039",
       "title": "First complete beginner journey",
-      "objective": "Deliver the first complete level 1–10 player experience using a declared representative playable roster.",
+      "objective": "Deliver the first complete level 1\u201310 player experience using a declared representative playable roster.",
       "scope": "Equivalent faction-separated starter layouts for an initial Warrior/Bard/Mage roster, bound early kits, guidance, solo graduation and a safe explicit exit; full roster acceptance is BW-052.",
       "hard_dependencies": [
         "BW-026",
@@ -2853,7 +2865,7 @@
       "id": "BW-052",
       "title": "Every-roster beginner certification",
       "objective": "Prove the complete opening journey for every documented legal character choice.",
-      "scope": "All eleven races, both Human allegiances, twelve classes, level-1–10 ability/talent bindings and specialization graduations; full higher-level kit/tree certification remains separate.",
+      "scope": "All eleven races, both Human allegiances, twelve classes, level-1\u201310 ability/talent bindings and specialization graduations; full higher-level kit/tree certification remains separate.",
       "hard_dependencies": [
         "BW-039",
         "BW-040",
@@ -3197,7 +3209,7 @@
       "acceptance_criteria": [
         "Each admitted item-use timing policy commits one owned item and one permitted effect; duplicate requests and concurrent trade/equip use cannot create free or repeated output.",
         "First Aid follows the authored six-second interruptible channel and 60-second recipient treatment lock; damage interruption, concurrent healers and retries cannot bypass the lock or duplicate ticks.",
-        "Food/preparation and consumable categories obey their authored caps and fixed level-band effects; old low-band supplies do not scale from a high-level consumer’s maximum resources.",
+        "Food/preparation and consumable categories obey their authored caps and fixed level-band effects; old low-band supplies do not scale from a high-level consumer\u2019s maximum resources.",
         "Mode restrictions, invalid targets and unavailable items produce explicit rejection; UI shows timing, shared cooldown and treatment availability before use."
       ],
       "completion_evidence": "Executed consumption, interruption, category and concurrent-treatment fixtures with item/receipt and effective-output traces; reviewed timing bindings for item-use policies.",
@@ -3280,7 +3292,7 @@
       ],
       "recommended_predecessors": [],
       "acceptance_criteria": [
-        "Every profession has validated bands 1–300, legal mastery routes and accessible basic training/tools on both factions.",
+        "Every profession has validated bands 1\u2013300, legal mastery routes and accessible basic training/tools on both factions.",
         "Manufacturing bands provide useful entry, repeat-demand, upgrade and service/tool outputs with exact numerical/binding contracts.",
         "Consumables, bags, tools, shields, instruments, gems, enchants and utility items obey their actual slot/category budgets.",
         "Rare/earned cores are excluded from material-saving effects; gathering, prospecting, salvage and conversion graphs cannot amplify materials or skill indefinitely.",
@@ -3480,7 +3492,7 @@
     },
     {
       "id": "BW-053",
-      "title": "Level 11–60 progression journey",
+      "title": "Level 11\u201360 progression journey",
       "objective": "Provide an authored, traversable route from beginner departure to the documented level cap.",
       "scope": "Release-selected leveling maps, quests, NPC kits, loot and ability-unlock opportunities tested with a declared supported roster; all-roster integration is BW-073, with no invented zone count or lore.",
       "hard_dependencies": [
@@ -4036,7 +4048,7 @@
       "id": "BW-092",
       "title": "Full-game integrated regression and balance signoff",
       "objective": "Demonstrate the intended game as connected player journeys and resolve release-blocking interaction and balance findings.",
-      "scope": "Release-candidate integration across characters, level 1–60, enabled roster, groups/PvP, world travel, economy/professions, social systems and presentation. This is evidence of integration beyond individual epic completion.",
+      "scope": "Release-candidate integration across characters, level 1\u201360, enabled roster, groups/PvP, world travel, economy/professions, social systems and presentation. This is evidence of integration beyond individual epic completion.",
       "hard_dependencies": [
         "BW-072",
         "BW-073",
@@ -4204,7 +4216,7 @@
     {
       "id": "milestone-opening",
       "title": "First complete persistent opening playtest",
-      "objective": "Validate the documented level 1–10 flow for a representative supported roster and prepare external testing.",
+      "objective": "Validate the documented level 1\u201310 flow for a representative supported roster and prepare external testing.",
       "required_epics": [
         "BW-032",
         "BW-085",
@@ -4267,7 +4279,7 @@
         "BW-074",
         "BW-089"
       ],
-      "outcome": "Level 1–60, voluntary PvE level sync, dungeons/raids, flagged/duel/objective PvP, professions/economy, full-state recovery and accessible presentation have certified content and recorded balance/relevance findings. Complete character and environment art passes the supported visual-quality and performance checks."
+      "outcome": "Level 1\u201360, voluntary PvE level sync, dungeons/raids, flagged/duel/objective PvP, professions/economy, full-state recovery and accessible presentation have certified content and recorded balance/relevance findings. Complete character and environment art passes the supported visual-quality and performance checks."
     },
     {
       "id": "milestone-production",
@@ -4446,7 +4458,7 @@
     {
       "id": "decision-journey",
       "title": "Two meanings of playable",
-      "choice": "Use a minimal technical multiplayer proof first; retain the level 1–10 beginner area as the first complete persistent player journey. Prove a representative supported kit before all-roster graduation certification.",
+      "choice": "Use a minimal technical multiplayer proof first; retain the level 1\u201310 beginner area as the first complete persistent player journey. Prove a representative supported kit before all-roster graduation certification.",
       "alternatives": "Making the full beginner journey the first experiment combines identity, economy, XP, quests and content before authority is checked. Waiting for all 12 classes before any beginner playtest delays useful usability evidence. The representative slice is explicitly incomplete roster evidence.",
       "basis": "The beginner requirements mandate solo completion, equivalent faction opportunities, normal unlock levels and enough required XP without optional grinding. They do not mandate that no smaller technical experiment precede them.",
       "epics": [
@@ -4757,7 +4769,7 @@
       ]
     },
     {
-      "family": "Quest credit, required beginner XP, optional tutorials, solo graduation and level 11–60 content",
+      "family": "Quest credit, required beginner XP, optional tutorials, solo graduation and level 11\u201360 content",
       "epics": [
         "BW-033",
         "BW-039",
@@ -5085,7 +5097,7 @@
       "title": "Concrete world and starter records",
       "kind": "Open decision",
       "description": "Author finite functional maps, appearance assets, starter instructions, NPC kits, loot tables, recovery/exit locations and required XP allocations within existing contracts. No names, lore, branching narrative system or detailed new geography are inferred here.",
-      "resolution_gate": "Representative records before BW-039; full-roster starter and level 11–60 content before BW-052/BW-053, and reviewed release-content manifest before BW-092.",
+      "resolution_gate": "Representative records before BW-039; full-roster starter and level 11\u201360 content before BW-052/BW-053, and reviewed release-content manifest before BW-092.",
       "epics": [
         "BW-020",
         "BW-033",
@@ -5116,7 +5128,7 @@
       "title": "Runtime bindings and complete release inventory",
       "kind": "Open decision",
       "description": "Prototype profiles do not establish the named secondary ability/talent behavior. The supplied 257 recipes and sample items are representative, not the launch inventory. Decide concrete compatible bindings and complete useful content within the documented class/profession scope.",
-      "resolution_gate": "BW-047–051 and BW-062 certify the intended full scope; BW-092 rejects missing required roster/content rather than silently shrinking the game.",
+      "resolution_gate": "BW-047\u2013051 and BW-062 certify the intended full scope; BW-092 rejects missing required roster/content rather than silently shrinking the game.",
       "epics": [
         "BW-047",
         "BW-048",
@@ -5176,7 +5188,7 @@
       "title": "Measured balance, usability and content limits",
       "kind": "Open decision",
       "description": "Approve balance deviations and launch content bounds using equal-budget role/build/faction tests, actual progression, supported input devices and accessible visual feedback. Twelve classes, 37 specializations and level cap 60 remain requirements; a smaller technical slice is not permission to omit them.",
-      "resolution_gate": "Representative proof before expansion; BW-071–074 and BW-092 resolve release-blocking findings using documented test standards.",
+      "resolution_gate": "Representative proof before expansion; BW-071\u2013074 and BW-092 resolve release-blocking findings using documented test standards.",
       "epics": [
         "BW-032",
         "BW-052",
@@ -5325,7 +5337,7 @@
     "Moved the durable ownership/recovery probe into the first review group so database correctness can be tested alongside simulation instead of waiting for a full role encounter. It has no combat dependency.",
     "Kept privacy in the initial entity projection and added richer relevance bounds before the first integrated action. Prediction follows authoritative movement but is a recommendation for the technical proof, not a fabricated prerequisite of numerical combat.",
     "Introduced a representative signature-resource probe before role and starter integration; full pets, forms, maintained support and damage-debt families precede roster expansion, rather than every first playable interaction.",
-    "Separated a representative beginner playtest from full-roster level 1–10 certification. Optional crafting and grouping remain optional to a player, while the documented introductions still need integration evidence.",
+    "Separated a representative beginner playtest from full-roster level 1\u201310 certification. Optional crafting and grouping remain optional to a player, while the documented introductions still need integration evidence.",
     "Separated local travel and instance identity from cross-process ownership. Simple handoff is tested before final advanced-state recovery; the first handoff does not certify mechanics introduced afterward.",
     "Removed global phase barriers and kept social, profession and economic branches independently actionable. Recommended predecessors express integration convenience; only observable prerequisites are hard edges.",
     "Required provider security and a real restore before persistent external testing, while early headless fixtures and restricted technical sessions stay small. Final capacity and incidents wait for representative full workloads.",
@@ -5854,7 +5866,7 @@
       "id": "BW-003-T05",
       "parent_epic": "BW-003",
       "title": "Verify the complete native fixture evidence path",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-003-AC-1",
         "BW-003-AC-2",
@@ -5929,30 +5941,44 @@
         }
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).\nPlanned and unverified until this ticket is implemented:\npython3 tools/check_runtime_fixtures.py --suite all",
+        "launch": "Working directory: GAME_ROOT (workspace containing Briarwake.uproject).\npython3 tools/check_baseline.py build\npython3 tools/check_runtime_fixtures.py --suite all --output artifacts/fixture-first\npython3 tools/check_runtime_fixtures.py --suite all --compare-run artifacts/fixture-first --output artifacts/fixture-second\nFinal complete route: python3 tools/validate.py",
         "setup": [
-          "Use the existing workspace GAME_ROOT containing Briarwake.uproject (evanmcpheron/BriarwakeUnreal), with DOCS_ROOT at GAME_ROOT/mmo_docs. Planning inspection used game main 32a98048e29a0cacea61a6f02f33ad609bc3d84e and documentation main 4af095810603eb82623cb889f20f7da751d0606d. BW-001 and BW-002 are Complete; the pre-T01 70-file native source SHA-256 729261345ad355570f687ccacda0b3ca38259512e0428a2ea75d17572699fb69 matches retained BW-002-T07 verification. BW-003-T01 through T04 now provide verified attributable execution, seeded replay/control isolation, correlated redacted diagnostics and bounded local probe measurements. Both T05 prerequisites are Complete; its integrated suite remains unimplemented. Recheck current evidence applicability before this ticket. Work in these existing checkouts and build directories without worktrees, project copies, cache deletion or overwriting prior evidence.",
-          "The inspected baseline is UE 5.8.3 Launcher CL 58210709 plus pinned patched source commit 396c9f059903aed5fec78ecd3d437a40c6415368, Xcode 27.0 build 27A266a, macOS ARM64 Development. Both engines and Xcode pass the existing read-only verify_toolchain checks. tools/toolchain.lock.json owns identities. Briarwake.Build.cs uses Core/CoreUObject/Engine and private Json. Editor, Game, Client and Server target rules exist; Editor/Game/source-Server have retained execution evidence, while the separate Client-only target does not.",
-          "Reuse FServerConfiguration, FContentContracts, FValidationFinding, FContentRevisions and FContentAdmission in Source/Briarwake; the existing test boundary is WITH_EDITOR && WITH_DEV_AUTOMATION_TESTS. Seven registered native tests cover two baseline cases plus encodings, revisions, atomic admission, readiness and economy. tools/check_baseline.py owns source identity, toolchain checks and bounded processes; tools/check_content_admission.py owns content reports. T01 adds tools/check_runtime_fixtures.py --suite evidence, FRuntimeFixtureEvidence and transient UWorld creation/destruction. BW-003-T02 now provides verified FRuntimeFixtureContext replay/clock/random/queue controls and normal-package isolation; BW-003-T03 now provides verified correlated/redacted diagnostics through the same probe/evidence owner; BW-003-T04 now provides verified bounded measurements through the same probe/evidence owner. The original seven-test prerequisite aggregate is preserved; the evidence suite is a separate eighth test. The private FBindingGateProbe is a metadata-readiness test, not a world/tick/traffic fixture.",
-          "No project .umap exists under Content. Config/DefaultEngine.ini selects Unreal package /Engine/Maps/Entry, verified at Engine/Content/Maps/Entry.umap in both installed engines. That is an engine asset, not a project filesystem path. T01 provides a transient automation UWorld with destruction/GC assertions; later suites extend that owner. MultiplayerSessions is present with OnlineSubsystem/Steam dependencies, without connected-session or replication certification.",
-          "Commands run from GAME_ROOT. Existing prerequisites are python3 tools/check_baseline.py build, python3 tools/check_content_admission.py --suite all and final python3 tools/validate.py; inspect their current options before execution. T01 evidence execution and its assertion/missing-report/load/startup/timeout controls are implemented. The later suite launch command below remains planned and unverified until this ticket is implemented. Each implementation ticket must document its actual native invocation and integrate affected checks into the existing validation entrypoint. Run documentation generation/validation from DOCS_ROOT using README.txt."
+          "Use the existing GAME_ROOT and DOCS_ROOT=GAME_ROOT/mmo_docs checkouts. Task bases: game origin/main 9804d8a08cc45b712dd3582adac5d901119c30f8; docs origin/main 3f0fa19aead31265032ad48a99fd3c9927aaa4d7. Preserve existing outputs and build directories; no worktree, clone, project copy or cache deletion.",
+          "Pinned macOS ARM64 Development, installed UE 5.8.3 CL 58210709, source Server engine commit 396c9f059903aed5fec78ecd3d437a40c6415368 with the approved lock-file patch, Xcode 27.0 build 27A266a and Apple M2 Max. tools/toolchain.lock.json and each run environment own the exact identities.",
+          "The four existing Briarwake.RuntimeFixtures automation tests create/destroy transient UWorlds under WITH_EDITOR && WITH_DEV_AUTOMATION_TESTS. No map, asset, reflection, gameplay RPC or interactive editor/MCP change is required. The existing canonical FContentContracts/FContentAdmission/FRuntimeFixtureEvidence/FRuntimeFixtureContext owners remain unchanged.",
+          "Build first. Each aggregate dispatches fresh evidence/context/diagnostics/metrics processes and then reuses their existing verifiers. manifest.json binds relative child artifact paths, SHA-256, nonces, exact source/module/input/toolchain identities, actual assertion counts and deterministic outcomes. Native Unicode JSON is decoded from bytes; payload measurements retain their separate UTF-8 policy."
         ],
         "actions": [
-          "Run the launch block twice into independent fresh outputs. Inspect the aggregate manifests, every child assertion/report, source and context hashes, outcome equality, sanitized sample and raw measurements.",
-          "Exercise the new omitted/failed-child, stale/foreign-context and partial-report aggregate cases. Reuse applicable T01 stage-control/recovery evidence or run its existing controls if affected inputs changed. Then run a fresh clean aggregate and confirm preexisting outputs remain preserved and rejected.",
-          "Run python3 tools/validate.py from GAME_ROOT after suite integration and retain its exact supported-stage results, including baseline/content regressions, current fixture suites and normal package isolation. Reuse applicable execution artifacts for the parent review. Map all four parent criteria and limitations, then rebuild/check DOCS_ROOT using README.txt."
+          "Run the launch block in two fresh outputs. Inspect manifest.json and run.json, every child native/automation report, the diagnostic shareable-sample.json and metrics recomputed-metrics.json. The second aggregate must reverify the first and require distinct child nonces plus deterministic replay equality; processing durations and volatile run/scenario/action IDs are excluded from equality.",
+          "Run --suite all --control omitted-child, failed-child, stale-context, foreign-context and partial-report separately, each with --prior-run artifacts/fixture-first and a fresh output. Reuse a matching existing T01 assertion control with --failed-child PATH if available; otherwise failed-child invokes the existing T01 control once. Inspect the exact failure_category/control_detection and nonzero exit; missing tools cannot satisfy controls.",
+          "Run python3 tools/validate.py. FULL runs the original seven-test prerequisite aggregate and its controls, compiler rejection/recovery before the first fixture aggregate, all T01-T04 controls, new aggregate controls using exact matching retained child evidence, and a fresh four-suite aggregate recovery with replay comparison. Game/source-Server build/package/smoke and decoded/loose artifact/control exclusion still run.",
+          "Attempt reuse of an existing --output and compare all prior file hashes. Reverify disposable copies with omitted, changed or missing child artifacts and inspect explicit rejection. Review all four parent criteria, every child and hard prerequisite against actual retained artifacts before completion; then regenerate and inspect dashboard, foundations, milestones, epic/ticket pages, dependent readiness, inventory, search and navigation."
         ],
         "expected_results": [
-          "Both clean aggregates pass using current native execution evidence; all controls fail distinctly and clean recovery passes. No previous artifact is silently reused.",
-          "Prerequisite regressions pass, normal gameplay lacks fixture controls and parent review accurately distinguishes this bounded experiment from unimplemented systems."
+          "Both complete aggregates pass only after all four native verifiers pass at matching identities. Native lifecycle/assertions, immutable authored specifications, correlated accepted/rejected/retried actions, seeded replay/reset, sentinel redaction and raw timing/entity/unequal-logical-recipient-byte/FIFO measurements remain attributable.",
+          "All aggregate controls return nonzero with their specific rejection and actual source/child/context evidence. Existing T01 stage controls remain independent actual executions; clean recovery succeeds and prior evidence stays unchanged. Default FULL preserves BW-001/BW-002 and normal Game/Server package exclusion.",
+          "This is the approved finite local probe with logical recipients and serialized payload bytes. Connected clients, wire traffic, production gameplay, database durability and launch capacity are not certified. Later epics retain independent implementation status."
         ],
         "reset": [
-          "The runner must stop timed-out child processes and tear down its transient UWorld, fixture clock, seed, queue and test-owned state. Normal client/server launches must remain unaffected.",
-          "Retain previous logs/reports; rerun into a new default output directory. Controls modify only disposable inputs. Never overwrite prior evidence or modify canonical sources, user maps or assets to reset a run."
+          "Allow each child to destroy/GC its transient world. Existing timeout control terminates/reaps its owned process group. Context reset clears clock/seed/queue/probe and measurement state; no gameplay control handler exists in normal packages.",
+          "Keep prior outputs and use new names under GAME_ROOT/artifacts. Never overwrite reports, resave maps/assets, remove caches or modify canonical specifications to reset a run. Documentation evidence is retained separately under DOCS_ROOT/validation/tickets/BW-003-T05."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "artifact": "validation/tickets/BW-003-T05/review.json",
+          "revision": "BriarwakeUnreal 03f16be061e5f6f1991d1fa86f1d560cda3ab90b; native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72",
+          "result": "Passed",
+          "summary": "All four ticket criteria pass current aggregate/control/replay/FULL evidence and explicit parent review."
+        }
+      ]
     },
     {
       "id": "BW-001-T08",
@@ -7612,7 +7638,7 @@
       ],
       "acceptance_criteria": [
         "Connected owner prediction converges to server movement after correction without replaying acknowledged input twice; remote motion recovers after delivery resumes.",
-        "Collision correction, ownership change, teleport and reset discard obsolete history and cannot tunnel through a wall or apply another owner epoch’s input.",
+        "Collision correction, ownership change, teleport and reset discard obsolete history and cannot tunnel through a wall or apply another owner epoch\u2019s input.",
         "A focused native-path comparison records what configuration/extension was actually needed; custom prediction requires an observed mismatch with the unchanged parent behavior."
       ],
       "completion_evidence": "Retain attributable executed positive/negative results for every ticket criterion, the actual build/launch/reset procedure, tested input identities and applicable focused regressions. Include correlated dedicated-server and two-client traces, recipient observations and reset/recovery evidence. Report unexecuted prerequisites explicitly; documentation validation and engine API availability cannot satisfy runtime evidence.",
@@ -7662,7 +7688,7 @@
         ],
         "expected_results": [
           "Connected owner prediction converges to server movement after correction without replaying acknowledged input twice; remote motion recovers after delivery resumes.",
-          "Collision correction, ownership change, teleport and reset discard obsolete history and cannot tunnel through a wall or apply another owner epoch’s input.",
+          "Collision correction, ownership change, teleport and reset discard obsolete history and cannot tunnel through a wall or apply another owner epoch\u2019s input.",
           "A focused native-path comparison records what configuration/extension was actually needed; custom prediction requires an observed mismatch with the unchanged parent behavior."
         ],
         "reset": [
@@ -7697,7 +7723,7 @@
         "BW-008-T01"
       ],
       "acceptance_criteria": [
-        "At 0/50/100/150/250 ms measured RTT, declared jitter and 1–5% loss, retain correction magnitude/frequency, response and convergence evidence; failures and recovery remain visible.",
+        "At 0/50/100/150/250 ms measured RTT, declared jitter and 1\u20135% loss, retain correction magnitude/frequency, response and convergence evidence; failures and recovery remain visible.",
         "Remote motion has no permanent divergence after state delivery resumes; acknowledgments are not applied twice. Review understandable failure at 250 ms explicitly rather than requiring identical latency-free play.",
         "With recorded low-resolution display/camera settings, slow tracking during correction, teleport/reset and visual interpolation preserves continuous positions and understandable alignment; camera pixel treatment does not quantize simulation or predicted state."
       ],
@@ -7747,7 +7773,7 @@
           "Capture motion/correction metrics and recordings during slow camera tracking, collision correction and teleport/reset; review the 250 ms failure/recovery experience."
         ],
         "expected_results": [
-          "At 0/50/100/150/250 ms measured RTT, declared jitter and 1–5% loss, retain correction magnitude/frequency, response and convergence evidence; failures and recovery remain visible.",
+          "At 0/50/100/150/250 ms measured RTT, declared jitter and 1\u20135% loss, retain correction magnitude/frequency, response and convergence evidence; failures and recovery remain visible.",
           "Remote motion has no permanent divergence after state delivery resumes; acknowledgments are not applied twice. Review understandable failure at 250 ms explicitly rather than requiring identical latency-free play.",
           "With recorded low-resolution display/camera settings, slow tracking during correction, teleport/reset and visual interpolation preserves continuous positions and understandable alignment; camera pixel treatment does not quantize simulation or predicted state."
         ],
@@ -8026,7 +8052,7 @@
         "BW-010-AC-4"
       ],
       "scope": [
-        "Extend the same T01 cast owner/reservation API and BW-004 identity; reuse the release ticket’s shared transitions if present without creating another state machine.",
+        "Extend the same T01 cast owner/reservation API and BW-004 identity; reuse the release ticket\u2019s shared transitions if present without creating another state machine.",
         "Implement supported channel_start_commit and accepted instant transitions with atomic cost/cooldown commitment and finite cancellation/timing fixtures. Publish one committed effect intent; release-commit behavior remains T02.",
         "Extend the existing native automation/report path with focused behavior and failure cases; retain exact engine/source/content/rules/configuration identities and actual assertions. Reuse FContentContracts and its canonical extractor/reference closure where these contracts cross a boundary; a schema does not require a separate UObject or new wire protocol. Do not duplicate admission, replay or domain rules in UI/transport."
       ],
@@ -8335,7 +8361,7 @@
           "Use no example lobby path or unverified project map. Supply the fixture/controls and exact launch options in this ticket; no production account integration, persistence or unrelated assets are prerequisites."
         ],
         "actions": [
-          "Move distinguishable entities across floor/instance/hidden/authorization boundaries and inspect both clients’ initial/update packets and target queries.",
+          "Move distinguishable entities across floor/instance/hidden/authorization boundaries and inspect both clients\u2019 initial/update packets and target queries.",
           "Change ownership/zoom and exercise permitted reveal markers plus hidden-source outcomes; search received fields for private sentinels and joinable correlation IDs."
         ],
         "expected_results": [
@@ -8824,7 +8850,7 @@
         "BW-028"
       ],
       "acceptance_criteria": [
-        "Two clients move, select a legal target and observe the same cast and one resulting health change from the server’s single root action; feature owners remain the only state/rule owners.",
+        "Two clients move, select a legal target and observe the same cast and one resulting health change from the server\u2019s single root action; feature owners remain the only state/rule owners.",
         "Retain correlated server/client/feedback traces with action latency, actual tick/traffic observations and clear client failure reasons in the executed scenario. State what is measured and unavailable."
       ],
       "completion_evidence": "Retain attributable executed positive/negative results for every ticket criterion, the actual build/launch/reset procedure, tested input identities and applicable focused regressions. Include correlated dedicated-server and two-client traces, recipient observations and reset/recovery evidence. Report unexecuted prerequisites explicitly; documentation validation and engine API availability cannot satisfy runtime evidence.",
@@ -8873,7 +8899,7 @@
           "Compare root action, resource/cooldown commit and health/cast feedback across server and both clients; inspect actual latency/tick/traffic observations."
         ],
         "expected_results": [
-          "Two clients move, select a legal target and observe the same cast and one resulting health change from the server’s single root action; feature owners remain the only state/rule owners.",
+          "Two clients move, select a legal target and observe the same cast and one resulting health change from the server\u2019s single root action; feature owners remain the only state/rule owners.",
           "Retain correlated server/client/feedback traces with action latency, actual tick/traffic observations and clear client failure reasons in the executed scenario. State what is measured and unavailable."
         ],
         "reset": [
@@ -9069,7 +9095,7 @@
       ],
       "scope": [
         "Reuse T01 real workload and native network emulation; reuse equivalent BW-008 correction scenarios/evidence when input/workload scope matches, without assuming single-character proof covers load.",
-        "Run the representative workload at measured 0/50/100/150/250 ms RTT with declared jitter/reordering/1–5% loss. Record failures and a bounded bottleneck/budget review; distinguish prototype configured rates from achieved behavior. Optional Graph/Iris/custom changes require concrete measured need and a separate scoped decision.",
+        "Run the representative workload at measured 0/50/100/150/250 ms RTT with declared jitter/reordering/1\u20135% loss. Record failures and a bounded bottleneck/budget review; distinguish prototype configured rates from achieved behavior. Optional Graph/Iris/custom changes require concrete measured need and a separate scoped decision.",
         "Extend the existing native automation/report path with focused behavior and failure cases; retain exact engine/source/content/rules/configuration identities and actual assertions. Reuse FContentContracts and its canonical extractor/reference closure where these contracts cross a boundary; a schema does not require a separate UObject or new wire protocol. Do not duplicate admission, replay or domain rules in UI/transport.",
         "Deliver a bounded dedicated-server/two-client scenario using the existing process/evidence utilities, with exact verified executable/map/setup/reset instructions. No project gameplay map currently exists; use a ticket-owned minimal fixture or transient world on the verified /Engine/Maps/Entry bootstrap as appropriate. Keep scenario controls test-only and extend the existing validation entrypoint without a second runner framework."
       ],

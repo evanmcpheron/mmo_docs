@@ -157,7 +157,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-003-T05">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">Complete</span> · Parent epic:
                 <a href="roadmap-bw-003.html#BW-003"
                   >BW-003 · Repeatable runtime fixtures and diagnostics</a
                 >
@@ -277,117 +277,112 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Working directory: GAME_ROOT (the verified directory containing Briarwake.uproject).
-Planned and unverified until this ticket is implemented:
-python3 tools/check_runtime_fixtures.py --suite all</code></pre>
+              <pre><code>Working directory: GAME_ROOT (workspace containing Briarwake.uproject).
+python3 tools/check_baseline.py build
+python3 tools/check_runtime_fixtures.py --suite all --output artifacts/fixture-first
+python3 tools/check_runtime_fixtures.py --suite all --compare-run artifacts/fixture-first --output artifacts/fixture-second
+Final complete route: python3 tools/validate.py</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the existing workspace GAME_ROOT containing Briarwake.uproject
-                  (evanmcpheron/BriarwakeUnreal), with DOCS_ROOT at GAME_ROOT/mmo_docs. Planning
-                  inspection used game main 32a98048e29a0cacea61a6f02f33ad609bc3d84e and
-                  documentation main 4af095810603eb82623cb889f20f7da751d0606d. BW-001 and BW-002 are
-                  Complete; the pre-T01 70-file native source SHA-256
-                  729261345ad355570f687ccacda0b3ca38259512e0428a2ea75d17572699fb69 matches retained
-                  BW-002-T07 verification. BW-003-T01 through T04 now provide verified attributable
-                  execution, seeded replay/control isolation, correlated redacted diagnostics and
-                  bounded local probe measurements. Both T05 prerequisites are Complete; its
-                  integrated suite remains unimplemented. Recheck current evidence applicability
-                  before this ticket. Work in these existing checkouts and build directories without
-                  worktrees, project copies, cache deletion or overwriting prior evidence.
+                  Use the existing GAME_ROOT and DOCS_ROOT=GAME_ROOT/mmo_docs checkouts. Task bases:
+                  game origin/main 9804d8a08cc45b712dd3582adac5d901119c30f8; docs origin/main
+                  3f0fa19aead31265032ad48a99fd3c9927aaa4d7. Preserve existing outputs and build
+                  directories; no worktree, clone, project copy or cache deletion.
                 </li>
                 <li>
-                  The inspected baseline is UE 5.8.3 Launcher CL 58210709 plus pinned patched source
-                  commit 396c9f059903aed5fec78ecd3d437a40c6415368, Xcode 27.0 build 27A266a, macOS
-                  ARM64 Development. Both engines and Xcode pass the existing read-only
-                  verify_toolchain checks. tools/toolchain.lock.json owns identities.
-                  Briarwake.Build.cs uses Core/CoreUObject/Engine and private Json. Editor, Game,
-                  Client and Server target rules exist; Editor/Game/source-Server have retained
-                  execution evidence, while the separate Client-only target does not.
+                  Pinned macOS ARM64 Development, installed UE 5.8.3 CL 58210709, source Server
+                  engine commit 396c9f059903aed5fec78ecd3d437a40c6415368 with the approved lock-file
+                  patch, Xcode 27.0 build 27A266a and Apple M2 Max. tools/toolchain.lock.json and
+                  each run environment own the exact identities.
                 </li>
                 <li>
-                  Reuse FServerConfiguration, FContentContracts, FValidationFinding,
-                  FContentRevisions and FContentAdmission in Source/Briarwake; the existing test
-                  boundary is WITH_EDITOR &amp;&amp; WITH_DEV_AUTOMATION_TESTS. Seven registered
-                  native tests cover two baseline cases plus encodings, revisions, atomic admission,
-                  readiness and economy. tools/check_baseline.py owns source identity, toolchain
-                  checks and bounded processes; tools/check_content_admission.py owns content
-                  reports. T01 adds tools/check_runtime_fixtures.py --suite evidence,
-                  FRuntimeFixtureEvidence and transient UWorld creation/destruction. BW-003-T02 now
-                  provides verified FRuntimeFixtureContext replay/clock/random/queue controls and
-                  normal-package isolation; BW-003-T03 now provides verified correlated/redacted
-                  diagnostics through the same probe/evidence owner; BW-003-T04 now provides
-                  verified bounded measurements through the same probe/evidence owner. The original
-                  seven-test prerequisite aggregate is preserved; the evidence suite is a separate
-                  eighth test. The private FBindingGateProbe is a metadata-readiness test, not a
-                  world/tick/traffic fixture.
+                  The four existing Briarwake.RuntimeFixtures automation tests create/destroy
+                  transient UWorlds under WITH_EDITOR &amp;&amp; WITH_DEV_AUTOMATION_TESTS. No map,
+                  asset, reflection, gameplay RPC or interactive editor/MCP change is required. The
+                  existing canonical
+                  FContentContracts/FContentAdmission/FRuntimeFixtureEvidence/FRuntimeFixtureContext
+                  owners remain unchanged.
                 </li>
                 <li>
-                  No project .umap exists under Content. Config/DefaultEngine.ini selects Unreal
-                  package /Engine/Maps/Entry, verified at Engine/Content/Maps/Entry.umap in both
-                  installed engines. That is an engine asset, not a project filesystem path. T01
-                  provides a transient automation UWorld with destruction/GC assertions; later
-                  suites extend that owner. MultiplayerSessions is present with
-                  OnlineSubsystem/Steam dependencies, without connected-session or replication
-                  certification.
-                </li>
-                <li>
-                  Commands run from GAME_ROOT. Existing prerequisites are python3
-                  tools/check_baseline.py build, python3 tools/check_content_admission.py --suite
-                  all and final python3 tools/validate.py; inspect their current options before
-                  execution. T01 evidence execution and its
-                  assertion/missing-report/load/startup/timeout controls are implemented. The later
-                  suite launch command below remains planned and unverified until this ticket is
-                  implemented. Each implementation ticket must document its actual native invocation
-                  and integrate affected checks into the existing validation entrypoint. Run
-                  documentation generation/validation from DOCS_ROOT using README.txt.
+                  Build first. Each aggregate dispatches fresh evidence/context/diagnostics/metrics
+                  processes and then reuses their existing verifiers. manifest.json binds relative
+                  child artifact paths, SHA-256, nonces, exact source/module/input/toolchain
+                  identities, actual assertion counts and deterministic outcomes. Native Unicode
+                  JSON is decoded from bytes; payload measurements retain their separate UTF-8
+                  policy.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the launch block twice into independent fresh outputs. Inspect the aggregate
-                  manifests, every child assertion/report, source and context hashes, outcome
-                  equality, sanitized sample and raw measurements.
+                  Run the launch block in two fresh outputs. Inspect manifest.json and run.json,
+                  every child native/automation report, the diagnostic shareable-sample.json and
+                  metrics recomputed-metrics.json. The second aggregate must reverify the first and
+                  require distinct child nonces plus deterministic replay equality; processing
+                  durations and volatile run/scenario/action IDs are excluded from equality.
                 </li>
                 <li>
-                  Exercise the new omitted/failed-child, stale/foreign-context and partial-report
-                  aggregate cases. Reuse applicable T01 stage-control/recovery evidence or run its
-                  existing controls if affected inputs changed. Then run a fresh clean aggregate and
-                  confirm preexisting outputs remain preserved and rejected.
+                  Run --suite all --control omitted-child, failed-child, stale-context,
+                  foreign-context and partial-report separately, each with --prior-run
+                  artifacts/fixture-first and a fresh output. Reuse a matching existing T01
+                  assertion control with --failed-child PATH if available; otherwise failed-child
+                  invokes the existing T01 control once. Inspect the exact
+                  failure_category/control_detection and nonzero exit; missing tools cannot satisfy
+                  controls.
                 </li>
                 <li>
-                  Run python3 tools/validate.py from GAME_ROOT after suite integration and retain
-                  its exact supported-stage results, including baseline/content regressions, current
-                  fixture suites and normal package isolation. Reuse applicable execution artifacts
-                  for the parent review. Map all four parent criteria and limitations, then
-                  rebuild/check DOCS_ROOT using README.txt.
+                  Run python3 tools/validate.py. FULL runs the original seven-test prerequisite
+                  aggregate and its controls, compiler rejection/recovery before the first fixture
+                  aggregate, all T01-T04 controls, new aggregate controls using exact matching
+                  retained child evidence, and a fresh four-suite aggregate recovery with replay
+                  comparison. Game/source-Server build/package/smoke and decoded/loose
+                  artifact/control exclusion still run.
+                </li>
+                <li>
+                  Attempt reuse of an existing --output and compare all prior file hashes. Reverify
+                  disposable copies with omitted, changed or missing child artifacts and inspect
+                  explicit rejection. Review all four parent criteria, every child and hard
+                  prerequisite against actual retained artifacts before completion; then regenerate
+                  and inspect dashboard, foundations, milestones, epic/ticket pages, dependent
+                  readiness, inventory, search and navigation.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Both clean aggregates pass using current native execution evidence; all controls
-                  fail distinctly and clean recovery passes. No previous artifact is silently
-                  reused.
+                  Both complete aggregates pass only after all four native verifiers pass at
+                  matching identities. Native lifecycle/assertions, immutable authored
+                  specifications, correlated accepted/rejected/retried actions, seeded replay/reset,
+                  sentinel redaction and raw timing/entity/unequal-logical-recipient-byte/FIFO
+                  measurements remain attributable.
                 </li>
                 <li>
-                  Prerequisite regressions pass, normal gameplay lacks fixture controls and parent
-                  review accurately distinguishes this bounded experiment from unimplemented
-                  systems.
+                  All aggregate controls return nonzero with their specific rejection and actual
+                  source/child/context evidence. Existing T01 stage controls remain independent
+                  actual executions; clean recovery succeeds and prior evidence stays unchanged.
+                  Default FULL preserves BW-001/BW-002 and normal Game/Server package exclusion.
+                </li>
+                <li>
+                  This is the approved finite local probe with logical recipients and serialized
+                  payload bytes. Connected clients, wire traffic, production gameplay, database
+                  durability and launch capacity are not certified. Later epics retain independent
+                  implementation status.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  The runner must stop timed-out child processes and tear down its transient UWorld,
-                  fixture clock, seed, queue and test-owned state. Normal client/server launches
-                  must remain unaffected.
+                  Allow each child to destroy/GC its transient world. Existing timeout control
+                  terminates/reaps its owned process group. Context reset clears
+                  clock/seed/queue/probe and measurement state; no gameplay control handler exists
+                  in normal packages.
                 </li>
                 <li>
-                  Retain previous logs/reports; rerun into a new default output directory. Controls
-                  modify only disposable inputs. Never overwrite prior evidence or modify canonical
-                  sources, user maps or assets to reset a run.
+                  Keep prior outputs and use new names under GAME_ROOT/artifacts. Never overwrite
+                  reports, resave maps/assets, remove caches or modify canonical specifications to
+                  reset a run. Documentation evidence is retained separately under
+                  DOCS_ROOT/validation/tickets/BW-003-T05.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -398,10 +393,17 @@ python3 tools/check_runtime_fixtures.py --suite all</code></pre>
                 hashes, dependencies and limitations.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-003-T05/review.json"
+                    >All four ticket criteria pass current aggregate/control/replay/FULL evidence
+                    and explicit parent review.</a
+                  >
+                  — AC 1, 2, 3, 4; Passed; revision BriarwakeUnreal
+                  03f16be061e5f6f1991d1fa86f1d560cda3ab90b; native source SHA-256
+                  fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-003.html#BW-003">Parent epic</a>;
