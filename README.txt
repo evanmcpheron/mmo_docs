@@ -178,8 +178,13 @@ admission checks per clean/recovery run. T04 is Complete with 74 native readines
 cases / 756 checks, private earned gate evidence and normal-package isolation.
 T05 is Complete with owner-selected 2.3.0-design contracts for explicit
 material/item mapping, actual per-unit consumption lineage and route declarations.
-T06/T07 remain Not Started; no graph gate, production prices or economic execution
-is certified by these contract changes.
+T06 is Complete with 63 complete-graph fixtures and 797 native economic checks,
+including combined-route gain, actual per-unit salvage, missing input, overflow,
+analysis limits and atomic publication. T07 is Complete: two seven-test native
+aggregates each pass all 3,584 content assertions, all 25 default FULL stages pass,
+and report/build/failure/recovery plus normal Game/Server package isolation are
+verified. Evidence is retained under validation/tickets/BW-002-T06/. Production
+prices, economic mutation, persistence and connected gameplay remain unimplemented.
 BW-001-T08 tracks the native bootstrap without reusing retired legacy ticket IDs.
 The owner selected evanmcpheron/BriarwakeUnreal; its task branch includes the supplied
 engineering docs and MultiplayerSessions Steam plugin. Actual Editor/Game builds,
@@ -188,14 +193,18 @@ launch, decoded-Pak inspection and clean pass/failure/recovery controls are reta
 BW-001/T08 are Complete: the final source Server package runs headlessly outside
 the source tree, checks three ticks and rejects missing/invalid configuration.
 Exact artifact/source identities, clean execution controls and limitations are in
-validation/tickets/BW-001-T08/final/review.json. BW-002 remains In Progress: T01
-satisfies AC1, T03 satisfies static admission AC2, T04 satisfies unsupported-behavior
-and readiness AC3, and current compatibility satisfies AC4. AC5 and full static,
-readiness and economic integration remain open. Compatibility evidence is retained under
-validation/tickets/BW-002-T02/. No executable/economic activation is certified; T03 publishes supported static catalogs only. T03 evidence is retained under validation/tickets/BW-002-T03/. BW-003 remains Not Started on this main-based task branch.
-T04 evidence and parent review are retained under validation/tickets/BW-002-T04/.
-BW-002 remains the sole Dependency-ready epic; BW-003 still requires BW-002. Generated
-views own readiness and milestone calculations.
+validation/tickets/BW-001-T08/final/review.json. BW-002 is Complete after its own
+five-criterion review: authority/lifecycle boundaries (AC1), static admission
+(AC2), unsupported-behavior/readiness (AC3), compatibility (AC4) and complete
+economic graph admission (AC5). All seven tickets and integrated verification are
+Complete at the recorded native source identity. Previous dated evidence under
+validation/tickets/BW-002-T01/ through BW-002-T05/ remains historical; current
+review, exact build/runtime/control/package artifacts and limitations are under
+validation/tickets/BW-002-T06/. This certifies content admission, with no production
+gameplay handler or transactional economic authority. BW-003 remains Not Started.
+The generated ready list now contains BW-003, BW-018, BW-004, BW-005 and BW-006;
+BW-002 leaves it. Overall progress is 2/97 epics (2.1%). Foundations and all
+milestones remain In Progress. Generated views own readiness/progress calculations.
 
 Store tickets in the registry's tickets list with stable IDs, parent_epic,
 exact epic_criteria anchors, dependencies, scope, out_of_scope, observable

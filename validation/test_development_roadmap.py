@@ -144,6 +144,7 @@ class RoadmapTests(unittest.TestCase):
             ticket[field] = original
 
     def test_ticket_planning_does_not_promote_epic_or_readiness(self):
+        self.by_id['BW-002']['status'] = 'In Progress'
         before = progress(self.data['epics'])
         ready = [e['id'] for e in ready_epics(self.data)]
         self.data['tickets'][0]['status'] = 'In Progress'
@@ -252,8 +253,12 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('failing current evidence' in e for e in self.errors()))
 
     def test_complete_requires_current_prerequisites(self):
+        prerequisite = self.by_id['BW-018']['hard_dependencies'][0]
+        self.by_id[prerequisite]['status'] = 'In Progress'
         self.complete('BW-018')
         self.assertTrue(any('complete hard prerequisites' in e for e in self.errors()))
+        self.complete(prerequisite)
+        self.assertEqual([], self.errors())
 
     def test_progress_changes_all_derived_views_without_duplicate_status(self):
         for epic in self.data['epics']:
