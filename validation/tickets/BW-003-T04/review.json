@@ -1,0 +1,178 @@
+{
+  "ticket": "BW-003-T04",
+  "scope": "Test-only local probe processing ticks; serialized payload bytes for logical test recipients. No wire, database or capacity measurement.",
+  "task_bases": {
+    "game": "b510a720d1d34daf6add724ca391cd241c49e3c7",
+    "documentation": "d5e4fc3d7e48c0865aa2573b2198b367f828f482"
+  },
+  "native_source_sha256": "b650493699d785a261e083faa01bc832944b73719979e74545bf62e810fe8bd9",
+  "environment": {
+    "engine": "5.8.3-58210709+++UE5+Release-5.8",
+    "compiler": "21.0.0 (clang-2100.3.34.2)",
+    "cpu": "Apple M2 Max",
+    "os": "27.0",
+    "platform": "MacEditor",
+    "configuration": "Development"
+  },
+  "measurement_execution": {
+    "result": "Passed",
+    "native_checks": 55,
+    "independent_corruption_checks": 83,
+    "artifact": "full/metrics/run.json"
+  },
+  "native_full": {
+    "result": "Passed",
+    "artifact": "full/validation-summary.json",
+    "stages": 47,
+    "seconds": 956.866,
+    "source_stable": true,
+    "not_run": [
+      "Connected server/two-client, RPC/replication and persistence harnesses are not implemented.",
+      "Shipping, other platforms and the separate Client-only target have no verified procedure.",
+      "Clean/cold builds require removing existing caches or copying the project; neither is authorized.",
+      "Visible packaged-client presentation remains a manual check."
+    ]
+  },
+  "review_checklist": {
+    "scope_and_ownership": "Reviewed: optional instrumentation stays on FRuntimeFixtureContext, the existing loop/FIFO/clock/random owner. New translation units separate metric serialization and its native test; no second processing or queue owner exists.",
+    "typed_cpp_and_headers": "Reviewed: typed recipient/measurement records, declaration-only headers and constant declarations; all function bodies remain in .cpp. JSON payload construction is confined to the evidence boundary. Public constants expose the existing bounds for report/test consumers.",
+    "contracts_and_authority": "Reviewed: existing snapshot and canonical definitions are untouched. ServerMetricRecord/Id/Instant/Count remain production references; the finite test evidence emits no partial durable metric or synthetic database/capacity counters. Only content/rules configuration labels are consumed.",
+    "input_and_lifecycle": "Reviewed: recipient cardinality/identity and whole/cumulative step bounds reject before mutation; samples come from actual monotonic clocks and FIFO observations. Reset and transient-world destruction/GC are asserted. No Actor, reflected type, map, asset or Blueprint changes.",
+    "security_and_networking": "Passed within the approved local-only scope: editor/dev guards, no RPC/console registration, actual normal Game/source-Server binary marker exclusion and loose/decoded-Pak fixture-input exclusion. Connected peers, wire traffic, database and production telemetry are outside this task.",
+    "maintainability": "Reviewed: ObserveMeasurements assembles one bounded report, and the longer native test orchestrates four windows, reset, bounds and world lifecycle through the existing harness. The Python window verifier independently checks payload bytes/content, FIFO transitions and summary policy. No framework, dependency, comment banners or header logic was added.",
+    "git_and_storage": "Reviewed: both existing checkouts were clean; task branches were created from the recorded exact fetched main heads. No worktree, clone, project snapshot, cache deletion, auto-stash or overwrite of earlier evidence is used.",
+    "verification_delivery": "Native default FULL passed all 47 supported stages with source stability; 56 Python regressions, 55 native metric checks and 83 independent report-corruption checks per metric run. Documentation FULL and PR delivery are recorded separately below.",
+    "warnings": "Current and prior T03 Game build diagnostics match: pre-existing missing MetalShaderConverter include-directory and pre-package staged-build notices. Editor/source-Server compile/link pass. Native automation reports have zero warnings. No warning settings or exclusions changed."
+  },
+  "historical_iteration": "The first native metrics process passed all 55 assertions, but its wrapper correctly failed because the Unicode recipient caused Unreal to save its native JSON report as UTF-16 with BOM. The wrapper now decodes JSON from bytes and records native-report encoding separately from explicitly measured UTF-8 payload encoding. Environment verification uses the actual MacEditor platform and numeric OS version. Fresh final-source native metrics pass; no initial wrapper failure is claimed as current passing evidence.",
+  "canonical_preservation": {
+    "result": "Passed",
+    "snapshot_byte_identical_to_task_base": true,
+    "registry_unchanged_before_review_regeneration": true,
+    "definition_count": 501,
+    "shared_definition_count": 70
+  },
+  "cross_process_comparison": {
+    "result": "Passed",
+    "distinct_nonces": true,
+    "matching_source_identity": true,
+    "all_window_probe_outcomes_equal": true,
+    "all_logical_recipient_byte_totals_equal": true,
+    "timing_policy": "Actual elapsed measurements are retained independently; timing equality is neither expected nor asserted."
+  },
+  "criteria": {
+    "1": {
+      "result": "Passed",
+      "artifact": "full/metrics/native/fixture-metrics.json",
+      "summary": "Eight real processing ticks for the burst, independent no-recipient and replay windows, empty-window control, actual environment and step/context/revision metadata. FIFO rises to four and drains four effects at fixture t=1. Pending reset clears owned state and measurements."
+    },
+    "2": {
+      "result": "Passed",
+      "artifact": "full/metrics/run.json",
+      "summary": "Independent raw UTF-8 payload length/SHA-1/content, FIFO and mean/maximum/byte-total recomputation passes; two recipients total 756 and 1495 bytes. Empty duration statistics are null; no-recipient byte map is empty. Fresh recovery reproduces rule state and byte totals."
+    },
+    "3": {
+      "result": "Passed",
+      "artifact": "full/metrics-tampered-summary/run.json",
+      "summary": "55 native checks plus 83 report mutation checks per run reject negative/nonfinite/incorrectly typed/missing/tampered/excessive inputs. Both specific controls return nonzero with control_verified and passing native observations; clean recovery passes. Every metric report/sample labels the local probe/payload limit."
+    }
+  },
+  "controls": {
+    "invalid-measurement": {
+      "result": "Passed: intended verifier rejection observed",
+      "detection": "Invalid measurement number",
+      "native_assertion_result": "Passed",
+      "artifact": "full/metrics-invalid-measurement/run.json"
+    },
+    "tampered-summary": {
+      "result": "Passed: intended verifier rejection observed",
+      "detection": "Metric summary differs from raw samples",
+      "native_assertion_result": "Passed",
+      "artifact": "full/metrics-tampered-summary/run.json"
+    }
+  },
+  "completed_at": "2026-10-22T17:32:34.977076+00:00",
+  "tested_game_revision": "18251dac07c07d0e4e0b9d2776980a66082141d9",
+  "execution_revision_note": "Native FULL executed from task-base b510a720d1d34daf6add724ca391cd241c49e3c7 with uncommitted task inputs. The committed game revision has the exact same complete native source identity; no native input changed during or after the run.",
+  "commands": [
+    "python3 -m unittest discover -s tools -p test_*.py",
+    "python3 tools/check_baseline.py build",
+    "python3 tools/validate.py --mode fast --explain",
+    "python3 tools/validate.py --output artifacts/bw-003-t04-full"
+  ],
+  "fast_selection": "Plan inspection selected FULL for the new fixture/tooling inputs. Focused Python/build/native iteration and the actual default FULL were executed; no FAST test pass is inferred from --explain.",
+  "prerequisite_applicability": {
+    "BW-001": "Complete: current Editor/Game/source-Server builds, both packages, startup/smoke, package inspection and all baseline controls pass.",
+    "BW-002": "Complete: the canonical snapshot is byte-identical; existing seven-test aggregate and recovery pass unchanged admission/binding/economy checks.",
+    "BW-003-T01": "Complete: current evidence, five stage controls and recovery pass.",
+    "BW-003-T02": "Complete: current context replay/reset, both invalid-input controls and Game/Server fixture exclusion pass.",
+    "BW-003-T03": "Complete: current correlated/redacted diagnostics, all four controls and recovery pass."
+  },
+  "parent_review": {
+    "epic": "BW-003",
+    "status": "In Progress",
+    "criteria": {
+      "1": "Passed: current executed fixture records/assertions plus retained applicable T01 evidence.",
+      "2": "Passed: current seeded replay/reset, atomic controls and real packaged Game/Server exclusion.",
+      "3": "Passed: current correlated/redacted diagnostic executions and controls.",
+      "4": "Passed within the approved local probe boundary: T04 raw duration/entity/unequal-recipient payload/FIFO observations and recomputation."
+    },
+    "remaining_integration": "BW-003-T05 remains Not Started. Its required --suite all command, two complete matching child manifests and omitted/failed/stale/foreign/partial aggregate controls are not implemented. All four individual criterion areas now have scoped evidence, but this required child integration gate remains unfinished.",
+    "children": {
+      "BW-003-T01": "Complete",
+      "BW-003-T02": "Complete",
+      "BW-003-T03": "Complete",
+      "BW-003-T04": "Complete",
+      "BW-003-T05": "Not Started"
+    },
+    "readiness": "T05 now has both prerequisites Complete. BW-003 remains In Progress/Dependency-ready; downstream BW-097/BW-095/BW-012 remain Not Started with BW-003 unmet. Overall epic completion remains 2/97 (2.1%); foundations and milestones remain In Progress."
+  },
+  "main_recheck": {
+    "game": "b510a720d1d34daf6add724ca391cd241c49e3c7",
+    "documentation": "d5e4fc3d7e48c0865aa2573b2198b367f828f482",
+    "result": "Both freshly fetched main heads remain unchanged before PR delivery.",
+    "verified_at": "2026-10-22T17:40:27.669597+00:00"
+  },
+  "log_retention": "Original JSON retained unchanged, including UTF-16 metric reports; UTF-8 projections are supplied for review. Logs are losslessly gzip-compressed. artifact-manifest.json binds source/raw/stored hashes. Binaries/packages stay in the existing GAME_ROOT/artifacts build directories.",
+  "artifact_integrity_review": {
+    "result": "Passed",
+    "retained_files": 278,
+    "summary": "Every copied native/log artifact was scanned for synthetic private sentinels; originals and lossless compressed copies are bound by SHA-256. No package or project copy is retained in the docs repository.",
+    "task_owned_staging_metadata_excluded": 39
+  },
+  "generated_view_review": "generated-views.json records actual dashboard, foundations, parent, all five children, downstream BW-097/BW-095/BW-012, milestones, search and inventory/manifest inspection. T04 is Complete; T05 is eligible/Not Started; BW-003 stays In Progress/Dependency-ready. Epic completion remains 2/97 (2.1%). Local generation is not deployment.",
+  "related_pull_requests": {
+    "game": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/13"
+  },
+  "documentation_iteration": {
+    "result": "Passed",
+    "requested_mode": "fast",
+    "executed_mode": "full",
+    "summary": "Before final evidence review/trimming, FAST selected FULL and passed 243 aggregate checks, 100 Python tests, four cleanup tests and 298 browser checks. The final committed source revision also passes default FULL as recorded below."
+  },
+  "documentation_verification": {
+    "result": "Passed",
+    "tested_revision": "1d93d59c61d7a76de8529894c9f3e82f616fe83c",
+    "main_revision": "d5e4fc3d7e48c0865aa2573b2198b367f828f482",
+    "requested_mode": "full",
+    "executed_mode": "full",
+    "seconds": 96.081,
+    "aggregate_checks_passed": 243,
+    "python_tests_passed": 100,
+    "browser_cleanup_tests_passed": 4,
+    "browser_checks_passed": 298,
+    "artifacts": [
+      "documentation-full/validation-summary.json",
+      "documentation-full/report.json",
+      "documentation-full/data-inventory-browser-checks.json",
+      "documentation-full-console.log.gz"
+    ],
+    "commands": [
+      "python3 scripts/build_development_roadmap.py",
+      "python3 scripts/build_data_inventory.py --review-roadmap",
+      "python3 validation/validate.py --mode fast --report-dir validation/tickets/BW-003-T04/documentation-fast",
+      "python3 validation/validate.py --report-dir validation/tickets/BW-003-T04/documentation-full"
+    ],
+    "scope": "Default FULL passes at the recorded committed documentation revision. The following evidence-only commit adds these execution reports, their console log and review metadata. Canonical definitions, roadmap source, generated HTML/search and validator inputs remain unchanged."
+  }
+}
