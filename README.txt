@@ -210,8 +210,12 @@ Complete at the recorded native source identity. Previous dated evidence under
 validation/tickets/BW-002-T01/ through BW-002-T05/ remains historical; current
 review, exact build/runtime/control/package artifacts and limitations are under
 validation/tickets/BW-002-T06/. This certifies content admission, with no production
-gameplay handler or transactional economic authority. BW-003 is In Progress: parent AC1 has passing T01 evidence; AC2 through AC4
-and T05 integrated verification remain unimplemented.
+gameplay handler or transactional economic authority. BW-003 is In Progress: parent AC1/AC2 have passing T01/T02 evidence.
+T02 seeded replay, atomic rejection/reset and packaged control isolation are Complete;
+T03 diagnostics, T04 measurements and T05 integrated verification remain unimplemented.
+T03/T04 now have complete prerequisites. Retained native FULL and the parent review
+are in validation/tickets/BW-003-T02/; no connected-peer or production gameplay
+certification is claimed.
 The generated ready list now contains BW-003, BW-018, BW-004, BW-005 and BW-006;
 BW-002 leaves it. Overall progress is 2/97 epics (2.1%). Foundations and all
 milestones remain In Progress. Generated views own readiness/progress calculations.
