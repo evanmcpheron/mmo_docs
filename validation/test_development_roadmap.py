@@ -21,6 +21,14 @@ class RoadmapTests(unittest.TestCase):
     def errors(self, generated=False):
         return roadmap_errors(self.data, check_generated=generated)
 
+    def reset_epic_and_ticket_progress(self, identifier):
+        records = [self.by_id[identifier]] + [ticket for ticket in self.data['tickets']
+                                             if ticket['parent_epic'] == identifier]
+        for record in records:
+            record['status'] = 'Not Started'
+            record['verified_evidence'] = []
+            record['blockers'] = []
+
     def complete(self, identifier):
         epic = self.by_id[identifier]
         epic['status'] = 'Complete'
@@ -144,6 +152,7 @@ class RoadmapTests(unittest.TestCase):
             ticket[field] = original
 
     def test_ticket_planning_does_not_promote_epic_or_readiness(self):
+        self.reset_epic_and_ticket_progress('BW-003')
         self.by_id['BW-002']['status'] = 'In Progress'
         before = progress(self.data['epics'])
         ready = [e['id'] for e in ready_epics(self.data)]
@@ -222,6 +231,7 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('Duplicate stable IDs' in e for e in self.errors()))
 
     def test_recommended_predecessor_is_not_a_hard_gate(self):
+        self.reset_epic_and_ticket_progress('BW-003')
         epic = self.by_id['BW-018']
         for dependency in prerequisite_closure(self.data, epic['hard_dependencies']):
             self.complete(dependency)
@@ -262,9 +272,7 @@ class RoadmapTests(unittest.TestCase):
 
     def test_progress_changes_all_derived_views_without_duplicate_status(self):
         for epic in self.data['epics']:
-            epic['status'] = 'Not Started'
-            epic['verified_evidence'] = []
-            epic['blockers'] = []
+            self.reset_epic_and_ticket_progress(epic['id'])
         self.complete('BW-001')
         self.assertEqual([], self.errors())
         overall = progress(self.data['epics'])
