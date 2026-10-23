@@ -9409,7 +9409,7 @@
       "id": "BW-097-T03",
       "parent_epic": "BW-097",
       "title": "Add held middle-mouse orbit with isolated input capture",
-      "status": "Not Started",
+      "status": "In Progress",
       "epic_criteria": [
         "BW-097-AC-3",
         "BW-097-AC-5"
@@ -9471,16 +9471,17 @@
         }
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log\nUse Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.\nThe shared T01 scene exists; this ticket's additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.",
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log\nUse Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.\nT03 implementation is delivered for review/QA in game PR #19. Physical input and rendered acceptance remain Not Run \u2014 Manual QA Pending; use the consuming top-right UI capture control and V view-target toggle.",
         "setup": [
           "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
           "Planning history 2026-10-22: no game map existed during decomposition. T01 subsequently authored /Game/Tests/Camera/L_BW097_Reference (Content/Tests/Camera/L_BW097_Reference.umap), DA_BW097_CameraDefaults and two M_ materials. Use the current package above; the former proposed BW097_Reference name is superseded. /Engine/Maps/Entry remains the baseline startup map.",
           "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. Planning provenance: the then-current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
-          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework.",
+          "Execution 2026-10-23: game revision 8117abd0e352b17892baa8ec20556215441a41a0 implements the existing rig/settings orbit and Slate pointer surface. Affected native build and 5 camera tests pass; see https://github.com/evanmcpheron/BriarwakeUnreal/pull/19 for exact input identity, results and concise manual QA. The user's unrelated staged Briarwake.uproject plugin additions were preserved and excluded from the game commit."
         ],
         "actions": [
           "At overview, close view and intermediate zoom, hold middle mouse and drag horizontally/vertically to both pitch limits, reverse direction, then release. Repeat stationary and on axial/diagonal routes while scrolling.",
-          "Repeat wheel/drag over the consuming UI fixture. Press in the viewport then release outside it, alt-tab away while held, replace the fixture view target and stop/restart PIE. Verify no stale drag on return.",
+          "Repeat wheel/drag over the top-right UI capture control and left-click its counter. Press in the world, move over the panel or outside the viewport, release and return; alt-tab while held and return; use Shift+F1 in PIE. Press V while dragging to replace the view target, release and press V to return. Stop/restart PIE. Every interruption must clear pending orbit/zoom and require a fresh press.",
           "Tune sensitivity/inversion/limits/smoothing in Unreal UI, save/reopen and repeat while comparing independent route/facing/aim observations."
         ],
         "expected_results": [
@@ -9492,7 +9493,30 @@
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/19",
+          "revision": "8117abd0e352b17892baa8ec20556215441a41a0",
+          "result": "Passed",
+          "summary": "Partial automated evidence, 2026-10-23: held orbit, bounded combined zoom/pitch, inversion, release smoothing, route/facing/aim independence, invalid-input/settings rejection, serialization and cleanup callbacks pass the actual native camera suite (5/5 tests). Affected Editor compilation/UHT/link and whitespace/structure pass; final NATIVE run 35.853 seconds on UE 5.8.3 CL 58210709, Xcode 27.0 build 27A266a, macOS ARM64. Rechecked game main 7ef8e04d474c829db5206a36b92a791410eb7979 and docs main 6397c38e9d4c58e04b7a58fdb7b9f9585bb919cb. PR records native identity and preserved pre-existing staged descriptor/plugin inputs. These checks cover rules/callbacks, not physical event routing or rendered acceptance."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/19",
+          "revision": "8117abd0e352b17892baa8ec20556215441a41a0",
+          "result": "Not Run",
+          "summary": "Not Run \u2014 Manual QA Pending: rendered orbit/scroll/release framing on stationary/axial/diagonal routes; physical UI wheel/drag consumption, outside-viewport release, focus loss/return, PIE stop/restart and view-target replacement without stale input; valid tuning saved/reopened in Unreal UI with requested screenshot and short rendered recording. Concrete launch, controls, expected/failure behavior and cleanup are in the game PR and docs/manual-testing.md. Implementation is ready for review/QA; BW-097-T03 remains In Progress. No connected input, production movement/aim, picking or rendering certification is claimed."
+        }
+      ]
     },
     {
       "id": "BW-097-T04",
