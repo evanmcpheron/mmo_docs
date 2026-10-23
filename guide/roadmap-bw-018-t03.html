@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-018-T03">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-018.html#BW-018"
                   >BW-018 · Durable ownership and mutation recovery probe</a
                 >
@@ -256,51 +256,77 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.</code></pre>
+              <pre><code>Not Run — Manual QA Pending. From the existing game root with built task revision 8bd4269975b5b607bba0ef89ee3905e30039b0c1, run python3 tools/check_content_admission.py --suite transfers --output &quot;$PWD/artifacts/bw-018-t03-replay-$(date +%Y%m%d-%H%M%S)&quot;. Exact prerequisites, native build, race ordering and cleanup: https://github.com/evanmcpheron/BriarwakeUnreal/blob/8bd4269975b5b607bba0ef89ee3905e30039b0c1/docs/sqlite-concurrency.md. No map, player controls, running editor, database service or MCP action is required.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use only a fresh task-owned SQLite database and outputs beneath ignored game
-                  artifacts/. Preserve all existing project files, databases and historical
-                  evidence; no shared or production data. The selected candidate is local SQLite,
-                  explicitly chosen by the owner on 2026-10-23.
+                  Use the pinned macOS ARM64 UE 5.8.3 Editor/Server, Xcode build 27A266a, native
+                  SQLite 3.54.0/unix VFS and the existing canonical mmo_docs checkout. T02
+                  implementation is present; T02 independent human replay is still pending.
                 </li>
                 <li>
-                  Complete T02 and use the delivered deterministic race entry point, barrier/timeout
-                  and task-owned file. A second real SQLite connection and recorded native VFS are
-                  required.
+                  Use only fresh task-owned output under ignored artifacts/ and the existing
+                  baseline.json and transfer.json fixtures. Schema 3 adds owned/revoked authority
+                  state and rejects/preserves historical schema-1/2 files without migration.
+                  Preserve unrelated databases, files and evidence.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the documented two-participant stale-revision race, identical-key retry race
-                  and changed-payload key conflict. Inspect both outcomes and persisted
-                  receipt/ledger/outbox counts.
+                  Run the exact transfers command. The actual
+                  Briarwake.Persistence.Transfers.Concurrency test opens two real SQLite connections
+                  and two worker threads per stale-revision, identical-retry, conflicting-key,
+                  claim-first, write-first, competing-claim and lock-timeout scenario. The first
+                  holds its write transaction until the second SQLite busy callback proves actual
+                  write contention. Barriers wait at most 2 seconds; each race must finish below 5
+                  seconds; the test busy handler bounds lock waiting at 250ms and then restores the
+                  normal timeout.
                 </li>
                 <li>
-                  Advance the fixture authority epoch, attempt a mutation with the old context, then
-                  run the documented claim-versus-write race. Reopen the same database and inspect
-                  the final owner epoch and economic state.
+                  Inspect run.json and native/concurrency.json for passing checks, distinct thread
+                  IDs and ordering. Persisted item/ownership/container/wallet state, receipt
+                  identity, balanced ledger and outbox counts are checked after both participants
+                  finish and after closing/reopening the same file without reseeding.
+                </li>
+                <li>
+                  Inspect native/transfers.json and native/transfers-reopen.json for exact
+                  sequential/separate-process replay. Rejections cover changed
+                  item/destination/amount/revision semantics, foreign actor, unsupported operation
+                  fields, stale process/epoch, revoked authority, epoch range/exhaustion and asset
+                  revision overflow.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Only the serializable valid mutation commits; exact retries reuse its receipt,
-                  conflicting or foreign scopes reject, and a superseded epoch cannot grant another
-                  asset change. No duplicate items, money or notifications appear; unexecuted race
-                  infrastructure remains Not Run.
+                  Exit 0; transfers 45, concurrency 50 and transfers-reopen 12 assertions pass.
+                  Exact retries reuse the original receipt/result without another move, debit,
+                  revision advance or outbox. Changed semantic requests reject; foreign
+                  actor/unsupported operation scope cannot obtain the receipt.
+                </li>
+                <li>
+                  Each successful race retains at most one transfer: item A to B, balances
+                  9007199254740966/125, item/ownership revisions 8 and both container/wallet
+                  revisions 4294967298, with one receipt, two balanced ledger entries and one
+                  pending outbox. Claim-first/competing-claim scenarios retain zero economic rows.
+                  Claim-first fences the stale writer; write-first may commit before the serialized
+                  claim. Only one claimant advances epoch 17 to 18. Stale, revoked, exhausted or
+                  unrepresentable authority cannot grant a new asset change or wrap.
+                </li>
+                <li>
+                  SQLite 3.54.0/unix, DELETE journal, NORMAL locks, FULL synchronous=2, fullfsync=1,
+                  foreign_keys=1 and normal busy_timeout=250ms remain pinned. Duplicate rows/items,
+                  changed retry receipt, stale-epoch writes, partial state, unbounded wait or failed
+                  assertions fail QA. Retain output and stop on failure.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Close owned connections and let bounded child processes exit. For a new baseline
-                  use a fresh task-owned directory; for a recovery/retry case reopen the same
-                  scenario database without reseeding it. Preserve prior outputs and unrelated
-                  staged work; never reset the checkout or remove database sidecars while a
-                  connection is active.
+                  Let owned processes finish and connections close. Retain a concise result and any
+                  needed baseline. Remove only the fresh task-owned replay directory when no longer
+                  needed; preserve historical databases, unrelated work and active SQLite sidecars.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -312,10 +338,59 @@
                 evidence.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/36"
+                    >2026-10-23 actual native SQLite execution at identical native inputs to game
+                    8bd4269975b5b607bba0ef89ee3905e30039b0c1. python3 tools/validate.py --mode
+                    native --suite storage --suite transfers --target BriarwakeEditor --target
+                    BriarwakeServer --output artifacts/bw-018-t03-native-fixed passed in 93.175s:
+                    Editor compilation/link 22.035s, source-engine Server 24.525s, 12 Python tests
+                    and five Unreal tests across two processes with 152 assertions (storage 35,
+                    storage-reopen 10, transfers 45, concurrency 50, transfers-reopen 12). Seven
+                    independently opened two-connection/two-thread races use an actual SQLite
+                    busy-callback barrier before first-writer release: stale threads 89395/130307,
+                    identical 130323/89407, conflict 89419/130339, claim-first 130355/89431,
+                    write-first 89443/130371, competing claims 130387/89455, timeout 89467/130403.
+                    Normal races completed in 0.004–0.010s and forced lock rejection in 0.257s.
+                    Stale requests reject explicitly; exact sequential/simultaneous/post-reopen
+                    retries reuse the original result. Changed item/destination/amount/revision
+                    identity rejects; actor scope and unsupported operation selection cannot expose
+                    another receipt. Conditional asset updates and compare-and-claim/revoke execute
+                    inside the same BEGIN IMMEDIATE owner. Claims serialize at one epoch advance;
+                    stale/revoked writers cannot commit and durable epoch exhaustion cannot wrap.
+                    Every scenario verifies full persisted state/receipt/ledger/outbox after both
+                    participants finish and after reopen; a separate native process replays the
+                    original transfer receipt with unchanged database bytes. Economic successes
+                    retain balances 9007199254740966/125, item/ownership revision 8,
+                    container/wallet revisions 4294967298 and exactly one receipt/two conserved
+                    ledger rows/one outbox. Schema 3 adds canonical owned/revoked state; historical
+                    schema-1/2 files reject without migration. SQLite 3.54.0/unix/FULL-sync settings
+                    and canonical definitions remain unchanged. Tested source SHA-256
+                    8d08c93d35ac7cd8740c84d13d0c1b77a42596eaa1b9e727f307442c9eb570e8; snapshot
+                    SHA-256 47d0216d43c98096f4975ef73c2ce60abdc2b5dfd0c4e71f9105431f13250fcf. Main
+                    re-fetched before delivery: game 6736b546e51b4bed30c83de208a818c84be26ece; docs
+                    1f690ba547b75ae66d5520df6c5ba2a162172f0b. Generic storage/authority review flags
+                    are addressed by actual file-backed races/reopen assertions and both target
+                    links; no network routing or production authority claim.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 8bd4269975b5b607bba0ef89ee3905e30039b0c1
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/8bd4269975b5b607bba0ef89ee3905e30039b0c1/docs/sqlite-concurrency.md"
+                    >Not Run — Manual QA Pending. Independent human replay of the documented native
+                    transfer/concurrency workflow has not been performed. T03 remains In Progress
+                    for that acceptance and T02 remains In Progress for its earlier independent
+                    replay; T02 implementation is present and reused. manual_test and the runbook
+                    provide exact prerequisites, task-owned output, command, expected/failure
+                    outcomes and cleanup. No BW-018 parent/downstream completion, production session
+                    lifecycle, distributed lease, power-loss/crash recovery, migration, outbox
+                    delivery or load/capacity certification is claimed.</a
+                  >
+                  — AC 1, 2, 3; Not Run; revision 8bd4269975b5b607bba0ef89ee3905e30039b0c1
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-018.html#BW-018">Parent epic and acceptance criteria</a
