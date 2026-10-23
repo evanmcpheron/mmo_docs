@@ -10037,7 +10037,7 @@
       "id": "BW-095-T02",
       "parent_epic": "BW-095",
       "title": "Validate and round-trip authored status definitions",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-095-AC-1",
         "BW-095-AC-2"
@@ -10086,23 +10086,35 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "launch": "Manual QA skipped by explicit user instruction on 2026-10-23: \"Go ahead and mark as complete and skip QA\". No human replay result is claimed. Optional replay uses the existing ContentAuthoring commandlet and fixtures/content_authoring/reviewed-statuses.json; exact commands and cleanup: https://github.com/evanmcpheron/BriarwakeUnreal/blob/9a1700a5f1440b84cf93ce7592b998a9c0189254/docs/content-authoring.md#status-authoring-bw-095-t02. No map, controls, database or editor MCP is required.",
         "setup": [
-          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
-          "Use the T01 documented CLI and reviewed status sample delivered by this ticket. Current native admission rejects this family; planned examples remain unexecuted."
+          "Use the existing game/docs checkouts and pinned built macOS ARM64 UE 5.8.3 Editor. BW-095-T01 is Complete; its shared importer is reused.",
+          "For optional replay, use the reviewed status sample and a fresh task-owned directory beneath ignored artifacts/. Use absolute source/output paths with -run=ContentAuthoring -SkipAssetScan -NoShaderCompile -unattended -NullRHI -nosound; preserve source assets, prior valid output and historical evidence."
         ],
         "actions": [
-          "Round-trip the periodic and nonperiodic samples. Change only the task-owned owner reference, interval and category-policy fields to the documented invalid variants; repeat import after each edit."
+          "Optional replay: import/export fixtures/content_authoring/reviewed-statuses.json, reimport into a new output and compare exact status IDs, nulls, policies and revisions. In task-owned copies set owner_ability_id to Missing, set a periodic interval to zero, mix category/stacking/refresh policies, omit a required persistence flag or exceed root duration limits; repeat import after each edit."
         ],
         "expected_results": [
-          "Valid IDs/nulls/policies reproduce. Each invalid variant names the status and field, rejects the candidate and preserves prior output; no runtime behavior is enabled."
+          "Valid periodic/nonperiodic/control records round-trip. Each invalid variant names the status and field, rejects the whole candidate and retains prior valid state/output. Status activation and authored runtime evidence remain rejected; no runtime behavior is enabled."
         ],
         "reset": [
           "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/28",
+          "revision": "9a1700a5f1440b84cf93ce7592b998a9c0189254",
+          "result": "Passed",
+          "summary": "2026-10-23: python3 tools/validate.py --mode native --suite compatibility --suite admission --suite authoring --suite statuses --suite bindings --output artifacts/bw-095-t02-native passed pinned macOS ARM64 UE 5.8.3 Editor compilation/link, eight Python tests, structured inputs, the 102-definition canonical snapshot and six native tests (3,051 assertions). Status coverage: 234 assertions across 37 positive/rejection cases and actual native file import/export/reimport, exact IDs/values/nulls/revision domains, owner namespace, canonical category-policy/group diagnostics, interval/stack/duration/persistence boundaries, atomic selection/output retention and disabled runtime activation/evidence. Existing admission, authoring, binding and compatibility checks passed. All 98 prior canonical definitions remain unchanged. Native source SHA-256 e6897f2ea7043d12074e8bee5153c3a5e45f3dbebf9db41f1f2083fdea4188ed; snapshot SHA-256 c24a2edda7444d5d48cc0bebb5ea1340d468531c17791a301afb039ac4786fba. Identical native inputs were tested before the task commit; fetched/rechecked game main bfb1c61376f81038a59c292e856c73b0d4c9e023. Unrelated staged descriptor plugin settings were preserved/excluded. Manual QA is skipped by explicit user instruction, \"Go ahead and mark as complete and skip QA\"; Complete records the passing automated criteria and this waiver, not an executed human replay. T01 prerequisite remains Complete. Status gameplay, runtime fixtures, subtype/magnitude binding rules and persistence execution remain outside this catalog-only ticket; the documented 30% carry constraint and narrower stun cap are preserved for future handlers."
+        }
+      ]
     },
     {
       "id": "BW-095-T03",
