@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-018-T01">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-018.html#BW-018"
                   >BW-018 · Durable ownership and mutation recovery probe</a
                 >
@@ -273,52 +273,73 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.</code></pre>
+              <pre><code>Not Run — Manual QA Pending. From the existing game root with built task revision e4ea78f5d4350fc594c87ae12f85e6488cf1f468, run python3 tools/check_content_admission.py --suite storage --output &quot;$PWD/artifacts/bw-018-t01-replay-$(date +%Y%m%d-%H%M%S)&quot;. Exact prerequisites, native build and separate open/reopen commands are documented at https://github.com/evanmcpheron/BriarwakeUnreal/blob/e4ea78f5d4350fc594c87ae12f85e6488cf1f468/docs/sqlite-probe.md. No gameplay map, player controls, running editor, database service or MCP action is required.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use only a fresh task-owned SQLite database and outputs beneath ignored game
-                  artifacts/. Preserve all existing project files, databases and historical
-                  evidence; no shared or production data. The selected candidate is local SQLite,
-                  explicitly chosen by the owner on 2026-10-23.
+                  Use the existing canonical mmo_docs checkout, pinned macOS ARM64 UE 5.8.3 Editor
+                  at /Users/Shared/Epic Games/UE_5.8, Xcode build 27A266a, and native
+                  /usr/lib/libsqlite3.dylib SQLite 3.54.0 with unix VFS. Editor/Server builds are
+                  retained; source-engine Server uses /Users/Shared/UnrealEngine-5.8.3-source.
+                  BW-001 and BW-002 are Complete.
                 </li>
                 <li>
-                  The T01 native module/build and probe entry point are missing. Implementation must
-                  resolve the custom-VFS locking limitation and record the working native build;
-                  API/header presence is not acceptance.
+                  Use fresh task-owned output beneath ignored artifacts/ and the versioned
+                  fixtures/persistence/baseline.json. The module directly links native macOS SQLite
+                  for Editor/Server, resolving the installed SQLiteCore custom-VFS limitation
+                  without replacing that precompiled module. Preserve all unrelated files, databases
+                  and historical evidence.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Using the delivered exact command, create the task-owned baseline, inspect the
-                  reported runtime version/VFS/settings and open a second independent connection to
-                  that file.
+                  Run the exact storage command above. It starts Briarwake.Persistence.Sqlite.Open
+                  through the actual UnrealEditor-Cmd, then exits and starts
+                  Briarwake.Persistence.Sqlite.Reopen in a separate process with the same database
+                  and a seed-PID identity argument. Do not reseed the reopened file.
                 </li>
                 <li>
-                  Exit the owned process, reopen the same database in a fresh process and compare
-                  canonical records/revisions. Attempt the documented
-                  missing/read-only/unsupported-schema inputs without changing user data or
-                  permissions.
+                  Inspect run.json plus native/storage.json and native/storage-reopen.json. Confirm
+                  distinct process IDs, matching baseline bytes/canonical values, queried
+                  runtime/source ID/VFS/settings, schema revision and successful native assertions.
+                  The task database is native/sqlite-probe/baseline.sqlite beneath the selected
+                  output.
+                </li>
+                <li>
+                  The native Open test executes
+                  unknown-field/token/null/owner/placement/reservation/authored-receipt and numeric
+                  overflow/precision rejection, blocked/missing/existing/read-only/unsafe paths,
+                  unsupported schema, missing metadata, controlled SQL failure and native lock
+                  contention. Controls use only task-owned copies and restore only the task file’s
+                  read-only flag.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  The file-backed baseline and its identities survive reopening, two connections use
-                  real SQLite locks, and invalid inputs fail visibly without replacing existing
-                  data. Missing native/VFS support is Not Run or failed, never a passing storage
-                  result.
+                  The command exits 0 with 35 storage and 10 fresh-reopen assertions. Both native
+                  connections succeed; the competing writer returns SQLITE_BUSY with a configured
+                  250ms timeout. Reopen preserves exact fixture IDs, personal owner scopes,
+                  quantity, maximum-safe balance, revisions above 32 bits and storage schema
+                  revision 1.
+                </li>
+                <li>
+                  Actual settings must be SQLite 3.54.0, unix VFS, DELETE journal, NORMAL locking,
+                  FULL synchronous=2, fullfsync=1, foreign_keys=1 and busy_timeout=250ms.
+                  Missing/incompatible runtime, schema, settings, report or build is
+                  unverified/failed. Rejection preserves prior database bytes and typed output. No
+                  economic mutation, receipt/outbox result, epoch claim, crash recovery, migration
+                  or production authentication is implied.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Close owned connections and let bounded child processes exit. For a new baseline
-                  use a fresh task-owned directory; for a recovery/retry case reopen the same
-                  scenario database without reseeding it. Preserve prior outputs and unrelated
-                  staged work; never reset the checkout or remove database sidecars while a
-                  connection is active.
+                  Let both bounded processes exit and connections close. Retain the concise actual
+                  result and baseline needed for follow-up; remove only this replay directory when
+                  finished. Never delete active database sidecars, change unrelated permissions,
+                  reset the checkout or overwrite historical evidence.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -330,10 +351,59 @@
                 with the exact gap.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/34"
+                    >2026-10-23 actual file-backed native SQLite evidence. The existing module
+                    directly links macOS /usr/lib/libsqlite3.dylib 3.54.0 (runtime source ID
+                    2026-04-09 12:25:13
+                    8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl), explicitly
+                    selecting unix VFS rather than the installed SQLiteCore 3.47.1 custom VFS.
+                    Queried DELETE journal/NORMAL locks/FULL
+                    sync=2/fullfsync=1/foreign_keys=1/busy_timeout=250ms and actual storage
+                    user_version=1 are required. Editor build/link passed in 23.54s and pinned
+                    source-engine Server in 43.98s through tools/validate.py --mode native --suite
+                    storage --suite compatibility --target BriarwakeEditor --target BriarwakeServer
+                    --output artifacts/bw-018-t01-native-verified. Both native tests passed; that
+                    run’s report wrapper rejected Unreal’s UTF-8 BOM. After fixing only the reader,
+                    python3 -m unittest test_content_compatibility passed 11 tests, and python3
+                    tools/check_content_admission.py --suite compatibility,storage --output
+                    artifacts/bw-018-t01-automation-final passed four Unreal tests/792 assertions
+                    (encodings 724, revisions 23, storage 35, reopen 10), reusing unchanged compiled
+                    inputs. Native PIDs 37761 and 37849 opened/read the same task file; database
+                    SHA-1 7e6f84d4b472c4b7cc4c47df9604d3b3f3482394 and canonical baseline SHA-1
+                    c933552510a7d4ca682b7fffbca052e3a51f825d matched. Actual write contention
+                    returned SQLITE_BUSY after 0.337s under the 250ms setting. Exact maximum-safe
+                    balance, &gt;32-bit revisions, IDs/required-null owner scopes and stable values
+                    survive. Invalid fields/tokens, ownership/placement, reservations/authored
+                    receipts, overflow/rounded fractions/exponents, file/path/read-only/write
+                    failures, unsupported schema, absent metadata and controlled SQL failure reject
+                    without altering prior bytes/typed output. Native source SHA-256
+                    4a708a24604c281e81953c272ae15e922b1422ffc24343cf9ecb24c329445f07; snapshot
+                    SHA-256 47d0216d43c98096f4975ef73c2ce60abdc2b5dfd0c4e71f9105431f13250fcf. The
+                    closure has 156 definitions with all prior 142 unchanged. Identical native
+                    inputs were verified before the commit; game main fetched/rechecked at
+                    e7a59cad46a6dbafc8a121d4aea143002ebd4e75; docs main at
+                    64fcc575b07747245e99a355380523c05fcf1191. This proves the bounded native SQLite
+                    candidate, not SQLiteCore integration, gameplay transfers, durable receipts,
+                    crash recovery, migration or production authentication.</a
+                  >
+                  — AC 1, 2; Passed; revision e4ea78f5d4350fc594c87ae12f85e6488cf1f468
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/34"
+                    >Not Run — Manual QA Pending. The delivered docs/sqlite-probe.md and manual_test
+                    record the actual executable, pinned build/runtime/VFS/settings, focused native
+                    build and separate-process storage commands, supported task paths, expected
+                    rejection behavior and cleanup. Automated open/lock/reopen and affected builds
+                    passed; an independent human replay of that documented workflow has not been
+                    performed. T01 remains In Progress for this acceptance gap. BW-001/BW-002 are
+                    Complete; no BW-018 parent/downstream completion or new game test execution is
+                    claimed by this tracking update.</a
+                  >
+                  — AC 3; Not Run; revision e4ea78f5d4350fc594c87ae12f85e6488cf1f468
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-018.html#BW-018">Parent epic and acceptance criteria</a
