@@ -256,7 +256,7 @@
 python3 tools/check_baseline.py build
 &quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log
 Use Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.
-T04 implementation is available in game PR #21. Rendered readability, display/backing-scale usability and Unreal persistence are Not Run — Manual QA Pending; the native pass is not visual acceptance.</code></pre>
+T04 implementation from game PR #21 is merged into game main at b375836ab247e883aa1709597f82639b5573d1f6. Rendered readability, display/backing-scale usability and Unreal persistence are Not Run — Manual QA Pending; the native pass is not visual acceptance.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
@@ -322,6 +322,18 @@ T04 implementation is available in game PR #21. Rendered readability, display/ba
                   requirements. Accepted T03 history and gameplay movement/facing/aim remain
                   unchanged. Current game manual/UI hints use left-drag; physical pointer/capture
                   acceptance of the new binding remains Not Run — Manual QA Pending.
+                </li>
+                <li>
+                  Delivery follow-up 2026-10-23: fetched game main
+                  b375836ab247e883aa1709597f82639b5573d1f6 contains merged game PR #21; Source,
+                  Content, tools, fixtures, Config and the committed project descriptor are
+                  unchanged from 1feea16c2bcfcf77bf7eb921aee4b276361d90d8. Reuse its retained
+                  85.085s native pass rather than rerunning unchanged game checks. The pre-existing
+                  staged plugin descriptor remains preserved at Git blob
+                  321555c7f1e8cb33424a5ec73f2000296539d8e4. Docs follow-up continues the same task
+                  branch/PR #59 from fetched main 6952559cd46907996889b78f93d8e266024b0499. No new
+                  game code or asset changes were needed; all rendered/manual acceptance remains
+                  pending.
                 </li>
               </ol>
               <h3>Actions</h3>
@@ -432,9 +444,12 @@ T04 implementation is available in game PR #21. Rendered readability, display/ba
                     accessibility, connected privacy, attack authorization or T06 performance
                     certification is claimed. Follow-up physical acceptance must use left-drag for
                     orbit/tilt, confirm middle-button drag is inert, retain wheel zoom during drag,
-                    and recheck consuming UI/focus/release cleanup.</a
+                    and recheck consuming UI/focus/release cleanup. Review the implementation now
+                    merged at game main b375836ab247e883aa1709597f82639b5573d1f6; its implementation
+                    inputs match the recorded native-tested revision. No rendered or physical-input
+                    QA was executed during the delivery follow-up.</a
                   >
-                  — AC 1, 2, 3; Not Run; revision 1feea16c2bcfcf77bf7eb921aee4b276361d90d8
+                  — AC 1, 2, 3; Not Run; revision b375836ab247e883aa1709597f82639b5573d1f6
                 </li>
                 <li>
                   <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/21"
