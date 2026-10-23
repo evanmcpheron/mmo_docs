@@ -10207,7 +10207,7 @@
       "id": "BW-095-T04",
       "parent_epic": "BW-095",
       "title": "Validate linked NPC kits, loot and encounter authoring",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-095-AC-1",
         "BW-095-AC-2"
@@ -10268,23 +10268,37 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "launch": "Manual QA skipped at the user\u2019s explicit request on 2026-10-23: \"skip manual qa and just mark it as complete when you're done with the work\". Completion uses executed automated native evidence at 7f8602374c25e9401a13d7a73acb11cd02a1e338; no human replay is claimed. Optional replay uses the built pinned macOS ARM64 UE 5.8.3 ContentAuthoring commandlet and fixtures/content_authoring/reviewed-encounters.json. Exact commands: https://github.com/evanmcpheron/BriarwakeUnreal/blob/7f8602374c25e9401a13d7a73acb11cd02a1e338/docs/content-authoring.md#npc-loot-and-encounter-authoring-bw-095-t04. No map, controls, database or editor interaction is required.",
         "setup": [
-          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
-          "Use this ticket\u2019s linked sample with existing item/ability dependencies and the T01 CLI. No placed NPCs, world map or gameplay controls exist as prerequisites."
+          "Use the existing game/docs checkouts and built task revision 7f8602374c25e9401a13d7a73acb11cd02a1e338. BW-095-T01 is Complete within its recorded boundary. The reviewed 23-record linked sample is synthetic offline server authoring content; T06 still owns public/private projection.",
+          "Use the runbook\u2019s author_content function, absolute source/output paths, -SkipAssetScan and a fresh task-owned directory beneath ignored artifacts/. Preserve user changes, prior valid exports and historical evidence."
         ],
         "actions": [
-          "Round-trip the complete linked set. In task-owned copies break one kit ability, one loot parameter array and one enclosing phase/trigger limit; import each candidate."
+          "Optionally export reviewed-encounters.json to export.json, then import/export it to reimport.json with the existing ContentAuthoring commandlet. Compare both exports with cmp.",
+          "In separate task-owned source copies, set NPC ability_kit_id to Missing, loot selection_parameters.weights to [1, 1], trigger phase_id to Phase.Foreign or maximum_activations to 0. Import each candidate using the same existing valid output destination."
         ],
         "expected_results": [
-          "Valid definitions preserve links and IDs. Each bad edit rejects the entire set with the implicated record/field; prior output remains valid and no AI/reward/trigger executes."
+          "Valid commands exit 0, preserve all 23 records, IDs, revision domains and complete forward links, and log ready_abilities=0. Exports compare byte for byte; server scheduling/loot details remain present.",
+          "Each invalid command exits nonzero with its source record/field finding and preserves the previous complete selection/output. No AI, effects, rewards, triggers or reset execute, and no runtime-test evidence is granted."
         ],
         "reset": [
-          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+          "Let bounded commandlets exit. Restore only edits made to task-owned copies; retain the prior valid exports and a concise actual result. Remove only the task-owned temporary directory when no longer needed. Never reset the checkout or resave unrelated assets."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/30",
+          "revision": "7f8602374c25e9401a13d7a73acb11cd02a1e338",
+          "result": "Passed",
+          "summary": "2026-10-23 automated implementation evidence and explicit user completion instruction. Game main fetched/rechecked at dcee16e092cb2afad6a69fb3f05cfcb98f75390e; docs main fetched at 7693ed0a983ed9d75a6041e56df9b830e0ee06b4. python3 tools/validate.py --mode native --suite encounters --suite authoring --suite admission --suite bindings --suite statuses --output artifacts/bw-095-t04-native-final passed in 43.2 seconds: pinned macOS ARM64 UE 5.8.3 Editor compilation/link, eight Python tests, structured inputs, canonical 122-definition snapshot and 2,532 native assertions (encounters 228, authoring 30, admission 1,284, bindings 756, statuses 234). The synthetic 23-record reviewed-encounters.json source round-trips through actual native import/export/reimport with exact values, IDs and revisions, including forward references across all five new families. Linked admission rejects missing full records/identity-only dependencies, unlisted kit abilities, invalid finite conditions/policies/operations, loot parameter counts/shapes/ranges, foreign/orphan/duplicate phases and nonpositive trigger limits, without publishing any candidate member or replacing prior valid output. All three loot policies and explicit null links pass; activation stays blocked and ready abilities remain empty. Offline server scheduling/loot data is retained unchanged; no client projection or distribution route is added (T06), and no AI, rewards, triggers/reset, multiplayer or gameplay runtime fixture is certified. The initial run exposed an obsolete unsupported-family probe using newly supported NpcDefinition; it now uses unsupported WorldLocationDefinition and the final same assertion passes. Native source SHA-256 a41e693d8233fd5d137dabb92811162f23e351f7afdec9a859a61cb53b92e42b; reviewed sample SHA-256 8d3358646f26badd2e8132962e7343580eb861cd4d6ee0a5e5c0cc1e2ef31c48. Identical native inputs were verified across the task commit. Pre-existing staged descriptor plugin settings were preserved/excluded (local descriptor SHA-256 26ba45de235ee95b8e2edfa22ec2c2783671c2605f979c6aa93e1960cdb7450e); the runner reports their unrelated configuration impact, and existing GameFeature asset-manager startup diagnostics remain unchanged. The user explicitly requested \"skip manual qa and just mark it as complete when you're done with the work\"; manual replay was skipped, and Complete records passing automated AC evidence plus that explicit waiver, not a human test pass. BW-095-T01 remains Complete. No parent/downstream completion or PR merge is claimed."
+        }
+      ]
     },
     {
       "id": "BW-095-T05",
