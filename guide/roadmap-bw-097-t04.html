@@ -313,16 +313,27 @@ T04 implementation is available in game PR #21. Rendered readability, display/ba
                   controls. No visual/telegraph serialization or SpriteDirection encoding changes;
                   this scene-only public fixture makes no T05 floor/picking/revocation claim.
                 </li>
+                <li>
+                  Owner-directed follow-up 2026-10-23, game revision
+                  1feea16c2bcfcf77bf7eb921aee4b276361d90d8 on the same game PR #21: hold left mouse
+                  and drag for camera-only orbit/tilt; wheel scrolling retains zoom, and
+                  middle-button press/drag no longer orbits. This explicit owner instruction
+                  supersedes the original middle-button fixture binding in the epic/T03 historical
+                  requirements. Accepted T03 history and gameplay movement/facing/aim remain
+                  unchanged. Current game manual/UI hints use left-drag; physical pointer/capture
+                  acceptance of the new binding remains Not Run — Manual QA Pending.
+                </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
                   Start PIE (or rendered standalone with -game and -BriarwakeCameraReference), click
                   the viewport, use 1 stationary / 2 axial / 3 diagonal and R reset. Wheel through
-                  overview/intermediate/close and hold middle mouse to orbit. Compare Bright/Dark,
+                  overview/intermediate/close and hold left mouse to orbit. Compare Bright/Dark,
                   equipment on/off, raised pose and alternate form through the shared Data Asset.
                   Identify the moving character, stationary public target, four terrain steps and
-                  ramp at gameplay distances.
+                  ramp at gameplay distances. Middle-button drag must no longer orbit; wheel zoom
+                  must continue while left-dragging.
                 </li>
                 <li>
                   Enable Show Occluders and inspect wall/roof/foliage, toggle transparent
@@ -338,9 +349,11 @@ T04 implementation is available in game PR #21. Rendered readability, display/ba
                   client/backing dimensions, aspect, OS scale, quality and screen percentage. At UI
                   scales 0.75, 1 and 2, text/glyphs/control sizes must change independently of world
                   framing. Read wrapped text, scroll the panel, click its counter and verify
-                  wheel/middle drag over it do not move the camera. Playable floor/targets must
-                  remain usable; clipping, unreadable text or misaligned pointer hits fail. Mark
-                  unavailable high-DPI configurations unverified.
+                  wheel/left drag over it do not move the camera. Playable floor/targets must remain
+                  usable; clipping, unreadable text or misaligned pointer hits fail. Mark
+                  unavailable high-DPI configurations unverified. Interrupt a left-drag by leaving
+                  the viewport or losing focus; returning requires a fresh left press and no stale
+                  orbit.
                 </li>
                 <li>
                   Test invalid roughness/light/UI values for visible last-valid restoration. Stop
@@ -417,9 +430,29 @@ T04 implementation is available in game PR #21. Rendered readability, display/ba
                     stay unverified. Ticket/manual game handoff provides exact launch, controls,
                     expected failures, evidence and cleanup. Ticket remains In Progress; no release
                     accessibility, connected privacy, attack authorization or T06 performance
-                    certification is claimed.</a
+                    certification is claimed. Follow-up physical acceptance must use left-drag for
+                    orbit/tilt, confirm middle-button drag is inert, retain wheel zoom during drag,
+                    and recheck consuming UI/focus/release cleanup.</a
                   >
-                  — AC 1, 2, 3; Not Run; revision 7afb3013feed6de8ae80742c99d6b19b756ed257
+                  — AC 1, 2, 3; Not Run; revision 1feea16c2bcfcf77bf7eb921aee4b276361d90d8
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/21"
+                    >Partial follow-up automation, 2026-10-23: python3 tools/validate.py --mode
+                    native --suite camera --output artifacts/bw-097-t04-left-drag-native passed in
+                    85.085s, including affected Editor compilation/link and all 5 camera tests.
+                    Actual Slate callbacks recognize left press/release, consume left input when the
+                    world cannot own it, preserve another widget capture on bubbled release, and
+                    leave middle press/release unhandled. Existing zoom/orbit/lifecycle/readability
+                    assertions still pass; no wheel implementation changed. Source identity
+                    da889942148a36db7dc9881d53ec9d4031526d60a3a0bc9893412334ad40449c; module
+                    e05d620d56dc5fef06fe7a7d898393e567309eb5c37551608c957828ca7a5a2d. Rechecked game
+                    main 4870cc99e402541a280efc90f79365a9932e54f1 and docs main
+                    6952559cd46907996889b78f93d8e266024b0499; the same pre-existing local plugin
+                    descriptor inputs remain preserved and excluded from commits. Physical
+                    routing/rendered acceptance is unverified; ticket remains In Progress.</a
+                  >
+                  — AC 2, 3; Passed; revision 1feea16c2bcfcf77bf7eb921aee4b276361d90d8
                 </li>
               </ul>
               <h2 id="documentation">Related documentation</h2>
