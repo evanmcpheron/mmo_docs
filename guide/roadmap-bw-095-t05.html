@@ -157,7 +157,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-095-T05">
               <p>
-                <span class="badge">In Progress</span> · Parent epic:
+                <span class="badge">Complete</span> · Parent epic:
                 <a href="roadmap-bw-095.html#BW-095"
                   >BW-095 · Versioned content authoring and import workflow</a
                 >
@@ -247,7 +247,7 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. Use the built macOS ARM64 UE 5.8.3 ContentAuthoring commandlet with fixtures/content_authoring/reviewed-world.json. Exact commands and sample-copy edits: https://github.com/evanmcpheron/BriarwakeUnreal/blob/67f58594bb16f3ca48e6117f79db6940a4fe2b1a/docs/content-authoring.md#world-and-tutorial-authoring-bw-095-t05. Offline JSON tooling requires no gameplay map, controls, running editor, database or Unreal MCP.</code></pre>
+              <pre><code>Passed — Agent-executed commandlet replay on 2026-10-23 at game revision 67f58594bb16f3ca48e6117f79db6940a4fe2b1a, following the user’s request to run the QA and mark the ticket complete. All five commandlets exited with their expected codes; valid export/reimport matched exactly, and all three invalid edits produced source-mapped findings while retaining prior output. No human gameplay observation is claimed. Replay uses the built macOS ARM64 UE 5.8.3 ContentAuthoring commandlet with fixtures/content_authoring/reviewed-world.json. Exact commands: https://github.com/evanmcpheron/BriarwakeUnreal/pull/31. No gameplay map, controls, running editor, database or Unreal MCP is required.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
@@ -339,16 +339,33 @@
                   — AC 1, 2, 3; Passed; revision 67f58594bb16f3ca48e6117f79db6940a4fe2b1a
                 </li>
                 <li>
-                  <a
-                    href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/67f58594bb16f3ca48e6117f79db6940a4fe2b1a/docs/content-authoring.md#world-and-tutorial-authoring-bw-095-t05"
-                    >Not Run — Manual QA Pending. Human commandlet replay of valid
-                    export/reimport/comparison and rejected missing-destination, quest-cycle and
-                    one-XP-deficit edits remains outstanding. Confirm nonzero rejected exits, source
-                    record/field findings, ready_abilities=0 and preservation of prior valid output.
-                    The ticket remains In Progress; no manual waiver or human pass is claimed. No
-                    map or gameplay controls are needed.</a
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/31"
+                    >2026-10-23: executed the requested commandlet QA at
+                    67f58594bb16f3ca48e6117f79db6940a4fe2b1a against the already verified native
+                    module (source SHA-256
+                    efc93abe8fb27fdf2c88b70cb48161eb6a8c4bf09c6cf6ffe1cbda752bf3d782). Used
+                    UnrealEditor-Cmd Briarwake.uproject -run=ContentAuthoring -unattended -nop4
+                    -NullRHI -nosound -NoShaderCompile -SkipAssetScan with absolute -Source/-Output
+                    paths. Both valid commands exited 0, preserved all 113 exact
+                    records/identities/values/revision domains, logged ready_abilities=0 and
+                    compared byte for byte (cmp exit 0; export SHA-256
+                    76e3c079e26a3e57ea3284eb5fd0d87ed5695025f441a46bcb1a72ef15808d3b). Missing
+                    destination, self-dependent Quest.Required and a one-XP deficit each exited 1
+                    with the expected source-mapped world_reference, quest_reachability or
+                    required_solo_path_to_ten_v1 finding; both valid exports remained unchanged
+                    after every rejection. The XP finding reported 16,126 eligible XP against the
+                    canonical 16,127 threshold. A one-line log reader initially missed multiline
+                    findings; inspecting the retained JSON established the expected destination
+                    rejection without rerunning passed commands. All five commandlets exited;
+                    task-owned invalid copies were removed and exact exports/bounded diagnostics
+                    remain in ignored artifacts/bw-095-t05-replay-20261023T182030Z/. A pre-existing
+                    ZenStore/IoStore packaging warning did not affect these outcomes. Complete
+                    combines prior passing native AC coverage, complete T03/T04 prerequisites and
+                    this executed procedural replay, following the user’s explicit completion
+                    instruction. This is agent-executed offline QA, not a human observation or
+                    playable-journey/runtime-fixture pass.</a
                   >
-                  — AC 1, 2, 3; Not Run; revision 67f58594bb16f3ca48e6117f79db6940a4fe2b1a
+                  — AC 1, 2, 3; Passed; revision 67f58594bb16f3ca48e6117f79db6940a4fe2b1a
                 </li>
               </ul>
               <h2 id="documentation">Related documentation</h2>
