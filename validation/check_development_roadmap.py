@@ -163,16 +163,16 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 continue
             for field in ('artifact', 'revision', 'summary'):
                 text(record[field], context + ' evidence ' + field)
-            if record['result'] not in ('Passed', 'Failed'):
-                errors.append(f'{context}: evidence result must be Passed or Failed')
+            if record['result'] not in ('Passed', 'Failed', 'Not Run'):
+                errors.append(f'{context}: evidence result must be Passed, Failed or Not Run')
             numbers = record['criteria']
             if (not isinstance(numbers, list) or not numbers or
                     any(type(n) is not int or not 1 <= n <= len(criteria) for n in numbers)):
                 errors.append(f'{context}: evidence must identify existing AC numbers')
             elif record['result'] == 'Passed':
                 covered.update(numbers)
-            if record['result'] == 'Failed' and epic['status'] == 'Complete':
-                errors.append(f'{context}: Complete cannot retain failing current evidence')
+            if record['result'] in ('Failed', 'Not Run') and epic['status'] == 'Complete':
+                errors.append(f'{context}: Complete cannot retain failing or unverified current evidence')
             artifact = record['artifact']
             if isinstance(artifact, str):
                 parsed = urlsplit(artifact)
@@ -273,15 +273,15 @@ def roadmap_errors(data, root=ROOT, check_generated=True):
                 continue
             for field in ('artifact', 'revision', 'summary'):
                 text(record[field], context + ' evidence ' + field)
-            if record['result'] not in ('Passed', 'Failed'):
-                errors.append(f'{context}: evidence result must be Passed or Failed')
+            if record['result'] not in ('Passed', 'Failed', 'Not Run'):
+                errors.append(f'{context}: evidence result must be Passed, Failed or Not Run')
             numbers = record['criteria']
             if (not isinstance(numbers, list) or not numbers or any(type(n) is not int or
                     not 1 <= n <= len(ticket['acceptance_criteria']) for n in numbers)):
                 errors.append(f'{context}: evidence must identify existing ticket AC numbers')
             elif record['result'] == 'Passed':
                 passed.update(numbers)
-            failed |= record['result'] == 'Failed'
+            failed |= record['result'] in ('Failed', 'Not Run')
             artifact = record['artifact']
             if isinstance(artifact, str):
                 parsed = urlsplit(artifact)

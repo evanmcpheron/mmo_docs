@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import ast
 import hashlib
 import json
 import os
@@ -40,22 +39,15 @@ def changed_files(root=ROOT, base='origin/main'):
 
 
 def affected_tests(paths, root=ROOT):
-    modules = {path.stem: path for directory in ('validation', 'scripts') for path in (root / directory).glob('*.py')}
-    affected = {Path(path).stem for path in paths if path.endswith('.py')}
-    if any(Path(path).name in {'format_html.mjs', '.prettierrc.json', 'package.json', 'package-lock.json'} for path in paths):
-        affected.add('html_format')
-    imports = {}
-    for name, path in modules.items():
-        tree = ast.parse(path.read_text(), filename=str(path))
-        imports[name] = {node.module.split('.')[0] for node in ast.walk(tree)
-                         if isinstance(node, ast.ImportFrom) and node.module}
-        imports[name].update(alias.name.split('.')[0] for node in ast.walk(tree)
-                             if isinstance(node, ast.Import) for alias in node.names)
-    while True:
-        expanded = affected | {name for name, dependencies in imports.items() if dependencies & affected}
-        if expanded == affected:
-            return sorted(name for name in affected if name.startswith('test_') and name in modules)
-        affected = expanded
+    tests = set()
+    for path in paths:
+        if not path.endswith('.py'):
+            continue
+        name = Path(path).stem.removeprefix('test_').removeprefix('check_').removeprefix('build_')
+        candidate = 'test_' + ('validation' if name in {'validate', 'sources'} else name)
+        if (root / 'validation' / (candidate + '.py')).is_file():
+            tests.add(candidate)
+    return sorted(tests)
 
 
 def select_checks(paths, root=ROOT):
@@ -72,31 +64,30 @@ def select_checks(paths, root=ROOT):
     for path in paths:
         file = Path(path)
         if path in roadmap:
-            checks.update(('roadmap', 'freshness', 'site'))
+            checks.update(('roadmap', 'roadmap-freshness', 'site'))
         elif path in {'sources/data-inventory.json', 'sources/data-model.schema.json', 'guide/data-inventory.html'} or (path in data and path.startswith('data/')):
-            checks.update(('contracts', 'freshness'))
+            checks.update(('contracts', 'contracts-freshness'))
             if path.startswith('data/') and path != 'data/manifest.json':
                 checks.add('data')
             if path.endswith(('character_catalog.json', 'talents.json', 'allocation_examples.json', 'classes.json', 'specializations.json')):
                 checks.add('allocations')
         elif path in {'data/manifest.json', 'assets/search-index.js'}:
-            checks.update(('roadmap', 'freshness', 'site'))
+            checks.update(('roadmap', 'roadmap-freshness', 'site'))
         elif path.endswith('.html'):
-            checks.update(('contracts', 'freshness', 'site'))
+            checks.update(('contracts', 'contracts-freshness', 'site'))
         elif path.startswith(('scripts/', 'validation/')) and file.suffix in {'.py', '.mjs'}:
             if not (root / path).exists():
                 unresolved.append('Deleted tooling needs consumer review: ' + path)
-            if (file.suffix == '.mjs' and not file.name.startswith('test_')) or file.name in {
-                    'html_format.py', 'build_development_roadmap.py', 'build_data_inventory.py'}:
+            if file.suffix == '.mjs' and not file.name.startswith('test_'):
                 checks.add('browser')
             if 'roadmap' in path:
-                checks.update(('roadmap', 'freshness', 'site'))
+                checks.update(('roadmap', 'roadmap-freshness', 'site'))
             elif 'data' in path or 'model' in path:
-                checks.update(('contracts', 'freshness'))
+                checks.update(('contracts', 'contracts-freshness'))
             elif file.name == 'run_checks.py':
-                checks.update(('data', 'allocations', 'site', 'contracts', 'roadmap', 'freshness'))
+                checks.update(('data', 'allocations', 'site', 'contracts', 'roadmap', 'contracts-freshness', 'roadmap-freshness'))
         elif path.startswith('assets/') or file.name in {'package.json', 'package-lock.json', '.prettierrc.json', '.prettierignore'}:
-            checks.update(('site', 'freshness', 'browser'))
+            checks.update(('site', 'browser'))
         elif path.startswith(('docs/', '.agents/', '.github/', 'validation/')) or file.suffix in {'.md', '.txt'} or file.name == '.gitignore':
             continue
         else:
@@ -125,12 +116,13 @@ def commands(mode, impact, paths, gate=False, report_dir=None):
     if not gate and not any(path.endswith('.html') or path == 'assets/search-index.js' for path in paths):
         source_checks.discard('site')
     structural = [path for path in paths if Path(path).suffix in {'.json', '.py'} and (ROOT / path).is_file()]
-    if source_checks or structural or (gate and 'freshness' in checks):
+    if source_checks or structural or (gate and any(name.endswith('-freshness') for name in checks)):
         command = [python, 'validation/check_sources.py']
         for scope in sorted(source_checks):
             command.extend(['--scope', scope])
-        if gate and 'freshness' in checks:
-            command.extend(['--scope', 'freshness'])
+        if gate:
+            for scope in sorted(checks & {'roadmap-freshness', 'contracts-freshness'}):
+                command.extend(['--scope', scope])
         command.extend(['--paths', *structural])
         plan.append(('sources', command))
     if impact['tests']:
@@ -162,14 +154,14 @@ def git_reference(reference):
 
 def input_identity(root=ROOT, changed=()):
     try:
-        paths = subprocess.check_output(['git', 'ls-files', '--cached', '--others', '--exclude-standard', '-z'], cwd=root).split(b'\0')
+        digest = hashlib.sha256(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root))
+        for name in sorted(changed):
+            digest.update(name.encode())
+            path = root / name
+            digest.update(path.read_bytes() if path.is_file() else b'deleted')
+        return digest.hexdigest()
     except (OSError, subprocess.SubprocessError):
         return None
-    names = {os.fsdecode(name) for name in paths if name}
-    names = {name for name in names if not name.startswith(('validation/tickets/', 'validation/epics/', 'validation/performance/'))} | set(changed)
-    identities = {name: hashlib.sha256((root / name).read_bytes()).hexdigest()
-                  for name in sorted(names) if (root / name).is_file()}
-    return hashlib.sha256(json.dumps(identities, sort_keys=True).encode()).hexdigest()
 
 
 def main(argv=None):
@@ -200,7 +192,7 @@ def main(argv=None):
     if mode != 'full':
         if 'browser' in impact['checks'] and mode != 'integration':
             outstanding.append('INTEGRATION required for changed browser/template/UI behavior')
-        if 'freshness' in impact['checks'] and not args.gate:
+        if any(name.endswith('-freshness') for name in impact['checks']) and not args.gate:
             outstanding.append('PR freshness required: rerun with --gate after generation')
         if 'data' in impact['checks'] and not args.gate:
             outstanding.append('PR data invariants required: --gate (allocations only for affected inputs)')

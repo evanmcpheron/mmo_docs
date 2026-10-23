@@ -150,8 +150,10 @@ def validate_registry(registry, root=ROOT):
         errors.append('Character catalog and canonical contract content versions disagree')
     entries = registry['entries']
     pages = registry['pages']
+    from build_development_roadmap import generated_page_paths, load
+    roadmap_pages = set(generated_page_paths(load(root)))
     documents = {p.relative_to(root).as_posix(): document_metadata(strip_data(p.read_text(encoding='utf-8')))
-                 for p in sorted(root.rglob('*.html')) if p.relative_to(root).as_posix() != INVENTORY_PAGE}
+                 for p in sorted(root.rglob('*.html')) if p.relative_to(root).as_posix() not in roadmap_pages | {INVENTORY_PAGE}}
 
     def unique(values, label):
         duplicates = [value for value, count in Counter(values).items() if count > 1]
@@ -318,7 +320,7 @@ def navigation(source, page):
     return source
 
 
-def roadmap_search(root=ROOT):
+def roadmap_search(root=ROOT, pages=None):
     from build_development_roadmap import REFERENCE_PAGES, anchor_page, epic_page, phase_page, ticket_page
 
     roadmap = json.loads((root / 'sources/development-roadmap.json').read_text(encoding='utf-8'))
@@ -365,7 +367,7 @@ def roadmap_search(root=ROOT):
         records.append({'title': title, 'section': 'Development Roadmap · Reference',
                         'url': anchor_page(roadmap, anchor) + '#' + anchor, 'text': text})
     audit_page = REFERENCE_PAGES['audit'][0]
-    audit_source = (root / audit_page).read_text(encoding='utf-8')
+    audit_source = pages[audit_page] if pages is not None else (root / audit_page).read_text(encoding='utf-8')
     for tag, anchor, title in Document(audit_source).headings:
         if tag == 'h3' and anchor and re.fullmatch(r'RA-\d{3}', anchor):
             section = re.search(r'<section aria-labelledby="' + re.escape(anchor) + r'">(.*?)</section>', audit_source, re.S)
@@ -508,6 +510,12 @@ def inventory_page(registry, template):
     return navigation(prefix + main + toc + '</div></div></body></html>\n', INVENTORY_PAGE)
 
 
+def page_counts(registry, root=ROOT):
+    from build_development_roadmap import generated_page_paths, load
+    pages = {page['page'] for page in registry['pages']} | set(generated_page_paths(load(root))) | {INVENTORY_PAGE}
+    return {'html_pages': len(pages), 'guide_pages': sum(path.startswith('guide/') for path in pages)}
+
+
 def expected_outputs(registry, root=ROOT):
     outputs = {}
     for reviewed in registry['pages']:
@@ -572,9 +580,7 @@ def expected_outputs(registry, root=ROOT):
     search.extend(roadmap_search(root))
     outputs['assets/search-index.js'] = 'window.SEARCH_INDEX=' + json.dumps(search, ensure_ascii=True, separators=(',', ':')) + ';\n'
     manifest = json.loads((root / 'data/manifest.json').read_text(encoding='utf-8'))
-    manifest.update(version=registry['content_version'], html_pages=len(registry['pages']) + 1,
-                    guide_pages=sum(p['page'].startswith('guide/') for p in registry['pages']) + 1,
-                    search_entries=len(search))
+    manifest.update(version=registry['content_version'], **page_counts(registry, root), search_entries=len(search))
     outputs['data/manifest.json'] = json.dumps(manifest, indent=2) + '\n'
     outputs['sources/data-model.schema.json'] = json.dumps(schema_bundle(registry), indent=2, ensure_ascii=False) + '\n'
     outputs['validation/data-model-review.txt'] = review_report(registry)
@@ -591,23 +597,15 @@ def main():
     parser.add_argument('--check', action='store_true', help='Check registry and generated output without writing')
     parser.add_argument('--review-page', action='append', default=[], metavar='PATH',
                         help='Record a completed manual feature review after updating its inventory associations')
-    parser.add_argument('--review-roadmap', action='store_true',
-                        help='Refresh all generated roadmap pages as planning references without gameplay associations')
     args = parser.parse_args()
-    if args.check and (args.review_page or args.review_roadmap):
+    if args.check and args.review_page:
         parser.error('--check cannot update page reviews')
     registry = load_registry()
-    roadmap_pages = []
-    if args.review_roadmap:
-        from build_development_roadmap import generated_page_paths
-
-        roadmap = json.loads((ROOT / 'sources/development-roadmap.json').read_text(encoding='utf-8'))
-        roadmap_pages = list(generated_page_paths(roadmap))
     try:
-        review_pages(registry, [*args.review_page, *roadmap_pages], reference_pages=roadmap_pages)
+        review_pages(registry, args.review_page)
     except ValueError as error:
         parser.error(str(error))
-    if args.review_page or args.review_roadmap:
+    if args.review_page:
         registry['pages'].sort(key=lambda p: p['page'])
         registry_path = ROOT / 'sources/data-inventory.json'
         source = json.dumps(registry, indent=2, ensure_ascii=False) + '\n'
