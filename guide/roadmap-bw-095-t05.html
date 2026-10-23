@@ -157,7 +157,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-095-T05">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">Complete</span> · Parent epic:
                 <a href="roadmap-bw-095.html#BW-095"
                   >BW-095 · Versioned content authoring and import workflow</a
                 >
@@ -247,43 +247,55 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.</code></pre>
+              <pre><code>Passed — Agent-executed commandlet replay on 2026-10-23 at game revision 67f58594bb16f3ca48e6117f79db6940a4fe2b1a, following the user’s request to run the QA and mark the ticket complete. All five commandlets exited with their expected codes; valid export/reimport matched exactly, and all three invalid edits produced source-mapped findings while retaining prior output. No human gameplay observation is claimed. Replay uses the built macOS ARM64 UE 5.8.3 ContentAuthoring commandlet with fixtures/content_authoring/reviewed-world.json. Exact commands: https://github.com/evanmcpheron/BriarwakeUnreal/pull/31. No gameplay map, controls, running editor, database or Unreal MCP is required.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs
-                  sources. Use only task-owned sample/output directories beneath ignored game
-                  artifacts/; preserve source assets, prior accepted output and historical evidence.
+                  Use the existing game/docs checkouts and built game revision
+                  67f58594bb16f3ca48e6117f79db6940a4fe2b1a. BW-095-T03 and BW-095-T04 are Complete
+                  within their recorded static boundaries.
                 </li>
                 <li>
-                  Use the delivered relationship sample and explicit canonical progression/reward
-                  inputs with the T01 CLI. Sample production remains pending; no starter gameplay
-                  map is assumed.
+                  From the game workspace root, use the runbook author_content function, absolute
+                  paths and a fresh task-owned directory beneath ignored artifacts/. Preserve source
+                  assets, user changes and prior valid output. The 113-record sample contains
+                  synthetic coordinates and explicit test rewards; it is not a production starter
+                  area.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Import/export/reimport the valid sample. Separately break a destination zone,
-                  introduce a quest cycle and change a required reward so the path falls below level
-                  ten; also try moving that reward to an optional task.
+                  Export reviewed-world.json to export.json, import/export that file to
+                  reimport.json and compare both exports with cmp.
+                </li>
+                <li>
+                  In separate task-owned source copies, change the exit destination to Missing, add
+                  Quest.Required as its own prerequisite, or reduce Reward.Required.experience by
+                  one. Import each using the existing valid output destination.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  The valid sample passes static admission. Each invalid relationship or XP path
-                  rejects with record/field findings, prior output survives, and optional/repeated
-                  rewards cannot satisfy required progression.
+                  Both valid commands and cmp exit zero, retain all 113 records, exact
+                  identities/values/revisions and log ready_abilities=0.
+                </li>
+                <li>
+                  Each invalid command exits nonzero with a source record/field finding
+                  (world_reference, quest_reachability or required_solo_path_to_ten_v1), and prior
+                  exports remain byte-for-byte unchanged. Large optional/final-challenge XP and
+                  repeated IDs do not cover the one-XP shortfall. A zero rejected exit, altered
+                  prior output, missing finding or enabled ability fails QA.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Let the bounded command exit; use a fresh task-owned output directory for the next
-                  run. Restore only the sample edits made during this procedure; retain the prior
-                  valid output and concise actual result. Never reset the checkout, resave unrelated
-                  assets or overwrite historical evidence.
+                  Let bounded commandlets exit. Retain a concise actual result and prior valid
+                  export; restore only edits to task-owned copies and remove only the new replay
+                  directory when finished. Preserve versioned samples, unrelated work and historical
+                  evidence.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -294,10 +306,68 @@
                 evidence.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/31"
+                    >2026-10-23 automated static evidence only. The synthetic 113-record
+                    reviewed-world.json round-trips through the actual native importer/exporter with
+                    exact values, IDs and revision domains. Native relationship checks cover
+                    complete world/service/quest links, zone/floor ownership, safe protected
+                    recovery, advertised services, quest reachability, stage order/bands,
+                    required/optional separation and role indexes. Required distinct one-time grants
+                    meet the canonical 16,127 XP threshold; missing amounts, double counting and
+                    reliance on optional, repeatable, profession, graduation or final-challenge
+                    rewards reject atomically. Canonical progression costs and existing
+                    class/ability unlock checks are reused. Final command: python3 tools/validate.py
+                    --mode native --suite world --suite talents --output
+                    artifacts/bw-095-t05-native-verified; Passed in 45.5s with pinned macOS ARM64 UE
+                    5.8.3 Editor compilation/link, 10 Python tests, structured/snapshot checks and
+                    517 native assertions (world 294 across 47 cases, talents 223). Earlier
+                    unchanged compatibility/admission/bindings/authoring/encounter assertions
+                    passed; three initial world finding-path expectations were corrected before the
+                    final pass. Tested commit has identical native inputs to the final run; native
+                    source SHA-256 efc93abe8fb27fdf2c88b70cb48161eb6a8c4bf09c6cf6ffe1cbda752bf3d782.
+                    Game main fetched/rechecked at 8b945cb99668810fcbca6d784472e4d89abfa788; docs
+                    main at 688c06f74e09159af8083878fcfb57578524b3c3. All prior 122 schema
+                    definitions remain unchanged; the extracted closure has 140 definitions. Floors
+                    are explicitly reviewed in server-owned policy because the canonical schema has
+                    no floor family; NPC placement/faction membership cannot be certified from a
+                    schema without those fields. No playable journey, AI, rewards,
+                    movement/transfer/recovery, enabled capability, client projection or
+                    execution-fixture pass is claimed.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 67f58594bb16f3ca48e6117f79db6940a4fe2b1a
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/31"
+                    >2026-10-23: executed the requested commandlet QA at
+                    67f58594bb16f3ca48e6117f79db6940a4fe2b1a against the already verified native
+                    module (source SHA-256
+                    efc93abe8fb27fdf2c88b70cb48161eb6a8c4bf09c6cf6ffe1cbda752bf3d782). Used
+                    UnrealEditor-Cmd Briarwake.uproject -run=ContentAuthoring -unattended -nop4
+                    -NullRHI -nosound -NoShaderCompile -SkipAssetScan with absolute -Source/-Output
+                    paths. Both valid commands exited 0, preserved all 113 exact
+                    records/identities/values/revision domains, logged ready_abilities=0 and
+                    compared byte for byte (cmp exit 0; export SHA-256
+                    76e3c079e26a3e57ea3284eb5fd0d87ed5695025f441a46bcb1a72ef15808d3b). Missing
+                    destination, self-dependent Quest.Required and a one-XP deficit each exited 1
+                    with the expected source-mapped world_reference, quest_reachability or
+                    required_solo_path_to_ten_v1 finding; both valid exports remained unchanged
+                    after every rejection. The XP finding reported 16,126 eligible XP against the
+                    canonical 16,127 threshold. A one-line log reader initially missed multiline
+                    findings; inspecting the retained JSON established the expected destination
+                    rejection without rerunning passed commands. All five commandlets exited;
+                    task-owned invalid copies were removed and exact exports/bounded diagnostics
+                    remain in ignored artifacts/bw-095-t05-replay-20261023T182030Z/. A pre-existing
+                    ZenStore/IoStore packaging warning did not affect these outcomes. Complete
+                    combines prior passing native AC coverage, complete T03/T04 prerequisites and
+                    this executed procedural replay, following the user’s explicit completion
+                    instruction. This is agent-executed offline QA, not a human observation or
+                    playable-journey/runtime-fixture pass.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 67f58594bb16f3ca48e6117f79db6940a4fe2b1a
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-095.html#BW-095">Parent epic and acceptance criteria</a
