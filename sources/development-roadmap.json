@@ -613,9 +613,9 @@
           "href": "guide/operations.html"
         }
       ],
-      "status": "In Progress",
+      "status": "Complete",
       "blockers": [],
-      "ordering_rationale": "T01\u2013T04 are Complete within their retained native evidence and explicit owner acceptance. On 2026-10-23 the user accepted T02/T03 completion and waived supplemental manual QA for T04, whose actual owned-process crash/reopen and durable local inbox checks passed. T05 remains Not Started and is the remaining supported storage-schema migration work; BW-018 therefore remains In Progress. The foundations page derives this status from the canonical epic record. Local SQLite is the owner-selected probe candidate; no production inventory/authentication/deployment, power-loss guarantee or per-tick persistence is certified.",
+      "ordering_rationale": "All five BW-018 tickets are Complete within their retained actual native evidence and explicit owner acceptance. T05 adds the supported schema-4-to-5 storage migration and closes the remaining AC4 gap; the user explicitly requested ticket, epic and phase completion and waived supplemental manual QA on 2026-10-23. All six epics in phase-foundations are now Complete, so its generated status becomes Complete without a duplicate phase status field. The independent existing storage lock-timing assertion remains failed and disclosed in T05/game PR #38; it is not a failed migration acceptance criterion or a claimed pass. Local SQLite is the bounded probe candidate, not a production persistence/deployment platform; production gameplay, backup/downgrade, independent storage failures, power loss and per-tick persistence remain outside this acceptance.",
       "verified_evidence": [
         {
           "criteria": [
@@ -627,6 +627,15 @@
           "revision": "12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1",
           "result": "Passed",
           "summary": "2026-10-23 partial parent evidence: accepted T02 atomic mutation/durable acknowledgment and T03 independent-connection revision/idempotency/epoch results are retained at their recorded revisions. T04 adds the actual four owned-process SIGKILL checkpoints and fresh-file recovery/deduplicated delivery, with 24 Python tests and 153 native assertions passing plus final Editor/Server links. The user expressly accepted T02/T03 and waived supplemental manual QA for T04 without claiming human execution. Parent ACs 1\u20133 are evidenced; AC4 still requires T05\u2019s supported schema migration, so BW-018 is In Progress and T05 remains Not Started. No parent completion or downstream acceptance is claimed."
+        },
+        {
+          "criteria": [
+            4
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/38",
+          "revision": "21776e507f817245f23d104e5dfc55c28c43d055",
+          "result": "Passed",
+          "summary": "2026-10-23 completion of the remaining parent AC4 migration boundary: T05 passed 60 actual schema-4-to-5 migration/reopen/retry/fencing/dedup/rollback assertions at native source SHA-256 2edc7c1de01c00cf7c61ad89a4305dd2d2661a47ba0afc1bb33c18dfd798df5e. Stable canonical identities/invariants survive; stale authority remains fenced. Retained accepted T03 evidence covers the existing epoch fence, and retained T02/T03/T04 evidence covers parent ACs 1\u20133. All five tickets and hard dependencies BW-001/BW-002 are Complete. The user waived supplemental manual QA and requested epic/phase completion; no human execution is claimed. The separate storage suite lock-timing failure (2.423s/2.421s against 2s) remains visible in the game PR and ticket evidence and is not certified as passed. Foundations completion derives from its six completed epics; no broader gameplay or operational restore acceptance is asserted."
         }
       ],
       "phase": "phase-foundations"
@@ -11072,7 +11081,7 @@
       "id": "BW-018-T05",
       "parent_epic": "BW-018",
       "title": "Migrate the SQLite schema without changing fixture identity or invariants",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-018-AC-4"
       ],
@@ -11129,24 +11138,38 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.",
+        "launch": "Optional replay \u2014 supplemental manual QA explicitly waived by the user for this ticket; no human execution is claimed. From the existing game root with native inputs at 21776e507f817245f23d104e5dfc55c28c43d055, run python3 tools/check_content_admission.py --suite migration --timeout 300 --output artifacts/bw-018-t05-replay using a fresh output directory. Exact preflight/migrate/failure/reopen checks, fixture provenance and rollback/reconciliation limits: https://github.com/evanmcpheron/BriarwakeUnreal/blob/21776e507f817245f23d104e5dfc55c28c43d055/docs/sqlite-migration.md. No map, player controls, running editor, database service or MCP action is required.",
         "setup": [
-          "Use only a fresh task-owned SQLite database and outputs beneath ignored game artifacts/. Preserve all existing project files, databases and historical evidence; no shared or production data. The selected candidate is local SQLite, explicitly chosen by the owner on 2026-10-23.",
-          "Complete T04 and retain its real old-schema fixture with a committed receipt, current epoch and pending notification. Implementation must provide the exact migrate/preflight/failure/reopen commands and rollback/reconciliation procedure."
+          "Use the existing game and canonical mmo_docs checkouts with pinned macOS ARM64 UE 5.8.3 Editor/source-Server, Xcode build 27A266a and SQLite 3.54.0/unix VFS. The Editor and Server targets compiled/linked at the recorded native source identity. T04 is Complete with retained actual crash/reopen evidence.",
+          "The migration suite copies the two immutable 86,016-byte schema-4 files under fixtures/persistence/schema4 into a fresh task-owned native/migration directory below ignored artifacts/. They are verbatim prior-implementation T04 outputs, including a pending zero-amount receipt/max-exact balance and a delivered 25-unit receipt/durable inbox effect. Preserve all originals, historical evidence, unrelated files and active SQLite sidecars."
         ],
         "actions": [
-          "Inspect the old file, run the supported migration and reopen. Compare IDs/revisions/ledger totals, replay the original key, attempt a stale-epoch mutation and resume the pending notification.",
-          "In a separate fresh old-schema scenario trigger the documented mid-migration failure; verify rollback. Attempt an unsupported future schema, then reopen/reinvoke the completed supported migration."
+          "Run the exact migration command. The guarded Briarwake.Persistence.Migration.Schema test validates the real schema-4 files, rejects implicit ordinary opens, explicitly migrates 4 to 5 under BEGIN EXCLUSIVE and reopens. Compare every typed row, original receipt, process/epoch, content/rules identity and pending/delivered notification identity; replay the original key and attempt a new reverse transfer with a stale epoch and current asset revisions.",
+          "Resume pending delivery, reopen the independent recipient and repeat acceptance against its durable dedup row. Require one effect and unchanged economic/receipt/ledger rows. Reinvoke completed migration and require unchanged database bytes.",
+          "The same command denies dropping the renamed original inbox after copying its rows, then verifies whole-transaction rollback, original schema-4 file bytes/rows, usable old reads and successful retry. It also holds a real independent read lock to reject exclusive migration before releasing it, and checks unknown/future versions plus incompatible integer/canonical/inbox/layout/metadata inputs without further mutation."
         ],
         "expected_results": [
-          "Migration preserves fixture identity and all economic invariants. Retry/delivery remain idempotent, old epochs stay fenced, failed/unsupported migration preserves the old usable state and completed migration does not run twice."
+          "Exit 0 and all 60 migration assertions pass in run.json/native/migration.json. Schema 5 changes probe_inbox to STRICT WITHOUT ROWID; the other six tables and all canonical meanings/encodings remain intact. NULL reservation, 9007199254740991 balance and revisions above 32 bits survive; stale epochs remain fenced, retries retain original results and recovery produces one recipient effect without another settlement.",
+          "Unsupported/incompatible inputs remain rejected and unchanged; a controlled migration failure restores the complete usable old layout rather than independently restoring currency. A missing report, failed assertion, partial state, changed identity, duplicate effect or unexpected mutation fails verification. The separate existing storage suite currently has a failed combined lock-contention assertion: observed waits 2.423s and 2.421s exceed its unchanged 2s bound. No storage-suite pass or human test pass is claimed; all ticket-specific migration assertions passed."
         ],
         "reset": [
-          "Close owned connections and let bounded child processes exit. For a new baseline use a fresh task-owned directory; for a recovery/retry case reopen the same scenario database without reseeding it. Preserve prior outputs and unrelated staged work; never reset the checkout or remove database sidecars while a connection is active."
+          "Let owned processes exit and connections close. Use a fresh task-owned directory for another baseline; never reseed a recovery file, relabel user_version, restore wallet rows independently or remove active journals. Preserve original fixtures and historical evidence. There is no supported schema-5-to-4 downgrade or production backup/deployment rollback procedure; retain findings and reconcile the entire file on an indeterminate outcome."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/38",
+          "revision": "21776e507f817245f23d104e5dfc55c28c43d055",
+          "result": "Passed",
+          "summary": "2026-10-23 actual file-backed schema-4-to-5 migration at game 21776e507f817245f23d104e5dfc55c28c43d055. All 60 Briarwake.Persistence.Migration.Schema assertions passed in artifacts/bw-018-t05-runtime (the native assertion report and successful Unreal test state were verified independently of the accompanying storage-suite failure). Two verbatim T04 database files migrate/reopen with exact typed rows, content/rules identities, receipts, fences, ledger and pending/delivered notification identities. Exact retry, stale-epoch rejection, recipient reopen/dedup, exclusive-lock rejection, no-op repetition, unsupported/incompatible input preservation and controlled post-copy DDL rollback to byte-identical usable schema 4 passed. Editor/source-Server compilation/link and 14 Python tests passed; the existing fresh-process storage reopen passed 10 assertions. Native source SHA-256 2edc7c1de01c00cf7c61ad89a4305dd2d2661a47ba0afc1bb33c18dfd798df5e; provenance SHA-256 26f149764ac097acb7dd6a9a850793138ecbbcd16143a1bfdde6255ccc4da7f9. Initial runtime attempt timed out before assertions; --timeout 300 executed migration,storage. The separate unchanged storage combined lock-contention assertion failed on both combined and storage-only runs (2.423s/2.421s versus 2s); no overall NATIVE/storage pass is claimed. All three ticket ACs have actual passing migration evidence; supplemental manual QA is explicitly waived by the user, not represented as executed. Prior accepted T03 concurrency/T04 crashes are reused for unchanged responsibilities. No production restore, downgrade, power-loss or gameplay migration certification. Latest fetched main: game aca0dbc97ce9dcbe2f8fea271b34b9ea6828fcf9; docs a2714813a130fa9fade47fa0615021056f7d9844."
+        }
+      ]
     }
   ]
 }
