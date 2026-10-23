@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T03">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · Orthographic camera and visual-readability proof</a
                 >
@@ -249,7 +249,7 @@
 python3 tools/check_baseline.py build
 &quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log
 Use Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.
-The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.</code></pre>
+T03 implementation is delivered for review/QA in game PR #19. Physical input and rendered acceptance remain Not Run — Manual QA Pending; use the consuming top-right UI capture control and V view-target toggle.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
@@ -284,6 +284,14 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                   configuration owner and existing Unreal Details/Project Settings/material or
                   widget controls rather than a custom settings framework.
                 </li>
+                <li>
+                  Execution 2026-10-23: game revision 8117abd0e352b17892baa8ec20556215441a41a0
+                  implements the existing rig/settings orbit and Slate pointer surface. Affected
+                  native build and 5 camera tests pass; see
+                  https://github.com/evanmcpheron/BriarwakeUnreal/pull/19 for exact input identity,
+                  results and concise manual QA. The user&#x27;s unrelated staged Briarwake.uproject
+                  plugin additions were preserved and excluded from the game commit.
+                </li>
               </ol>
               <h3>Actions</h3>
               <ol>
@@ -293,9 +301,11 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                   Repeat stationary and on axial/diagonal routes while scrolling.
                 </li>
                 <li>
-                  Repeat wheel/drag over the consuming UI fixture. Press in the viewport then
-                  release outside it, alt-tab away while held, replace the fixture view target and
-                  stop/restart PIE. Verify no stale drag on return.
+                  Repeat wheel/drag over the top-right UI capture control and left-click its
+                  counter. Press in the world, move over the panel or outside the viewport, release
+                  and return; alt-tab while held and return; use Shift+F1 in PIE. Press V while
+                  dragging to replace the view target, release and press V to return. Stop/restart
+                  PIE. Every interruption must clear pending orbit/zoom and require a fresh press.
                 </li>
                 <li>
                   Tune sensitivity/inversion/limits/smoothing in Unreal UI, save/reopen and repeat
@@ -333,10 +343,37 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                 mutation request; this does not certify connected input admission.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/19"
+                    >Partial automated evidence, 2026-10-23: held orbit, bounded combined
+                    zoom/pitch, inversion, release smoothing, route/facing/aim independence,
+                    invalid-input/settings rejection, serialization and cleanup callbacks pass the
+                    actual native camera suite (5/5 tests). Affected Editor compilation/UHT/link and
+                    whitespace/structure pass; final NATIVE run 35.853 seconds on UE 5.8.3 CL
+                    58210709, Xcode 27.0 build 27A266a, macOS ARM64. Rechecked game main
+                    7ef8e04d474c829db5206a36b92a791410eb7979 and docs main
+                    6397c38e9d4c58e04b7a58fdb7b9f9585bb919cb. PR records native identity and
+                    preserved pre-existing staged descriptor/plugin inputs. These checks cover
+                    rules/callbacks, not physical event routing or rendered acceptance.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 8117abd0e352b17892baa8ec20556215441a41a0
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/19"
+                    >Not Run — Manual QA Pending: rendered orbit/scroll/release framing on
+                    stationary/axial/diagonal routes; physical UI wheel/drag consumption,
+                    outside-viewport release, focus loss/return, PIE stop/restart and view-target
+                    replacement without stale input; valid tuning saved/reopened in Unreal UI with
+                    requested screenshot and short rendered recording. Concrete launch, controls,
+                    expected/failure behavior and cleanup are in the game PR and
+                    docs/manual-testing.md. Implementation is ready for review/QA; BW-097-T03
+                    remains In Progress. No connected input, production movement/aim, picking or
+                    rendering certification is claimed.</a
+                  >
+                  — AC 1, 2, 3; Not Run; revision 8117abd0e352b17892baa8ec20556215441a41a0
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and original criteria</a>;
