@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-095." />
+    <title>
+      BW-095-T07 · Publish accepted edits while retaining prior valid output on rejection ·
+      Briarwake Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-095.html#BW-095">BW-095</a><span>/</span>BW-095-T07
+          </div>
+          <h1>
+            BW-095-T07 · Publish accepted edits while retaining prior valid output on rejection
+          </h1>
+          <p class="page-description">Implementation ticket for BW-095.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-095-T07">
+              <p>
+                <span class="badge">Not Started</span> · Parent epic:
+                <a href="roadmap-bw-095.html#BW-095"
+                  >BW-095 · Versioned content authoring and import workflow</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-095.html#BW-095-AC-2">BW-095-AC-2</a>,
+                <a href="roadmap-bw-095.html#BW-095-AC-4">BW-095-AC-4</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Finish the T01 offline publication boundary using existing native whole-selection
+                  admission and staged filesystem output; an authoring command may publish only
+                  after the full candidate and all exports/manifests validate. One owner selects the
+                  complete accepted output. On validation/export/write/publication failure retain
+                  the complete previously accepted package, manifest and client/server projections;
+                  never replace individual files from a rejected candidate. Bound staging beneath
+                  the caller’s task-owned output and reject unsafe source/output overlap.
+                </li>
+                <li>
+                  Demonstrate reviewed A → accepted B → rejected C using the complete representative
+                  package: B makes one canonical, compatible content edit with a visible
+                  source/output diff and updated identities; C breaks a cross-family reference or
+                  progression rule. Preserve every established ID/encoding and canonical schema
+                  bundle; deliberate incompatible versions reject through FContentCompatibility
+                  rather than redefining contracts. Do not create an independent rollback service or
+                  source migration framework.
+                </li>
+                <li>
+                  Add only focused publication/last-valid-output tests at the actual new adapter
+                  boundary, including validation rejection, a controlled output-write failure and
+                  source/output overlap. Existing native atomicity and unchanged admission rules
+                  retain their coverage. Publish a short runbook and QA/result summary tying
+                  accepted/rejected diffs, revision identities and pending manual replay to the
+                  implementation PR; no separate parent completion audit or large evidence archive.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Durable gameplay/database transactions, service deployment, live hot reload,
+                  automatic gameplay acceptance and completion of downstream feature epics.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-095-t06.html#BW-095-T06">BW-095-T06</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-095-T07-AC-1">
+                  <a href="#BW-095-T07-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    An accepted canonical edit produces reviewable source and export differences
+                    with stable established IDs, traceable changed package/fixture identities and
+                    compatibility with sources/data-model.schema.json. The command selects the
+                    complete new output only after successful validation.
+                  </p>
+                </li>
+                <li id="BW-095-T07-AC-2">
+                  <a href="#BW-095-T07-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    A rejected edit reports the affected source/record/field and returns nonzero
+                    while the entire prior accepted package, manifest and client/server exports
+                    remain byte-identical and usable. A controlled write/publication failure and
+                    unsafe source/output overlap also preserve prior output and authored inputs.
+                  </p>
+                </li>
+                <li id="BW-095-T07-AC-3">
+                  <a href="#BW-095-T07-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    The documented author/import/validate/export/admit workflow is reproducible from
+                    its recorded prerequisites and exact commands. Results distinguish tooling
+                    acceptance from unexecuted gameplay/runtime QA; neither source review nor schema
+                    success changes runtime evidence.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, test worlds and
+                fixtures below are deliverables of this ticket and its prerequisites; these are
+                unexecuted test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Not Run — Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs
+                  sources. Use only task-owned sample/output directories beneath ignored game
+                  artifacts/; preserve source assets, prior accepted output and historical evidence.
+                </li>
+                <li>
+                  Use the T06 complete reviewed output A and writable task-owned staging/output
+                  paths. Exact publication commands and failure-control procedure must be documented
+                  by implementation before replay.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Make the documented compatible edit B, publish and inspect source/export diffs.
+                  Then make rejected edit C and confirm nonzero findings while comparing all
+                  accepted B output bytes.
+                </li>
+                <li>
+                  Use the documented task-owned unwritable/staging failure setup, and separately
+                  request source/output overlap; repeat publication without changing user
+                  permissions or unrelated files.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  B publishes a complete compatible output. C and publication failures preserve B
+                  entirely and leave source files intact; reports identify failure stage and record
+                  fields, and no gameplay/runtime evidence is promoted.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Let the bounded command exit; use a fresh task-owned output directory for the next
+                  run. Restore only the sample edits made during this procedure; retain the prior
+                  valid output and concise actual result. Never reset the checkout, resave unrelated
+                  assets or overwrite historical evidence.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Reviewable accepted/rejected diffs, prior-output
+                comparison and focused adapter failure tests at the tested revision, plus a concise
+                exact-command human handoff. Retain Not Run for unexecuted replay/gameplay; deliver
+                task-scoped game/docs PRs only where actually changed.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-095.html#BW-095">Parent epic and acceptance criteria</a
+                >; <a href="../guide/operations.html#content-tools">Content tools</a>;
+                <a href="../guide/execution.html#data-and-runtime-gates"
+                  >Independent data and runtime gates</a
+                >; <a href="../sources/data-model.schema.json">Canonical schema bundle</a>;
+                <a href="../guide/data-inventory.html#shared-ValidationFinding">ValidationFinding</a
+                >;
+                <a href="../guide/data-inventory.html#content-validation-fixture"
+                  >ContentValidationFixture</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-095-t06.html#BW-095-T06">Previous: BW-095-T06</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

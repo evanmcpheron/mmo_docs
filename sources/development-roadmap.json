@@ -554,7 +554,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "Admission and content migration do not provide a production workflow. Establish a small author/import path before starter and catalog production; fixture-based simulation may still proceed independently.",
+      "ordering_rationale": "Planning split: T01 establishes the bounded native import/export route over existing admission; T02 status, T03 talent/progression and T04 NPC/loot/encounter admission extend it, then T05 links world/tutorial data. T06 produces reproducible private/public exports and unexecuted fixture manifests; T07 demonstrates accepted/rejected edits with retained prior output. Existing BW-001/BW-002/BW-003 evidence is reused within its recorded limits. All seven tickets and BW-095 remain Not Started; no authoring integration, gameplay, runtime fixture pass or downstream content completion is claimed.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -9925,6 +9925,567 @@
           "summary": "Explicit owner completion override, 2026-10-23: after receiving the failed-cook result and outstanding manual QA details, the owner instructed, \"mark it as complete. every epic should be marked as complete in BW097\". This records acceptance of administrative closure for BW-097 and all six child tickets, including BW-097-T06. Complete is assigned at the owner's explicit direction. The result denotes owner acceptance only: the last actual reference cook still failed with UnrealEditor-Cmd exit 1/UAT exit 25 (GameFeatureData configuration), and the two independent rendered launches, display-specific comparisons, raw CPU/GPU/memory measurements and performance decisions were not executed. Their original Failed/Not Run evidence and blocker text are preserved unchanged in T06 manual setup history. No successful cook, new test run, measured budget pass, connected gameplay, release or capacity certification is claimed. Acceptance criteria and existing passing evidence are unchanged."
         }
       ]
+    },
+    {
+      "id": "BW-095-T01",
+      "parent_epic": "BW-095",
+      "title": "Import and round-trip reviewed content through native admission",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-095-AC-1",
+        "BW-095-AC-2"
+      ],
+      "scope": [
+        "Own the bounded offline command entry point in the existing Briarwake module beside ContentAdmission. Reuse FContentContracts, FContentRevisions, FContentAdmission::AdmitFile/AdmitText, the existing candidate envelope and server-owned policy; extend tools/extract_content_contracts.py only for required canonical roots and reference closure. Source records remain canonical JSON under version control. Document exact author/import/validate/export/reimport commands, sample paths and supported families; do not introduce a competing gameplay schema or copy native validation into a Python/UI validator.",
+        "Reuse findings: at game main 1f705e797fae5507fe477deb85529f047f2ddd63, the extracted snapshot contains 98 definitions and admission already supports abilities, targeting/resources/cooldowns and economic item/material/recipe families. Native selection publication, revision compatibility, readiness and complete economic-graph checks exist. BW-002-T06 and BW-003-T05 retain executed prerequisite evidence; they do not establish this missing authoring adapter or production gameplay. Preserve those owners and evidence rather than replaying their historical FULL workflows.",
+        "Start with a small reviewed, linked ability/item/recipe sample and its explicit dependencies. Preserve stable IDs, tokens, absent-versus-null fields and separate content/rules/database revisions; keep database labels synthetic. Return native code/path/message findings with source file, family, record identity and field mapping; import/export failure returns nonzero. Keep current native input bounds, including 1 MiB files and 256 complete-selection records. Unreal DataTable JSON import/export, Data Assets and factory APIs are available locally but have no Briarwake authoring integration; the existing JSON/native boundary avoids requiring a new asset editor or plugin."
+      ],
+      "out_of_scope": [
+        "A visual editor, DataTable migration, unrestricted scripting, bulk catalog production, gameplay handlers, database deployment or art/resource production (BW-098).",
+        "Treating an admission test probe, available Unreal API or documentation validation as implemented authoring or runtime capability."
+      ],
+      "dependencies": [
+        "BW-001",
+        "BW-002",
+        "BW-003"
+      ],
+      "acceptance_criteria": [
+        "The documented offline entry point imports, validates, exports and reimports representative ability, item and recipe records through the actual native admission owner, preserving exact IDs, canonical values, optional/null distinctions and revision domains. A successful catalog import grants no gameplay readiness.",
+        "Malformed/bounded-input violations, duplicate identities, incompatible revisions, missing references, invalid target/resource fields and unsupported families return actionable source/record/field findings and nonzero status; the existing admitted selection remains unchanged.",
+        "The same selected canonical definitions are used by import, export and admission. Unsupported schema vocabulary fails visibly; author-provided policy, activation flags or expected findings cannot create server capability or runtime evidence."
+      ],
+      "completion_evidence": "One concise implementation/PR record with reviewed sample revision, exact commands, actual round-trip and rejection results. Add focused adapter tests to the existing harness and compile affected C++; reuse existing admission/compatibility tests for their unchanged rules. Record human command replay as Not Run until performed.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-095.html#BW-095"
+        },
+        {
+          "label": "Content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Independent data and runtime gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "AbilityDefinition",
+          "href": "guide/data-inventory.html#ability-definition"
+        },
+        {
+          "label": "ItemDefinition",
+          "href": "guide/data-inventory.html#item-definition"
+        },
+        {
+          "label": "RecipeDefinition",
+          "href": "guide/data-inventory.html#recipe-definition"
+        },
+        {
+          "label": "ValidationFinding",
+          "href": "guide/data-inventory.html#shared-ValidationFinding"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "setup": [
+          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
+          "Prerequisites BW-001/BW-002/BW-003 are Complete within their recorded boundaries. The importer CLI and runbook are missing; their creation and exact executable invocation belong to this ticket."
+        ],
+        "actions": [
+          "Following the delivered runbook, import the reviewed linked sample, export it, reimport into a fresh output and compare IDs, values and revisions.",
+          "In task-owned sample copies, break a resource/target reference, reuse an ID and supply an unsupported family; run the same command and inspect its exit status and source-mapped findings."
+        ],
+        "expected_results": [
+          "Valid records round-trip through native admission. Invalid candidates return nonzero with exact file/record/field diagnostics and leave the previously admitted selection unchanged; no authored gate becomes runtime-ready."
+        ],
+        "reset": [
+          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-095-T02",
+      "parent_epic": "BW-095",
+      "title": "Validate and round-trip authored status definitions",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-095-AC-1",
+        "BW-095-AC-2"
+      ],
+      "scope": [
+        "Extend the same extraction and FContentAdmission owners for StatusDefinition and only its required closure. Use the T01 route for representative linked ability/status records; source entity remains runtime StatusInstance state. Validate owner_ability_id, category-specific stacking/refresh/control-group combinations, explicit nullable fields, positive periodic intervals, stack/duration bounds and required persistence flags from the canonical definition and status rules.",
+        "Current admission does not accept StatusDefinition. Add only its missing static semantic checks at the native boundary; UI/import mapping delegates to those checks. Preserve the documented 30% periodic carry constraint and existing category/control caps without implementing ticks, diminishing-return history, dispels, expiry or transfer execution. Missing behavior/bindings keep activation disabled.",
+        "Add focused positive/rejection cases to existing content admission tests: a valid periodic and nonperiodic status, missing owner, invalid category-policy pairing, nonpositive interval, invalid stack/cap and missing required field. Exercise real source/export/admit round trips rather than a parallel schema model; retain atomic selection and source-mapped findings."
+      ],
+      "out_of_scope": [
+        "Status gameplay execution, combat/control simulations, full status catalog and production presentation assets."
+      ],
+      "dependencies": [
+        "BW-095-T01"
+      ],
+      "acceptance_criteria": [
+        "Representative periodic and nonperiodic StatusDefinition records round-trip with stable IDs, explicit null semantics and valid owner ability references through the shared authoring route.",
+        "Invalid owner references, category-policy/control-group combinations, required persistence fields, stack/cap values and periodic intervals produce record/field findings and reject the complete candidate without changing prior valid state.",
+        "Admitting status catalog data does not create a status handler, passed runtime fixture or executable ability; canonical status encodings and numerical constraints remain unchanged."
+      ],
+      "completion_evidence": "Focused native status admission and round-trip assertions plus affected compilation. Keep one result summary and pending manual replay; existing admission atomicity and runtime gate coverage is reused.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-095.html#BW-095"
+        },
+        {
+          "label": "Content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Independent data and runtime gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "StatusDefinition",
+          "href": "guide/data-inventory.html#status-definition"
+        },
+        {
+          "label": "StatusPersistencePolicy",
+          "href": "guide/data-inventory.html#status-persistence-policy"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "setup": [
+          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
+          "Use the T01 documented CLI and reviewed status sample delivered by this ticket. Current native admission rejects this family; planned examples remain unexecuted."
+        ],
+        "actions": [
+          "Round-trip the periodic and nonperiodic samples. Change only the task-owned owner reference, interval and category-policy fields to the documented invalid variants; repeat import after each edit."
+        ],
+        "expected_results": [
+          "Valid IDs/nulls/policies reproduce. Each invalid variant names the status and field, rejects the candidate and preserves prior output; no runtime behavior is enabled."
+        ],
+        "reset": [
+          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-095-T03",
+      "parent_epic": "BW-095",
+      "title": "Validate talent choices and content progression relationships",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-095-AC-1",
+        "BW-095-AC-2"
+      ],
+      "scope": [
+        "Extend FContentAdmission and canonical extraction for TalentNodeDefinition, catalog TalentModifierDefinition and required class/specialization/progression data. Reuse the existing finite modifier/readiness checks; source/import adapters do not resolve free-text effects or issue evidence. Native talent catalog/graph validation is missing: validation/run_checks.py contains documentation allocation examples, not an authoritative runtime validator. Use its established rules as reference, with one native owner for new admission checks.",
+        "Round-trip one representative complete 36-node character tree and its linked abilities/progression, preserving existing IDs/source_version/binding_status. Validate owner namespace, prerequisite reachability/ranks, exclusive alternatives, required abilities/unlock levels and lower-tier point capacity. Preserve six tiers, thresholds 0/8/18/30/42/52, one choice in each tier-II/tier-VI three-way group, capstone transformation requirement and 92 selectable ranks; use canonical source values rather than new authoring defaults.",
+        "Preserve level-one zero points; one class and one specialization point per level-up through 60 (59 each, 118 total), separate currencies and specialization spending gated until selection at level ten. Reject impossible prerequisites/progression and inconsistent ability previous_level chains without implementing live allocations, respec or auto-grant. Test a representative legal tree and distinct broken references, cycles, rank/cap, exclusive-choice and unlock cases through the actual native validator. Missing bespoke bindings remain disabled."
+      ],
+      "out_of_scope": [
+        "Production of all 49 trees or inherited ability catalog, exhaustive allocation searches, live talent/build authority, respec UI or combat transformations."
+      ],
+      "dependencies": [
+        "BW-095-T01"
+      ],
+      "acceptance_criteria": [
+        "The representative talent tree, modifiers and linked progression/ability records round-trip through the same route with stable identity and canonical field semantics; existing finite modifier validation remains the sole owner for its rules.",
+        "Unknown/cross-owner prerequisites, cycles, unattainable rank/point thresholds, incompatible exclusive choices and required-ability/previous_level unlock contradictions yield actionable record-level rejection, with no partial admitted selection.",
+        "The documented tier/point/unlock requirements remain intact. Static legal-content checks and imported binding_status/readiness fields never enable an unimplemented talent or mark an execution fixture passed."
+      ],
+      "completion_evidence": "Focused native positive and negative graph/progression tests and affected compilation, plus round-trip sample results. No full-catalog solver, broad level/configuration matrix or new fixture runner is required.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-095.html#BW-095"
+        },
+        {
+          "label": "Content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Independent data and runtime gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "TalentNodeDefinition",
+          "href": "guide/data-inventory.html#talent-node-definition"
+        },
+        {
+          "label": "TalentModifierDefinition",
+          "href": "guide/data-inventory.html#talent-modifier-definition"
+        },
+        {
+          "label": "LevelProgressionDefinition",
+          "href": "guide/data-inventory.html#level-progression-definition"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "setup": [
+          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
+          "Use the delivered complete representative tree and T01 CLI. Future samples and talent-family commands remain Not Run until implemented; no live player or gameplay map is required."
+        ],
+        "actions": [
+          "Round-trip the reviewed tree. In separate task-owned copies, create a prerequisite cycle, remove a required ability, introduce an impossible lower-tier threshold and break an exclusive group; import each."
+        ],
+        "expected_results": [
+          "The valid tree preserves identities and point rules. Each broken relationship names its affected records/fields, returns nonzero and retains prior valid output; no free-text talent or authored gate gains execution capability."
+        ],
+        "reset": [
+          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-095-T04",
+      "parent_epic": "BW-095",
+      "title": "Validate linked NPC kits, loot and encounter authoring",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-095-AC-1",
+        "BW-095-AC-2"
+      ],
+      "scope": [
+        "Extend the existing canonical extraction/admission owners for NpcAbilityKit, NpcDefinition, LootTableDefinition, EncounterDefinition and EncounterTriggerDefinition, including their finite NpcAbilityRule/EncounterCondition/loot parameter closure. These top-level families currently lack native admission support. Import/export one bounded linked example through T01; reuse ability readiness, typed operations and economic admission rather than adding an NPC scripting system.",
+        "Validate exact ability/kit/loot/encounter/trigger references, kit scheduling rules referencing listed abilities, finite conditions, positive activation limits, cooldown/cap bounds, enclosing phase ownership and declared reset policy. Validate loot policy parameters against entry count, nonempty weighted_one_v1 tables, explicit weights/probabilities and item references. Never infer rates from rarity or accept an arbitrary function name as a condition implementation.",
+        "Stage the complete linked set so forward references work and one invalid member rejects the whole candidate. A server-owned dependency identity alone cannot prove a relationship requiring full records. Preserve server-only loot and scheduling data for T06 projection; a valid catalog does not run AI, rewards, triggers or reset. Use existing native tests for a valid linked set and broken kit ability, loot parameters, phase reference and trigger limit."
+      ],
+      "out_of_scope": [
+        "AI/pathfinding, encounters or loot delivery at runtime, production encounters/maps, new balance values, durable reward/idempotency implementation and connected multiplayer."
+      ],
+      "dependencies": [
+        "BW-095-T01"
+      ],
+      "acceptance_criteria": [
+        "Representative records from all five named families round-trip through source/export/native admission with stable IDs/revisions and validated complete links, including forward references.",
+        "A missing kit/ability/item/trigger reference, invalid loot policy parameter set, foreign phase, nonpositive trigger limit or unsupported finite policy returns an actionable record/field finding; no part of that candidate publishes.",
+        "Server-only definitions retain their privacy classification. Valid authored scheduling, effects and loot never bypass runtime readiness or create gameplay execution evidence."
+      ],
+      "completion_evidence": "Focused existing-harness native linked-family tests, source round trips and affected compilation. Record exact sample/revision and results; do not add AI simulation or repeat complete economic-graph coverage.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-095.html#BW-095"
+        },
+        {
+          "label": "Content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Independent data and runtime gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "NpcAbilityKit",
+          "href": "guide/data-inventory.html#npc-ability-kit"
+        },
+        {
+          "label": "NpcDefinition",
+          "href": "guide/data-inventory.html#npc-definition"
+        },
+        {
+          "label": "LootTableDefinition",
+          "href": "guide/data-inventory.html#loot-table-definition"
+        },
+        {
+          "label": "EncounterDefinition",
+          "href": "guide/data-inventory.html#encounter-definition"
+        },
+        {
+          "label": "EncounterTriggerDefinition",
+          "href": "guide/data-inventory.html#encounter-trigger-definition"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "setup": [
+          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
+          "Use this ticket\u2019s linked sample with existing item/ability dependencies and the T01 CLI. No placed NPCs, world map or gameplay controls exist as prerequisites."
+        ],
+        "actions": [
+          "Round-trip the complete linked set. In task-owned copies break one kit ability, one loot parameter array and one enclosing phase/trigger limit; import each candidate."
+        ],
+        "expected_results": [
+          "Valid definitions preserve links and IDs. Each bad edit rejects the entire set with the implicated record/field; prior output remains valid and no AI/reward/trigger executes."
+        ],
+        "reset": [
+          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-095-T05",
+      "parent_epic": "BW-095",
+      "title": "Validate world and tutorial content relationships",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-095-AC-1",
+        "BW-095-AC-2"
+      ],
+      "scope": [
+        "Extend the same extraction/admission route only for the bounded world/tutorial relationship closure: ZoneDefinition, WorldLocationDefinition, ZoneTransitionDefinition, RecoveryPointDefinition, StarterAreaConfiguration, TutorialSequenceDefinition, quests/objectives/rewards, guide instructions and referenced interaction/service definitions needed by the representative sample. Reuse T04 NPC/encounter links and canonical progression. These are missing native static integrations, not a request to build a playable starter area.",
+        "Validate zone/location/floor/transition ownership, protected-location subsets, recovery/service and starter faction references, quest prerequisite reachability and required/optional separation. Tutorial stages must occur exactly once in arrival/first_growth/more_choices/putting_it_together/graduation order with canonical bands 1\u20132/3\u20134/5\u20136/7\u20139/10. final_challenge_ids must exactly index tank/healer/dps role challenges.",
+        "Implement required_solo_path_to_ten_v1 as one native admission check: starting at level-one zero XP, count each required one-time quest reward and distinct required encounter completion_experience once against the canonical level-ten threshold before final challenge; exclude optional tasks/encounters, profession rewards and repeated practice. Require explicit reviewed amounts; missing XP/content rejects rather than inventing rewards. Validate authored class/ability unlock relationships statically; actual solo playability remains with starter/feature epics. Add focused valid and rejected relationship/XP cases using the existing test harness."
+      ],
+      "out_of_scope": [
+        "Starter map construction, NPC placement, narrative/localization production, movement/transfer/recovery execution, quest rewards and human solo-play certification."
+      ],
+      "dependencies": [
+        "BW-095-T03",
+        "BW-095-T04"
+      ],
+      "acceptance_criteria": [
+        "The bounded linked world/tutorial sample round-trips through the shared route with exact content IDs and valid package/zone/faction/floor/service relationships.",
+        "Foreign locations/transitions, missing services, cyclic/unreachable quests, wrong/duplicate stage order, overlapping required/optional sets and mismatched role-challenge indexes yield record-level findings and atomically reject.",
+        "The required path reaches the canonical level-ten XP threshold before final challenge using only eligible one-time required rewards. Missing values, double counting or reliance on optional/repeatable rewards reject; static checks imply no executed playable journey."
+      ],
+      "completion_evidence": "Focused native relationship/progression assertions and affected compilation with a reviewed bounded sample. Use actual canonical XP inputs; record missing data as a concrete gap, never passing gameplay evidence.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-095.html#BW-095"
+        },
+        {
+          "label": "Content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Independent data and runtime gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "ZoneDefinition",
+          "href": "guide/data-inventory.html#zone-definition"
+        },
+        {
+          "label": "WorldLocationDefinition",
+          "href": "guide/data-inventory.html#world-location-definition"
+        },
+        {
+          "label": "StarterAreaConfiguration",
+          "href": "guide/data-inventory.html#starter-area-configuration"
+        },
+        {
+          "label": "TutorialSequenceDefinition",
+          "href": "guide/data-inventory.html#tutorial-sequence-definition"
+        },
+        {
+          "label": "QuestDefinition",
+          "href": "guide/data-inventory.html#quest-definition"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "setup": [
+          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
+          "Use the delivered relationship sample and explicit canonical progression/reward inputs with the T01 CLI. Sample production remains pending; no starter gameplay map is assumed."
+        ],
+        "actions": [
+          "Import/export/reimport the valid sample. Separately break a destination zone, introduce a quest cycle and change a required reward so the path falls below level ten; also try moving that reward to an optional task."
+        ],
+        "expected_results": [
+          "The valid sample passes static admission. Each invalid relationship or XP path rejects with record/field findings, prior output survives, and optional/repeated rewards cannot satisfy required progression."
+        ],
+        "reset": [
+          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-095-T06",
+      "parent_epic": "BW-095",
+      "title": "Export reproducible packages and unexecuted fixture manifests",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-095-AC-1",
+        "BW-095-AC-2",
+        "BW-095-AC-3"
+      ],
+      "scope": [
+        "Extend the T01 offline export owner to produce byte-reproducible candidate data and a small reviewable fixture index from the same reviewed source, explicit dependency/policy inputs and canonical snapshot. Cover all eight declared families plus world/tutorial relationships delivered by T02\u2013T05. Sort only semantically unordered maps/record sets; preserve ordered operations, phases, tutorial stages and other meaningful arrays. Keep build/run timestamps outside deterministic artifacts and preserve separate content/rules/database revision domains.",
+        "The manifest is tooling metadata listing source/package identity, schema identity, family/record IDs and canonical fixture IDs/revisions/content digests, not another gameplay authority. ContentPackageManifest is the existing documentation-count record and must not be repurposed as a runtime package or fixture schema. Reuse ContentValidationFixture, FixtureRunEvidence, ContentValidationResult and existing BW-003 evidence ownership; authoring produces unexecuted specifications with null runner/completion fields. Actual admission assertions remain separate results.",
+        "Validate required binding/presentation references, admitting VisualPresentationDefinition/TelegraphDefinition catalog data only as needed and resolving external render resources through explicit reviewed dependencies. Missing required references reject; legal unbound records may remain stored but disabled. Provide documented client-safe and server-only exports using the same canonical records and explicit ownership/projection rules: server loot/encounter scheduling, credentials, private policy and execution receipts never reach client output. A shared public artifact may be reused; no live network or new wire protocol is needed.",
+        "Use focused deterministic export/projection tests and actual native admission of the full representative server candidate. Two fresh offline exports from identical inputs must have identical package/manifest bytes and IDs; tampered dependencies, stale schema/versions, forged authored passed evidence and client-private contamination reject. Reuse existing readiness/evidence validators; do not add production handlers, fake receipts or a new fixture framework."
+      ],
+      "out_of_scope": [
+        "Connected client/server deployment, cooked packages, new runtime evidence producers, fixture gameplay execution, full art packaging and production content readiness."
+      ],
+      "dependencies": [
+        "BW-095-T02",
+        "BW-095-T03",
+        "BW-095-T04",
+        "BW-095-T05"
+      ],
+      "acceptance_criteria": [
+        "Identical reviewed inputs produce byte-identical packages and fixture manifests in two fresh offline outputs, independent of record/map input order where semantically unordered; stable IDs/revisions and meaningful sequence order survive reimport. Every declared family is represented and the full server candidate passes actual native admission.",
+        "Client/server outputs follow explicit projection rules with no private loot/scheduling/policy/credential/evidence leakage. Missing or incompatible binding/presentation/schema/dependency references return actionable findings rather than fabricated defaults or partial output.",
+        "Exported fixture specifications remain unexecuted with null runner/time. Authoring cannot promote runtime tests, manufacture readiness receipts or activate unbound content; actual admission results are separately attributable to their executed checks."
+      ],
+      "completion_evidence": "One concise record of source/schema/dependency identities, two deterministic export comparisons, focused projection/evidence rejection tests and native admission results. Compile changed C++ and run only affected existing suites; no package/build matrix or repeated BW-003 integration audit.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-095.html#BW-095"
+        },
+        {
+          "label": "Content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Independent data and runtime gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "ContentValidationFixture",
+          "href": "guide/data-inventory.html#content-validation-fixture"
+        },
+        {
+          "label": "FixtureRunEvidence",
+          "href": "guide/data-inventory.html#shared-FixtureRunEvidence"
+        },
+        {
+          "label": "ContentValidationResult",
+          "href": "guide/data-inventory.html#content-validation-result"
+        },
+        {
+          "label": "VisualPresentationDefinition",
+          "href": "guide/data-inventory.html#visual-presentation-definition"
+        },
+        {
+          "label": "TelegraphDefinition",
+          "href": "guide/data-inventory.html#telegraph-definition"
+        },
+        {
+          "label": "ContentPackageManifest documentation format",
+          "href": "guide/data-inventory.html#content-package-manifest"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "setup": [
+          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
+          "Use the full reviewed sample, declared server policy/dependencies and delivered export/fixture commands. Exact CLI and sample paths must be supplied by implementation; planned client/server outputs are currently unverified."
+        ],
+        "actions": [
+          "Export twice into fresh task-owned directories and compare package/manifest bytes and identities; reimport the server candidate. Inspect the client artifact for server-only records.",
+          "Try a missing presentation dependency and an authored passed fixture/runtime-ready flag without real evidence, then re-export."
+        ],
+        "expected_results": [
+          "Identical inputs give identical bytes and preserved ordered content. Native admission passes only valid data; private data stays out of client output, invalid references/forged evidence reject and all authored runtime specifications remain unexecuted."
+        ],
+        "reset": [
+          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-095-T07",
+      "parent_epic": "BW-095",
+      "title": "Publish accepted edits while retaining prior valid output on rejection",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-095-AC-2",
+        "BW-095-AC-4"
+      ],
+      "scope": [
+        "Finish the T01 offline publication boundary using existing native whole-selection admission and staged filesystem output; an authoring command may publish only after the full candidate and all exports/manifests validate. One owner selects the complete accepted output. On validation/export/write/publication failure retain the complete previously accepted package, manifest and client/server projections; never replace individual files from a rejected candidate. Bound staging beneath the caller\u2019s task-owned output and reject unsafe source/output overlap.",
+        "Demonstrate reviewed A \u2192 accepted B \u2192 rejected C using the complete representative package: B makes one canonical, compatible content edit with a visible source/output diff and updated identities; C breaks a cross-family reference or progression rule. Preserve every established ID/encoding and canonical schema bundle; deliberate incompatible versions reject through FContentCompatibility rather than redefining contracts. Do not create an independent rollback service or source migration framework.",
+        "Add only focused publication/last-valid-output tests at the actual new adapter boundary, including validation rejection, a controlled output-write failure and source/output overlap. Existing native atomicity and unchanged admission rules retain their coverage. Publish a short runbook and QA/result summary tying accepted/rejected diffs, revision identities and pending manual replay to the implementation PR; no separate parent completion audit or large evidence archive."
+      ],
+      "out_of_scope": [
+        "Durable gameplay/database transactions, service deployment, live hot reload, automatic gameplay acceptance and completion of downstream feature epics."
+      ],
+      "dependencies": [
+        "BW-095-T06"
+      ],
+      "acceptance_criteria": [
+        "An accepted canonical edit produces reviewable source and export differences with stable established IDs, traceable changed package/fixture identities and compatibility with sources/data-model.schema.json. The command selects the complete new output only after successful validation.",
+        "A rejected edit reports the affected source/record/field and returns nonzero while the entire prior accepted package, manifest and client/server exports remain byte-identical and usable. A controlled write/publication failure and unsafe source/output overlap also preserve prior output and authored inputs.",
+        "The documented author/import/validate/export/admit workflow is reproducible from its recorded prerequisites and exact commands. Results distinguish tooling acceptance from unexecuted gameplay/runtime QA; neither source review nor schema success changes runtime evidence."
+      ],
+      "completion_evidence": "Reviewable accepted/rejected diffs, prior-output comparison and focused adapter failure tests at the tested revision, plus a concise exact-command human handoff. Retain Not Run for unexecuted replay/gameplay; deliver task-scoped game/docs PRs only where actually changed.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-095.html#BW-095"
+        },
+        {
+          "label": "Content tools",
+          "href": "guide/operations.html#content-tools"
+        },
+        {
+          "label": "Independent data and runtime gates",
+          "href": "guide/execution.html#data-and-runtime-gates"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "ValidationFinding",
+          "href": "guide/data-inventory.html#shared-ValidationFinding"
+        },
+        {
+          "label": "ContentValidationFixture",
+          "href": "guide/data-inventory.html#content-validation-fixture"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "setup": [
+          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
+          "Use the T06 complete reviewed output A and writable task-owned staging/output paths. Exact publication commands and failure-control procedure must be documented by implementation before replay."
+        ],
+        "actions": [
+          "Make the documented compatible edit B, publish and inspect source/export diffs. Then make rejected edit C and confirm nonzero findings while comparing all accepted B output bytes.",
+          "Use the documented task-owned unwritable/staging failure setup, and separately request source/output overlap; repeat publication without changing user permissions or unrelated files."
+        ],
+        "expected_results": [
+          "B publishes a complete compatible output. C and publication failures preserve B entirely and leave source files intact; reports identify failure stage and record fields, and no gameplay/runtime evidence is promoted."
+        ],
+        "reset": [
+          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
     }
   ]
 }

@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-095." />
+    <title>
+      BW-095-T06 · Export reproducible packages and unexecuted fixture manifests · Briarwake
+      Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-095.html#BW-095">BW-095</a><span>/</span>BW-095-T06
+          </div>
+          <h1>BW-095-T06 · Export reproducible packages and unexecuted fixture manifests</h1>
+          <p class="page-description">Implementation ticket for BW-095.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-095-T06">
+              <p>
+                <span class="badge">Not Started</span> · Parent epic:
+                <a href="roadmap-bw-095.html#BW-095"
+                  >BW-095 · Versioned content authoring and import workflow</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-095.html#BW-095-AC-1">BW-095-AC-1</a>,
+                <a href="roadmap-bw-095.html#BW-095-AC-2">BW-095-AC-2</a>,
+                <a href="roadmap-bw-095.html#BW-095-AC-3">BW-095-AC-3</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Extend the T01 offline export owner to produce byte-reproducible candidate data
+                  and a small reviewable fixture index from the same reviewed source, explicit
+                  dependency/policy inputs and canonical snapshot. Cover all eight declared families
+                  plus world/tutorial relationships delivered by T02–T05. Sort only semantically
+                  unordered maps/record sets; preserve ordered operations, phases, tutorial stages
+                  and other meaningful arrays. Keep build/run timestamps outside deterministic
+                  artifacts and preserve separate content/rules/database revision domains.
+                </li>
+                <li>
+                  The manifest is tooling metadata listing source/package identity, schema identity,
+                  family/record IDs and canonical fixture IDs/revisions/content digests, not another
+                  gameplay authority. ContentPackageManifest is the existing documentation-count
+                  record and must not be repurposed as a runtime package or fixture schema. Reuse
+                  ContentValidationFixture, FixtureRunEvidence, ContentValidationResult and existing
+                  BW-003 evidence ownership; authoring produces unexecuted specifications with null
+                  runner/completion fields. Actual admission assertions remain separate results.
+                </li>
+                <li>
+                  Validate required binding/presentation references, admitting
+                  VisualPresentationDefinition/TelegraphDefinition catalog data only as needed and
+                  resolving external render resources through explicit reviewed dependencies.
+                  Missing required references reject; legal unbound records may remain stored but
+                  disabled. Provide documented client-safe and server-only exports using the same
+                  canonical records and explicit ownership/projection rules: server loot/encounter
+                  scheduling, credentials, private policy and execution receipts never reach client
+                  output. A shared public artifact may be reused; no live network or new wire
+                  protocol is needed.
+                </li>
+                <li>
+                  Use focused deterministic export/projection tests and actual native admission of
+                  the full representative server candidate. Two fresh offline exports from identical
+                  inputs must have identical package/manifest bytes and IDs; tampered dependencies,
+                  stale schema/versions, forged authored passed evidence and client-private
+                  contamination reject. Reuse existing readiness/evidence validators; do not add
+                  production handlers, fake receipts or a new fixture framework.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Connected client/server deployment, cooked packages, new runtime evidence
+                  producers, fixture gameplay execution, full art packaging and production content
+                  readiness.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-095-t02.html#BW-095-T02">BW-095-T02</a>,
+                <a href="roadmap-bw-095-t03.html#BW-095-T03">BW-095-T03</a>,
+                <a href="roadmap-bw-095-t04.html#BW-095-T04">BW-095-T04</a>,
+                <a href="roadmap-bw-095-t05.html#BW-095-T05">BW-095-T05</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-095-T06-AC-1">
+                  <a href="#BW-095-T06-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    Identical reviewed inputs produce byte-identical packages and fixture manifests
+                    in two fresh offline outputs, independent of record/map input order where
+                    semantically unordered; stable IDs/revisions and meaningful sequence order
+                    survive reimport. Every declared family is represented and the full server
+                    candidate passes actual native admission.
+                  </p>
+                </li>
+                <li id="BW-095-T06-AC-2">
+                  <a href="#BW-095-T06-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    Client/server outputs follow explicit projection rules with no private
+                    loot/scheduling/policy/credential/evidence leakage. Missing or incompatible
+                    binding/presentation/schema/dependency references return actionable findings
+                    rather than fabricated defaults or partial output.
+                  </p>
+                </li>
+                <li id="BW-095-T06-AC-3">
+                  <a href="#BW-095-T06-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Exported fixture specifications remain unexecuted with null runner/time.
+                    Authoring cannot promote runtime tests, manufacture readiness receipts or
+                    activate unbound content; actual admission results are separately attributable
+                    to their executed checks.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, test worlds and
+                fixtures below are deliverables of this ticket and its prerequisites; these are
+                unexecuted test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Not Run — Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs
+                  sources. Use only task-owned sample/output directories beneath ignored game
+                  artifacts/; preserve source assets, prior accepted output and historical evidence.
+                </li>
+                <li>
+                  Use the full reviewed sample, declared server policy/dependencies and delivered
+                  export/fixture commands. Exact CLI and sample paths must be supplied by
+                  implementation; planned client/server outputs are currently unverified.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Export twice into fresh task-owned directories and compare package/manifest bytes
+                  and identities; reimport the server candidate. Inspect the client artifact for
+                  server-only records.
+                </li>
+                <li>
+                  Try a missing presentation dependency and an authored passed fixture/runtime-ready
+                  flag without real evidence, then re-export.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Identical inputs give identical bytes and preserved ordered content. Native
+                  admission passes only valid data; private data stays out of client output, invalid
+                  references/forged evidence reject and all authored runtime specifications remain
+                  unexecuted.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Let the bounded command exit; use a fresh task-owned output directory for the next
+                  run. Restore only the sample edits made during this procedure; retain the prior
+                  valid output and concise actual result. Never reset the checkout, resave unrelated
+                  assets or overwrite historical evidence.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> One concise record of source/schema/dependency
+                identities, two deterministic export comparisons, focused projection/evidence
+                rejection tests and native admission results. Compile changed C++ and run only
+                affected existing suites; no package/build matrix or repeated BW-003 integration
+                audit.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-095.html#BW-095">Parent epic and acceptance criteria</a
+                >; <a href="../guide/operations.html#content-tools">Content tools</a>;
+                <a href="../guide/execution.html#data-and-runtime-gates"
+                  >Independent data and runtime gates</a
+                >; <a href="../sources/data-model.schema.json">Canonical schema bundle</a>;
+                <a href="../guide/data-inventory.html#content-validation-fixture"
+                  >ContentValidationFixture</a
+                >;
+                <a href="../guide/data-inventory.html#shared-FixtureRunEvidence"
+                  >FixtureRunEvidence</a
+                >;
+                <a href="../guide/data-inventory.html#content-validation-result"
+                  >ContentValidationResult</a
+                >;
+                <a href="../guide/data-inventory.html#visual-presentation-definition"
+                  >VisualPresentationDefinition</a
+                >;
+                <a href="../guide/data-inventory.html#telegraph-definition">TelegraphDefinition</a>;
+                <a href="../guide/data-inventory.html#content-package-manifest"
+                  >ContentPackageManifest documentation format</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-095-t05.html#BW-095-T05">Previous: BW-095-T05</a
+              ><a href="roadmap-bw-095-t07.html#BW-095-T07">Next: BW-095-T07</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>
