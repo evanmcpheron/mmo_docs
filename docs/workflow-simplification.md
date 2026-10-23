@@ -59,3 +59,7 @@ hosted CI. This change preserves UI output except the removed duplicate inventor
 review list and the revised maintenance policy text; no visual design changed.
 Routine manual QA may be handed off as Not Run. Neither delivered PRs nor passing
 documentation checks can make unfinished gameplay acceptance Complete.
+
+Delivery identity: tested workflow code is committed at `e8a8f3d3aeb51e4ad70f3d4be794d2d7b95211e7`.
+Remote main was re-fetched unchanged at `3b57bcc0957323fb18e104d5559ce709b5a905b9`.
+This later evidence-only edit does not invalidate those checks.
