@@ -9522,7 +9522,7 @@
       "id": "BW-097-T04",
       "parent_epic": "BW-097",
       "title": "Review representative 3D readability and independently scaled UI",
-      "status": "Not Started",
+      "status": "In Progress",
       "epic_criteria": [
         "BW-097-AC-2",
         "BW-097-AC-4"
@@ -9584,28 +9584,66 @@
         }
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log\nUse Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.\nThe shared T01 scene exists; this ticket's additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.",
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log\nUse Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.\nT04 implementation from game PR #21 is merged into game main at b375836ab247e883aa1709597f82639b5573d1f6. Rendered readability, display/backing-scale usability and Unreal persistence are Not Run \u2014 Manual QA Pending; the native pass is not visual acceptance.",
         "setup": [
           "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
           "Planning history 2026-10-22: no game map existed during decomposition. T01 subsequently authored /Game/Tests/Camera/L_BW097_Reference (Content/Tests/Camera/L_BW097_Reference.umap), DA_BW097_CameraDefaults and two M_ materials. Use the current package above; the former proposed BW097_Reference name is superseded. /Engine/Maps/Entry remains the baseline startup map.",
           "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. Planning provenance: the then-current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
-          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework.",
+          "Execution 2026-10-23: game revision 7afb3013feed6de8ae80742c99d6b19b756ed257 from fetched/rechecked main 4870cc99e402541a280efc90f79365a9932e54f1; docs base/rechecked main 6952559cd46907996889b78f93d8e266024b0499. Game PR https://github.com/evanmcpheron/BriarwakeUnreal/pull/21 records the bounded asset/provenance/configuration manifest in docs/camera-reference.md and detailed docs/manual-testing.md T04 handoff. The existing map/preset remain unchanged; the controlled pawn owns runtime model/equipment/pose, public target, terrain, occlusion, transparency and effect samples using three new original materials and installed engine primitives.",
+          "Open Content > Tests > Camera > DA_BW097_CameraDefaults > Camera > Settings > Readability: Bright/Dark lighting, light scale [0.1,4], roughness [0,1], equipment/alternate-form/raised-pose, occlusion/transparency and reduced-cosmetic toggles. Display > User Interface Scale [0.75,2] scales Slate text/glyphs and the wrapping/scrolling consuming control. Defaults: Bright, light scale 1, roughness 0.8, equipment/transparency on, other toggles off, UI scale 1. Use Engine Scalability Settings and viewport Screen Percentage for native quality controls. No visual/telegraph serialization or SpriteDirection encoding changes; this scene-only public fixture makes no T05 floor/picking/revocation claim.",
+          "Owner-directed follow-up 2026-10-23, game revision 1feea16c2bcfcf77bf7eb921aee4b276361d90d8 on the same game PR #21: hold left mouse and drag for camera-only orbit/tilt; wheel scrolling retains zoom, and middle-button press/drag no longer orbits. This explicit owner instruction supersedes the original middle-button fixture binding in the epic/T03 historical requirements. Accepted T03 history and gameplay movement/facing/aim remain unchanged. Current game manual/UI hints use left-drag; physical pointer/capture acceptance of the new binding remains Not Run \u2014 Manual QA Pending.",
+          "Delivery follow-up 2026-10-23: fetched game main b375836ab247e883aa1709597f82639b5573d1f6 contains merged game PR #21; Source, Content, tools, fixtures, Config and the committed project descriptor are unchanged from 1feea16c2bcfcf77bf7eb921aee4b276361d90d8. Reuse its retained 85.085s native pass rather than rerunning unchanged game checks. The pre-existing staged plugin descriptor remains preserved at Git blob 321555c7f1e8cb33424a5ec73f2000296539d8e4. Docs follow-up continues the same task branch/PR #59 from fetched main 6952559cd46907996889b78f93d8e266024b0499. No new game code or asset changes were needed; all rendered/manual acceptance remains pending."
         ],
         "actions": [
-          "Select the reference model/equipment/alternate-form and terrain presets; compare stationary and moving silhouettes in bright/dark scenes at both endpoints, intermediate zoom and orbit angles.",
-          "Enable wall/roof/foliage/transparent/water/effect samples, overlap target and hazard markers and reduce cosmetic effects. Identify targets/hazards by shape/pattern as well as color.",
-          "Resize through the display matrix, test native high-DPI backing scale where available, adjust UI/text scale independently and verify pointer controls and UI capture. Change visual settings through documented Unreal UI and restore/reload the saved preset."
+          "Start PIE (or rendered standalone with -game and -BriarwakeCameraReference), click the viewport, use 1 stationary / 2 axial / 3 diagonal and R reset. Wheel through overview/intermediate/close and hold left mouse to orbit. Compare Bright/Dark, equipment on/off, raised pose and alternate form through the shared Data Asset. Identify the moving character, stationary public target, four terrain steps and ramp at gameplay distances. Middle-button drag must no longer orbit; wheel zoom must continue while left-dragging.",
+          "Enable Show Occluders and inspect wall/roof/foliage, toggle transparent water/glass and Reduce Cosmetic Effects. Identify the diamond target and striped-square hazard without relying on color, including overlap. Reducing cosmetics removes sparks only; required geometry and eligible markers remain. Opaque samples suppress occluded labels, a clear view restores them, and hidden targets supply no label. Missing cues or labels through opaque geometry are failures.",
+          "Test 1280x720, 1920x1080, 1280x960 and available native 2x backing. Record actual client/backing dimensions, aspect, OS scale, quality and screen percentage. At UI scales 0.75, 1 and 2, text/glyphs/control sizes must change independently of world framing. Read wrapped text, scroll the panel, click its counter and verify wheel/left drag over it do not move the camera. Playable floor/targets must remain usable; clipping, unreadable text or misaligned pointer hits fail. Mark unavailable high-DPI configurations unverified. Interrupt a left-drag by leaving the viewport or losing focus; returning requires a fresh left press and no stale orbit.",
+          "Test invalid roughness/light/UI values for visible last-valid restoration. Stop PIE, save/reopen a valid temporary preset and confirm persistence, then restore documented defaults. Retain tested revision/settings, labeled bright/dark endpoint/intermediate stills, short moving/orbit comparisons and the display/UI matrix with reviewer findings, failures and mitigations in bounded owned artifacts."
         ],
         "expected_results": [
-          "Representative silhouettes, markers and non-color hazards remain readable in every declared supported configuration, UI scaling is independent and the reviewed settings reproduce. Unsupported configurations and failed findings remain explicit."
+          "Representative silhouettes, terrain and non-color target/hazard cues stay readable; independently scaled labels/controls and playable floor remain usable in every tested configuration. Hidden/occluded targets supply no label, reduced cosmetics preserve required cues, settings reproduce, and route/facing/aim/collision remain unchanged. Rendered captures/review, actual UI/backing-scale usability and Unreal persistence remain Not Run \u2014 Manual QA Pending; unsupported configurations and failed findings remain explicit."
         ],
         "reset": [
-          "Stop only the owned PIE/standalone session. Restore the reference configuration preset through Unreal UI, reset the scene-owned route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview input. Reload the reference level and repeat a clean run.",
+          "Stop only the owned PIE/standalone session. Restore temporary Data Asset edits to Bright, light scale 1, roughness 0.8, equipment/transparency on, other readability toggles off and UI scale 1; restore changed quality settings. Reload the reference level for clean route/camera/pointer state; preserve other editor sessions and user assets.",
           "Retain failed and successful captures in bounded task outputs under GAME_ROOT/artifacts with revision/settings identities. Preserve other editor sessions, prior evidence, user assets and build caches; no project copies, worktrees, cache deletion or unrelated asset resaves."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/21",
+          "revision": "7afb3013feed6de8ae80742c99d6b19b756ed257",
+          "result": "Passed",
+          "summary": "Partial automated implementation evidence, 2026-10-23: python3 tools/validate.py --mode native --suite camera passed in 41.318s, including Editor compilation/UHT/link and 5/5 native camera tests on UE 5.8.3 CL 58210709 / Xcode 27.0 build 27A266a / macOS ARM64. Coverage loads the original materials and exercises settings rejection/serialization, reduced-cosmetic marker retention, hidden/opaque-occluded target suppression/recovery, fixed collision modes and route/continuous-aim invariance. PR records source/module identities, asset/settings provenance and exact preserved local plugin descriptor inputs. Its GameFeatureData startup errors remain disclosed: material authoring saved packages but exited 1; subsequent focused native tests passed. The bare committed descriptor was not independently tested. These checks establish rules/lifecycle, not rendered acceptance."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/21",
+          "revision": "b375836ab247e883aa1709597f82639b5573d1f6",
+          "result": "Not Run",
+          "summary": "Not Run \u2014 Manual QA Pending: human readability review and labeled still/motion evidence for bright/dark overview/close/intermediate views, moving equipment/alternate-form/terrain silhouettes, non-color markers with occlusion/transparency and reduced effects; 1280x720/1920x1080/1280x960 plus actual native backing-scale/UI/physical-pointer usability; and Unreal save/reopen/reproduction of new settings. Unavailable high-DPI configurations stay unverified. Ticket/manual game handoff provides exact launch, controls, expected failures, evidence and cleanup. Ticket remains In Progress; no release accessibility, connected privacy, attack authorization or T06 performance certification is claimed. Follow-up physical acceptance must use left-drag for orbit/tilt, confirm middle-button drag is inert, retain wheel zoom during drag, and recheck consuming UI/focus/release cleanup. Review the implementation now merged at game main b375836ab247e883aa1709597f82639b5573d1f6; its implementation inputs match the recorded native-tested revision. No rendered or physical-input QA was executed during the delivery follow-up."
+        },
+        {
+          "criteria": [
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/21",
+          "revision": "1feea16c2bcfcf77bf7eb921aee4b276361d90d8",
+          "result": "Passed",
+          "summary": "Partial follow-up automation, 2026-10-23: python3 tools/validate.py --mode native --suite camera --output artifacts/bw-097-t04-left-drag-native passed in 85.085s, including affected Editor compilation/link and all 5 camera tests. Actual Slate callbacks recognize left press/release, consume left input when the world cannot own it, preserve another widget capture on bubbled release, and leave middle press/release unhandled. Existing zoom/orbit/lifecycle/readability assertions still pass; no wheel implementation changed. Source identity da889942148a36db7dc9881d53ec9d4031526d60a3a0bc9893412334ad40449c; module e05d620d56dc5fef06fe7a7d898393e567309eb5c37551608c957828ca7a5a2d. Rechecked game main 4870cc99e402541a280efc90f79365a9932e54f1 and docs main 6952559cd46907996889b78f93d8e266024b0499; the same pre-existing local plugin descriptor inputs remain preserved and excluded from commits. Physical routing/rendered acceptance is unverified; ticket remains In Progress."
+        }
+      ]
     },
     {
       "id": "BW-097-T05",
