@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T06">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">Blocked</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · Orthographic camera and visual-readability proof</a
                 >
@@ -278,7 +278,7 @@
 python3 tools/check_baseline.py build
 &quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log
 Use Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.
-The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.</code></pre>
+The explicit T06 package option is implemented in game PR #23. The actual reference cook failed with GameFeatureData asset-manager configuration errors; no runnable package or rendered/profile run exists yet. Resolve that local prerequisite, then use the game PR&#x27;s package/launch and docs/manual-testing.md reproduction instructions. No successful cooked launch is implied by the Editor launch above.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
@@ -313,14 +313,28 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                   configuration owner and existing Unreal Details/Project Settings/material or
                   widget controls rather than a custom settings framework.
                 </li>
+                <li>
+                  Execution 2026-10-23: 840da57a7ffe670bb5a33c69687aca1168912e87 from fetched game
+                  main b657353ddff7599d1dedf480b5469c00cbafc37d; docs fetched main
+                  a9babd44f8452def19f0b51191a6c649fc72fd7d. Game/Editor builds, 9 Python tests and 7
+                  native camera tests passed. Actual cook failed as recorded in current evidence;
+                  two rendered launches and measurements are Not Run. The historical FAST/FULL
+                  references below predate the current QUICK/NATIVE policy; no removed aggregate
+                  runner was restored.
+                </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Use the T01 editor/standalone launch and the explicit reference-level cook/package
-                  procedure delivered here. Record the actual rendered package launch path; it does
-                  not exist at planning time. Run T02/T03/T04/T05 actions twice after independent
-                  scene/process reset on each declared supported configuration.
+                  After resolving the GameFeatureData configuration, build Game and Editor from the
+                  same current inputs, then run python3 tools/check_baseline.py package --target
+                  Briarwake --camera-reference --output
+                  artifacts/bw-097-t06-reference-package-recheck from GAME_ROOT. Inspect its
+                  run.json and actual Pak members. Use its recorded executable with
+                  /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference; run T02-T05
+                  actions twice after independent process/scene reset on each declared supported
+                  configuration. Preserve the failed original output; do not call Entry-only cooking
+                  proof of the reference scene.
                 </li>
                 <li>
                   Record warmup and bounded samples for stationary/following, both camera endpoints,
@@ -335,9 +349,13 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                   tools/validate.py from GAME_ROOT and retain any manual/not-run gaps.
                 </li>
                 <li>
-                  Complete the parent six-criterion review only from applicable passing evidence,
-                  regenerate DOCS_ROOT using README.txt and inspect BW-097, foundations, readiness,
-                  milestone and BW-098 prerequisite displays.
+                  Record the six-criterion parent review using applicable passing evidence and
+                  explicit owner acceptance: AC1 T01 setup; AC2 T02 zoom plus T04
+                  display/readability; AC3 T03 orbit/input; AC4 T04 representative samples; AC5 T05
+                  scoped picking; AC6 pending two-run cooked rendering, raw performance/memory and
+                  supported-quality decisions. BW-097 remains In Progress. Rebuild only roadmap
+                  outputs and run the focused docs gate; BW-098 remains dependent on the unfinished
+                  parent.
                 </li>
               </ol>
               <h3>Expected results</h3>
@@ -373,11 +391,77 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                 review and remaining live-gameplay/platform limits; documentation FULL is a separate
                 tracking check.
               </p>
-              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
+                <strong>Blockers:</strong> The explicit reference cook on 2026-10-23 failed before
+                producing a runnable package: UnrealEditor-Cmd exit 1, UAT exit 25, with missing
+                GameFeatureData asset-manager configuration errors (also recorded during T04
+                authoring). The pre-existing staged plugin descriptor was preserved; the responsible
+                plugin was not isolated. Resolve that local configuration before a successful cooked
+                package and the required two independent rendered/profile runs can be verified.
               </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/23"
+                    >Partial automated implementation evidence, 2026-10-23: added package --target
+                    Briarwake --camera-reference to the existing packager, preserving normal
+                    Entry/server commands and saved settings. The explicit invocation requests Entry
+                    plus the reference level and seven assets, stages only the exact public
+                    canonical contract snapshot for T05, records input/binary/package identities and
+                    launch arguments, and rejects missing/unreadable Pak content or reference assets
+                    in ordinary packages. Game build passed; focused python3 tools/validate.py
+                    --mode native --suite camera --output artifacts/bw-097-t06-native passed in
+                    52.824s, including affected Editor compilation/link, 9 Python packaging/tooling
+                    tests and all 7 native camera tests plus structure/whitespace. UE 5.8.3 Launcher
+                    CL 58210709, Xcode 27.0 build 27A266a, macOS ARM64. Source SHA-256
+                    17ce2189255e88a8c6749f58ef1ba334f40d22d37a37c89061caf95a95fe7650; loaded Editor
+                    module SHA-256 3851c971675b2771cd1c577db399dc69c409bf079e4d1030085d1d81849da6d4.
+                    Native reports identify the pre-commit HEAD plus tested local inputs; this
+                    revision commits the same task content. Game main rechecked
+                    b657353ddff7599d1dedf480b5469c00cbafc37d; docs base
+                    a9babd44f8452def19f0b51191a6c649fc72fd7d. Pre-existing staged descriptor enables
+                    ModelContextProtocol/AllToolsets/ElectronicNodes/DarkerNodes and is excluded
+                    from the PR. The bare committed descriptor was not independently tested. No
+                    successful cook/runtime or rendered performance pass is claimed.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 840da57a7ffe670bb5a33c69687aca1168912e87
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/23"
+                    >Actual package attempt: python3 tools/check_baseline.py package --target
+                    Briarwake --camera-reference --output artifacts/bw-097-t06-reference-package
+                    --timeout 900. The owned process ran from 2026-10-23T13:47:43.087584Z to
+                    13:48:50.327418Z; UnrealEditor-Cmd exited 1, UAT exited 25
+                    (Error_UnknownCookFailure), without timeout. The log reports two GameFeatureData
+                    asset-manager configuration errors, matching the known T04 issue. No runnable
+                    package was produced, so actual successful Pak/staging checks and cooked
+                    launches remain unverified. The bounded local run.json retains
+                    source/provenance, all seven asset hashes, contract snapshot identity and exact
+                    command; process.log retains the failure. No unrelated configuration change or
+                    retry campaign was performed.</a
+                  >
+                  — AC 1, 3; Failed; revision 840da57a7ffe670bb5a33c69687aca1168912e87
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/23"
+                    >Not Run — Manual QA Pending: after fixing the local cook prerequisite, produce
+                    and inspect the explicit reference package, run two independently reset rendered
+                    launches per declared supported configuration, compare labeled stills/motion and
+                    T01-T05 behavior, and retain raw CPU/GPU percentiles and memory against the
+                    unchanged predeclared budgets. The game PR and docs/camera-reference.md plus
+                    docs/manual-testing.md supply exact build/package/launch, 1/2/3/R routes,
+                    wheel/left-drag camera, right-click/Enter/P/F/V picking/authorization/lifecycle,
+                    15-second warmup/60-second native CSV and RSS procedure, settings paths,
+                    expected failures and cleanup. Quantitative and display-specific measurements
+                    are still absent; owner acceptance of T04/T05 does not supply them. Normal
+                    Game/Server runtime isolation and the final six-criterion parent acceptance
+                    remain unverified. The current validator has QUICK/NATIVE and no FULL mode; the
+                    historical AC wording is retained, no FULL pass or policy expansion is invented.
+                    BW-098 can reuse the map/settings/controls; production art, 30-player combat,
+                    connected privacy and release workloads remain later certification.</a
+                  >
+                  — AC 1, 2, 3; Not Run; revision 840da57a7ffe670bb5a33c69687aca1168912e87
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and original criteria</a>;
