@@ -10519,7 +10519,7 @@
       "id": "BW-095-T07",
       "parent_epic": "BW-095",
       "title": "Publish accepted edits while retaining prior valid output on rejection",
-      "status": "Not Started",
+      "status": "In Progress",
       "epic_criteria": [
         "BW-095-AC-2",
         "BW-095-AC-4"
@@ -10568,24 +10568,47 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game root with the built pinned macOS ARM64 UE 5.8.3 Editor, follow the exact A/B/C commands at https://github.com/evanmcpheron/BriarwakeUnreal/blob/cafe8da7722aa6651acf9d88a88e418e855bfd6e/docs/content-authoring.md#publish-accepted-edits-bw-095-t07. No map, gameplay controls, running editor, database or MCP action is required.",
         "setup": [
-          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
-          "Use the T06 complete reviewed output A and writable task-owned staging/output paths. Exact publication commands and failure-control procedure must be documented by implementation before replay."
+          "Use game revision cafe8da7722aa6651acf9d88a88e418e855bfd6e and the existing canonical mmo_docs checkout. BW-095-T06 is Complete within its retained static boundary. Inputs: fixtures/content_authoring/reviewed-export.json and export-specifications.json.",
+          "Create a fresh task-owned directory beneath ignored artifacts/. Keep authored inputs outside its published/ root, use one offline writer on the local macOS physical filesystem, and preserve historical evidence and unrelated files."
         ],
         "actions": [
-          "Make the documented compatible edit B, publish and inspect source/export diffs. Then make rejected edit C and confirm nonzero findings while comparing all accepted B output bytes.",
-          "Use the documented task-owned unwritable/staging failure setup, and separately request source/output overlap; repeat publication without changing user permissions or unrelated files."
+          "Use the runbook author_content function with -Source=\"$source\" -ExportInputs=\"$inputs\" -Publish=\"$published\" to publish A. In a task-owned copy change only ItemDefinition/inventory.a.name from a to Reviewed publication material; publish accepted-B.json to the same root and read current once to select the complete generation.",
+          "Inspect source, server and manifest diffs. Import B/server.json and validate B/client.json with -CheckClient. Record changed bundle/record/artifact hashes and stable established IDs, schema/revision pins and all 36 unexecuted fixture specifications.",
+          "Save the runbook checksums. Set VisualPresentationDefinition[0].telegraph_id to Missing in rejected-C.json and publish to the same root. Request -Publish=\"$published/current\" for a blocked output without permission changes, then request -Source=\"$published/$generation_b/server.json\" -Publish=\"$published\" for unsafe overlap. Record each nonzero exit and finding.",
+          "Run the final checksum comparison over current, every retained A/B artifact and authored B/C copies. The native suite separately controls second-artifact/selector writes and selector rename; no production failure flag is added."
         ],
         "expected_results": [
-          "B publishes a complete compatible output. C and publication failures preserve B entirely and leave source files intact; reports identify failure stage and record fields, and no gameplay/runtime evidence is promoted."
+          "A, B, server import and client validation exit 0 with 163 records and ready_abilities=0. Only inventory.a.name and derived digests change; all record/package/fixture IDs and revision domains remain stable. Manifest bundle identities change; fixtures remain unexecuted with null runner/time.",
+          "C rejects with unknown_reference and source file, VisualPresentationDefinition record ID and .telegraph_id field. Blocked output and overlap reject with publication_directory and publication_path. Every prior accepted/source checksum is unchanged and B remains usable. Partial selection, altered prior bytes or promoted runtime evidence fails QA."
         ],
         "reset": [
-          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+          "Let bounded commandlets exit. Retain valid generations and a concise actual result; remove only the task-owned replay directory when finished. Do not reset the checkout, change user permissions, resave assets or overwrite historical evidence."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/33",
+          "revision": "cafe8da7722aa6651acf9d88a88e418e855bfd6e",
+          "result": "Passed",
+          "summary": "2026-10-23 focused native implementation evidence. python3 tools/validate.py --mode native --suite exports --suite authoring --output artifacts/bw-095-t07-native-final passed in 44.93s: pinned macOS ARM64 UE 5.8.3 Editor compilation/link, 10 Python tests, two Unreal tests and 109 assertions (exports 79, authoring 30). The actual physical filesystem accepted A then B after changing only ItemDefinition/inventory.a.name; all 163 identities/schema/revision pins and 36 unexecuted fixture specifications remained stable. Bundle IDs changed from f76945d3b39da08711fa84b2c7291472663a6e6f to a86913aae70441992175d8a8654f28d9d0a03b13 with traceable record/server/client digests. Whole-server reimport/client validation passed. Source-mapped C rejection, incompatible revisions, invalid export inputs, controlled second-artifact/selector-write/selector-rename failures and source/specification/output overlap/symlinks retained the prior selector, all accepted output bytes, authored inputs and in-memory selection. Staging is bounded beneath the caller output root. Identical native inputs were tested before the commit; source SHA-256 ea4b4e5307ad04a3cb54a78a48785a6df72c361bad54d808049ed7bbf59fac2b; snapshot SHA-256 a4e42a5ed424c6832ca6c8b8818e4797004c15f40e6ab36fd13ebfbb542cce12. Game main fetched/rechecked at 5e6d864420a093ba51f827d32d15a2e570ded617; docs main at 3b719b336585377541707b0031d761f677d75ac3. The runner generic authority/storage warning remains disclosed in the PR; only local offline filesystem publication changed, with actual native filesystem coverage. No gameplay/runtime fixture execution, network/database acceptance, crash durability, concurrency, deployment or other-platform support is claimed."
+        },
+        {
+          "criteria": [
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/33",
+          "revision": "cafe8da7722aa6651acf9d88a88e418e855bfd6e",
+          "result": "Not Run",
+          "summary": "Not Run \u2014 Manual QA Pending. Exact prerequisites, commands, compatible/rejected diffs, generation selection, B reimport/client check, blocked-output/overlap rejection, complete prior-output/source checksum comparison and cleanup are documented in docs/content-authoring.md#publish-accepted-edits-bw-095-t07 and manual_test. Shell syntax passed; native tooling tests passed, but independent human command replay has not been performed. All 36 exported fixture specifications retain unexecuted evidence with null runner/time. T07 remains In Progress for this replay; T06 is Complete. No parent/downstream completion or gameplay readiness is claimed."
+        }
+      ]
     },
     {
       "id": "BW-018-T01",
