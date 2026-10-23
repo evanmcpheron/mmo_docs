@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-018-T02">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-018.html#BW-018"
                   >BW-018 · Durable ownership and mutation recovery probe</a
                 >
@@ -260,51 +260,77 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.</code></pre>
+              <pre><code>Not Run — Manual QA Pending. From the existing game root with built task revision d3e437603c3c49f18212719a57591dd6e8cb08c0, run python3 tools/check_content_admission.py --suite transfers --output &quot;$PWD/artifacts/bw-018-t02-replay-$(date +%Y%m%d-%H%M%S)&quot;. Exact prerequisites, native build and separate commit/reopen commands: https://github.com/evanmcpheron/BriarwakeUnreal/blob/d3e437603c3c49f18212719a57591dd6e8cb08c0/docs/sqlite-transfer.md. No map, player controls, running editor, database service or MCP action is required.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use only a fresh task-owned SQLite database and outputs beneath ignored game
-                  artifacts/. Preserve all existing project files, databases and historical
-                  evidence; no shared or production data. The selected candidate is local SQLite,
-                  explicitly chosen by the owner on 2026-10-23.
+                  Use the existing canonical mmo_docs checkout, pinned macOS ARM64 UE 5.8.3
+                  Editor/Server, Xcode build 27A266a and native SQLite 3.54.0/unix VFS. BW-018-T01
+                  is Complete by the user’s acceptance of its retained native evidence and runbook.
                 </li>
                 <li>
-                  Complete T01 and use its exact working native commands/settings with a fresh
-                  fixture database. The T02 transfer and observation commands must be documented
-                  before replay.
+                  Use a fresh task-owned directory under ignored artifacts/ and the versioned
+                  fixtures/persistence/baseline.json plus transfer.json. Current storage schema 2
+                  rejects/preserves historical schema-1 files without migration. Preserve all
+                  unrelated databases, files, permissions and historical evidence.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Execute the finite accepted transfer and inspect the receipt,
-                  item/container/wallet revisions, paired ledger entries and pending outbox. Exit
-                  and reopen the same database.
+                  Run the exact transfers command. The actual UnrealEditor-Cmd executes
+                  Briarwake.Persistence.Transfers.Commit, exits, then a separate process executes
+                  Briarwake.Persistence.Transfers.Reopen against
+                  native/transfer-probe/transfer.sqlite without reseeding.
                 </li>
                 <li>
-                  In separate fresh scenarios submit the documented invalid
-                  owner/revision/funds/reservation inputs and trigger the test-only pre-commit write
-                  failure. Inspect state and response ordering.
+                  Inspect run.json and native/transfers.json plus native/transfers-reopen.json.
+                  Confirm distinct process IDs, matching accepted database digest/receipt/outbox
+                  identities, complete item/ownership/container/wallet state, balanced ledger
+                  entries and one pending outbox.
+                </li>
+                <li>
+                  The native test exercises invalid actor/account/character/world/epoch, expected
+                  revisions, targets, funds/capacity, bound/reserved state, integer/revision
+                  overflow and fabricated request/result fields. It denies the real outbox INSERT
+                  after earlier writes and rejects a real COMMIT with editor-test-only SQLite
+                  controls. Inspect retained-byte/output and commit-before-response assertions; no
+                  production failure flag is exposed.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Success follows durable commit and reopens as one complete transfer.
-                  Invalid/failing attempts preserve prior state, balances never go negative, the
-                  ledger conserves transferred currency and no receipt claims a commit that did not
-                  complete.
+                  The command exits 0 with 45 transfer and 11 fresh-reopen assertions.
+                  Item.Probe.Existing moves A to B; A/B balances become 9007199254740966/125,
+                  item/ownership revisions 8, both container/wallet revisions 4294967298. Exactly
+                  one canonical receipt, two conserved ledger entries and one pending outbox persist
+                  and reopen together.
+                </li>
+                <li>
+                  An independent reader sees no uncommitted state/receipt, then sees committed state
+                  before the caller result is assigned. Public result/lookup expose only the actor’s
+                  receipt. Rejections and pre-commit SQL failures leave prior bytes/result
+                  unchanged; a COMMIT error returns Indeterminate with no committed success and
+                  resolves through the same scoped operation key. Any partial state, duplicate rows,
+                  negative balance, lost item, leaked private rows or response before COMMIT fails
+                  QA.
+                </li>
+                <li>
+                  Native storage remains SQLite 3.54.0/unix with DELETE journal, NORMAL locks, FULL
+                  synchronous=2, fullfsync=1, foreign_keys=1, busy_timeout=250ms and schema 2. No
+                  public gameplay endpoint, production authentication, automatic exact/conflicting
+                  retry, concurrent mutation campaign, process crash/power-loss recovery, migration
+                  or outbox delivery is certified.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Close owned connections and let bounded child processes exit. For a new baseline
-                  use a fresh task-owned directory; for a recovery/retry case reopen the same
-                  scenario database without reseeding it. Preserve prior outputs and unrelated
-                  staged work; never reset the checkout or remove database sidecars while a
-                  connection is active.
+                  Let both bounded processes exit and connections close. Retain a concise actual
+                  result and any baseline needed for follow-up; remove only this task-owned replay
+                  directory when finished. Preserve historical schema-1 files and never delete
+                  active database sidecars or reset unrelated work.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -315,10 +341,59 @@
                 receipt/revision/ledger result, not copied report trees.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/35"
+                    >2026-10-23 actual native SQLite transaction evidence. python3 tools/validate.py
+                    --mode native --suite storage --suite transfers --target BriarwakeEditor
+                    --target BriarwakeServer --output artifacts/bw-018-t02-native-delivery passed in
+                    94.735s: pinned UE 5.8.3 Editor build/link 23.88s, source-engine Server 25.93s,
+                    12 Python tests and four Unreal tests in two processes with 101 native
+                    assertions (storage 35, storage-reopen 10, transfers 45, transfers-reopen 11).
+                    The server-owned context and strict request commit one item/ownership move, both
+                    container/wallet revisions, two balanced canonical ledger entries, one canonical
+                    receipt and one pending outbox inside BEGIN IMMEDIATE/COMMIT. A/B balances are
+                    9007199254740966/125; item/ownership revisions 8 and both container/wallet
+                    revisions 4294967298. Independent reads prove uncommitted invisibility and
+                    committed visibility before response assignment. Actual SQLite outbox-INSERT
+                    denial rolls back prior writes; COMMIT rejection returns Indeterminate and
+                    leaves response untouched, resolved by the same scoped operation key.
+                    Actor/world/epoch, revisions/targets, funds/capacity, bound/reserved state,
+                    overflow and fabricated fields reject with prior bytes/output retained. Public
+                    commit/lookup return only the actor’s receipt; private ledger/outbox inspection
+                    stays inside the owner/tests. Fresh PIDs 46083 and 46165 retained database SHA-1
+                    846bbc4c3722be0d0eb2730517fff49ba00cc804, receipt
+                    Receipt.Probe.51556D053541B1AAB93CD8B857D4F2EA and pending outbox
+                    Outbox.Probe.8D0085B3BC478B6648C483B34D5001FD. Native SQLite 3.54.0/unix and
+                    FULL-sync/DELETE-journal settings remain pinned. Storage schema 2 adds the
+                    necessary columns/tables; old schema-1 files reject without migration. Canonical
+                    definitions and the 156-definition snapshot are unchanged. Identical native
+                    inputs were tested before this commit; source SHA-256
+                    d3f65d8900882a4e4ea20e800ca7d0950ef2165469a4405d58f0f8dd144ce49f; snapshot
+                    SHA-256 47d0216d43c98096f4975ef73c2ce60abdc2b5dfd0c4e71f9105431f13250fcf. Game
+                    main fetched/rechecked at f7c51a40dbc0aebcb5415f65c0f642165c7e9128; docs main at
+                    a121bc86a58784a5dd4c0ffa32779adbf0f09fcc. Generic storage/authority review
+                    findings are addressed by actual file-backed transactions/reopen and both target
+                    links. No gameplay endpoint, production authentication, concurrent mutation
+                    certification, automatic replay handling, crash/power-loss recovery, migration
+                    or outbox delivery is claimed.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision d3e437603c3c49f18212719a57591dd6e8cb08c0
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/35"
+                    >Not Run — Manual QA Pending. The exact native build/commit/reopen command,
+                    pinned prerequisites/settings, expected accepted/rejected outcomes and cleanup
+                    are documented in docs/sqlite-transfer.md and manual_test. The focused automated
+                    acceptance above passed, but an independent human replay of this documented
+                    transfer workflow has not been performed. T02 remains In Progress for that
+                    acceptance; T01 is Complete following the user’s explicit request. No BW-018
+                    parent/downstream completion, new game execution or PR merge is claimed by this
+                    tracking update.</a
+                  >
+                  — AC 1, 2, 3; Not Run; revision d3e437603c3c49f18212719a57591dd6e8cb08c0
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-018.html#BW-018">Parent epic and acceptance criteria</a
