@@ -10120,7 +10120,7 @@
       "id": "BW-095-T03",
       "parent_epic": "BW-095",
       "title": "Validate talent choices and content progression relationships",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-095-AC-1",
         "BW-095-AC-2"
@@ -10173,23 +10173,35 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.",
+        "launch": "Manual QA skipped by explicit user instruction on 2026-10-23: \u201cskip manual qa and just mark as complete when done\u201d. No human replay is claimed. Optional replay uses the existing ContentAuthoring commandlet and fixtures/content_authoring/reviewed-talents.json; exact commands and cleanup: https://github.com/evanmcpheron/BriarwakeUnreal/blob/a93639ec646521a331ff1e4590d8554163014273/docs/content-authoring.md#talent-and-progression-authoring-bw-095-t03. No gameplay map, mouse controls, database or editor MCP is required.",
         "setup": [
-          "Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs sources. Use only task-owned sample/output directories beneath ignored game artifacts/; preserve source assets, prior accepted output and historical evidence.",
-          "Use the delivered complete representative tree and T01 CLI. Future samples and talent-family commands remain Not Run until implemented; no live player or gameplay map is required."
+          "Use the existing game/docs checkouts and built pinned macOS ARM64 UE 5.8.3 Editor at the delivered revision. BW-095-T01 is Complete; its shared importer is reused.",
+          "For optional replay, use the complete Mage sample (or reviewed-specialization.json for Bulwark), absolute source/output paths and a new task-owned directory beneath ignored artifacts/. Preserve source assets, unrelated changes and prior output."
         ],
         "actions": [
-          "Round-trip the reviewed tree. In separate task-owned copies, create a prerequisite cycle, remove a required ability, introduce an impossible lower-tier threshold and break an exclusive group; import each."
+          "Optional replay: import/export the reviewed tree, reimport into a new output and compare canonical values, identities and revision domains. In separate sample copies introduce a prerequisite cycle, unknown/cross-owner prerequisite, impossible rank/threshold, split exclusive group, missing or late-unlocking ability, inconsistent previous_level or invalid progression currency; import each using -run=ContentAuthoring -SkipAssetScan -NoShaderCompile -unattended -NullRHI -nosound."
         ],
         "expected_results": [
-          "The valid tree preserves identities and point rules. Each broken relationship names its affected records/fields, returns nonzero and retains prior valid output; no free-text talent or authored gate gains execution capability."
+          "Valid imports exit zero with ready_abilities=0 and preserve the full tree, modifier and progression rows. Broken copies return nonzero with record/field findings, retain prior valid selection/output and grant no runtime capability or fixture evidence."
         ],
         "reset": [
-          "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+          "Let bounded commandlets exit; retain a short actual result if replayed and remove only the new task-owned replay directory when finished. Never reset the checkout, resave unrelated assets or overwrite prior valid output/historical evidence."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/29",
+          "revision": "a93639ec646521a331ff1e4590d8554163014273",
+          "result": "Passed",
+          "summary": "2026-10-23: python3 tools/validate.py --mode native --suite compatibility --suite admission --suite bindings --suite authoring --suite talents --output artifacts/bw-095-t03-native-verified passed pinned macOS ARM64 UE 5.8.3 Editor compilation/link, nine Python tests and six Unreal tests (3,040 native assertions). The 223 talent assertions cover 35 cases: complete Mage class and Bulwark specialization catalogs, actual native file import/export/reimport, exact 107-record round-trip identity/values/source_version/binding_status/revisions, unknown/cross-owner prerequisites, cycles, rank/point caps, exclusive routes, lower-tier capacity, required abilities, legacy-to-current previous_level unlock mapping, progression banking/currencies, finite modifiers, source-mapped rejection and atomic selection/output retention. Six tiers, thresholds 0/8/18/30/42/52, tier-II/tier-VI three-way choices, transformation capstones and 92 selectable ranks are preserved. Level-one zero points, level-ten specialization selection gating and 59/59/118 at 60 remain intact. All 102 prior canonical definitions are unchanged; the extended snapshot has 113 definitions and source-derived character rules. Native source SHA-256 fffd2b5fd0ac9cdf0f6cd7bc61f9638e84aa24a5e9eb976befc9568389e40ce1; snapshot SHA-256 c861faa6afd9e8433957f5c77f7c5e51fe5c9c8d0963e13fd8bf71034f5e5926. Identical native inputs were tested before this commit; fetched/rechecked game main e7774692ec92afe1fc119344cd8a0cb828cc7c34. Unrelated staged descriptor plugin settings were preserved/excluded and present during testing. Manual QA skipped by explicit user instruction, \u201cskip manual qa and just mark as complete when done\u201d; Complete records automated acceptance and this waiver, not an executed human replay. BW-095-T01 is Complete. No live allocations/respec/auto-grant/combat, enabled talent, execution-fixture pass, parent completion or PR merge is claimed."
+        }
+      ]
     },
     {
       "id": "BW-095-T04",
