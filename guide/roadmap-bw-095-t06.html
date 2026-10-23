@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-095-T06">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-095.html#BW-095"
                   >BW-095 · Versioned content authoring and import workflow</a
                 >
@@ -263,48 +263,58 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.</code></pre>
+              <pre><code>Not Run — Manual QA Pending. Use the built pinned macOS ARM64 UE 5.8.3 ContentAuthoring commandlet at game revision d1f4c18d9fdcc24765e41dcb06873b93fac907ae. Exact commands and edits: https://github.com/evanmcpheron/BriarwakeUnreal/blob/d1f4c18d9fdcc24765e41dcb06873b93fac907ae/docs/content-authoring.md#reproducible-clientserver-exports-bw-095-t06. This is offline JSON tooling; no map, gameplay controls, running editor, database or Unreal MCP action is required.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs
-                  sources. Use only task-owned sample/output directories beneath ignored game
-                  artifacts/; preserve source assets, prior accepted output and historical evidence.
+                  Use the existing game/docs checkouts and
+                  fixtures/content_authoring/reviewed-export.json plus export-specifications.json.
+                  The sample has 163 server records across 36 families and 36 unexecuted fixture
+                  specifications. T02–T05 are Complete within their recorded boundaries.
                 </li>
                 <li>
-                  Use the full reviewed sample, declared server policy/dependencies and delivered
-                  export/fixture commands. Exact CLI and sample paths must be supplied by
-                  implementation; planned client/server outputs are currently unverified.
+                  Use absolute paths, the runbook author_content function and a fresh task-owned
+                  directory beneath ignored artifacts/. Preserve source assets, user changes,
+                  accepted output and historical evidence. The render dependencies are synthetic
+                  declarations with no implemented providers.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Export twice into fresh task-owned directories and compare package/manifest bytes
-                  and identities; reimport the server candidate. Inspect the client artifact for
-                  server-only records.
+                  Run -Source=&lt;reviewed-export.json&gt;
+                  -ExportInputs=&lt;export-specifications.json&gt; -Bundle=&lt;new A&gt;, then
+                  repeat into a new B. Compare server.json, client.json and manifest.json with cmp;
+                  import A/server.json and validate A/client.json using -CheckClient.
                 </li>
                 <li>
-                  Try a missing presentation dependency and an authored passed fixture/runtime-ready
-                  flag without real evidence, then re-export.
+                  In separate task-owned copies, replace
+                  VisualPresentationDefinition.animation_event_key with Missing, author a passed
+                  fixture with a fake runner/time, and inject a credentials field into client.json.
+                  Run the documented rejection commands using fresh rejected output directories.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Identical inputs give identical bytes and preserved ordered content. Native
-                  admission passes only valid data; private data stays out of client output, invalid
-                  references/forged evidence reject and all authored runtime specifications remain
-                  unexecuted.
+                  Valid exports, comparisons, server import and client check exit zero with all 163
+                  server identities/values/revisions retained and ready_abilities=0. Manifest
+                  fixtures stay unexecuted with null runner/completion time; only client.json is
+                  client-shareable.
+                </li>
+                <li>
+                  Invalid commands exit nonzero with presentation_dependency, authored_evidence or
+                  client_projection respectively. No rejected directory or partial bundle exists;
+                  original A/B bytes remain unchanged. Accepted private contamination, manufactured
+                  execution evidence or changed prior output fails QA.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Let the bounded command exit; use a fresh task-owned output directory for the next
-                  run. Restore only the sample edits made during this procedure; retain the prior
-                  valid output and concise actual result. Never reset the checkout, resave unrelated
-                  assets or overwrite historical evidence.
+                  Let bounded commandlets exit. Retain a concise actual result and valid exports;
+                  remove only task-owned replay copies/output when finished. Preserve unrelated
+                  files, assets, source samples and historical evidence.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -316,10 +326,50 @@
                 audit.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/32"
+                    >2026-10-23 native static implementation evidence. The existing ContentAuthoring
+                    owner exports staged server.json, a client field projection and a private
+                    fixture manifest from a reviewed 163-record/36-family sample and explicit
+                    schema/dependency pins. Two fresh exports with reordered record/map/schema-set,
+                    fixture and policy/dependency inputs produced identical bytes and identities;
+                    operations, phases and tutorial stage order survived, and the full server
+                    candidate passed actual native reimport. Client-private contamination,
+                    missing/incompatible presentation references, stale schema/fixture revisions,
+                    tampered dependencies, authored passed evidence and unbound activation reject
+                    with retained prior output. All 36 canonical fixture specifications remain
+                    unexecuted with null runner/time; actual admission results remain separate.
+                    python3 tools/validate.py --mode native --suite exports --suite authoring
+                    --suite compatibility --suite admission --suite bindings --output
+                    artifacts/bw-095-t06-native-final passed in 41.9s: pinned macOS ARM64 UE 5.8.3
+                    Editor compilation/link, 10 Python tests, six Unreal tests and 2,877 assertions
+                    (exports 60). Native source SHA-256
+                    b8656434b3de900b534c469bd9a88f76bff6d70490ca1c0097a72d191e6e9b22; tested commit
+                    has identical native inputs. The snapshot has 142 definitions with all prior 140
+                    unchanged; its bytes also match extraction against CI sparse inputs at pinned
+                    docs f3df0d305839310ac0fea83f474f877d98e1011e. Game main fetched/rechecked at
+                    7ce0cb3ddb2288db3778aa9c899e6ab987f3697f; docs main at
+                    e58bc1880415c21a36d4efd50a81b774a7440390. External render hashes describe
+                    explicit synthetic unimplemented declarations, not invented art-asset bytes. No
+                    runtime fixture execution, cooked package, live deployment, implemented render
+                    provider or production readiness is claimed.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision d1f4c18d9fdcc24765e41dcb06873b93fac907ae
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/d1f4c18d9fdcc24765e41dcb06873b93fac907ae/docs/content-authoring.md#reproducible-clientserver-exports-bw-095-t06"
+                    >Not Run — Manual QA Pending. The human commandlet replay remains outstanding:
+                    export twice and compare server/client/manifest, reimport the server, check the
+                    client projection, then reject a missing render resource, authored passed
+                    evidence and a client credentials field. Confirm expected exits/findings,
+                    unexecuted fixture runner/time, no partial rejected directory and unchanged
+                    prior output. T06 remains In Progress; no human pass or waiver is claimed.</a
+                  >
+                  — AC 1, 2, 3; Not Run; revision d1f4c18d9fdcc24765e41dcb06873b93fac907ae
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-095.html#BW-095">Parent epic and acceptance criteria</a
