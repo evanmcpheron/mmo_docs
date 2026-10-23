@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-095." />
+    <title>
+      BW-095-T02 · Validate and round-trip authored status definitions · Briarwake Development
+      Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-095.html#BW-095">BW-095</a><span>/</span>BW-095-T02
+          </div>
+          <h1>BW-095-T02 · Validate and round-trip authored status definitions</h1>
+          <p class="page-description">Implementation ticket for BW-095.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-095-T02">
+              <p>
+                <span class="badge">Not Started</span> · Parent epic:
+                <a href="roadmap-bw-095.html#BW-095"
+                  >BW-095 · Versioned content authoring and import workflow</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-095.html#BW-095-AC-1">BW-095-AC-1</a>,
+                <a href="roadmap-bw-095.html#BW-095-AC-2">BW-095-AC-2</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Extend the same extraction and FContentAdmission owners for StatusDefinition and
+                  only its required closure. Use the T01 route for representative linked
+                  ability/status records; source entity remains runtime StatusInstance state.
+                  Validate owner_ability_id, category-specific stacking/refresh/control-group
+                  combinations, explicit nullable fields, positive periodic intervals,
+                  stack/duration bounds and required persistence flags from the canonical definition
+                  and status rules.
+                </li>
+                <li>
+                  Current admission does not accept StatusDefinition. Add only its missing static
+                  semantic checks at the native boundary; UI/import mapping delegates to those
+                  checks. Preserve the documented 30% periodic carry constraint and existing
+                  category/control caps without implementing ticks, diminishing-return history,
+                  dispels, expiry or transfer execution. Missing behavior/bindings keep activation
+                  disabled.
+                </li>
+                <li>
+                  Add focused positive/rejection cases to existing content admission tests: a valid
+                  periodic and nonperiodic status, missing owner, invalid category-policy pairing,
+                  nonpositive interval, invalid stack/cap and missing required field. Exercise real
+                  source/export/admit round trips rather than a parallel schema model; retain atomic
+                  selection and source-mapped findings.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Status gameplay execution, combat/control simulations, full status catalog and
+                  production presentation assets.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-095-t01.html#BW-095-T01">BW-095-T01</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-095-T02-AC-1">
+                  <a href="#BW-095-T02-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    Representative periodic and nonperiodic StatusDefinition records round-trip with
+                    stable IDs, explicit null semantics and valid owner ability references through
+                    the shared authoring route.
+                  </p>
+                </li>
+                <li id="BW-095-T02-AC-2">
+                  <a href="#BW-095-T02-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    Invalid owner references, category-policy/control-group combinations, required
+                    persistence fields, stack/cap values and periodic intervals produce record/field
+                    findings and reject the complete candidate without changing prior valid state.
+                  </p>
+                </li>
+                <li id="BW-095-T02-AC-3">
+                  <a href="#BW-095-T02-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Admitting status catalog data does not create a status handler, passed runtime
+                    fixture or executable ability; canonical status encodings and numerical
+                    constraints remain unchanged.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, test worlds and
+                fixtures below are deliverables of this ticket and its prerequisites; these are
+                unexecuted test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Not Run — Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs
+                  sources. Use only task-owned sample/output directories beneath ignored game
+                  artifacts/; preserve source assets, prior accepted output and historical evidence.
+                </li>
+                <li>
+                  Use the T01 documented CLI and reviewed status sample delivered by this ticket.
+                  Current native admission rejects this family; planned examples remain unexecuted.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Round-trip the periodic and nonperiodic samples. Change only the task-owned owner
+                  reference, interval and category-policy fields to the documented invalid variants;
+                  repeat import after each edit.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Valid IDs/nulls/policies reproduce. Each invalid variant names the status and
+                  field, rejects the candidate and preserves prior output; no runtime behavior is
+                  enabled.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Let the bounded command exit; use a fresh task-owned output directory for the next
+                  run. Restore only the sample edits made during this procedure; retain the prior
+                  valid output and concise actual result. Never reset the checkout, resave unrelated
+                  assets or overwrite historical evidence.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Focused native status admission and round-trip
+                assertions plus affected compilation. Keep one result summary and pending manual
+                replay; existing admission atomicity and runtime gate coverage is reused.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-095.html#BW-095">Parent epic and acceptance criteria</a
+                >; <a href="../guide/operations.html#content-tools">Content tools</a>;
+                <a href="../guide/execution.html#data-and-runtime-gates"
+                  >Independent data and runtime gates</a
+                >; <a href="../sources/data-model.schema.json">Canonical schema bundle</a>;
+                <a href="../guide/data-inventory.html#status-definition">StatusDefinition</a>;
+                <a href="../guide/data-inventory.html#status-persistence-policy"
+                  >StatusPersistencePolicy</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-095-t01.html#BW-095-T01">Previous: BW-095-T01</a
+              ><a href="roadmap-bw-095-t03.html#BW-095-T03">Next: BW-095-T03</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>
