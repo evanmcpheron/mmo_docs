@@ -19,10 +19,11 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual([], impact['unresolved'])
         plan = dict(commands('quick', impact, ['sources/development-roadmap.json']))
         self.assertEqual({'whitespace', 'staged-whitespace', 'sources'}, set(plan))
-        self.assertNotIn('freshness', plan['sources'])
+        self.assertNotIn('roadmap-freshness', plan['sources'])
         self.assertNotIn('site', plan['sources'])
         gate = dict(commands('quick', impact, ['sources/development-roadmap.json'], gate=True))
-        self.assertIn('freshness', gate['sources'])
+        self.assertIn('roadmap-freshness', gate['sources'])
+        self.assertNotIn('contracts-freshness', gate['sources'])
         self.assertNotIn('aggregate', gate)
         self.assertNotIn('browser', gate)
 
@@ -55,9 +56,10 @@ class SelectionTests(unittest.TestCase):
             self.assertEqual(2, main(['--gate', '--explain']))
         self.assertEqual([], select_checks([])['checks'])
 
-    def test_validator_changes_select_importing_regressions_not_tests_for_content_edits(self):
+    def test_validator_changes_select_adjacent_regressions_not_tests_for_content_edits(self):
         impact = select_checks(['validation/check_development_roadmap.py'])
         self.assertIn('test_development_roadmap', impact['tests'])
+        self.assertEqual(['test_validation'], select_checks(['validation/validate.py'])['tests'])
         self.assertEqual([], select_checks(['README.txt'])['tests'])
 
     def test_ui_requires_browser_mode_and_static_ticket_updates_do_not(self):
@@ -114,33 +116,34 @@ class SelectionTests(unittest.TestCase):
                 page.write_text('<p id="present">Valid</p><a href="#present">Valid</a>')
                 self.assertTrue(all(item['passed'] for item in site_checks()))
 
-    def test_archived_details_are_not_reread_unless_changed_but_current_inputs_remain_identified(self):
+    def test_identity_covers_selected_inputs_without_reading_archives(self):
         with tempfile.TemporaryDirectory(dir=ROOT / '.git') as directory:
             root = Path(directory)
-            def git(*arguments):
-                return subprocess.check_output(['git', *arguments], cwd=root, stderr=subprocess.PIPE)
-            git('init', '-q', '-b', 'main')
-            archive = root / 'validation/epics/example/raw.log'
-            archive.parent.mkdir(parents=True)
-            archive.write_text('historical details')
             source = root / 'source.json'
             source.write_text('{}')
-            git('add', '.')
-            before = input_identity(root)
-            archive.write_text('other historical details')
-            self.assertEqual(before, input_identity(root))
-            self.assertNotEqual(before, input_identity(root, ['validation/epics/example/raw.log']))
-            source.write_text('{"changed": true}')
-            self.assertNotEqual(before, input_identity(root))
+            with patch('validate.subprocess.check_output', return_value=b'revision'):
+                before = input_identity(root, ['source.json'])
+                (root / 'unrelated.log').write_text('not an input')
+                self.assertEqual(before, input_identity(root, ['source.json']))
+                source.write_text('{"changed": true}')
+                self.assertNotEqual(before, input_identity(root, ['source.json']))
 
-    def test_shared_template_changes_select_browser_and_node_regressions_are_not_browser_tests(self):
+    def test_generator_code_preserving_ui_does_not_automatically_select_browser(self):
         for path in ('scripts/build_development_roadmap.py', 'scripts/build_data_inventory.py', 'scripts/html_format.py'):
-            self.assertIn('browser', select_checks([path])['checks'])
+            self.assertNotIn('browser', select_checks([path])['checks'])
         impact = select_checks(['validation/test_browser_cleanup.mjs'])
-        self.assertNotIn('browser', impact['checks'])
         plan = dict(commands('quick', impact, ['validation/test_browser_cleanup.mjs']))
         self.assertIn('browser-cleanup', plan)
         self.assertNotIn('browser', plan)
+
+    def test_roadmap_freshness_never_invokes_contract_generator(self):
+        with patch('check_sources.roadmap_errors', return_value=[]), \
+             patch('check_sources.inventory_errors') as inventory, \
+             patch('build_development_roadmap.roadmap_outputs', return_value={}), \
+             patch('check_sources.site_checks', return_value=[]):
+            self.assertEqual([], check_sources(['roadmap-freshness', 'site']))
+        inventory.assert_not_called()
+
 
 
 class ChangedFileTests(unittest.TestCase):

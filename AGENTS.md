@@ -14,7 +14,7 @@ This repository owns the gameplay design, data contracts and development roadmap
 
 - Use Unreal Engine 5 native C++ for authoritative gameplay in the separate project; Blueprint may supplement assets and presentation.
 - Verify and pin the engine release, compiler, target platforms and dedicated server build configuration before implementation.
-- Before any epic decomposition, follow the mandatory reuse assessment in `sources/development-roadmap.json` under `maintenance`, published at `guide/roadmap-maintenance.html`. This applies even when a workspace skill initiates the split. Inspect relevant engine/plugin implementation, project owners, completed dependencies and retained evidence before proposing additional work. The dated multiplayer assessment on that page is a starting point to recheck, not proof of current integration.
+- Before epic decomposition, use the focused reuse guidance in `sources/development-roadmap.json` under `maintenance`, published at `guide/roadmap-maintenance.html`. This applies even when a workspace skill initiates the split. Inspect relevant engine/plugin implementation, project owners, completed dependencies and retained evidence before proposing additional work. The dated multiplayer assessment on that page is a starting point to recheck, not proof of current integration.
 - Ticket decomposition is allowed now. Running an implementation ticket requires a real game repository explicitly supplied or verified, project instructions and executed game tests. No game epic or ticket can be marked Complete based on documentation checks.
 
 ## Engineering standards
@@ -23,19 +23,21 @@ Follow the existing Python, HTML and JSON conventions. Keep code readable, maint
 
 ## Development and validation
 
-Read the task, canonical sources and directly relevant code/tests first; follow dependencies when needed instead of repeatedly scanning generated chapters. Work in small coherent increments. Preserve acceptance criteria, security checks, engineering standards and truthful evidence.
+[Validation policy](docs/validation.md) is the sole workflow authority. Read only
+relevant sources/owners once, implement, use unit/static tests and required affected
+generation, hand off concise human QA, update necessary tracking and open the PR.
+A delivered PR can await QA while its ticket remains In Progress. Complete still
+requires actual passing acceptance evidence; Not Run is explicitly unverified.
 
-Ticket scopes must identify reusable owners, genuinely new work and evidence gaps; exact `epic_criteria` links must collectively cover every parent criterion. Reuse never removes authorization, sequencing, idempotency or recipient privacy gates. Keep all planning in the existing roadmap registry and use its current coverage/dependency/link/freshness checks; do not add a parallel registry or require game builds for routine ticket authoring.
+Use `python3 validation/validate.py --gate` once for affected PR source/freshness;
+QUICK is for iteration. Do not repeat unchanged successful checks. A roadmap edit
+uses only the roadmap generator; no inventory fingerprints, browser, allocation
+suite or native execution. Follow the workspace Git/PR workflow when present.
 
-Use `python3 validation/validate.py` (QUICK) during routine work and
-`python3 validation/validate.py --gate` for focused PR source/output verification.
-Use INTEGRATION for browser/template/UI changes and FULL only when the affected
-harness, milestone or explicit request warrants comprehensive coverage. Unknown
-impact and failed Git detection must never escalate execution automatically.
-
-[Validation policy](docs/validation.md) owns mode selection, commands, manual tests,
-evidence reuse/retention, performance budgets and the justification required for
-new checks. Follow it instead of duplicating command chains. Generate affected
-outputs once after actual source review. Do not run validator regression suites for
-ordinary content edits or rerun successful unchanged checks. Missing required game
-acceptance evidence still blocks Complete; documentation checks never supply it.
+AGENTS.md, docs/validation.md and workflow skills are protected from unrelated
+feature edits. Increasing routine validation/budgets requires explicit workflow
+authorization, the actual defect prevented, why a cheaper method is insufficient
+and expected recurring cost. No automatic exhaustive visual testing, capture
+frameworks, extra Unreal stages, unconditional packages/all-integration suites,
+large evidence archives or unnecessary cross-repository administration. Stop after
+sufficient checks and an honest manual QA handoff.

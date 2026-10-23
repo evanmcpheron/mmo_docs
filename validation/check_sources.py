@@ -29,14 +29,17 @@ def check_sources(scopes, paths=(), root=ROOT):
     if errors:
         return errors
     try:
-        if 'freshness' in scopes:
-            errors.extend(roadmap_errors(load(root), root=root, check_generated=True))
+        if 'roadmap' in scopes or 'roadmap-freshness' in scopes:
+            errors.extend(roadmap_errors(load(root), root=root, check_generated='roadmap-freshness' in scopes))
+        if 'roadmap-freshness' in scopes and not errors:
+            from build_development_roadmap import roadmap_outputs
+            from build_data_inventory import stale_outputs
+            errors.extend('Stale generated roadmap output: ' + path
+                          for path in stale_outputs(roadmap_outputs(load(root), root), root))
+        if 'contracts-freshness' in scopes:
             errors.extend(inventory_errors()[1])
-        else:
-            if 'roadmap' in scopes:
-                errors.extend(roadmap_errors(load(root), root=root, check_generated=False))
-            if 'contracts' in scopes:
-                errors.extend(validate_registry(load_registry(root), root=root))
+        elif 'contracts' in scopes:
+            errors.extend(validate_registry(load_registry(root), root=root))
         if 'site' in scopes:
             errors.extend(item['name'] + ': ' + item['detail'] for item in site_checks() if not item['passed'])
     except (OSError, ValueError, KeyError, TypeError, RuntimeError) as error:
@@ -46,7 +49,7 @@ def check_sources(scopes, paths=(), root=ROOT):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--scope', action='append', choices=('roadmap', 'contracts', 'freshness', 'site'), default=[])
+    parser.add_argument('--scope', action='append', choices=('roadmap', 'contracts', 'roadmap-freshness', 'contracts-freshness', 'site'), default=[])
     parser.add_argument('--paths', nargs='*', default=[])
     args = parser.parse_args()
     errors = check_sources(args.scope, args.paths)

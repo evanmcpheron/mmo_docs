@@ -83,9 +83,7 @@ class InventoryTests(unittest.TestCase):
         roadmap_pages = generated_page_paths(roadmap)
         for path in roadmap_pages:
             with self.subTest(page=path):
-                reviewed = next(page for page in self.registry['pages'] if page['page'] == path)
-                self.assertEqual('Reference', reviewed['kind'])
-                self.assertTrue(reviewed['exclusion_reason'])
+                self.assertFalse(any(page['page'] == path for page in self.registry['pages']))
                 self.assertFalse(any(path in entry['feature_pages'] for entry in self.registry['entries']))
                 self.assertNotIn(DATA_START, (ROOT / path).read_text())
         for path in ROOT.rglob('*.html'):

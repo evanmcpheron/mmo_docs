@@ -1,131 +1,101 @@
-# Documentation verification
+# Sufficient documentation verification
 
-Run from the mmo_docs Git root. This is the authoritative policy; README, skills and
-CI refer here. Documentation verification never certifies Unreal or gameplay.
+This is the sole documentation workflow policy. Read relevant canonical requirements
+once, change necessary records, generate affected outputs once, verify and deliver.
+Documentation checks never certify gameplay. PR readiness and accepted ticket
+completion are separate: a code PR can await human QA with its ticket In Progress.
 
 ```sh
-python3 validation/validate.py                         # QUICK, routine local work
-python3 validation/validate.py --explain               # inspect impact and outstanding work
-python3 validation/validate.py --gate                  # focused PR content + required freshness
-python3 validation/validate.py --mode integration --gate # changed UI/template/browser behavior
-python3 validation/validate.py --mode full             # intentional comprehensive regression
+python3 validation/validate.py             # QUICK: affected source checks
+python3 validation/validate.py --gate      # affected source + generated freshness
+python3 validation/validate.py --explain
 ```
 
-`--mode fast` is a compatibility alias for QUICK, with no native or FULL fallback.
-Git selection includes branch commits since the merge base of origin/main, index,
-worktree, deletions, renames and untracked files. `--base REF` must describe the real
-task base. Never change it to hide task changes. Unknown dependencies or failed Git
-detection run safe lightweight checks, print unresolved impact, and return **2**
-with `--gate`. They never launch FULL. An empty clean scope checks whitespace only.
-Exit 1 means an executed check failed; unavailable commands cannot pass.
+Run the gate once when delivering source/generated changes; a second QUICK is not
+required. Routine roadmap edits check JSON, stable IDs, parent/AC/dependency links,
+contract references, actual evidence/status structure and generated roadmap/search
+freshness. They run no inventory generator, allocation suite, validator regression
+suite, browser or Unreal process. Static links/anchors check public destinations.
+Unknown inputs and failed Git detection remain reported; --gate exits 2 for
+unresolved requirements, 1 for a failed executed check. Neither escalates to FULL.
 
-| Mode | Coverage | Trigger |
-| --- | --- | --- |
-| QUICK | Changed JSON/Python parses; applicable roadmap graph, exact epic AC references, completion evidence, source-contract invariants and static links/search | Routine wording, ticket/planning, data and tooling work |
-| NATIVE | Not supported; exits 2 and points to the game runner | Implementation belongs in the game checkout |
-| INTEGRATION | QUICK plus representative real Chrome navigation, search, responsive layout, print and no-JavaScript checks when UI/template/browser inputs change | CSS, JS, rendering template or browser harness changes |
-| FULL | Full formatting, data calculations/2,940 allocations, all Python regressions, both generators' freshness, site links/search, representative browser behavior, cleanup and engine-artifact audit | Affected broad harness changes, milestones, explicit requests, weekly CI |
+Contract edits check the authoritative registry and its generated outputs. Shipped
+data changes run relevant data invariants; allocation searches apply only to actual
+allocation inputs. Python tooling changes select adjacent tests; explicitly add
+relevant caller tests when behavior changes. No transitive import-analysis layer.
+A content update never runs tests of its validator implementation.
 
-`--gate` adds both generators' freshness once for affected source/output changes.
-It adds current data invariants for changed shipped JSON; allocation searches run
-only for catalog/talent/class/specialization/allocation inputs. QUICK roadmap source edits defer unchanged rendered-site link scanning until the
-PR freshness check. Validator and
-generator code changes select regression modules through their Python imports;
-content edits do not run tests of validator implementation. QUICK does not prove
-rendering; a UI change with `--gate` requires INTEGRATION or FULL. Static required
-links, anchors, canonical epic pages and AC rendering are checked across all pages;
-the browser samples shared templates rather than revisiting every epic twice.
+## Generation and review
 
-Python 3.10+ and Git support wording/roadmap QUICK. Generation/freshness requires
-Node and the pinned Prettier (`npm ci` once when its lockfile changes). Browser
-verification needs Node 22+ and installed Chrome/Chromium; set
-`BRIARWAKE_CHROME_BIN` if necessary. Missing tools are **Not Run**, never a pass.
-
-## Generate once, verify once
-
-Canonical JSON owns contracts and planning. After actually reviewing a roadmap edit:
+For roadmap/ticket/status changes use just:
 
 ```sh
 python3 scripts/build_development_roadmap.py
-python3 scripts/build_data_inventory.py --review-roadmap
 python3 validation/validate.py --gate
 ```
 
-Builders write only changed bytes. `--review-roadmap` records the reviewed generated
-planning references; it is not a read-only validation workaround. For a feature
-HTML edit, format that file only (`npx --no-install prettier --write guide/PAGE.html`),
-review its contract associations, then use the existing `--review-page PATH` option.
-Do not format the entire site during routine work. Generator freshness already
-compares formatted output, so the PR gate does not add a duplicate whole-site
-formatter pass. FULL intentionally retains the repository-wide formatting audit.
+This command owns roadmap HTML, its search records and necessary manifest counts;
+it writes only changed files. Derived progress/readiness needs no manual dashboard/
+phase/milestone audit. Generated roadmap pages are validated against their source,
+not stored again as 160 reviewed-content fingerprints in the inventory registry.
+No `--review-roadmap` or second generator is required. Preserve public anchors.
 
-After a game ticket, reuse its applicable revision/input/environment evidence,
-update only justified canonical status/evidence, review affected generated views,
-generate once, then run `--gate`. No additional game build or documentation FULL
-is implied by a status change. Missing AC evidence or incomplete dependencies keep
-a ticket unfinished. The roadmap validator still rejects unsupported completion.
+For actual contract/feature changes use `scripts/build_data_inventory.py`;
+`--review-page PATH` records actual review of changed feature content/associations.
+Do not refresh unrelated reviews to silence validation. Manually changed HTML uses
+the pinned formatter on that file only. Node and installed pinned Prettier (`npm ci`
+once per lockfile change) are required for generation/freshness; missing tools fail.
 
-## Manual browser acceptance
+## Visual QA and tracking
 
-Purpose: judge readability and visual presentation that structural checks cannot
-establish. Prerequisites: installed browser, freshly generated local site. Setup:
-open `guide/development-roadmap.html` from this checkout. Execution: open the affected
-epic/ticket through its actual links; at 1440px and 390px widths read its longest AC,
-open navigation, use search, print preview, then disable JavaScript and reload.
-Expected: readable text, usable links/navigation, no horizontal body overflow,
-criteria visible in print and without JS. Negative cases: empty/unmatched search
-must show no incorrect destination; missing required links are failures. Cleanup:
-close preview, restore JS and viewport; do not alter sources. Evidence: record
-browser version, changed pages, widths, observed results, and at most one screenshot
-per distinct failure or material presentation claim. Limitations: this does not
-prove all pages, accessibility conformance, game runtime or authority behavior.
-Record **Not Run** when the interface is unavailable. Game procedures and the common
-nine-field record are in the companion game's `docs/manual-testing.md`.
+Browser execution is only for changed browser/UI behavior. A generator code edit
+that preserves output does not automatically require Chrome. Use a short human QA
+handoff for affected UI: prerequisites/page, steps, expected/failure behavior and
+cleanup. Record **Not Run — Manual QA Pending** until a person executes it. Codex
+need not automate navigation, test multiple widths, restart an editor, make GIFs,
+collect frames or build capture/report infrastructure. Specific quantitative ACs
+still need suitable objective evidence. `--mode integration --gate` explicitly
+runs the existing browser suite when justified; `--mode full` is exceptional,
+comprehensive documentation regression, never a routine feature prerequisite.
+Neither is selected automatically. Documentation cannot launch native builds.
 
-## Evidence and performance controls
+The roadmap source owns status/evidence. Complete requires executed passing evidence
+for every AC, complete dependencies and no current failure/pending evidence.
+Implemented but unaccepted work remains In Progress; a real prerequisite may make
+it Blocked. `verified_evidence.result` supports Not Run for an explicit gap; proposed
+manual instructions are not a pass. Update parents only when relevant criteria
+actually qualify. Do not lower ACs or falsify results for completion.
 
-Commands are read-only by default. Use `--report-dir .git/validation-evidence/RUN`
-for local details, or the existing Actions artifact upload (14-day retention).
-Retain one compact reviewed summary with revision, changed-input digest, scope,
-environment, commands, results, limitations and stable artifact reference for a
-completed ticket. Long-term acceptance evidence must remain accessible beyond CI
-artifact expiry. Do not replace a durable roadmap reference with an expiring link.
-Keep historical referenced evidence; do not commit routine logs, screenshots,
-packages, duplicate reports or source snapshots. No automatic cleanup of user work.
+Only actual tracking/contracts/evidence changes require a docs edit/PR. Game code,
+acceptance, ticket completion and publication need not happen in one operation.
+A task explicitly executing a ticket updates that ticket once; an ordinary code
+change may hand off results in its game PR. Do not repeat unchanged game checks.
 
-A previous pass may be reused only if relevant source/output content, selected
-verification, validator and environment identity still match. A timestamp or Git
-revision alone is insufficient. Current sources/outputs and explicitly changed files are hashed; unchanged historical
-ticket/epic/performance detail archives are not reread just to hash a wording edit.
-Their durable acceptance records remain revision-specific. No persistent validation cache is introduced.
-Rerun only invalidated stages; record their successful identity and scope in review.
+## Evidence, stop rule and protected budget
 
-Budget on the documented M2 Max host: common QUICK <5s, small PR gate ideally
-15–20s. Cold builds/browser setup are distinct workloads. Measure end-to-end wall
-time (including startup/selection) for a representative edit; disclose exceeded
-budgets and fix the largest redundant work before adding caching. Comprehensive
-runs are measured separately. See [audit and measurements](workflow-simplification.md).
+When evidence is required, use one concise summary with tested revision/local input
+identity, commands/results (Passed/Failed/Not Run), outstanding QA, limitations and
+necessary durable links. A PR link can serve as the artifact. Keep all historical
+accepted evidence/public links. No routine logs, captures, GIFs, frame CSVs, duplicate
+native reports or review manifests in Git. Use ignored `artifacts/` for temporary
+work; existing CI logs/artifact storage suffice for large necessary diagnostics.
+Source plus changed-input digest identifies a check; no whole-site hash scan.
 
-Every new check must state in its PR its purpose/defect, trigger/dependencies, owner,
-testing layer, expected cost, and why an existing check cannot cover it. The owner
-is the module enforcing the invariant, not a new registry. Extend an existing suite;
-do not add a project-wide stage for each ticket. Selection regression tests enforce
-no FULL fallback, no content-triggered browser/regression suite, conditional
-allocation work, missing-tool failure and blocking of unresolved PR claims. Keep
-these tests alongside `validation/test_validation.py`. FULL stays explicit.
+Prefer one deterministic unit test per responsibility; use integration only when a
+real boundary cannot be established more cheaply. Once applicable checks pass and
+manual QA is documented, stop. Rerun only for relevant input/environment/requirement
+changes. Do not invent further audits or evidence work.
 
-## BW-097-T02 camera execution, 2026-10-22
+Plan about **5 minutes of routine automated verification**, excluding unavoidable
+cold native compilation and explicit integration. QUICK <5s and routine docs gate
+<15s are goals. If exceeded, identify the expensive stage, remove optional work,
+preserve successful results and hand off missing required coverage honestly.
+Never waive required compilation, authority/security checks or actual acceptance.
 
-[Reviewed native/rendered acceptance and parent audit](../validation/tickets/BW-097-T02/review.json)
-records game commit `4339aeeae46b49d4bc8fbf2d3ff7ee6cb423b5f3`, exact source/module/configuration identities,
-QUICK (4.580s), selected NATIVE (113.636s, five camera tests), 240 actual Metal frame
-observations across three physical window sizes, held handoff residual <=0.06626px,
-and real Unreal UI invalid-edit/save/restart/recovery.
-[Reproduction and durable captures](../validation/tickets/BW-097-T02/README.md)
-include historical failed policies/aim behavior and the chosen native narrow-FOV
-dolly tradeoff. Requested caps are distinct from achieved capture rates.
-T02 is Complete; BW-097, its foundation phase and milestone remain In Progress
-for T03-T06 and final UI/readability. Physical wheel-device routing, production
-worlds, orbit/picking/privacy, art/accessibility, cooked camera scene and performance
-are not certified. Unchanged prerequisite evidence was reused; no game/docs FULL
-or unrelated package/server/peer run was selected.
+Ordinary feature work may not expand mandatory validation/budgets, add independent
+engine stages, automate manual QA, require all integration, create evidence archives
+or broaden cross-repository administration. Such a policy change requires explicit
+authorization and a PR naming the defect prevented, cheaper alternatives and
+expected recurring cost. Prefer deleting layers; add no generalized policy engine.
+This policy, AGENTS.md and skill workflow standards are protected from unrelated
+feature edits. See [audit and measurements](workflow-simplification.md).

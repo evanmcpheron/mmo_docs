@@ -116,6 +116,15 @@ class RoadmapTests(unittest.TestCase):
         self.data['tickets'][0]['manual_test'] = {'not_applicable': 'Synthetic documentation-only validator fixture.'}
         self.assertEqual([], self.errors())
 
+    def test_pending_manual_qa_cannot_complete_even_with_older_passing_evidence(self):
+        ticket = next(t for t in self.data['tickets'] if t['id'] == 'BW-097-T02')
+        pending = deepcopy(ticket['verified_evidence'][0])
+        pending.update(result='Not Run', summary='Manual QA Pending: physical wheel input was not executed.')
+        ticket['verified_evidence'].append(pending)
+        self.assertTrue(any('Complete requires passing evidence' in e for e in self.errors()))
+        ticket['status'] = 'In Progress'
+        self.assertEqual([], self.errors())
+
     def test_ticket_completion_requires_executed_evidence_and_dependencies(self):
         for existing in self.data['tickets']:
             existing['status'] = 'Not Started'
@@ -138,7 +147,7 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('no blockers or failures' in e for e in self.errors()))
         ticket['blockers'] = []
         ticket['verified_evidence'][0]['result'] = 'Not Executed'
-        self.assertTrue(any('evidence result must be Passed or Failed' in e for e in self.errors()))
+        self.assertTrue(any('evidence result must be Passed, Failed or Not Run' in e for e in self.errors()))
 
     def test_malformed_ticket_text_lists_are_reported_without_crashing(self):
         ticket = self.data['tickets'][0]
@@ -263,7 +272,7 @@ class RoadmapTests(unittest.TestCase):
         self.assertTrue(any('passing evidence for every AC' in e for e in self.errors()))
         self.complete(epic['id'])
         epic['verified_evidence'][0]['result'] = 'Failed'
-        self.assertTrue(any('failing current evidence' in e for e in self.errors()))
+        self.assertTrue(any('failing or unverified current evidence' in e for e in self.errors()))
 
     def test_complete_requires_current_prerequisites(self):
         prerequisite = self.by_id['BW-018']['hard_dependencies'][0]

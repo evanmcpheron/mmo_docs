@@ -537,6 +537,19 @@ def generated_pages(data, root=ROOT):
             REFERENCE_PAGES['audit'][0]: render_audit(data, root)})
 
 
+def roadmap_outputs(data, root=ROOT):
+    from build_data_inventory import load_registry, page_counts, roadmap_search
+    outputs = generated_pages(data, root)
+    search = json.loads((root / 'assets/search-index.js').read_text().removeprefix('window.SEARCH_INDEX=').strip().removesuffix(';'))
+    search = [record for record in search if record.get('source') != 'development-roadmap']
+    search.extend(roadmap_search(root, outputs))
+    outputs['assets/search-index.js'] = 'window.SEARCH_INDEX=' + json.dumps(search, ensure_ascii=True, separators=(',', ':')) + ';\n'
+    manifest = json.loads((root / 'data/manifest.json').read_text())
+    manifest.update(search_entries=len(search), **page_counts(load_registry(root), root))
+    outputs['data/manifest.json'] = json.dumps(manifest, indent=2) + '\n'
+    return outputs
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true', help='Check all generated roadmap pages without writing')
@@ -548,7 +561,7 @@ def main():
     errors = roadmap_errors(data, check_generated=False)
     if errors:
         raise SystemExit('\n'.join(errors))
-    outputs = generated_pages(data)
+    outputs = roadmap_outputs(data)
     stale = [path for path, source in outputs.items() if not (ROOT / path).exists() or (ROOT / path).read_text(encoding='utf-8') != source]
     if args.check:
         if stale:

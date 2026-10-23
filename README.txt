@@ -66,7 +66,7 @@ VALIDATION
 The authoritative workflow is docs/validation.md.
 Routine local work: python3 validation/validate.py
 Focused PR gate: python3 validation/validate.py --gate
-Changed browser/template/UI behavior: python3 validation/validate.py --mode integration --gate
+Explicit browser integration when needed: python3 validation/validate.py --mode integration --gate
 Intentional comprehensive regression: python3 validation/validate.py --mode full
 Unknown scope never escalates automatically. Documentation checks never execute game behavior.
 
@@ -180,10 +180,9 @@ unmet action-system prerequisites. Overall progress is 3/97 epics (3.1%).
 Foundations are 3/6 complete (50%); foundations and all milestones remain
 In Progress. Generated views own readiness/progress calculations.
 
-Before every epic split, read the mandatory reuse assessment in the registry's
-maintenance guidance, published at guide/roadmap-maintenance.html. This applies
-to workspace and repository-local split-epic skills. Inspect relevant engine,
-plugin and project owners/evidence, map every AC to additional work, then split.
+For epic splitting, follow docs/validation.md and the focused reuse guidance at
+guide/roadmap-maintenance.html. Read affected owners/contracts once and map ACs
+to the smallest additional outcomes; no separate capability or ancestor audit.
 The dated capability assessment and multiplayer coverage matrix on that page
 record the 22 October 2026 review; recheck affected inputs before relying on it.
 BW-004 through BW-013, BW-028 and BW-083 now have 29 focused planning tickets;
@@ -209,18 +208,13 @@ explicit not_applicable rationale. Their future commands/fixtures are ticket
 deliverables, not executed evidence. Ticket planning never completes an epic.
 Do not edit the generated pages or search records. Rebuild and validate with:
 python3 scripts/build_development_roadmap.py
-python3 scripts/build_data_inventory.py --review-roadmap
-python3 validation/validate.py --mode quick
+python3 validation/validate.py --gate
 
 Run the focused --gate command for final PR verification; follow docs/validation.md for additional risk-based checks.
 
-The roadmap builder owns the hub, phase indexes, individual epic/ticket pages and
-roadmap reference pages. The
-inventory builder's --review-roadmap option registers and refreshes all of these
-as planning references, without adding gameplay data associations. It refreshes
-navigation, direct detail-page search links, page review metadata and manifest counts.
-Generated dashboards, phase progress and milestone states derive from the same
-epic statuses. Every page remains readable offline and with JavaScript disabled.
+The roadmap builder owns its HTML, search records and manifest counts. It writes
+only changed files; generated pages need no inventory review fingerprints or
+second generator. Status/progress views derive from the source. See docs/validation.md.
 
 DATA INVENTORY AND CANONICAL CONTRACTS
 Open guide/data-inventory.html or choose Data Inventory in the Catalogs sidebar.
@@ -313,8 +307,8 @@ Set BRIARWAKE_CHROME_BIN if needed. Use --report-dir to retain fresh evidence
 separately from historical rendering-only and inventory browser records.
 
 The builder owns guide/data-inventory.html, marked Data blocks, Data contents
-links, the Data Inventory and Development Roadmap sidebar links, inventory- and
-roadmap-tagged search records,
+links, the Data Inventory and Development Roadmap sidebar links, inventory search
+records (preserving current roadmap records),
 documentation counts in data/manifest.json, the schema bundle and the generated
 review report. It preserves original feature content and noninventory search.
 Existing feature HTML remains authoritative for mechanics; the original full-site
