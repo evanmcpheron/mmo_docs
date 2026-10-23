@@ -160,7 +160,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T05">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · Orthographic camera and visual-readability proof</a
                 >
@@ -275,7 +275,7 @@
 python3 tools/check_baseline.py build
 &quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log
 Use Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.
-The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.</code></pre>
+T05 implementation is delivered in game PR #22. Use right click to preview/select, Enter for the fixture comparison sink, F to switch active floor and P to revoke/restore the public target. Existing left-drag orbit and wheel zoom remain. Not Run — Manual QA Pending for rendered measurements, physical routing and authorization-removal observations; no cast or connected privacy test is implemented.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
@@ -317,35 +317,78 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                   populated canonical records may be validated without implementing their unrelated
                   gameplay systems.
                 </li>
+                <li>
+                  Execution 2026-10-23: game revision 561c495c6e62079292db5ef4597a11039e91bbfe from
+                  fetched main b375836ab247e883aa1709597f82639b5573d1f6; docs based on fetched main
+                  aec0a2fb0112a6a054ace7fc16d2bfbecf5c22e4. Native checks use UE 5.8.3 Launcher CL
+                  58210709/Xcode 27.0 build 27A266a/macOS ARM64. The supplier filters finite
+                  synthetic authorized/excluded and foreign-zone/instance/floor records before the
+                  camera receives its public view; no private FixtureWorldContext npc_states/parties
+                  enter presentation. Ground and upper origins are the starting foot anchor plus
+                  Z=0/320 cm; one authored tile width is explicitly 100 reference cm, within [-8,8]
+                  tiles per axis. Source and local descriptor identities, check results, limitations
+                  and complete QA handoff are in
+                  https://github.com/evanmcpheron/BriarwakeUnreal/pull/22.
+                </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Load the finite two-floor/zone/instance fixture and its authorized public view.
-                  Select known visible entities and place/confirm ground previews while stationary
-                  and following; compare sink intent with the anchor observations.
+                  In PIE on /Game/Tests/Camera/L_BW097_Reference, use 1/2/3
+                  stationary/axial/diagonal and R reset. Right click the active-floor gold squares
+                  at (6,0), (0,6), (-6,-6) tiles and the public target at continuous foot point
+                  (2.3,-1.25). Enter compares the current preview through the canonical reader;
+                  record rendered pointer/preview/decoded positions and world-space error &lt;=0.1
+                  tile (10 cm, including native pixel truncation). Only valid Enter may increase
+                  intent count; no cast is committed.
                 </li>
                 <li>
-                  Repeat at both projection endpoints, during transition/reversal and orbit, then
-                  resize/change DPI/letterbox and repeat through occluding geometry. Click
-                  UI/letterbox, no-hit and wrong-floor locations; supply
-                  malformed/nonfinite/mixed-intent inputs through test-only controls and inspect
-                  rejection and clean recovery.
+                  Repeat for visible anchors at overview, close and intermediate zoom, during wheel
+                  transition/reversal and after left-drag orbit; right click again after orbit
+                  capture. Use 1280x720, 1920x1080, 1280x960 and native 2x backing where available,
+                  recording actual sizes/UI scale/settings. For letterbox input, temporarily enable
+                  the pawn Camera component Constrain Aspect Ratio 1.777778 in a 4:3 PIE viewport;
+                  bars must reject. Restore the temporary constraint.
                 </li>
                 <li>
-                  Attempt to select excluded entities by fixture ID and rotate/zoom around their
-                  locations; confirm they were never supplied to presentation. Revoke an authorized
-                  entity while selected/previewing, inspect immediate cleanup and repeat camera
-                  changes. Compare route/facing/aim before/after.
+                  Enable CameraDefaults &gt; Settings &gt; Readability &gt; Show Occluders.
+                  UI/bars/outside finite floor/opaque occluders must reject, clear preview/selection
+                  and leave intent count unchanged; fresh right click on valid clear content
+                  recovers. Native PickingBoundary exercises
+                  nonfinite/malformed/missing/mixed/duplicate/unknown-field/foreign-zone/instance/floor
+                  and excluded-ID cases unavailable through physical pointer controls.
+                </li>
+                <li>
+                  Select the supplied public target and press P to revoke: its entire
+                  mesh/marker/public record/selection/preview/confirmed comparison disappears
+                  immediately. Zoom/orbit cannot restore it and its old location cannot select it. P
+                  explicitly restores authorization; F switches the overlapping floors and clears
+                  pending state, with only the active-floor entity and cues supplied. Do not
+                  disclose excluded synthetic IDs/positions in logs or captures.
+                </li>
+                <li>
+                  While previewing, cross into the UI or outside the viewport, alt-tab, press V
+                  twice and stop/restart PIE. Returning requires fresh right click; no stale intent
+                  or orbit resumes. Compare route/facing/aim and cumulative intent count
+                  before/after camera-only actions. Restore only temporary Camera/Readability
+                  settings without saving, stop the owned session and reload the reference level.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Preview and confirmed fixture intent agree at valid floor anchors;
-                  invalid/captured/foreign input never yields a target. Camera data and feedback
-                  remain inside the declared authorization envelope and recover cleanly without
-                  gameplay mutation.
+                  Known public same-floor foot anchors retain full zone/instance/floor and
+                  continuous tile coordinates; preview and canonical decoded intent agree within the
+                  recorded rendered anchor tolerance. Ground intent keeps Vector2 aim_point and null
+                  entity/direction, and entity intent keeps target ID with null point/direction; no
+                  scope/actor wire field or cast is added.
+                </li>
+                <li>
+                  Invalid/UI/letterbox/no-hit/occluded/foreign-scope/excluded input yields no
+                  selectable entity or confirmed target, gives attributable rejection and clears
+                  pending state. Authorization removal destroys the target representation; camera
+                  changes never resupply it or alter independent route/facing/aim. This fixture
+                  provides no connected privacy certification.
                 </li>
               </ol>
               <h3>Reset</h3>
@@ -372,10 +415,50 @@ The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptan
                 actor. Keep no hidden fixture secrets in public logs/captures.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/22"
+                    >Partial automated evidence, 2026-10-23: the affected Editor
+                    compilation/UHT/link and 7/7 native camera tests pass, with 8 Python
+                    caller/report tests plus structure/whitespace checks. Final NATIVE run 45.400
+                    seconds on UE 5.8.3 Launcher CL 58210709, Xcode 27.0 build 27A266a, macOS ARM64.
+                    Tests exercise the actual constrained-rectangle/layout conversion, native
+                    projection/handoff/yaw/follow offset/two floor transforms, scoped continuous
+                    foot coordinates, unchanged canonical ability_command_v2 decoding/nullability
+                    and malformed/missing/mixed/duplicate/nonfinite/unknown-field rejection, real
+                    component traces/occlusion, authorization removal and route/facing/aim
+                    independence. Maximum public anchor round-trip error 2.1653 cm within the
+                    recorded 10 cm (0.1 tile) tolerance, including Unreal whole-pixel deprojection
+                    truncation; layout conversion separately preserves 0.000001 pixel and
+                    component/tile checks use 0.1 cm. Excluded/foreign records are filtered by the
+                    synthetic supplier before the public view; revocation removes
+                    record/mesh/marker/selection/preview and upper-floor views omit ground hazards.
+                    Tested task content was staged before the recorded commit; source SHA-256
+                    3fe55b84e19616a59eabc2bffeb3eb1f12c97102e7abe3ae7a274fb643ef9580. Game main
+                    rechecked at b375836ab247e883aa1709597f82639b5573d1f6; docs main
+                    aec0a2fb0112a6a054ace7fc16d2bfbecf5c22e4. Preserved pre-existing staged
+                    descriptor/plugin inputs are identified in the PR and excluded from its commit.
+                    No rendered/physical-routing or connected privacy acceptance is claimed.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 561c495c6e62079292db5ef4597a11039e91bbfe
+                </li>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/22"
+                    >Not Run — Manual QA Pending. Still required: rendered
+                    pointer/preview/confirmed-intent comparisons at known anchors within 10 cm (0.1
+                    tile) across actual follow/zoom/orbit/projection transitions, resize/high-DPI
+                    and occlusion; physical UI/letterbox/no-hit/capture/focus/view-target cleanup
+                    and fresh-input recovery; visible authorization-removal observations and
+                    unchanged camera-only intent count/route/facing/aim. The game PR and
+                    docs/manual-testing.md contain concrete map/controls/steps/expected
+                    behavior/cleanup. Native NullRHI assertions do not establish rendered or
+                    physical input acceptance. This finite standalone fixture is not a connected
+                    privacy test and implements no live targeting/cast/server validation. Ticket
+                    remains In Progress until the outstanding AC evidence is accepted.</a
+                  >
+                  — AC 1, 2, 3; Not Run; revision 561c495c6e62079292db5ef4597a11039e91bbfe
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and original criteria</a>;
