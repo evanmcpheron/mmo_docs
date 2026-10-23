@@ -170,7 +170,7 @@
             <article class="roadmap-epic" id="BW-018">
               <div class="roadmap-epic-body">
                 <p class="roadmap-epic-meta">
-                  <span class="badge">Not Started</span>
+                  <span class="badge">In Progress</span>
                   <span class="badge success">Dependency-ready</span> Recommended position 6 of 97
                 </p>
                 <p>
@@ -269,10 +269,24 @@
                   concurrency/crash/replay results against the selected persistence candidate, with
                   receipt and revision traces.
                 </p>
-                <p>
-                  <strong>Recorded evidence:</strong> None. Required evidence above describes future
-                  verification.
-                </p>
+                <p><strong>Recorded evidence:</strong></p>
+                <ul>
+                  <li>
+                    <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/37"
+                      >2026-10-23 partial parent evidence: accepted T02 atomic mutation/durable
+                      acknowledgment and T03 independent-connection revision/idempotency/epoch
+                      results are retained at their recorded revisions. T04 adds the actual four
+                      owned-process SIGKILL checkpoints and fresh-file recovery/deduplicated
+                      delivery, with 24 Python tests and 153 native assertions passing plus final
+                      Editor/Server links. The user expressly accepted T02/T03 and waived
+                      supplemental manual QA for T04 without claiming human execution. Parent ACs
+                      1–3 are evidenced; AC4 still requires T05’s supported schema migration, so
+                      BW-018 is In Progress and T05 remains Not Started. No parent completion or
+                      downstream acceptance is claimed.</a
+                    >
+                    — AC 1, 2, 3; Passed; revision 12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1
+                  </li>
+                </ul>
                 <p><strong>Blockers:</strong> None recorded; see hard prerequisites.</p>
                 <h2 id="ticket-planning">Ticket planning</h2>
                 <p>
@@ -297,20 +311,20 @@
                     <a href="roadmap-bw-018-t02.html#BW-018-T02"
                       >BW-018-T02 · Commit a fixture mutation with its durable receipt and outbox</a
                     >
-                    <span class="badge">In Progress</span>
+                    <span class="badge">Complete</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-018-t03.html#BW-018-T03"
                       >BW-018-T03 · Enforce concurrent revision, retry and ownership-epoch checks</a
                     >
-                    <span class="badge">In Progress</span>
+                    <span class="badge">Complete</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-018-t04.html#BW-018-T04"
                       >BW-018-T04 · Recover committed mutations and outbox delivery after process
                       crashes</a
                     >
-                    <span class="badge">Not Started</span>
+                    <span class="badge">Complete</span>
                   </li>
                   <li>
                     <a href="roadmap-bw-018-t05.html#BW-018-T05"
@@ -358,16 +372,15 @@
                   </table>
                 </div>
                 <p>
-                  <strong>Ordering rationale:</strong> Planning split: T01 integrates and pins a
-                  file-backed local SQLite store with verified native locking/durability settings;
-                  T02 commits one fixture mutation with its receipt/outbox; T03 proves real
-                  concurrency, exact/conflicting retries and ownership-epoch fencing; T04 proves
-                  process-crash and repeated-event recovery; T05 migrates the storage schema while
-                  preserving those identities/invariants. The custom SQLiteCore VFS limitation is an
-                  explicit T01 integration gap. Existing bootstrap/contracts/local-probe evidence is
-                  reused within its recorded scope; all five tickets and BW-018 remain Not Started.
-                  Full inventory, authentication, production deployment and per-tick persistence are
-                  outside this probe.
+                  <strong>Ordering rationale:</strong> T01–T04 are Complete within their retained
+                  native evidence and explicit owner acceptance. On 2026-10-23 the user accepted
+                  T02/T03 completion and waived supplemental manual QA for T04, whose actual
+                  owned-process crash/reopen and durable local inbox checks passed. T05 remains Not
+                  Started and is the remaining supported storage-schema migration work; BW-018
+                  therefore remains In Progress. The foundations page derives this status from the
+                  canonical epic record. Local SQLite is the owner-selected probe candidate; no
+                  production inventory/authentication/deployment, power-loss guarantee or per-tick
+                  persistence is certified.
                 </p>
                 <p>
                   <strong>Related open decisions:</strong>
@@ -418,7 +431,7 @@
                 </li>
                 <li>
                   <a href="#BW-018">BW-018 · Durable ownership and mutation recovery probe</a>
-                  <span class="badge">Not Started</span>
+                  <span class="badge">In Progress</span>
                 </li>
               </ul>
             </details>
