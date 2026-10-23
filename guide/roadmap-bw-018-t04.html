@@ -160,7 +160,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-018-T04">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">Complete</span> · Parent epic:
                 <a href="roadmap-bw-018.html#BW-018"
                   >BW-018 · Durable ownership and mutation recovery probe</a
                 >
@@ -260,50 +260,80 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.</code></pre>
+              <pre><code>Optional replay — manual QA explicitly waived by the user for this ticket; no human execution is claimed. From the game root with built revision 12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1, run python3 tools/check_content_admission.py --suite recovery --output &quot;$PWD/artifacts/bw-018-t04-replay-$(date +%Y%m%d-%H%M%S)&quot;. Exact native build, guarded phases, expected results and cleanup: https://github.com/evanmcpheron/BriarwakeUnreal/blob/12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1/docs/sqlite-recovery.md. No map, player controls, running editor, database service or MCP action is needed.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use only a fresh task-owned SQLite database and outputs beneath ignored game
-                  artifacts/. Preserve all existing project files, databases and historical
-                  evidence; no shared or production data. The selected candidate is local SQLite,
-                  explicitly chosen by the owner on 2026-10-23.
+                  Use the existing workspace and canonical mmo_docs checkout, pinned macOS ARM64 UE
+                  5.8.3 Editor/source-Server, Xcode build 27A266a and native SQLite 3.54.0/unix VFS.
+                  T02/T03 are Complete by the user’s explicit acceptance and their retained actual
+                  native evidence.
                 </li>
                 <li>
-                  Complete T03 and use the exact child executable/checkpoint/owned-process-stop
-                  commands delivered by this ticket. The runbook must name database paths,
-                  reached-phase markers and verifier/reopen commands before execution.
+                  Use only a fresh task-owned output directory under ignored artifacts/. Schema 4
+                  adds the durable local probe inbox; historical schema-1/2/3 files are rejected and
+                  preserved without migration. Producer and recipient use independent
+                  connections/separate transactions in the same SQLite file; no production broker or
+                  independent storage failure domain is claimed.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the documented before-commit and after-commit-before-ack crash cases, stopping
-                  only the owned child. Reopen each same database and retry its original key.
+                  Run the exact recovery command. The existing bounded process helper launches
+                  Briarwake.Persistence.Recovery.Crash for before-commit, after-commit,
+                  before-delivery and after-acceptance. A guarded checkpoint atomically records the
+                  owned PID, run nonce, phase, source identity, acknowledgment state and
+                  receipt/outbox identities before waiting at most 10 seconds. The parent sends
+                  SIGKILL only to the owned process group after that checkpoint appears.
                 </li>
                 <li>
-                  Run the notification-before-acceptance and after-acceptance-before-delivered cases
-                  with the durable test recipient. Restart the affected owned process and inspect
-                  recipient deduplication, outbox state and unchanged economic rows.
+                  A distinct process runs Briarwake.Persistence.Recovery.Verify against the same
+                  native/recovery/&lt;phase&gt;/recovery.sqlite files without reseeding. Inspect
+                  run.json and native/recovery.json for actual abrupt termination, matching
+                  phase/identity, fresh-process state assertions and canonical
+                  TransactionRecoveryTestRecord observations.
+                </li>
+                <li>
+                  Verify rollback of the entire pre-commit mutation, exact original receipt replay
+                  after acknowledgment loss, pending-outbox recovery before delivery and
+                  deduplication after recipient acceptance before delivered marking. The verifier
+                  reopens both owners and checks original notification identity, exact rows,
+                  conserved values, SQLite integrity and rejection of unavailable storage/recipient
+                  or changed recipient payload.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  The prior or committed whole mutation survives as appropriate, retry returns the
-                  original result, and repeated delivery has one durable recipient effect. Missing
-                  phase/storage/verification is unverified; no cleanup reseeds or hides the
-                  recovered database state.
+                  Exit 0, four reached owned children terminated with -9 and no timeout, then all 46
+                  recovery assertions pass in a fresh verifier. A nonzero exit, failed startup,
+                  missing checkpoint/storage or incomplete report alone is never a recovery pass.
+                </li>
+                <li>
+                  Before commit the original complete baseline survives; retry of its original key
+                  creates one complete mutation. Other phases retain the complete original
+                  mutation/receipt and retry never settles it again. Final item A to B, balances
+                  9007199254740966/125, item/ownership revisions 8 and both container/wallet
+                  revisions 4294967298 remain conserved.
+                </li>
+                <li>
+                  After recipient acceptance the original producer outbox is still pending while one
+                  durable inbox effect exists. Redelivery and recipient reopen preserve that
+                  notification identity and result in exactly one receipt, two balanced ledger rows,
+                  one delivered outbox, one inbox effect and one item owner. SQLite
+                  3.54.0/unix/FULL-sync settings remain pinned; no exactly-once transport,
+                  power-loss, corruption repair, migration or production availability certification
+                  is implied.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Close owned connections and let bounded child processes exit. For a new baseline
-                  use a fresh task-owned directory; for a recovery/retry case reopen the same
-                  scenario database without reseeding it. Preserve prior outputs and unrelated
-                  staged work; never reset the checkout or remove database sidecars while a
-                  connection is active.
+                  Let owned processes exit and connections close. Retain a concise result and any
+                  database needed for follow-up; remove only task-owned outputs no longer needed.
+                  Preserve unrelated files, historical evidence and active SQLite sidecars. Never
+                  reseed the scenario during recovery.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -315,10 +345,50 @@
                 archive.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/37"
+                    >2026-10-23 actual SQLite process-crash recovery at game
+                    12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1. python3 tools/validate.py --mode
+                    native --suite transfers --suite recovery --target BriarwakeEditor --target
+                    BriarwakeServer --output artifacts/bw-018-t04-native-fixed passed in 319.206s:
+                    24 Python tests, canonical snapshot freshness, Editor/source-Server
+                    compilation/link and 153 actual native assertions (recovery 46, transfers 45,
+                    concurrency 50, separate-process transfer reopen 12). Owned children
+                    53434/53549/53660/53732 reached
+                    before-commit/after-commit-before-ack/before-delivery/after-recipient-acceptance-before-marking
+                    respectively, then exited -9 under SIGKILL without timeout. Fresh verifier 53837
+                    reopened those exact files without reseeding and proved whole-state rollback or
+                    original receipt replay, conserved item/currency/owner state, one delivered
+                    outbox and one durable inbox effect; recipient reopen and repeated acceptance
+                    preserve canonical identity. Canonical TransactionRecoveryTestRecord fields
+                    passed with empty findings. Missing startup/phase/storage/report or nonzero exit
+                    alone cannot pass; unavailable recipient and changed notification reject without
+                    false delivered marking. Execution source SHA-256
+                    91129bb46924f49fa4d159ea8e3dd095332cfc71ba5f0abaedbb80b4154ccd9f; final
+                    compilation SHA-256
+                    0e2a36816089f48660ddf25974f53a42ae6f31e75f5edc1515194a491d667702. The sole
+                    subsequent source delta renamed the recovery test helper LoadInputs to
+                    LoadRecoveryInputs; comparison to executed source inputs proves production
+                    inputs identical and reversing that name reproduces the tested file. Both final
+                    targets compiled/linked via tools/check_baseline.py build
+                    (artifacts/bw-018-t04-final-editor and final-server); the unchanged crash
+                    campaign was not repeated for that name-only delta. Schema 4 adds a local
+                    durable inbox; the existing canonical recovery definition extends the snapshot
+                    to 157 definitions, SHA-256
+                    52468e5f517adabe70f087c95c5e8e22114538052fcd254b524429bbcbd40e56. Native SQLite
+                    3.54.0/unix, DELETE journal, NORMAL locking, FULL synchronous/fullfsync, foreign
+                    keys and bounded 250ms locks remain enforced. Main re-fetched before delivery:
+                    game c6162fd5db96685c5fa8244c3aad71e2f7ac479a; docs
+                    983c2ce27fe509dc24496a3645e5e77cd369b07b. Manual QA is waived by explicit user
+                    acceptance, not represented as executed. This local recipient uses independent
+                    connections/separate transactions in one task-owned file; production
+                    broker/availability, independent storage failures, power loss, corruption repair
+                    and schema migration remain outside this evidence.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-018.html#BW-018">Parent epic and acceptance criteria</a

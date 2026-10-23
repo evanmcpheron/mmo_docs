@@ -613,10 +613,22 @@
           "href": "guide/operations.html"
         }
       ],
-      "status": "Not Started",
+      "status": "In Progress",
       "blockers": [],
-      "ordering_rationale": "Planning split: T01 integrates and pins a file-backed local SQLite store with verified native locking/durability settings; T02 commits one fixture mutation with its receipt/outbox; T03 proves real concurrency, exact/conflicting retries and ownership-epoch fencing; T04 proves process-crash and repeated-event recovery; T05 migrates the storage schema while preserving those identities/invariants. The custom SQLiteCore VFS limitation is an explicit T01 integration gap. Existing bootstrap/contracts/local-probe evidence is reused within its recorded scope; all five tickets and BW-018 remain Not Started. Full inventory, authentication, production deployment and per-tick persistence are outside this probe.",
-      "verified_evidence": [],
+      "ordering_rationale": "T01\u2013T04 are Complete within their retained native evidence and explicit owner acceptance. On 2026-10-23 the user accepted T02/T03 completion and waived supplemental manual QA for T04, whose actual owned-process crash/reopen and durable local inbox checks passed. T05 remains Not Started and is the remaining supported storage-schema migration work; BW-018 therefore remains In Progress. The foundations page derives this status from the canonical epic record. Local SQLite is the owner-selected probe candidate; no production inventory/authentication/deployment, power-loss guarantee or per-tick persistence is certified.",
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/37",
+          "revision": "12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1",
+          "result": "Passed",
+          "summary": "2026-10-23 partial parent evidence: accepted T02 atomic mutation/durable acknowledgment and T03 independent-connection revision/idempotency/epoch results are retained at their recorded revisions. T04 adds the actual four owned-process SIGKILL checkpoints and fresh-file recovery/deduplicated delivery, with 24 Python tests and 153 native assertions passing plus final Editor/Server links. The user expressly accepted T02/T03 and waived supplemental manual QA for T04 without claiming human execution. Parent ACs 1\u20133 are evidenced; AC4 still requires T05\u2019s supported schema migration, so BW-018 is In Progress and T05 remains Not Started. No parent completion or downstream acceptance is claimed."
+        }
+      ],
       "phase": "phase-foundations"
     },
     {
@@ -10744,7 +10756,7 @@
       "id": "BW-018-T02",
       "parent_epic": "BW-018",
       "title": "Commit a fixture mutation with its durable receipt and outbox",
-      "status": "In Progress",
+      "status": "Complete",
       "epic_criteria": [
         "BW-018-AC-1"
       ],
@@ -10805,7 +10817,7 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game root with built task revision d3e437603c3c49f18212719a57591dd6e8cb08c0, run python3 tools/check_content_admission.py --suite transfers --output \"$PWD/artifacts/bw-018-t02-replay-$(date +%Y%m%d-%H%M%S)\". Exact prerequisites, native build and separate commit/reopen commands: https://github.com/evanmcpheron/BriarwakeUnreal/blob/d3e437603c3c49f18212719a57591dd6e8cb08c0/docs/sqlite-transfer.md. No map, player controls, running editor, database service or MCP action is required.",
+        "launch": "Optional replay \u2014 manual QA waived by the user\u2019s explicit completion acceptance on 2026-10-23; no human execution is claimed. From the existing game root with built task revision d3e437603c3c49f18212719a57591dd6e8cb08c0, run python3 tools/check_content_admission.py --suite transfers --output \"$PWD/artifacts/bw-018-t02-replay-$(date +%Y%m%d-%H%M%S)\". Exact prerequisites, native build and separate commit/reopen commands: https://github.com/evanmcpheron/BriarwakeUnreal/blob/d3e437603c3c49f18212719a57591dd6e8cb08c0/docs/sqlite-transfer.md. No map, player controls, running editor, database service or MCP action is required.",
         "setup": [
           "Use the existing canonical mmo_docs checkout, pinned macOS ARM64 UE 5.8.3 Editor/Server, Xcode build 27A266a and native SQLite 3.54.0/unix VFS. BW-018-T01 is Complete by the user\u2019s acceptance of its retained native evidence and runbook.",
           "Use a fresh task-owned directory under ignored artifacts/ and the versioned fixtures/persistence/baseline.json plus transfer.json. Current storage schema 2 rejects/preserves historical schema-1 files without migration. Preserve all unrelated databases, files, permissions and historical evidence."
@@ -10845,8 +10857,8 @@
           ],
           "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/35",
           "revision": "d3e437603c3c49f18212719a57591dd6e8cb08c0",
-          "result": "Not Run",
-          "summary": "Not Run \u2014 Manual QA Pending. The exact native build/commit/reopen command, pinned prerequisites/settings, expected accepted/rejected outcomes and cleanup are documented in docs/sqlite-transfer.md and manual_test. The focused automated acceptance above passed, but an independent human replay of this documented transfer workflow has not been performed. T02 remains In Progress for that acceptance; T01 is Complete following the user\u2019s explicit request. No BW-018 parent/downstream completion, new game execution or PR merge is claimed by this tracking update."
+          "result": "Passed",
+          "summary": "2026-10-23 explicit owner acceptance: the user requested BW-018-T02 be marked Complete and waived the supplemental manual replay. Retained executed native evidence covers all three acceptance criteria and remains unchanged. This acceptance supersedes the prior current Not Run \u2014 Manual QA Pending marker; the human replay remains unperformed and no manual test pass is claimed. No unchanged native rerun, broader gameplay certification, downstream completion or PR merge is asserted by this acceptance update."
         }
       ]
     },
@@ -10854,7 +10866,7 @@
       "id": "BW-018-T03",
       "parent_epic": "BW-018",
       "title": "Enforce concurrent revision, retry and ownership-epoch checks",
-      "status": "In Progress",
+      "status": "Complete",
       "epic_criteria": [
         "BW-018-AC-2",
         "BW-018-AC-4"
@@ -10916,9 +10928,9 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game root with built task revision 8bd4269975b5b607bba0ef89ee3905e30039b0c1, run python3 tools/check_content_admission.py --suite transfers --output \"$PWD/artifacts/bw-018-t03-replay-$(date +%Y%m%d-%H%M%S)\". Exact prerequisites, native build, race ordering and cleanup: https://github.com/evanmcpheron/BriarwakeUnreal/blob/8bd4269975b5b607bba0ef89ee3905e30039b0c1/docs/sqlite-concurrency.md. No map, player controls, running editor, database service or MCP action is required.",
+        "launch": "Optional replay \u2014 manual QA waived by the user\u2019s explicit completion acceptance on 2026-10-23; no human execution is claimed. From the existing game root with built task revision 8bd4269975b5b607bba0ef89ee3905e30039b0c1, run python3 tools/check_content_admission.py --suite transfers --output \"$PWD/artifacts/bw-018-t03-replay-$(date +%Y%m%d-%H%M%S)\". Exact prerequisites, native build, race ordering and cleanup: https://github.com/evanmcpheron/BriarwakeUnreal/blob/8bd4269975b5b607bba0ef89ee3905e30039b0c1/docs/sqlite-concurrency.md. No map, player controls, running editor, database service or MCP action is required.",
         "setup": [
-          "Use the pinned macOS ARM64 UE 5.8.3 Editor/Server, Xcode build 27A266a, native SQLite 3.54.0/unix VFS and the existing canonical mmo_docs checkout. T02 implementation is present; T02 independent human replay is still pending.",
+          "Use the pinned macOS ARM64 UE 5.8.3 Editor/Server, Xcode build 27A266a, native SQLite 3.54.0/unix VFS and the existing canonical mmo_docs checkout. T02 is Complete by the user\u2019s explicit acceptance; its supplemental human replay remains unperformed.",
           "Use only fresh task-owned output under ignored artifacts/ and the existing baseline.json and transfer.json fixtures. Schema 3 adds owned/revoked authority state and rejects/preserves historical schema-1/2 files without migration. Preserve unrelated databases, files and evidence."
         ],
         "actions": [
@@ -10956,8 +10968,8 @@
           ],
           "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/blob/8bd4269975b5b607bba0ef89ee3905e30039b0c1/docs/sqlite-concurrency.md",
           "revision": "8bd4269975b5b607bba0ef89ee3905e30039b0c1",
-          "result": "Not Run",
-          "summary": "Not Run \u2014 Manual QA Pending. Independent human replay of the documented native transfer/concurrency workflow has not been performed. T03 remains In Progress for that acceptance and T02 remains In Progress for its earlier independent replay; T02 implementation is present and reused. manual_test and the runbook provide exact prerequisites, task-owned output, command, expected/failure outcomes and cleanup. No BW-018 parent/downstream completion, production session lifecycle, distributed lease, power-loss/crash recovery, migration, outbox delivery or load/capacity certification is claimed."
+          "result": "Passed",
+          "summary": "2026-10-23 explicit owner acceptance: the user requested BW-018-T03 be marked Complete and waived the supplemental manual replay. Retained executed native evidence covers all three acceptance criteria and remains unchanged. This acceptance supersedes the prior current Not Run \u2014 Manual QA Pending marker; the human replay remains unperformed and no manual test pass is claimed. No unchanged native rerun, broader gameplay certification, downstream completion or PR merge is asserted by this acceptance update."
         }
       ]
     },
@@ -10965,7 +10977,7 @@
       "id": "BW-018-T04",
       "parent_epic": "BW-018",
       "title": "Recover committed mutations and outbox delivery after process crashes",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-018-AC-3"
       ],
@@ -11022,24 +11034,39 @@
         }
       ],
       "manual_test": {
-        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.",
+        "launch": "Optional replay \u2014 manual QA explicitly waived by the user for this ticket; no human execution is claimed. From the game root with built revision 12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1, run python3 tools/check_content_admission.py --suite recovery --output \"$PWD/artifacts/bw-018-t04-replay-$(date +%Y%m%d-%H%M%S)\". Exact native build, guarded phases, expected results and cleanup: https://github.com/evanmcpheron/BriarwakeUnreal/blob/12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1/docs/sqlite-recovery.md. No map, player controls, running editor, database service or MCP action is needed.",
         "setup": [
-          "Use only a fresh task-owned SQLite database and outputs beneath ignored game artifacts/. Preserve all existing project files, databases and historical evidence; no shared or production data. The selected candidate is local SQLite, explicitly chosen by the owner on 2026-10-23.",
-          "Complete T03 and use the exact child executable/checkpoint/owned-process-stop commands delivered by this ticket. The runbook must name database paths, reached-phase markers and verifier/reopen commands before execution."
+          "Use the existing workspace and canonical mmo_docs checkout, pinned macOS ARM64 UE 5.8.3 Editor/source-Server, Xcode build 27A266a and native SQLite 3.54.0/unix VFS. T02/T03 are Complete by the user\u2019s explicit acceptance and their retained actual native evidence.",
+          "Use only a fresh task-owned output directory under ignored artifacts/. Schema 4 adds the durable local probe inbox; historical schema-1/2/3 files are rejected and preserved without migration. Producer and recipient use independent connections/separate transactions in the same SQLite file; no production broker or independent storage failure domain is claimed."
         ],
         "actions": [
-          "Run the documented before-commit and after-commit-before-ack crash cases, stopping only the owned child. Reopen each same database and retry its original key.",
-          "Run the notification-before-acceptance and after-acceptance-before-delivered cases with the durable test recipient. Restart the affected owned process and inspect recipient deduplication, outbox state and unchanged economic rows."
+          "Run the exact recovery command. The existing bounded process helper launches Briarwake.Persistence.Recovery.Crash for before-commit, after-commit, before-delivery and after-acceptance. A guarded checkpoint atomically records the owned PID, run nonce, phase, source identity, acknowledgment state and receipt/outbox identities before waiting at most 10 seconds. The parent sends SIGKILL only to the owned process group after that checkpoint appears.",
+          "A distinct process runs Briarwake.Persistence.Recovery.Verify against the same native/recovery/<phase>/recovery.sqlite files without reseeding. Inspect run.json and native/recovery.json for actual abrupt termination, matching phase/identity, fresh-process state assertions and canonical TransactionRecoveryTestRecord observations.",
+          "Verify rollback of the entire pre-commit mutation, exact original receipt replay after acknowledgment loss, pending-outbox recovery before delivery and deduplication after recipient acceptance before delivered marking. The verifier reopens both owners and checks original notification identity, exact rows, conserved values, SQLite integrity and rejection of unavailable storage/recipient or changed recipient payload."
         ],
         "expected_results": [
-          "The prior or committed whole mutation survives as appropriate, retry returns the original result, and repeated delivery has one durable recipient effect. Missing phase/storage/verification is unverified; no cleanup reseeds or hides the recovered database state."
+          "Exit 0, four reached owned children terminated with -9 and no timeout, then all 46 recovery assertions pass in a fresh verifier. A nonzero exit, failed startup, missing checkpoint/storage or incomplete report alone is never a recovery pass.",
+          "Before commit the original complete baseline survives; retry of its original key creates one complete mutation. Other phases retain the complete original mutation/receipt and retry never settles it again. Final item A to B, balances 9007199254740966/125, item/ownership revisions 8 and both container/wallet revisions 4294967298 remain conserved.",
+          "After recipient acceptance the original producer outbox is still pending while one durable inbox effect exists. Redelivery and recipient reopen preserve that notification identity and result in exactly one receipt, two balanced ledger rows, one delivered outbox, one inbox effect and one item owner. SQLite 3.54.0/unix/FULL-sync settings remain pinned; no exactly-once transport, power-loss, corruption repair, migration or production availability certification is implied."
         ],
         "reset": [
-          "Close owned connections and let bounded child processes exit. For a new baseline use a fresh task-owned directory; for a recovery/retry case reopen the same scenario database without reseeding it. Preserve prior outputs and unrelated staged work; never reset the checkout or remove database sidecars while a connection is active."
+          "Let owned processes exit and connections close. Retain a concise result and any database needed for follow-up; remove only task-owned outputs no longer needed. Preserve unrelated files, historical evidence and active SQLite sidecars. Never reseed the scenario during recovery."
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/37",
+          "revision": "12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1",
+          "result": "Passed",
+          "summary": "2026-10-23 actual SQLite process-crash recovery at game 12c0c3c743903c7e1ff25e4e4dd298ba223ff5b1. python3 tools/validate.py --mode native --suite transfers --suite recovery --target BriarwakeEditor --target BriarwakeServer --output artifacts/bw-018-t04-native-fixed passed in 319.206s: 24 Python tests, canonical snapshot freshness, Editor/source-Server compilation/link and 153 actual native assertions (recovery 46, transfers 45, concurrency 50, separate-process transfer reopen 12). Owned children 53434/53549/53660/53732 reached before-commit/after-commit-before-ack/before-delivery/after-recipient-acceptance-before-marking respectively, then exited -9 under SIGKILL without timeout. Fresh verifier 53837 reopened those exact files without reseeding and proved whole-state rollback or original receipt replay, conserved item/currency/owner state, one delivered outbox and one durable inbox effect; recipient reopen and repeated acceptance preserve canonical identity. Canonical TransactionRecoveryTestRecord fields passed with empty findings. Missing startup/phase/storage/report or nonzero exit alone cannot pass; unavailable recipient and changed notification reject without false delivered marking. Execution source SHA-256 91129bb46924f49fa4d159ea8e3dd095332cfc71ba5f0abaedbb80b4154ccd9f; final compilation SHA-256 0e2a36816089f48660ddf25974f53a42ae6f31e75f5edc1515194a491d667702. The sole subsequent source delta renamed the recovery test helper LoadInputs to LoadRecoveryInputs; comparison to executed source inputs proves production inputs identical and reversing that name reproduces the tested file. Both final targets compiled/linked via tools/check_baseline.py build (artifacts/bw-018-t04-final-editor and final-server); the unchanged crash campaign was not repeated for that name-only delta. Schema 4 adds a local durable inbox; the existing canonical recovery definition extends the snapshot to 157 definitions, SHA-256 52468e5f517adabe70f087c95c5e8e22114538052fcd254b524429bbcbd40e56. Native SQLite 3.54.0/unix, DELETE journal, NORMAL locking, FULL synchronous/fullfsync, foreign keys and bounded 250ms locks remain enforced. Main re-fetched before delivery: game c6162fd5db96685c5fa8244c3aad71e2f7ac479a; docs 983c2ce27fe509dc24496a3645e5e77cd369b07b. Manual QA is waived by explicit user acceptance, not represented as executed. This local recipient uses independent connections/separate transactions in one task-owned file; production broker/availability, independent storage failures, power loss, corruption repair and schema migration remain outside this evidence."
+        }
+      ]
     },
     {
       "id": "BW-018-T05",
