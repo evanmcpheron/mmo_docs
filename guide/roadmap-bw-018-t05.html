@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-018." />
+    <title>
+      BW-018-T05 · Migrate the SQLite schema without changing fixture identity or invariants ·
+      Briarwake Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+            ><span>/</span><a href="roadmap-bw-018.html#BW-018">BW-018</a><span>/</span>BW-018-T05
+          </div>
+          <h1>
+            BW-018-T05 · Migrate the SQLite schema without changing fixture identity or invariants
+          </h1>
+          <p class="page-description">Implementation ticket for BW-018.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-018-T05">
+              <p>
+                <span class="badge">Not Started</span> · Parent epic:
+                <a href="roadmap-bw-018.html#BW-018"
+                  >BW-018 · Durable ownership and mutation recovery probe</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-018.html#BW-018-AC-4">BW-018-AC-4</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Add one explicit supported SQLite storage-schema migration to the existing T01
+                  owner, using an actual old-layout fixture file produced by the prior
+                  implementation and a declared new internal layout. Validate the current schema
+                  version before writes and migrate transactionally under exclusive migration
+                  ownership. Preserve the stable canonical meaning/field encodings; content_version,
+                  rules_version and database schema revision remain distinct. Do not relabel a
+                  snapshot or alter canonical definitions to make a migration test pass.
+                </li>
+                <li>
+                  Preserve item/owner/container IDs and revisions, wallet balances and append-only
+                  ledger history, current process/epoch fences, operation scopes/request
+                  identities/terminal receipts and pending/delivered outbox plus test-recipient
+                  dedup state. A pre-migration exact key must still return the same result
+                  afterward; stale authority must remain fenced and an undelivered notification must
+                  remain recoverable without repeating settlement. Include typed/null and
+                  exact-integer boundaries used by the probe.
+                </li>
+                <li>
+                  Document the migration preflight and rollback/reconciliation procedure for this
+                  local probe; unknown/future schemas and incompatible data reject before mutation.
+                  A controlled failure inside the migration transaction must roll back to the usable
+                  old layout with all economic state intact, rather than restoring currency
+                  independently of item ownership. Reopening the migrated file or rerunning the same
+                  supported migration is safe and does not apply it twice.
+                </li>
+                <li>
+                  Use existing canonical compatibility/value checks and the focused SQLite harness
+                  for positive migration and one mid-migration failure; reuse prior
+                  concurrency/crash results for unchanged responsibilities. ContentMigrationRecord
+                  describes content migration and is not a database-schema success receipt. Keep
+                  storage migration metadata internal; production backups, deployment rollback and
+                  full gameplay migration remain their own work.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Content/talent rebalancing migrations, new canonical wire contracts, production
+                  backup/restore, cross-provider migration, all-feature migration coverage and a
+                  parent completion audit.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-018-t04.html#BW-018-T04">BW-018-T04</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-018-T05-AC-1">
+                  <a href="#BW-018-T05-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    An actual old-layout SQLite fixture migrates and reopens under the declared new
+                    schema revision with identical stable identities, quantities, balances, receipt
+                    results, ledger history, owner fences and pending/delivered notification
+                    identities; canonical value compatibility is preserved.
+                  </p>
+                </li>
+                <li id="BW-018-T05-AC-2">
+                  <a href="#BW-018-T05-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    A pre-migration exact retry returns the same terminal receipt, stale-epoch
+                    mutation still rejects, and pending outbox recovery retains one economic
+                    mutation and one durable recipient effect.
+                  </p>
+                </li>
+                <li id="BW-018-T05-AC-3">
+                  <a href="#BW-018-T05-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    Unknown/future versions, incompatible values and a controlled mid-migration
+                    failure leave the old database usable with original economic rows and schema
+                    intact. Reopening/repeating a completed migration changes no identities or
+                    results; the runbook declares its actual preflight and rollback/reconciliation
+                    limits.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, test worlds and
+                fixtures below are deliverables of this ticket and its prerequisites; these are
+                unexecuted test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Not Run — Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Use only a fresh task-owned SQLite database and outputs beneath ignored game
+                  artifacts/. Preserve all existing project files, databases and historical
+                  evidence; no shared or production data. The selected candidate is local SQLite,
+                  explicitly chosen by the owner on 2026-10-23.
+                </li>
+                <li>
+                  Complete T04 and retain its real old-schema fixture with a committed receipt,
+                  current epoch and pending notification. Implementation must provide the exact
+                  migrate/preflight/failure/reopen commands and rollback/reconciliation procedure.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  Inspect the old file, run the supported migration and reopen. Compare
+                  IDs/revisions/ledger totals, replay the original key, attempt a stale-epoch
+                  mutation and resume the pending notification.
+                </li>
+                <li>
+                  In a separate fresh old-schema scenario trigger the documented mid-migration
+                  failure; verify rollback. Attempt an unsupported future schema, then
+                  reopen/reinvoke the completed supported migration.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Migration preserves fixture identity and all economic invariants. Retry/delivery
+                  remain idempotent, old epochs stay fenced, failed/unsupported migration preserves
+                  the old usable state and completed migration does not run twice.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Close owned connections and let bounded child processes exit. For a new baseline
+                  use a fresh task-owned directory; for a recovery/retry case reopen the same
+                  scenario database without reseeding it. Preserve prior outputs and unrelated
+                  staged work; never reset the checkout or remove database sidecars while a
+                  connection is active.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> Actual old/new file-backed migration,
+                reopen/retry/fencing/pending-outbox and rollback assertions with separate
+                content/rules/database revision identities. Compile affected native code and retain
+                one short result summary; gameplay, operational restore and missing manual replay
+                remain unverified.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-018.html#BW-018">Parent epic and acceptance criteria</a
+                >; <a href="../guide/networking.html#durable-operations">Durable operations</a>;
+                <a href="../guide/networking.html#ownership">Authority and epoch fencing</a>;
+                <a href="../sources/data-model.schema.json">Canonical schema bundle</a>;
+                <a href="../guide/data-inventory.html#shared-Version">Version</a>;
+                <a href="../guide/data-inventory.html#session-ownership-record"
+                  >SessionOwnershipRecord</a
+                >; <a href="../guide/data-inventory.html#operation-receipt">OperationReceipt</a>;
+                <a href="../guide/data-inventory.html#content-migration-record"
+                  >ContentMigrationRecord content-only boundary</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-018-t04.html#BW-018-T04">Previous: BW-018-T04</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

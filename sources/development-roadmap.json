@@ -562,7 +562,7 @@
       "id": "BW-018",
       "title": "Durable ownership and mutation recovery probe",
       "objective": "Prove economic consistency before building asset-dependent features.",
-      "scope": "Versioned ownership, atomic changes, idempotency receipts, durable acknowledgment and recoverable event delivery in a minimal store; provider selection remains explicit.",
+      "scope": "Versioned ownership, atomic changes, idempotency receipts, durable acknowledgment and recoverable event delivery in a minimal store; provider selection remains explicit. Owner-selected probe candidate, 2026-10-23: local SQLite. This selects the bounded probe store, not a production persistence/deployment platform.",
       "hard_dependencies": [
         "BW-001",
         "BW-002"
@@ -593,7 +593,7 @@
       ],
       "status": "Not Started",
       "blockers": [],
-      "ordering_rationale": "A narrow early persistence probe tests the highest duplication/recovery risks in parallel with movement and combat. Persisting every simulation tick would add complexity without a documented need.",
+      "ordering_rationale": "Planning split: T01 integrates and pins a file-backed local SQLite store with verified native locking/durability settings; T02 commits one fixture mutation with its receipt/outbox; T03 proves real concurrency, exact/conflicting retries and ownership-epoch fencing; T04 proves process-crash and repeated-event recovery; T05 migrates the storage schema while preserving those identities/invariants. The custom SQLiteCore VFS limitation is an explicit T01 integration gap. Existing bootstrap/contracts/local-probe evidence is reused within its recorded scope; all five tickets and BW-018 remain Not Started. Full inventory, authentication, production deployment and per-tick persistence are outside this probe.",
       "verified_evidence": [],
       "phase": "phase-foundations"
     },
@@ -10482,6 +10482,421 @@
         ],
         "reset": [
           "Let the bounded command exit; use a fresh task-owned output directory for the next run. Restore only the sample edits made during this procedure; retain the prior valid output and concise actual result. Never reset the checkout, resave unrelated assets or overwrite historical evidence."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-018-T01",
+      "parent_epic": "BW-018",
+      "title": "Open and reopen a pinned file-backed SQLite probe store",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-018-AC-1"
+      ],
+      "scope": [
+        "Owner selection, 2026-10-23: use local SQLite for this bounded probe. At inspected game main 1f705e797fae5507fe477deb85529f047f2ddd63, Briarwake.Build.cs has no database dependency and no durable store exists. The installed UE 5.8.3 SQLiteCore runtime module exposes FSQLiteDatabase/prepared statements and bundles SQLite 3.47.1; it is not enabled or integrated in Briarwake. MultiplayerSessions handles sessions, not persistence. Pin the actual loaded SQLite version, native VFS/locking, journal/synchronous settings, foreign-key enforcement, supported integer ranges and bounded lock/error handling before claiming durability.",
+        "Address the concrete reuse constraint: SQLiteCore.Build.cs documents that the custom Unreal platform lacks shared-memory/granular locking and permits only one open FSQLiteDatabase per file; TargetRules defaults bCompileCustomSQLitePlatform to true and marks it RequiresUniqueBuildEnvironment. Verify the actual module/VFS used by the probe. Use a native-platform SQLiteCore build with real file locking and sync through the existing source-engine/toolchain when necessary; changing a project flag does not replace an installed precompiled Editor module. Prove two independent connections can access the same task-owned file before later race tests. Do not substitute an in-memory map, Python database implementation or mocked lock for this boundary.",
+        "Add one explicitly wired, caller-owned native persistence owner in the existing Briarwake module, limited to the fixture records and transactions used by this epic. Reuse FContentContracts/canonical extraction for the required ItemInstance, ItemOwnershipRecord, InventoryContainer, WalletRecord, SessionOwnershipRecord, OperationReceipt, CurrencyLedgerRecord and TransactionalOutboxRecord closure. Keep SQL/storage layout internal; preserve existing identifiers, tokens, nullable fields and exact integer values. Database schema revision comes from real store metadata, separate from content/rules revisions; the existing synthetic FContentRevisions database label does not establish migration support.",
+        "Provide bounded Editor/development test entry points using the existing Unreal Automation, FContentCompatibilityRun and owned-process helpers. Seed only a small explicit pair of personal fixture owners/containers/wallets and an existing unbound, unreserved whole item for later transfer. Fixture setup is test-only, not a public economic grant. Document exact native build/probe/reopen commands, supported file paths and fresh-output/reset behavior; compile the affected test and Server integration when module/target dependencies change. Reject missing/read-only/incompatible/unsafe stores and SQL failures observably without overwriting an existing file."
+      ],
+      "out_of_scope": [
+        "Production persistence/provider selection, hosted services, live accounts/authentication, an ORM or generic storage abstraction, client database access and full inventory implementation.",
+        "New art assets/maps, per-tick simulation persistence, packages, broad integration suites or repeating historical FULL workflows. BW-001/BW-002 retained evidence establishes bootstrap/contracts; BW-003 establishes only its local in-memory probe, not SQLite integration."
+      ],
+      "dependencies": [
+        "BW-001",
+        "BW-002"
+      ],
+      "acceptance_criteria": [
+        "The recorded candidate uses the actual selected SQLiteCore/native SQLite runtime with explicit queried durability/locking settings. A native test opens a task-owned file through two independent connections; a fresh process reopens and reads the exact seeded IDs, owner scopes, quantities, balances, record revisions and database schema revision.",
+        "The bounded canonical contract closure and native value mapping preserve IDs, required/null semantics and supported exact integers. Unknown fields/tokens, overflow/precision loss, unsupported schema revisions, unsafe paths, read-only/write/open failures and missing settings reject with actionable findings and leave existing data intact.",
+        "The delivered runbook names the real executable, exact targeted test/reopen commands, settings and cleanup. Actual storage observations are separated from authored expectations; no successful fixture mutation, database race, crash recovery or production authentication is implied by opening the store."
+      ],
+      "completion_evidence": "One concise PR/result summary with exact source/toolchain/SQLite/VFS/settings identities, actual native open/two-connection/reopen results and required affected compilation. Preserve existing prerequisite evidence; an unavailable native locking build remains Not Run with the exact gap.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-018.html#BW-018"
+        },
+        {
+          "label": "Durable operations",
+          "href": "guide/networking.html#durable-operations"
+        },
+        {
+          "label": "Authority and epoch fencing",
+          "href": "guide/networking.html#ownership"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "ItemOwnershipRecord",
+          "href": "guide/data-inventory.html#item-ownership-record"
+        },
+        {
+          "label": "ItemInstance",
+          "href": "guide/data-inventory.html#item-instance"
+        },
+        {
+          "label": "InventoryContainer",
+          "href": "guide/data-inventory.html#inventory-container"
+        },
+        {
+          "label": "WalletRecord",
+          "href": "guide/data-inventory.html#wallet-record"
+        },
+        {
+          "label": "Version",
+          "href": "guide/data-inventory.html#shared-Version"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.",
+        "setup": [
+          "Use only a fresh task-owned SQLite database and outputs beneath ignored game artifacts/. Preserve all existing project files, databases and historical evidence; no shared or production data. The selected candidate is local SQLite, explicitly chosen by the owner on 2026-10-23.",
+          "The T01 native module/build and probe entry point are missing. Implementation must resolve the custom-VFS locking limitation and record the working native build; API/header presence is not acceptance."
+        ],
+        "actions": [
+          "Using the delivered exact command, create the task-owned baseline, inspect the reported runtime version/VFS/settings and open a second independent connection to that file.",
+          "Exit the owned process, reopen the same database in a fresh process and compare canonical records/revisions. Attempt the documented missing/read-only/unsupported-schema inputs without changing user data or permissions."
+        ],
+        "expected_results": [
+          "The file-backed baseline and its identities survive reopening, two connections use real SQLite locks, and invalid inputs fail visibly without replacing existing data. Missing native/VFS support is Not Run or failed, never a passing storage result."
+        ],
+        "reset": [
+          "Close owned connections and let bounded child processes exit. For a new baseline use a fresh task-owned directory; for a recovery/retry case reopen the same scenario database without reseeding it. Preserve prior outputs and unrelated staged work; never reset the checkout or remove database sidecars while a connection is active."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-018-T02",
+      "parent_epic": "BW-018",
+      "title": "Commit a fixture mutation with its durable receipt and outbox",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-018-AC-1"
+      ],
+      "scope": [
+        "Extend the T01 native transaction owner with one finite internal fixture transfer: move the existing unbound/unreserved item between the two authorized fixture containers and transfer a declared nonnegative integer amount between fixture wallets. Derive actor/account/character from the trusted server-test context, validate owner/container/item/wallet/epoch preconditions and compute results inside the transaction. This is an internal probe operation, not a new inventory RPC or client-authored economic outcome; unsupported binding/reservation/operation cases reject.",
+        "Commit item/ownership/container revisions, balanced debit/credit CurrencyLedgerRecord entries, one terminal OperationReceipt and its pending TransactionalOutboxRecord in the same SQLite transaction. Personal ownership remains account plus character with null guild owner; each extant item has positive quantity and one placement, wallets remain nonnegative integer minor units, and internal transfer ledger deltas sum to zero. Reuse canonical DurableContext/DurableNotification shapes; notifications contain committed references, not private rows. No separately writable inventory/wallet copy or trigger-based duplicate authority is introduced.",
+        "Acknowledge committed success only after SQLite reports successful durable commit under the pinned settings. A write/commit failure never creates fabricated success; an uncertain commit outcome must be resolved by the same operation key on reopen/retry rather than reported as a known rollback. Store the authenticated operation scope and exact validated request identity needed by T03 idempotency; authors cannot supply receipt IDs, balances, passed evidence or compatibility policy.",
+        "Add focused existing-harness native tests calling the real owner and file-backed store for an accepted transfer, rejection of invalid owner/revision/funds/reservation and a controlled pre-commit SQL failure. Reopen to verify the complete accepted result; retain prior rows on rejection. Test-only phase checkpoints may observe commit/response ordering for later crash controls, but cannot bypass domain validation or appear as gameplay commands."
+      ],
+      "out_of_scope": [
+        "Stack split/merge, equipment, vendors, crafting, guilds, fees, delivery claims, public economic endpoints, full inventory/wallet gameplay and a generic transaction scripting language."
+      ],
+      "dependencies": [
+        "BW-018-T01"
+      ],
+      "acceptance_criteria": [
+        "One accepted fixture transfer atomically changes the item placement/owner and participating record revisions, writes balanced ledger entries, and stores exactly one canonical receipt plus pending outbox row. Fresh reads/reopen observe the complete result with no duplicate owner, negative balance or lost item.",
+        "The committed receipt is returned only after successful durable commit. Pre-commit failure or invalid preconditions leave all asset/ledger/receipt/outbox state unchanged; a failed/unknown commit cannot be acknowledged as committed success.",
+        "Server-owned identity and result construction reject foreign owner scope, stale revisions, insufficient funds, reserved/bound unsupported assets, overflow and fabricated result fields. Logs/results identify operation, owner scope and content/database revisions without exposing credentials or another actor\u2019s private rows."
+      ],
+      "completion_evidence": "Actual file-backed atomic transfer/reopen and rejection assertions, commit-before-ack observation and affected native compilation. Reuse the existing canonical validation/report owners; retain a concise receipt/revision/ledger result, not copied report trees.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-018.html#BW-018"
+        },
+        {
+          "label": "Durable operations",
+          "href": "guide/networking.html#durable-operations"
+        },
+        {
+          "label": "Authority and epoch fencing",
+          "href": "guide/networking.html#ownership"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "OperationReceipt",
+          "href": "guide/data-inventory.html#operation-receipt"
+        },
+        {
+          "label": "TransactionalOutboxRecord",
+          "href": "guide/data-inventory.html#transactional-outbox-record"
+        },
+        {
+          "label": "CurrencyLedgerRecord",
+          "href": "guide/data-inventory.html#currency-ledger-record"
+        },
+        {
+          "label": "DurableContext",
+          "href": "guide/data-inventory.html#shared-DurableContext"
+        },
+        {
+          "label": "DurableNotification",
+          "href": "guide/data-inventory.html#shared-DurableNotification"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.",
+        "setup": [
+          "Use only a fresh task-owned SQLite database and outputs beneath ignored game artifacts/. Preserve all existing project files, databases and historical evidence; no shared or production data. The selected candidate is local SQLite, explicitly chosen by the owner on 2026-10-23.",
+          "Complete T01 and use its exact working native commands/settings with a fresh fixture database. The T02 transfer and observation commands must be documented before replay."
+        ],
+        "actions": [
+          "Execute the finite accepted transfer and inspect the receipt, item/container/wallet revisions, paired ledger entries and pending outbox. Exit and reopen the same database.",
+          "In separate fresh scenarios submit the documented invalid owner/revision/funds/reservation inputs and trigger the test-only pre-commit write failure. Inspect state and response ordering."
+        ],
+        "expected_results": [
+          "Success follows durable commit and reopens as one complete transfer. Invalid/failing attempts preserve prior state, balances never go negative, the ledger conserves transferred currency and no receipt claims a commit that did not complete."
+        ],
+        "reset": [
+          "Close owned connections and let bounded child processes exit. For a new baseline use a fresh task-owned directory; for a recovery/retry case reopen the same scenario database without reseeding it. Preserve prior outputs and unrelated staged work; never reset the checkout or remove database sidecars while a connection is active."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-018-T03",
+      "parent_epic": "BW-018",
+      "title": "Enforce concurrent revision, retry and ownership-epoch checks",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-018-AC-2",
+        "BW-018-AC-4"
+      ],
+      "scope": [
+        "Keep all mutation authorization, optimistic version comparisons, scoped operation-key uniqueness and ownership-epoch fencing inside the same native SQLite transaction owner from T02. Use durable conditional updates/constraints rather than only an in-process mutex or a preflight SELECT. Serialize requests through the database across independent connections; classify a bounded SQLITE_BUSY/lock outcome explicitly and never treat it as an accepted mutation.",
+        "Scope idempotency to the authenticated actor and operation. Persist a canonical identity of the validated semantic request with the terminal receipt; exact retry returns the original receipt/result without revalidating already-consumed expected versions as a new mutation. Reusing that key with changed item, destination, amount or other operation semantics rejects without altering the original receipt. Identical key text in another actor/operation scope cannot read or reuse a private receipt. Receipt lookup/replay does not itself authorize a new economic write.",
+        "Persist SessionOwnershipRecord/SessionAuthority compare-and-claim state. Check the caller\u2019s trusted process/epoch against the current row at mutation commit, fencing stale writers after claim/revocation. Only one claimant may advance a given epoch; stale, reused, wrapped or unrepresentable epochs/revisions reject without new asset effects. This storage fence does not implement login, session proofs or zone transfer. Existing FRuntimeFixtureContext foreign-epoch/AcceptedActions checks are test-memory behavior and must not be used as durability evidence.",
+        "Use a bounded real race with independently opened SQLite connections and a barrier at the conflicting write, not sequential calls labeled concurrent. Cover competing stale-revision mutations, simultaneous identical retries, conflicting key reuse and a claim-versus-stale-writer interleaving. Verify persisted rows/receipt/ledger/outbox counts after both participants finish and after reopen. Add pure/unit cases only for distinct request-identity/range rejection responsibilities, through the actual owner."
+      ],
+      "out_of_scope": [
+        "Steam or network admission, authentication providers, distributed leases, multi-shard consensus, production session lifecycle, respec/combat authority and load/capacity benchmarks."
+      ],
+      "dependencies": [
+        "BW-018-T02"
+      ],
+      "acceptance_criteria": [
+        "Concurrent conflicting requests with the same expected asset revisions commit at most one mutation; the loser receives explicit stale/lock findings and persisted assets, ledger and outbox remain conserved. A bounded lock wait cannot silently succeed or hang the runner.",
+        "Exact sequential, simultaneous and post-reopen retries return the recorded receipt and result with no second debit, item move, revision advance or outbox entry. Changed semantic payload under the same scoped key rejects; another actor/operation scope gains no access to that result.",
+        "After a durable ownership claim advances the epoch, a stale process/epoch cannot commit any new asset change, even if it passed earlier validation. A real claim/write race produces a serializable valid outcome with one current authority; epoch/revision exhaustion cannot wrap or reuse a fence."
+      ],
+      "completion_evidence": "Actual independent-connection races and persisted conservation/receipt/epoch assertions against the selected SQLite file, plus focused request-identity/range checks and affected compilation. Record participants and ordering; a Python fake or sequential-only test is not concurrency evidence.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-018.html#BW-018"
+        },
+        {
+          "label": "Durable operations",
+          "href": "guide/networking.html#durable-operations"
+        },
+        {
+          "label": "Authority and epoch fencing",
+          "href": "guide/networking.html#ownership"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "DurableRequestContext",
+          "href": "guide/data-inventory.html#shared-DurableRequestContext"
+        },
+        {
+          "label": "OperationReceipt",
+          "href": "guide/data-inventory.html#operation-receipt"
+        },
+        {
+          "label": "SessionOwnershipRecord",
+          "href": "guide/data-inventory.html#session-ownership-record"
+        },
+        {
+          "label": "SessionAuthority",
+          "href": "guide/data-inventory.html#session-authority"
+        },
+        {
+          "label": "Version",
+          "href": "guide/data-inventory.html#shared-Version"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.",
+        "setup": [
+          "Use only a fresh task-owned SQLite database and outputs beneath ignored game artifacts/. Preserve all existing project files, databases and historical evidence; no shared or production data. The selected candidate is local SQLite, explicitly chosen by the owner on 2026-10-23.",
+          "Complete T02 and use the delivered deterministic race entry point, barrier/timeout and task-owned file. A second real SQLite connection and recorded native VFS are required."
+        ],
+        "actions": [
+          "Run the documented two-participant stale-revision race, identical-key retry race and changed-payload key conflict. Inspect both outcomes and persisted receipt/ledger/outbox counts.",
+          "Advance the fixture authority epoch, attempt a mutation with the old context, then run the documented claim-versus-write race. Reopen the same database and inspect the final owner epoch and economic state."
+        ],
+        "expected_results": [
+          "Only the serializable valid mutation commits; exact retries reuse its receipt, conflicting or foreign scopes reject, and a superseded epoch cannot grant another asset change. No duplicate items, money or notifications appear; unexecuted race infrastructure remains Not Run."
+        ],
+        "reset": [
+          "Close owned connections and let bounded child processes exit. For a new baseline use a fresh task-owned directory; for a recovery/retry case reopen the same scenario database without reseeding it. Preserve prior outputs and unrelated staged work; never reset the checkout or remove database sidecars while a connection is active."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-018-T04",
+      "parent_epic": "BW-018",
+      "title": "Recover committed mutations and outbox delivery after process crashes",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-018-AC-3"
+      ],
+      "scope": [
+        "Use the existing bounded owned-process execution/report helpers to run only the necessary SQLite crash/reopen scenarios through the actual T02/T03 owner. Test-only checkpoints identify before commit, after durable commit before acknowledgment, before notification delivery and after recipient acceptance before delivered marking. Abruptly terminate only the owned child at the reached checkpoint; an exception rollback or a normal connection close is not process-crash evidence. Reopen the same on-disk database in a fresh process without reseeding.",
+        "Before-commit failure leaves no partial mutation, receipt or outbox; after-commit acknowledgment loss retains all committed rows and an exact retry returns the original receipt. Resolve any interrupted commit through persisted state/key identity instead of resubmitting a different operation or compensating only currency. Compare conserved item/owner and wallet/ledger values after recovery; retain explicit diagnostics for unavailable storage or integrity failures.",
+        "Add bounded pending-outbox delivery to a minimal durable test recipient using canonical DurableNotification and stable outbox/receipt identity. Recipient acceptance/deduplication survives its own reopen; mark delivered only after acceptance. Crash between acceptance and producer marking must allow at-least-once redelivery with one recipient effect, without repeating any economic mutation. The recipient is a probe-only durable inbox, not a production broker/notification service; do not claim exactly-once network transport.",
+        "Record actual TransactionRecoveryTestRecord findings/conservation fields and a short revision/phase/receipt summary using existing evidence ownership. Keep crash switches and fixture seeds behind existing Editor/development guards, unreachable through gameplay commands; child nonzero exit alone or a missing report is not a successful crash test. The surviving verifier must prove the intended checkpoint, fresh database reads and final assertions. No default crash matrix, package run or historical all-suite replay is added."
+      ],
+      "out_of_scope": [
+        "Host power-loss/filesystem hardware guarantees, database corruption repair, distributed message brokers, real player notifications, inventory escrow/full-bag/lease feature scenarios, backup restore and production availability certification."
+      ],
+      "dependencies": [
+        "BW-018-T03"
+      ],
+      "acceptance_criteria": [
+        "Actual abrupt child termination before commit leaves the prior complete economic state; termination after durable commit before acknowledgment preserves the complete mutation and exact original receipt. Fresh-process retry never duplicates, loses or partially restores its item/currency changes.",
+        "Failures before delivery and after durable recipient acceptance but before producer delivered marking recover from the same pending outbox. Redelivery is harmless and produces one durable recipient effect with the original notification identity; no item/wallet/ledger mutation runs again.",
+        "Each claimed crash result proves its reached phase and fresh-process database assertions with conserved items/currency and one owner. Unreached checkpoints, failed startup, missing storage and incomplete verification remain Failed/Not Run rather than passing recovery evidence; test-only controls have no gameplay route."
+      ],
+      "completion_evidence": "Only the parent-required before/after-commit and event-delivery crash/reopen results, actual receipt/revision/outbox/inbox observations and focused native assertions at a recorded source/runtime/settings identity. Store one concise summary or PR link; do not retain a new large evidence archive.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-018.html#BW-018"
+        },
+        {
+          "label": "Durable operations",
+          "href": "guide/networking.html#durable-operations"
+        },
+        {
+          "label": "Authority and epoch fencing",
+          "href": "guide/networking.html#ownership"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "TransactionRecoveryTestRecord",
+          "href": "guide/data-inventory.html#transaction-recovery-test-record"
+        },
+        {
+          "label": "TransactionalOutboxRecord",
+          "href": "guide/data-inventory.html#transactional-outbox-record"
+        },
+        {
+          "label": "OperationReceipt",
+          "href": "guide/data-inventory.html#operation-receipt"
+        },
+        {
+          "label": "DurableNotification",
+          "href": "guide/data-inventory.html#shared-DurableNotification"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.",
+        "setup": [
+          "Use only a fresh task-owned SQLite database and outputs beneath ignored game artifacts/. Preserve all existing project files, databases and historical evidence; no shared or production data. The selected candidate is local SQLite, explicitly chosen by the owner on 2026-10-23.",
+          "Complete T03 and use the exact child executable/checkpoint/owned-process-stop commands delivered by this ticket. The runbook must name database paths, reached-phase markers and verifier/reopen commands before execution."
+        ],
+        "actions": [
+          "Run the documented before-commit and after-commit-before-ack crash cases, stopping only the owned child. Reopen each same database and retry its original key.",
+          "Run the notification-before-acceptance and after-acceptance-before-delivered cases with the durable test recipient. Restart the affected owned process and inspect recipient deduplication, outbox state and unchanged economic rows."
+        ],
+        "expected_results": [
+          "The prior or committed whole mutation survives as appropriate, retry returns the original result, and repeated delivery has one durable recipient effect. Missing phase/storage/verification is unverified; no cleanup reseeds or hides the recovered database state."
+        ],
+        "reset": [
+          "Close owned connections and let bounded child processes exit. For a new baseline use a fresh task-owned directory; for a recovery/retry case reopen the same scenario database without reseeding it. Preserve prior outputs and unrelated staged work; never reset the checkout or remove database sidecars while a connection is active."
+        ]
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-018-T05",
+      "parent_epic": "BW-018",
+      "title": "Migrate the SQLite schema without changing fixture identity or invariants",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-018-AC-4"
+      ],
+      "scope": [
+        "Add one explicit supported SQLite storage-schema migration to the existing T01 owner, using an actual old-layout fixture file produced by the prior implementation and a declared new internal layout. Validate the current schema version before writes and migrate transactionally under exclusive migration ownership. Preserve the stable canonical meaning/field encodings; content_version, rules_version and database schema revision remain distinct. Do not relabel a snapshot or alter canonical definitions to make a migration test pass.",
+        "Preserve item/owner/container IDs and revisions, wallet balances and append-only ledger history, current process/epoch fences, operation scopes/request identities/terminal receipts and pending/delivered outbox plus test-recipient dedup state. A pre-migration exact key must still return the same result afterward; stale authority must remain fenced and an undelivered notification must remain recoverable without repeating settlement. Include typed/null and exact-integer boundaries used by the probe.",
+        "Document the migration preflight and rollback/reconciliation procedure for this local probe; unknown/future schemas and incompatible data reject before mutation. A controlled failure inside the migration transaction must roll back to the usable old layout with all economic state intact, rather than restoring currency independently of item ownership. Reopening the migrated file or rerunning the same supported migration is safe and does not apply it twice.",
+        "Use existing canonical compatibility/value checks and the focused SQLite harness for positive migration and one mid-migration failure; reuse prior concurrency/crash results for unchanged responsibilities. ContentMigrationRecord describes content migration and is not a database-schema success receipt. Keep storage migration metadata internal; production backups, deployment rollback and full gameplay migration remain their own work."
+      ],
+      "out_of_scope": [
+        "Content/talent rebalancing migrations, new canonical wire contracts, production backup/restore, cross-provider migration, all-feature migration coverage and a parent completion audit."
+      ],
+      "dependencies": [
+        "BW-018-T04"
+      ],
+      "acceptance_criteria": [
+        "An actual old-layout SQLite fixture migrates and reopens under the declared new schema revision with identical stable identities, quantities, balances, receipt results, ledger history, owner fences and pending/delivered notification identities; canonical value compatibility is preserved.",
+        "A pre-migration exact retry returns the same terminal receipt, stale-epoch mutation still rejects, and pending outbox recovery retains one economic mutation and one durable recipient effect.",
+        "Unknown/future versions, incompatible values and a controlled mid-migration failure leave the old database usable with original economic rows and schema intact. Reopening/repeating a completed migration changes no identities or results; the runbook declares its actual preflight and rollback/reconciliation limits."
+      ],
+      "completion_evidence": "Actual old/new file-backed migration, reopen/retry/fencing/pending-outbox and rollback assertions with separate content/rules/database revision identities. Compile affected native code and retain one short result summary; gameplay, operational restore and missing manual replay remain unverified.",
+      "related_docs": [
+        {
+          "label": "Parent epic and acceptance criteria",
+          "href": "guide/roadmap-bw-018.html#BW-018"
+        },
+        {
+          "label": "Durable operations",
+          "href": "guide/networking.html#durable-operations"
+        },
+        {
+          "label": "Authority and epoch fencing",
+          "href": "guide/networking.html#ownership"
+        },
+        {
+          "label": "Canonical schema bundle",
+          "href": "sources/data-model.schema.json"
+        },
+        {
+          "label": "Version",
+          "href": "guide/data-inventory.html#shared-Version"
+        },
+        {
+          "label": "SessionOwnershipRecord",
+          "href": "guide/data-inventory.html#session-ownership-record"
+        },
+        {
+          "label": "OperationReceipt",
+          "href": "guide/data-inventory.html#operation-receipt"
+        },
+        {
+          "label": "ContentMigrationRecord content-only boundary",
+          "href": "guide/data-inventory.html#content-migration-record"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run \u2014 Manual QA Pending. From the existing game workspace containing Briarwake.uproject, use the bounded native SQLite probe commands documented by BW-018-T01 after implementation. No SQLite probe command exists at planning time; implementation must record the actual executable, exact suite/phase arguments, pinned build and task-owned database path before handoff. This is data-only work: no map, player controls or visual assets are required.",
+        "setup": [
+          "Use only a fresh task-owned SQLite database and outputs beneath ignored game artifacts/. Preserve all existing project files, databases and historical evidence; no shared or production data. The selected candidate is local SQLite, explicitly chosen by the owner on 2026-10-23.",
+          "Complete T04 and retain its real old-schema fixture with a committed receipt, current epoch and pending notification. Implementation must provide the exact migrate/preflight/failure/reopen commands and rollback/reconciliation procedure."
+        ],
+        "actions": [
+          "Inspect the old file, run the supported migration and reopen. Compare IDs/revisions/ledger totals, replay the original key, attempt a stale-epoch mutation and resume the pending notification.",
+          "In a separate fresh old-schema scenario trigger the documented mid-migration failure; verify rollback. Attempt an unsupported future schema, then reopen/reinvoke the completed supported migration."
+        ],
+        "expected_results": [
+          "Migration preserves fixture identity and all economic invariants. Retry/delivery remain idempotent, old epochs stay fenced, failed/unsupported migration preserves the old usable state and completed migration does not run twice."
+        ],
+        "reset": [
+          "Close owned connections and let bounded child processes exit. For a new baseline use a fresh task-owned directory; for a recovery/retry case reopen the same scenario database without reseeding it. Preserve prior outputs and unrelated staged work; never reset the checkout or remove database sidecars while a connection is active."
         ]
       },
       "blockers": [],

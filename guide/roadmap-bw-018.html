@@ -188,7 +188,9 @@
                 <p>
                   <strong>Scope:</strong> Versioned ownership, atomic changes, idempotency receipts,
                   durable acknowledgment and recoverable event delivery in a minimal store; provider
-                  selection remains explicit.
+                  selection remains explicit. Owner-selected probe candidate, 2026-10-23: local
+                  SQLite. This selects the bounded probe store, not a production
+                  persistence/deployment platform.
                 </p>
                 <h2 id="dependencies">Dependencies and downstream work</h2>
                 <h3>Hard prerequisites</h3>
@@ -280,15 +282,92 @@
                   work and verification required.
                 </p>
                 <p>
-                  Use <strong>BW-018</strong> as the parent epic. Link each future ticket to the AC
-                  links above and state the evidence it will produce. Split work into demonstrable
-                  behaviors; one criterion may require several tickets. Epic completion still
-                  requires every criterion, verified evidence and completed hard prerequisites.
+                  Execute these tickets in dependency order. Ticket statuses are tracked separately;
+                  epic completion still requires every criterion, verified evidence and completed
+                  hard prerequisites.
                 </p>
+                <ol class="roadmap-contents">
+                  <li>
+                    <a href="roadmap-bw-018-t01.html#BW-018-T01"
+                      >BW-018-T01 · Open and reopen a pinned file-backed SQLite probe store</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-018-t02.html#BW-018-T02"
+                      >BW-018-T02 · Commit a fixture mutation with its durable receipt and outbox</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-018-t03.html#BW-018-T03"
+                      >BW-018-T03 · Enforce concurrent revision, retry and ownership-epoch checks</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-018-t04.html#BW-018-T04"
+                      >BW-018-T04 · Recover committed mutations and outbox delivery after process
+                      crashes</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                  <li>
+                    <a href="roadmap-bw-018-t05.html#BW-018-T05"
+                      >BW-018-T05 · Migrate the SQLite schema without changing fixture identity or
+                      invariants</a
+                    >
+                    <span class="badge">Not Started</span>
+                  </li>
+                </ol>
+                <div class="table-scroll">
+                  <table>
+                    <caption>
+                      Ticket coverage of epic acceptance criteria
+                    </caption>
+                    <thead>
+                      <tr>
+                        <th>Epic criterion</th>
+                        <th>Tickets</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><a href="#BW-018-AC-1">BW-018-AC-1</a></td>
+                        <td>
+                          <a href="roadmap-bw-018-t01.html#BW-018-T01">BW-018-T01</a>,
+                          <a href="roadmap-bw-018-t02.html#BW-018-T02">BW-018-T02</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-018-AC-2">BW-018-AC-2</a></td>
+                        <td><a href="roadmap-bw-018-t03.html#BW-018-T03">BW-018-T03</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-018-AC-3">BW-018-AC-3</a></td>
+                        <td><a href="roadmap-bw-018-t04.html#BW-018-T04">BW-018-T04</a></td>
+                      </tr>
+                      <tr>
+                        <td><a href="#BW-018-AC-4">BW-018-AC-4</a></td>
+                        <td>
+                          <a href="roadmap-bw-018-t03.html#BW-018-T03">BW-018-T03</a>,
+                          <a href="roadmap-bw-018-t05.html#BW-018-T05">BW-018-T05</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
                 <p>
-                  <strong>Ordering rationale:</strong> A narrow early persistence probe tests the
-                  highest duplication/recovery risks in parallel with movement and combat.
-                  Persisting every simulation tick would add complexity without a documented need.
+                  <strong>Ordering rationale:</strong> Planning split: T01 integrates and pins a
+                  file-backed local SQLite store with verified native locking/durability settings;
+                  T02 commits one fixture mutation with its receipt/outbox; T03 proves real
+                  concurrency, exact/conflicting retries and ownership-epoch fencing; T04 proves
+                  process-crash and repeated-event recovery; T05 migrates the storage schema while
+                  preserving those identities/invariants. The custom SQLiteCore VFS limitation is an
+                  explicit T01 integration gap. Existing bootstrap/contracts/local-probe evidence is
+                  reused within its recorded scope; all five tickets and BW-018 remain Not Started.
+                  Full inventory, authentication, production deployment and per-tick persistence are
+                  outside this probe.
                 </p>
                 <p>
                   <strong>Related open decisions:</strong>
