@@ -454,7 +454,7 @@
         "Camera zoom, projection transition, orbit, resizing, occluding geometry, UI-captured pointer input and layered-floor views preserve valid world picking and ground-target previews. Hidden and cross-floor entities are never disclosed, and camera presentation never alters authoritative movement or aim.",
         "Versioned reference scenes reproduce on declared target configurations; still/motion captures document both views, scroll/orbit behavior, readability and accessibility findings, CPU/GPU frame cost, memory and supported-quality decisions."
       ],
-      "completion_evidence": "Versioned reference scene and camera/input/display settings, captured scroll transitions and middle-mouse orbit in both viewpoints, representative visual comparisons, world-picking/occlusion and readability tests, and measured performance. No finished game renderer or production asset library is implied.",
+      "completion_evidence": "Versioned reference scene and camera/input/display settings, captured scroll transitions and middle-mouse orbit in both viewpoints, representative visual comparisons, world-picking/occlusion and readability tests, and measured performance. No finished game renderer or production asset library is implied. Explicit owner completion override, 2026-10-23: BW-097 and all six tickets are administratively Complete as requested. The failed reference cook and unexecuted rendered/performance QA remain preserved as actual historical results in BW-097-T06 setup; no new execution or measurements are claimed.",
       "related_docs": [
         {
           "label": "Selected 3D pixel-art direction",
@@ -477,7 +477,7 @@
           "href": "guide/sources.html#s16"
         }
       ],
-      "status": "In Progress",
+      "status": "Complete",
       "blockers": [],
       "ordering_rationale": "Execution review 2026-10-22: T01 and T02 Complete. Updated native/reference setup supports parent AC1; T02 verifies the camera portion of AC2, while final independent UI/high-DPI readability remains T04. AC3 orbit remains T03, AC4 art/lighting T04, AC5 picking/occlusion/privacy T05, and AC6 cooked/quality/accessibility/performance T04/T06. BW-001/BW-003 remain Complete with unchanged owners and applicable retained prerequisite evidence. T03 now has its T02 prerequisite satisfied. BW-097 remains Dependency-ready/In Progress; BW-098 remains Not Started awaiting BW-095/BW-097. Foundation phase/milestone remain In Progress.",
       "verified_evidence": [
@@ -498,6 +498,20 @@
           "revision": "4339aeeae46b49d4bc8fbf2d3ff7ee6cb423b5f3",
           "result": "Passed",
           "summary": "Parent review updates its own AC1 setup/settings/input/environment evidence with the current native zoom configuration and rendered viewport records. T02 supplies the camera portion of AC2; final UI/high-DPI readability and AC3-AC6 remain exactly identified in the retained parent review, so the epic stays In Progress."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "artifact": "https://github.com/evanmcpheron/mmo_docs/pull/62",
+          "revision": "840da57a7ffe670bb5a33c69687aca1168912e87",
+          "result": "Passed",
+          "summary": "Explicit owner completion override, 2026-10-23: after receiving the failed-cook result and outstanding manual QA details, the owner instructed, \"mark it as complete. every epic should be marked as complete in BW097\". This records acceptance of administrative closure for BW-097 and all six child tickets, including BW-097. Complete is assigned at the owner's explicit direction. The result denotes owner acceptance only: the last actual reference cook still failed with UnrealEditor-Cmd exit 1/UAT exit 25 (GameFeatureData configuration), and the two independent rendered launches, display-specific comparisons, raw CPU/GPU/memory measurements and performance decisions were not executed. Their original Failed/Not Run evidence and blocker text are preserved unchanged in T06 manual setup history. No successful cook, new test run, measured budget pass, connected gameplay, release or capacity certification is claimed. Acceptance criteria and existing passing evidence are unchanged."
         }
       ],
       "phase": "phase-foundations"
@@ -9522,7 +9536,7 @@
       "id": "BW-097-T04",
       "parent_epic": "BW-097",
       "title": "Review representative 3D readability and independently scaled UI",
-      "status": "In Progress",
+      "status": "Complete",
       "epic_criteria": [
         "BW-097-AC-2",
         "BW-097-AC-4"
@@ -9544,7 +9558,7 @@
         "At every tested window/aspect/backing scale, labels and UI scale independently of the world image; text, pointer controls, targets and playable floor remain usable. Unavailable high-DPI configurations remain explicitly unverified.",
         "The bounded asset/provenance/configuration list and Unreal UI paths reproduce the review. Camera/display settings change no collision/reach/speed/aim, no hidden marker is fabricated, and visual/telegraph contract encodings and required/nullable fields remain compatible."
       ],
-      "completion_evidence": "Retain asset/provenance and settings manifest, labeled bright/dark/viewpoint comparisons, motion captures, display/UI-scale matrix and reviewer findings including failures and mitigations. Rendered human review is required; a screenshot existing or a headless pass alone does not establish readability.",
+      "completion_evidence": "Retain asset/provenance and settings manifest, labeled bright/dark/viewpoint comparisons, motion captures, display/UI-scale matrix and reviewer findings including failures and mitigations. Rendered human review is required; a screenshot existing or a headless pass alone does not establish readability. Owner accepted the delivered work as Complete on 2026-10-23 and explicitly requested the status correction. No new manual execution or quantitative results were supplied; historical unexecuted details remain in setup history. T06 reproduction/performance acceptance remains separate.",
       "related_docs": [
         {
           "label": "Parent epic and original criteria",
@@ -9594,7 +9608,9 @@
           "Open Content > Tests > Camera > DA_BW097_CameraDefaults > Camera > Settings > Readability: Bright/Dark lighting, light scale [0.1,4], roughness [0,1], equipment/alternate-form/raised-pose, occlusion/transparency and reduced-cosmetic toggles. Display > User Interface Scale [0.75,2] scales Slate text/glyphs and the wrapping/scrolling consuming control. Defaults: Bright, light scale 1, roughness 0.8, equipment/transparency on, other toggles off, UI scale 1. Use Engine Scalability Settings and viewport Screen Percentage for native quality controls. No visual/telegraph serialization or SpriteDirection encoding changes; this scene-only public fixture makes no T05 floor/picking/revocation claim.",
           "Owner-directed follow-up 2026-10-23, game revision 1feea16c2bcfcf77bf7eb921aee4b276361d90d8 on the same game PR #21: hold left mouse and drag for camera-only orbit/tilt; wheel scrolling retains zoom, and middle-button press/drag no longer orbits. This explicit owner instruction supersedes the original middle-button fixture binding in the epic/T03 historical requirements. Accepted T03 history and gameplay movement/facing/aim remain unchanged. Current game manual/UI hints use left-drag; physical pointer/capture acceptance of the new binding remains Not Run \u2014 Manual QA Pending.",
           "Delivery follow-up 2026-10-23: fetched game main b375836ab247e883aa1709597f82639b5573d1f6 contains merged game PR #21; Source, Content, tools, fixtures, Config and the committed project descriptor are unchanged from 1feea16c2bcfcf77bf7eb921aee4b276361d90d8. Reuse its retained 85.085s native pass rather than rerunning unchanged game checks. The pre-existing staged plugin descriptor remains preserved at Git blob 321555c7f1e8cb33424a5ec73f2000296539d8e4. Docs follow-up continues the same task branch/PR #59 from fetched main 6952559cd46907996889b78f93d8e266024b0499. No new game code or asset changes were needed; all rendered/manual acceptance remains pending.",
-          "Owner-reported functionality pass, 2026-10-23: after the T04 manual QA handoff, the user stated, \"functionality passwd tests\" (interpreted as functionality passed tests). This records the reported functional result without inferring which display/backing-scale configurations, visual comparisons or save/reopen checks were performed. Confirmation of the complete four-step handoff remains outstanding; no new captures, display matrix or independent Codex manual execution are claimed."
+          "Owner-reported functionality pass, 2026-10-23: after the T04 manual QA handoff, the user stated, \"functionality passwd tests\" (interpreted as functionality passed tests). This records the reported functional result without inferring which display/backing-scale configurations, visual comparisons or save/reopen checks were performed. Confirmation of the complete four-step handoff remains outstanding; no new captures, display matrix or independent Codex manual execution are claimed.",
+          "Historical unexecuted evidence, superseded for ticket status by explicit owner completion acceptance on 2026-10-23; no new execution or measurements supplied. Original criteria 1,2,3; artifact https://github.com/evanmcpheron/BriarwakeUnreal/pull/21; revision b375836ab247e883aa1709597f82639b5573d1f6; result Not Run. Original summary: Not Run \u2014 Manual QA Pending: human readability review and labeled still/motion evidence for bright/dark overview/close/intermediate views, moving equipment/alternate-form/terrain silhouettes, non-color markers with occlusion/transparency and reduced effects; 1280x720/1920x1080/1280x960 plus actual native backing-scale/UI/physical-pointer usability; and Unreal save/reopen/reproduction of new settings. Unavailable high-DPI configurations stay unverified. Ticket/manual game handoff provides exact launch, controls, expected failures, evidence and cleanup. Ticket remains In Progress; no release accessibility, connected privacy, attack authorization or T06 performance certification is claimed. Follow-up physical acceptance must use left-drag for orbit/tilt, confirm middle-button drag is inert, retain wheel zoom during drag, and recheck consuming UI/focus/release cleanup. Review the implementation now merged at game main b375836ab247e883aa1709597f82639b5573d1f6; its implementation inputs match the recorded native-tested revision. No rendered or physical-input QA was executed during the delivery follow-up. The subsequent owner-reported functionality pass is recorded separately; its coverage of these visual/display/persistence checks has not been confirmed.",
+          "Current status, 2026-10-23: Complete by explicit owner acceptance. The actions below remain the reproduction procedure. Earlier pending-QA statements in retained history describe prior delivery state and are not new test results."
         ],
         "actions": [
           "Start PIE (or rendered standalone with -game and -BriarwakeCameraReference), click the viewport, use 1 stationary / 2 axial / 3 diagonal and R reset. Wheel through overview/intermediate/close and hold left mouse to orbit. Compare Bright/Dark, equipment on/off, raised pose and alternate form through the shared Data Asset. Identify the moving character, stationary public target, four terrain steps and ramp at gameplay distances. Middle-button drag must no longer orbit; wheel zoom must continue while left-dragging.",
@@ -9625,17 +9641,6 @@
         },
         {
           "criteria": [
-            1,
-            2,
-            3
-          ],
-          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/21",
-          "revision": "b375836ab247e883aa1709597f82639b5573d1f6",
-          "result": "Not Run",
-          "summary": "Not Run \u2014 Manual QA Pending: human readability review and labeled still/motion evidence for bright/dark overview/close/intermediate views, moving equipment/alternate-form/terrain silhouettes, non-color markers with occlusion/transparency and reduced effects; 1280x720/1920x1080/1280x960 plus actual native backing-scale/UI/physical-pointer usability; and Unreal save/reopen/reproduction of new settings. Unavailable high-DPI configurations stay unverified. Ticket/manual game handoff provides exact launch, controls, expected failures, evidence and cleanup. Ticket remains In Progress; no release accessibility, connected privacy, attack authorization or T06 performance certification is claimed. Follow-up physical acceptance must use left-drag for orbit/tilt, confirm middle-button drag is inert, retain wheel zoom during drag, and recheck consuming UI/focus/release cleanup. Review the implementation now merged at game main b375836ab247e883aa1709597f82639b5573d1f6; its implementation inputs match the recorded native-tested revision. No rendered or physical-input QA was executed during the delivery follow-up. The subsequent owner-reported functionality pass is recorded separately; its coverage of these visual/display/persistence checks has not been confirmed."
-        },
-        {
-          "criteria": [
             2,
             3
           ],
@@ -9654,6 +9659,17 @@
           "revision": "b375836ab247e883aa1709597f82639b5573d1f6",
           "result": "Passed",
           "summary": "Partial owner-reported functional evidence. Owner-reported functionality pass, 2026-10-23: after the T04 manual QA handoff, the user stated, \"functionality passwd tests\" (interpreted as functionality passed tests). This records the reported functional result without inferring which display/backing-scale configurations, visual comparisons or save/reopen checks were performed. Confirmation of the complete four-step handoff remains outstanding; no new captures, display matrix or independent Codex manual execution are claimed. This does not yet establish full AC1-AC3 acceptance; the existing Not Run entry retains those exact gaps and the ticket remains In Progress."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/23",
+          "revision": "840da57a7ffe670bb5a33c69687aca1168912e87",
+          "result": "Passed",
+          "summary": "Owner-directed completion acceptance, 2026-10-23: during BW-097-T06 execution the owner explicitly corrected the T04/T05 In Progress statuses: \"they should be complete\". This records acceptance of the delivered work and sets BW-097-T04 Complete at the owner's direction; it does not report a new manual test, capture, rendered anchor error or display/backing-scale measurement. Existing passing automated evidence is preserved. Historical unexecuted evidence is retained verbatim in manual setup history, superseded for administrative status only; missing measurements are not fabricated. T06 retains its own independent rendered reproduction/performance requirements. No connected privacy, release accessibility or capacity certification is inferred."
         }
       ]
     },
@@ -9661,7 +9677,7 @@
       "id": "BW-097-T05",
       "parent_epic": "BW-097",
       "title": "Keep world picking and ground previews within authorized floor fixtures",
-      "status": "In Progress",
+      "status": "Complete",
       "epic_criteria": [
         "BW-097-AC-5"
       ],
@@ -9683,7 +9699,7 @@
         "UI/letterbox input, invalid/no-hit geometry, nonfinite coordinates, wrong zone/instance/floor and excluded entity IDs produce no selectable entity or confirmed target. Rejection is attributable, pending state clears and fresh valid input recovers. Canonical malformed/missing/ambiguous/unknown-field inputs are rejected through the existing reader.",
         "Excluded entity records/IDs/positions never enter camera render/marker/picking data, logs or captures. Revoking a previously authorized projection removes its mesh/marker/selection/preview as applicable. Zoom/orbit/occlusion cannot restore it, expose another floor or modify route/facing/aim; retained evidence states that a fixture is not a connected privacy test."
       ],
-      "completion_evidence": "Retain native contract and projection-coordinate regressions, actual rendered pointer/preview/intent comparisons at known anchors, rejection/recovery and authorization-removal observations with scoped identities. Demonstrate excluded data absence at the presentation boundary, not just a hidden actor. Keep no hidden fixture secrets in public logs/captures.",
+      "completion_evidence": "Retain native contract and projection-coordinate regressions, actual rendered pointer/preview/intent comparisons at known anchors, rejection/recovery and authorization-removal observations with scoped identities. Demonstrate excluded data absence at the presentation boundary, not just a hidden actor. Keep no hidden fixture secrets in public logs/captures. Owner accepted the delivered work as Complete on 2026-10-23 and explicitly requested the status correction. No new manual execution or quantitative results were supplied; historical unexecuted details remain in setup history. T06 reproduction/performance acceptance remains separate.",
       "related_docs": [
         {
           "label": "Parent epic and original criteria",
@@ -9742,7 +9758,10 @@
           "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. Planning provenance: the then-current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
           "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework.",
           "The test-only authority/projection producer, anchor assertions and intent sink are ticket deliverables. They require no Steam accounts or production connection, and must remain isolated from ordinary Game/Server control surfaces. Existing populated canonical records may be validated without implementing their unrelated gameplay systems.",
-          "Execution 2026-10-23: game revision 561c495c6e62079292db5ef4597a11039e91bbfe from fetched main b375836ab247e883aa1709597f82639b5573d1f6; docs based on fetched main aec0a2fb0112a6a054ace7fc16d2bfbecf5c22e4. Native checks use UE 5.8.3 Launcher CL 58210709/Xcode 27.0 build 27A266a/macOS ARM64. The supplier filters finite synthetic authorized/excluded and foreign-zone/instance/floor records before the camera receives its public view; no private FixtureWorldContext npc_states/parties enter presentation. Ground and upper origins are the starting foot anchor plus Z=0/320 cm; one authored tile width is explicitly 100 reference cm, within [-8,8] tiles per axis. Source and local descriptor identities, check results, limitations and complete QA handoff are in https://github.com/evanmcpheron/BriarwakeUnreal/pull/22."
+          "Execution 2026-10-23: game revision 561c495c6e62079292db5ef4597a11039e91bbfe from fetched main b375836ab247e883aa1709597f82639b5573d1f6; docs based on fetched main aec0a2fb0112a6a054ace7fc16d2bfbecf5c22e4. Native checks use UE 5.8.3 Launcher CL 58210709/Xcode 27.0 build 27A266a/macOS ARM64. The supplier filters finite synthetic authorized/excluded and foreign-zone/instance/floor records before the camera receives its public view; no private FixtureWorldContext npc_states/parties enter presentation. Ground and upper origins are the starting foot anchor plus Z=0/320 cm; one authored tile width is explicitly 100 reference cm, within [-8,8] tiles per axis. Source and local descriptor identities, check results, limitations and complete QA handoff are in https://github.com/evanmcpheron/BriarwakeUnreal/pull/22.",
+          "Historical unexecuted evidence, superseded for ticket status by explicit owner completion acceptance on 2026-10-23; no new execution or measurements supplied. Original criteria 1,2,3; artifact https://github.com/evanmcpheron/BriarwakeUnreal/pull/22; revision 561c495c6e62079292db5ef4597a11039e91bbfe; result Not Run. Original summary: Not Run \u2014 Manual QA Pending. Still required: rendered pointer/preview/confirmed-intent comparisons at known anchors within 10 cm (0.1 tile) across actual follow/zoom/orbit/projection transitions, resize/high-DPI and occlusion; physical UI/letterbox/no-hit/capture/focus/view-target cleanup and fresh-input recovery; visible authorization-removal observations and unchanged camera-only intent count/route/facing/aim. The game PR and docs/manual-testing.md contain concrete map/controls/steps/expected behavior/cleanup. Native NullRHI assertions do not establish rendered or physical input acceptance. This finite standalone fixture is not a connected privacy test and implements no live targeting/cast/server validation. Ticket remains In Progress until the outstanding AC evidence is accepted.",
+          "Historical unexecuted evidence, superseded for ticket status by explicit owner completion acceptance on 2026-10-23; no new execution or measurements supplied. Original criteria 1,2,3; artifact https://github.com/evanmcpheron/BriarwakeUnreal/pull/22; revision b3a0b31784632a61bf1607422a49a1417ab497d0; result Not Run. Original summary: Owner implementation approval, 2026-10-23: after delivery the user stated \"approved work\" and clarified \"just approve\" when asked whether the approval included the manual QA checklist and rendered anchor measurements. This records approval of the delivered implementation, not a newly performed QA run. No manual checklist results, rendered anchor errors or tested window/DPI settings were supplied. Existing passing automated evidence is retained; the previously identified rendered and physical-input acceptance remains Not Run \u2014 Manual QA Pending, so BW-097-T05 remains In Progress. No new game execution or connected privacy certification is claimed.",
+          "Current status, 2026-10-23: Complete by explicit owner acceptance. The actions below remain the reproduction procedure. Earlier pending-QA statements in retained history describe prior delivery state and are not new test results."
         ],
         "actions": [
           "In PIE on /Game/Tests/Camera/L_BW097_Reference, use 1/2/3 stationary/axial/diagonal and R reset. Right click the active-floor gold squares at (6,0), (0,6), (-6,-6) tiles and the public target at continuous foot point (2.3,-1.25). Enter compares the current preview through the canonical reader; record rendered pointer/preview/decoded positions and world-space error <=0.1 tile (10 cm, including native pixel truncation). Only valid Enter may increase intent count; no cast is committed.",
@@ -9779,21 +9798,10 @@
             2,
             3
           ],
-          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/22",
-          "revision": "561c495c6e62079292db5ef4597a11039e91bbfe",
-          "result": "Not Run",
-          "summary": "Not Run \u2014 Manual QA Pending. Still required: rendered pointer/preview/confirmed-intent comparisons at known anchors within 10 cm (0.1 tile) across actual follow/zoom/orbit/projection transitions, resize/high-DPI and occlusion; physical UI/letterbox/no-hit/capture/focus/view-target cleanup and fresh-input recovery; visible authorization-removal observations and unchanged camera-only intent count/route/facing/aim. The game PR and docs/manual-testing.md contain concrete map/controls/steps/expected behavior/cleanup. Native NullRHI assertions do not establish rendered or physical input acceptance. This finite standalone fixture is not a connected privacy test and implements no live targeting/cast/server validation. Ticket remains In Progress until the outstanding AC evidence is accepted."
-        },
-        {
-          "criteria": [
-            1,
-            2,
-            3
-          ],
-          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/22",
-          "revision": "b3a0b31784632a61bf1607422a49a1417ab497d0",
-          "result": "Not Run",
-          "summary": "Owner implementation approval, 2026-10-23: after delivery the user stated \"approved work\" and clarified \"just approve\" when asked whether the approval included the manual QA checklist and rendered anchor measurements. This records approval of the delivered implementation, not a newly performed QA run. No manual checklist results, rendered anchor errors or tested window/DPI settings were supplied. Existing passing automated evidence is retained; the previously identified rendered and physical-input acceptance remains Not Run \u2014 Manual QA Pending, so BW-097-T05 remains In Progress. No new game execution or connected privacy certification is claimed."
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/23",
+          "revision": "840da57a7ffe670bb5a33c69687aca1168912e87",
+          "result": "Passed",
+          "summary": "Owner-directed completion acceptance, 2026-10-23: during BW-097-T06 execution the owner explicitly corrected the T04/T05 In Progress statuses: \"they should be complete\". This records acceptance of the delivered work and sets BW-097-T05 Complete at the owner's direction; it does not report a new manual test, capture, rendered anchor error or display/backing-scale measurement. Existing passing automated evidence is preserved. Historical unexecuted evidence is retained verbatim in manual setup history, superseded for administrative status only; missing measurements are not fabricated. T06 retains its own independent rendered reproduction/performance requirements. No connected privacy, release accessibility or capacity certification is inferred."
         }
       ]
     },
@@ -9801,7 +9809,7 @@
       "id": "BW-097-T06",
       "parent_epic": "BW-097",
       "title": "Reproduce the camera proof and record visual performance decisions",
-      "status": "Not Started",
+      "status": "Complete",
       "epic_criteria": [
         "BW-097-AC-1",
         "BW-097-AC-2",
@@ -9829,7 +9837,7 @@
         "Raw measurements report CPU/GPU frame-time percentiles and memory with sampling/workload/hardware/display/quality settings and compare them against the predeclared budgets. Failures retain mitigations and retested outcomes; supported and unverified configurations are explicit. All camera/visual adjustments needed to reproduce the result are accessible through documented Unreal UI.",
         "Current game default FULL and applicable manual evidence pass without weakening Entry/server/bootstrap/security gates. Normal packages expose no usable reference fixture controls. A parent review maps passing evidence to all six BW-097 criteria and preserves prerequisite/dependent statuses truthfully; no live gameplay or release-capacity claim is inferred."
       ],
-      "completion_evidence": "Retain built/cooked scene and preset identities, exact rendered launch/cook/profile/reset commands, two-run comparisons, labeled still/motion captures, raw CPU/GPU/memory samples, supported-quality/accessibility findings and current game FULL results. Record an explicit six-criterion parent review and remaining live-gameplay/platform limits; documentation FULL is a separate tracking check.",
+      "completion_evidence": "Retain built/cooked scene and preset identities, exact rendered launch/cook/profile/reset commands, two-run comparisons, labeled still/motion captures, raw CPU/GPU/memory samples, supported-quality/accessibility findings and current game FULL results. Record an explicit six-criterion parent review and remaining live-gameplay/platform limits; documentation FULL is a separate tracking check. Explicit owner completion override, 2026-10-23: BW-097 and all six tickets are administratively Complete as requested. The failed reference cook and unexecuted rendered/performance QA remain preserved as actual historical results in BW-097-T06 setup; no new execution or measurements are claimed.",
       "related_docs": [
         {
           "label": "Parent epic and original criteria",
@@ -9865,18 +9873,24 @@
         }
       ],
       "manual_test": {
-        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log\nUse Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.\nThe shared T01 scene exists; this ticket's additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.",
+        "launch": "Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.\npython3 tools/check_baseline.py build\n\"/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor\" \"$PWD/Briarwake.uproject\" /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log\nUse Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.\nThe explicit T06 package option is implemented in game PR #23. The actual reference cook failed with GameFeatureData asset-manager configuration errors; no runnable package or rendered/profile run exists yet. Resolve that local prerequisite, then use the game PR's package/launch and docs/manual-testing.md reproduction instructions. No successful cooked launch is implied by the Editor launch above.",
         "setup": [
           "Planning inspection 2026-10-22: GAME_ROOT is the workspace-root evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af; DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main 5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit 396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS ARM64. Recheck identities when executing.",
           "Planning history 2026-10-22: no game map existed during decomposition. T01 subsequently authored /Game/Tests/Camera/L_BW097_Reference (Content/Tests/Camera/L_BW097_Reference.umap), DA_BW097_CameraDefaults and two M_ materials. Use the current package above; the former proposed BW097_Reference name is superseded. /Engine/Maps/Entry remains the baseline startup map.",
           "Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete. Planning provenance: the then-current native source SHA-256 fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence; it is not camera, GPU, connected-client or visual evidence.",
-          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework."
+          "Owner direction 2026-10-22: use an isolated camera proof with declared floor anchors and authorized public entity fixtures; live movement/targeting/visibility integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and expose all fine tuning through Unreal UI. Use one validated editor-visible configuration owner and existing Unreal Details/Project Settings/material or widget controls rather than a custom settings framework.",
+          "Execution 2026-10-23: 840da57a7ffe670bb5a33c69687aca1168912e87 from fetched game main b657353ddff7599d1dedf480b5469c00cbafc37d; docs fetched main a9babd44f8452def19f0b51191a6c649fc72fd7d. Game/Editor builds, 9 Python tests and 7 native camera tests passed. Actual cook failed as recorded in current evidence; two rendered launches and measurements are Not Run. The historical FAST/FULL references below predate the current QUICK/NATIVE policy; no removed aggregate runner was restored.",
+          "Historical BW-097 evidence, preserved unchanged after the owner explicitly requested every BW-097 record Complete on 2026-10-23. This result remains actual test history; the status override is not a successful rerun: {\"criteria\": [1, 2, 3, 4, 5, 6], \"artifact\": \"https://github.com/evanmcpheron/BriarwakeUnreal/pull/23\", \"revision\": \"840da57a7ffe670bb5a33c69687aca1168912e87\", \"result\": \"Not Run\", \"summary\": \"Current six-criterion review, 2026-10-23: AC1 retains accepted T01 scene/settings/environment evidence; AC2 combines accepted T02 zoom with owner-accepted T04 readability/display work; AC3 retains accepted T03 orbit/input; AC4 references owner-accepted T04 representative samples; AC5 references owner-accepted T05 picking. The owner explicitly requested T04/T05 Complete; no new rendered, quantitative or display-specific results were supplied. AC6 is incomplete: the actual reference cook failed with GameFeatureData asset-manager errors, and two reset cooked rendered runs, still/motion comparisons, CPU/GPU/memory results and supported-quality decisions remain Not Run. Existing accepted evidence is preserved. BW-097 remains In Progress; BW-098 gains no production/performance certification from partial tooling delivery.\"}",
+          "Historical BW-097-T06 evidence, preserved unchanged after the owner explicitly requested every BW-097 record Complete on 2026-10-23. This result remains actual test history; the status override is not a successful rerun: {\"criteria\": [1, 3], \"artifact\": \"https://github.com/evanmcpheron/BriarwakeUnreal/pull/23\", \"revision\": \"840da57a7ffe670bb5a33c69687aca1168912e87\", \"result\": \"Failed\", \"summary\": \"Actual package attempt: python3 tools/check_baseline.py package --target Briarwake --camera-reference --output artifacts/bw-097-t06-reference-package --timeout 900. The owned process ran from 2026-10-23T13:47:43.087584Z to 13:48:50.327418Z; UnrealEditor-Cmd exited 1, UAT exited 25 (Error_UnknownCookFailure), without timeout. The log reports two GameFeatureData asset-manager configuration errors, matching the known T04 issue. No runnable package was produced, so actual successful Pak/staging checks and cooked launches remain unverified. The bounded local run.json retains source/provenance, all seven asset hashes, contract snapshot identity and exact command; process.log retains the failure. No unrelated configuration change or retry campaign was performed.\"}",
+          "Historical BW-097-T06 evidence, preserved unchanged after the owner explicitly requested every BW-097 record Complete on 2026-10-23. This result remains actual test history; the status override is not a successful rerun: {\"criteria\": [1, 2, 3], \"artifact\": \"https://github.com/evanmcpheron/BriarwakeUnreal/pull/23\", \"revision\": \"840da57a7ffe670bb5a33c69687aca1168912e87\", \"result\": \"Not Run\", \"summary\": \"Not Run \u2014 Manual QA Pending: after fixing the local cook prerequisite, produce and inspect the explicit reference package, run two independently reset rendered launches per declared supported configuration, compare labeled stills/motion and T01-T05 behavior, and retain raw CPU/GPU percentiles and memory against the unchanged predeclared budgets. The game PR and docs/camera-reference.md plus docs/manual-testing.md supply exact build/package/launch, 1/2/3/R routes, wheel/left-drag camera, right-click/Enter/P/F/V picking/authorization/lifecycle, 15-second warmup/60-second native CSV and RSS procedure, settings paths, expected failures and cleanup. Quantitative and display-specific measurements are still absent; owner acceptance of T04/T05 does not supply them. Normal Game/Server runtime isolation and the final six-criterion parent acceptance remain unverified. The current validator has QUICK/NATIVE and no FULL mode; the historical AC wording is retained, no FULL pass or policy expansion is invented. BW-098 can reuse the map/settings/controls; production art, 30-player combat, connected privacy and release workloads remain later certification.\"}",
+          "Historical BW-097-T06 blocker, removed from the active roadmap blocker list only by the explicit owner completion override on 2026-10-23; no technical resolution is claimed: The explicit reference cook on 2026-10-23 failed before producing a runnable package: UnrealEditor-Cmd exit 1, UAT exit 25, with missing GameFeatureData asset-manager configuration errors (also recorded during T04 authoring). The pre-existing staged plugin descriptor was preserved; the responsible plugin was not isolated. Resolve that local configuration before a successful cooked package and the required two independent rendered/profile runs can be verified.",
+          "Current status, 2026-10-23: BW-097 and every child ticket are Complete by explicit owner override after disclosure of the failed cook and unexecuted QA. The actions below remain reproduction instructions, not executed passing evidence. Existing statements that T06 is Blocked or the parent In Progress describe the earlier delivery state."
         ],
         "actions": [
-          "Use the T01 editor/standalone launch and the explicit reference-level cook/package procedure delivered here. Record the actual rendered package launch path; it does not exist at planning time. Run T02/T03/T04/T05 actions twice after independent scene/process reset on each declared supported configuration.",
+          "After resolving the GameFeatureData configuration, build Game and Editor from the same current inputs, then run python3 tools/check_baseline.py package --target Briarwake --camera-reference --output artifacts/bw-097-t06-reference-package-recheck from GAME_ROOT. Inspect its run.json and actual Pak members. Use its recorded executable with /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference; run T02-T05 actions twice after independent process/scene reset on each declared supported configuration. Preserve the failed original output; do not call Entry-only cooking proof of the reference scene.",
           "Record warmup and bounded samples for stationary/following, both camera endpoints, continuous scroll/orbit and representative bright/dark/occlusion/effect presets. Capture CPU/GPU frame-time percentiles and memory with the documented Unreal tools and compare to predeclared budgets.",
           "Inspect the built/cooked asset inventory, preset UI and exact commands; exercise missing-level/settings/report failure and clean recovery through existing tooling. Verify fixture-control isolation in ordinary Game/Server artifacts, run python3 tools/validate.py from GAME_ROOT and retain any manual/not-run gaps.",
-          "Complete the parent six-criterion review only from applicable passing evidence, regenerate DOCS_ROOT using README.txt and inspect BW-097, foundations, readiness, milestone and BW-098 prerequisite displays."
+          "Record the six-criterion parent review using applicable passing evidence and explicit owner acceptance: AC1 T01 setup; AC2 T02 zoom plus T04 display/readability; AC3 T03 orbit/input; AC4 T04 representative samples; AC5 T05 scoped picking; AC6 pending two-run cooked rendering, raw performance/memory and supported-quality decisions. BW-097 and all six tickets are now Complete by explicit owner override; the listed missing technical measurements remain historical unverified coverage. Rebuild only roadmap outputs and run the focused docs gate; BW-098 readiness derives from the owner-closed parent and does not establish missing performance or release measurements."
         ],
         "expected_results": [
           "The versioned reference proof reproduces on its declared tested matrix with attributable visual/profiling evidence and predeclared budget results. Default native FULL and manual gates pass, unavailable/live/release work remains explicit and no gameplay completion is invented."
@@ -9887,7 +9901,30 @@
         ]
       },
       "blockers": [],
-      "verified_evidence": []
+      "verified_evidence": [
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/BriarwakeUnreal/pull/23",
+          "revision": "840da57a7ffe670bb5a33c69687aca1168912e87",
+          "result": "Passed",
+          "summary": "Partial automated implementation evidence, 2026-10-23: added package --target Briarwake --camera-reference to the existing packager, preserving normal Entry/server commands and saved settings. The explicit invocation requests Entry plus the reference level and seven assets, stages only the exact public canonical contract snapshot for T05, records input/binary/package identities and launch arguments, and rejects missing/unreadable Pak content or reference assets in ordinary packages. Game build passed; focused python3 tools/validate.py --mode native --suite camera --output artifacts/bw-097-t06-native passed in 52.824s, including affected Editor compilation/link, 9 Python packaging/tooling tests and all 7 native camera tests plus structure/whitespace. UE 5.8.3 Launcher CL 58210709, Xcode 27.0 build 27A266a, macOS ARM64. Source SHA-256 17ce2189255e88a8c6749f58ef1ba334f40d22d37a37c89061caf95a95fe7650; loaded Editor module SHA-256 3851c971675b2771cd1c577db399dc69c409bf079e4d1030085d1d81849da6d4. Native reports identify the pre-commit HEAD plus tested local inputs; this revision commits the same task content. Game main rechecked b657353ddff7599d1dedf480b5469c00cbafc37d; docs base a9babd44f8452def19f0b51191a6c649fc72fd7d. Pre-existing staged descriptor enables ModelContextProtocol/AllToolsets/ElectronicNodes/DarkerNodes and is excluded from the PR. The bare committed descriptor was not independently tested. No successful cook/runtime or rendered performance pass is claimed."
+        },
+        {
+          "criteria": [
+            1,
+            2,
+            3
+          ],
+          "artifact": "https://github.com/evanmcpheron/mmo_docs/pull/62",
+          "revision": "840da57a7ffe670bb5a33c69687aca1168912e87",
+          "result": "Passed",
+          "summary": "Explicit owner completion override, 2026-10-23: after receiving the failed-cook result and outstanding manual QA details, the owner instructed, \"mark it as complete. every epic should be marked as complete in BW097\". This records acceptance of administrative closure for BW-097 and all six child tickets, including BW-097-T06. Complete is assigned at the owner's explicit direction. The result denotes owner acceptance only: the last actual reference cook still failed with UnrealEditor-Cmd exit 1/UAT exit 25 (GameFeatureData configuration), and the two independent rendered launches, display-specific comparisons, raw CPU/GPU/memory measurements and performance decisions were not executed. Their original Failed/Not Run evidence and blocker text are preserved unchanged in T06 manual setup history. No successful cook, new test run, measured budget pass, connected gameplay, release or capacity certification is claimed. Acceptance criteria and existing passing evidence are unchanged."
+        }
+      ]
     }
   ]
 }
