@@ -113,3 +113,19 @@ do not add a project-wide stage for each ticket. Selection regression tests enfo
 no FULL fallback, no content-triggered browser/regression suite, conditional
 allocation work, missing-tool failure and blocking of unresolved PR claims. Keep
 these tests alongside `validation/test_validation.py`. FULL stays explicit.
+
+## BW-097-T02 camera execution, 2026-10-22
+
+[Reviewed native/rendered acceptance and parent audit](../validation/tickets/BW-097-T02/review.json)
+records game commit `4339aeeae46b49d4bc8fbf2d3ff7ee6cb423b5f3`, exact source/module/configuration identities,
+QUICK (4.580s), selected NATIVE (113.636s, five camera tests), 240 actual Metal frame
+observations across three physical window sizes, held handoff residual <=0.06626px,
+and real Unreal UI invalid-edit/save/restart/recovery.
+[Reproduction and durable captures](../validation/tickets/BW-097-T02/README.md)
+include historical failed policies/aim behavior and the chosen native narrow-FOV
+dolly tradeoff. Requested caps are distinct from achieved capture rates.
+T02 is Complete; BW-097, its foundation phase and milestone remain In Progress
+for T03-T06 and final UI/readability. Physical wheel-device routing, production
+worlds, orbit/picking/privacy, art/accessibility, cooked camera scene and performance
+are not certified. Unchanged prerequisite evidence was reused; no game/docs FULL
+or unrelated package/server/peer run was selected.

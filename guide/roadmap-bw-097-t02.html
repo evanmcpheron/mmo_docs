@@ -160,7 +160,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-097-T02">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">Complete</span> · Parent epic:
                 <a href="roadmap-bw-097.html#BW-097"
                   >BW-097 · Orthographic camera and visual-readability proof</a
                 >
@@ -202,6 +202,15 @@
                   continuous planar/floor position or aim. SpriteDirection retains its eight
                   case-sensitive preview strings and does not drive gameplay or camera yaw. No new
                   camera protocol or movement owner is needed.
+                </li>
+                <li>
+                  Execution 2026-10-22: implemented the existing MatchFramingAtHandoff policy with
+                  native orthographic/perspective projections, smooth pitch/focus/log-width
+                  interpolation and a narrow-FOV matched-distance dolly. Added handoff-FOV and
+                  orthographic clipping controls to the same validated Data Asset. The failed
+                  70-degree experiment and the later corrected camera-derived APawn aim failure are
+                  retained; no custom view extension or new camera protocol was needed. Source and
+                  acceptance details are in the retained review.
                 </li>
               </ul>
               <h3>Out of scope</h3>
@@ -255,94 +264,169 @@
               </p>
               <h3>Launch command or scene</h3>
               <pre><code>Working directory: GAME_ROOT, the verified workspace root containing Briarwake.uproject.
-python3 tools/check_baseline.py build
+python3 tools/validate.py --mode native --suite camera
 &quot;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor&quot; &quot;$PWD/Briarwake.uproject&quot; /Game/Tests/Camera/L_BW097_Reference -BriarwakeCameraReference -windowed -ResX=1280 -ResY=720 -log
-Use Play for PIE; add -game for rendered standalone. T01 executed both with rendering enabled. NullRHI automation does not establish rendered behavior. This isolated Development fixture requires standalone execution and the explicit flag outside PIE; it is excluded from normal cooks. Baseline startup remains /Engine/Maps/Entry.
-The shared T01 scene exists; this ticket&#x27;s additional behavior and acceptance checks remain Not Started and must be implemented before its actions can pass.</code></pre>
+Use Play for rendered PIE; -game requests rendered standalone. Native automation uses NullRHI and is separate from retained Metal presentation evidence. The isolated fixture is standalone Development/PIE only, excluded from normal cooks; baseline startup remains /Engine/Maps/Entry.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Planning inspection 2026-10-22: GAME_ROOT is the workspace-root
-                  evanmcpheron/BriarwakeUnreal checkout at f90e86a741df3dc778af61d79944289baffbd7af;
-                  DOCS_ROOT is GAME_ROOT/mmo_docs, based on fetched main
-                  5c34e5c91dd7aab5670406dfcf72b451b7748406. Engine/toolchain verification passed
-                  read-only for UE 5.8.3 Launcher CL 58210709, pinned patched source Server commit
-                  396c9f059903aed5fec78ecd3d437a40c6415368 and Xcode 27.0 build 27A266a on macOS
-                  ARM64. Recheck identities when executing.
+                  Executed game inputs are committed at 4339aeeae46b49d4bc8fbf2d3ff7ee6cb423b5f3,
+                  based on fetched main 0a4669a0ef65e3e21d30830cea7c11f3f34956b0. Documentation task
+                  base is e51e79400d7b684bad56acfb0fbf1de77794eee5. Native source SHA-256
+                  d491d6e908bf11526dcbbf9a1cfa6fb2a9959d79df7852fc2d001638e099b0af includes
+                  unchanged pre-existing local plugin preferences; their staged descriptor bytes
+                  were preserved and omitted from the game PR. The review pins that overlay, module
+                  and asset/settings identities.
                 </li>
                 <li>
-                  Planning history 2026-10-22: no game map existed during decomposition. T01
-                  subsequently authored /Game/Tests/Camera/L_BW097_Reference
-                  (Content/Tests/Camera/L_BW097_Reference.umap), DA_BW097_CameraDefaults and two M_
-                  materials. Use the current package above; the former proposed BW097_Reference name
-                  is superseded. /Engine/Maps/Entry remains the baseline startup map.
+                  UE 5.8.3 Launcher CL 58210709, Xcode 27.0 build 27A266a, macOS 27 ARM64 on the M2
+                  Max/32 GiB host. Existing /Game/Tests/Camera/L_BW097_Reference and
+                  DA_BW097_CameraDefaults were reused; no map/asset changes remain. Source
+                  Server/Shipping/other platforms were not selected for this presentation-only
+                  change.
                 </li>
                 <li>
-                  Reuse tools/check_baseline.py, tools/check_runtime_fixtures.py, tools/validate.py
-                  and native Source/Briarwake/Tests attribution. BW-001 and BW-003 are Complete.
-                  Planning provenance: the then-current native source SHA-256
-                  fac818a71e8f8790d51d8c1161d2ff1885899c908ca3054c1a791b91fc276f72 matches retained
-                  validation/tickets/BW-003-T05/review.json. This preserves prerequisite evidence;
-                  it is not camera, GPU, connected-client or visual evidence.
+                  Open Content Browser &gt; Content &gt; Tests &gt; Camera &gt;
+                  DA_BW097_CameraDefaults &gt; Camera &gt; Settings. One asset owns endpoints,
+                  focus, follow, transition/wheel/orbit, collision and new handoff/clipping
+                  controls. The game docs/camera-reference.md records every default/unit and
+                  validation rule. CameraRig Preview View now requests a smooth endpoint; wheel
+                  input holds intermediate targets.
                 </li>
                 <li>
-                  Owner direction 2026-10-22: use an isolated camera proof with declared floor
-                  anchors and authorized public entity fixtures; live movement/targeting/visibility
-                  integration remains in BW-005/BW-009/BW-013/BW-028. Supply good defaults and
-                  expose all fine tuning through Unreal UI. Use one validated editor-visible
-                  configuration owner and existing Unreal Details/Project Settings/material or
-                  widget controls rather than a custom settings framework.
+                  Defaults: overview pitch -55, distance1800cm, width2400cm, focus(0,0,90); close
+                  pitch-15, distance350cm, horizontal FOV70, focus(0,0,120); handoff0.5 at FOV0.01
+                  degrees; transition0.35s (~99.7% settling), follow half-life0.08s, wheel
+                  step0.1/rate1, ortho near0cm/far margin10000cm. Native orthographic plane
+                  correction is disabled. This finite projection approximation uses about 62km
+                  handoff distance; arbitrary edited settings and obstructed production worlds
+                  require visual recheck.
+                </li>
+                <li>
+                  Actual physical render sizes: 1280x720 stationary, 1920x1080 axial, 1280x960
+                  diagonal. Requested 30/60/120 caps yielded measured medians29.98/15.80/28.40 under
+                  screenshot overhead; native interpolation separately covers fixed30/60/120 FPS. No
+                  target performance certification is implied. Orbit, art/UI accessibility,
+                  picking/privacy and cooked/performance gates remain T03-T06.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Using T01 default preset, start stationary, then axial and diagonal routes. Scroll
-                  fully inward/outward slowly and rapidly, reverse near the projection handoff and
-                  hold each intermediate sample. Capture motion and frame/landmark observations.
+                  Play the reference map and use 1 Stationary, 2 Axial, 3 Diagonal and R reset.
+                  Scroll inward/outward, reverse near the handoff, and compare
+                  endpoints/intermediate framing. CameraRig Preview View requests the same smooth
+                  endpoint path. Repeat at the declared physical viewport sizes and record actual
+                  frame times rather than infer achieved FPS from a cap.
                 </li>
                 <li>
-                  Repeat at the recorded display sizes and supported frame-rate variations. Change
-                  endpoint/transition/follow settings in Unreal UI, save/reload and repeat. Compare
-                  fixture position/facing/aim observations before and after camera-only input.
+                  For exact rendered held samples on a fresh stationary run, request CameraRig
+                  AddWheelInput(5), wait &gt;=1.25s and record zoom0.5/native orthographic. Request
+                  AddWheelInput(0.00002), wait and record zoom about0.500002/native perspective.
+                  Reverse that increment and repeat; then use +5/-10 for close/overview. These
+                  Blueprint-callable typed commands reuse the owner called by native wheel bindings.
+                  Compare projected foot/head/cube/sphere/cone coordinates with a &lt;0.5px switch
+                  budget; mark offscreen landmarks explicitly.
+                </li>
+                <li>
+                  Use the retained validation/tickets/BW-097-T02/capture.py/README.md procedure for
+                  repeatable Metal screenshots and frame coordinates. Use fresh command IDs/output
+                  records. Native input callbacks and typed rendered commands were executed;
+                  physical OS wheel-device/focus/capture routing was not certified by the available
+                  UI surface.
+                </li>
+                <li>
+                  Change overview/close pitch/distance, width/FOV, focus offsets, transition/follow
+                  and wheel/clipping values through the Data Asset UI while PIE runs. Inspect the
+                  same rig/camera/arm. Executed authored preset:
+                  overview(-60,1900cm,2600cm,focus5/7/95), close(-20,360cm,FOV75,focus10/15/125),
+                  duration0.5, handoff0.45/FOV0.015, follow0.1, wheel0.2/rate1.5, near1cm/far
+                  margin12000cm. Stop PIE, save, close/reopen the owned editor and compare every
+                  field; inspect live close properties after restart.
+                </li>
+                <li>
+                  Attempt handoff FOV0 through Unreal UI. Expect
+                  ReferenceCameraConfigurationRejected, visible Validation Message and exact prior
+                  authored settings. Make a valid edit to clear rejection. Native configuration
+                  tests cover nonfinite/range/policy/serialization rejection; possessed lifecycle
+                  tests preserve arbitrary controller aim and route/transform through actual bound
+                  wheel delegates.
+                </li>
+                <li>
+                  Restore native defaults through the same UI and save; restart and compare all
+                  fields. Inspect the five-test native report and actual rendered frame/held-sample
+                  results. Keep historical failed experiments and current passing evidence distinct.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Both required projection endpoints and reversible transitions pass the recorded
-                  framing/continuity checks. Camera tuning changes presentation only and the saved
-                  preset reproduces it.
+                  Fresh overview and close are genuinely native orthographic and perspective.
+                  Reversible zoom keeps the body framed; the held switch measures &lt;0.5px
+                  (observed max0.06626px forward/reverse), and returning overview reproduces the
+                  initial projections (observed max0.000206px). All240 recorded default-motion
+                  frames keep foot/head within5% viewport margins, floorZ0 and continuous aim
+                  unchanged.
+                </li>
+                <li>
+                  All authored UI values recover exactly after actual editor restart; live close
+                  FOV75/distance360/pitch-20/focus10/15/125 matches that same owner. Invalid
+                  settings reject atomically and defaults recover exactly after another restart.
+                  Camera-only input changes no fixture route, facing, collision or controller aim;
+                  no eight-direction quantization or authoritative movement/aim owner was
+                  introduced.
+                </li>
+                <li>
+                  T02 is Complete with bounded native/reference-scene evidence. BW-097 remains In
+                  Progress: final UI/high-DPI readability and AC3-AC6
+                  orbit/art/picking/privacy/cooked/performance evidence are unfinished. The
+                  reference uses a finite narrow-FOV approximation and does not certify
+                  production-world collision sweeps, renderer quality or performance.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Stop only the owned PIE/standalone session. Restore the reference configuration
-                  preset through Unreal UI, reset the scene-owned
-                  route/lighting/authorization/pointer fixtures and clear pending orbit/zoom/preview
-                  input. Reload the reference level and repeat a clean run.
+                  Stop only owned PIE/standalone/editor sessions. Restore original play-window
+                  settings and DA_BW097_CameraDefaults through Unreal UI, save and reopen. A fresh
+                  run is Overview/Stationary; R resets the selected route. The executed reset
+                  retained exact original map/configuration bytes and the user staged plugin
+                  descriptor.
                 </li>
                 <li>
-                  Retain failed and successful captures in bounded task outputs under
-                  GAME_ROOT/artifacts with revision/settings identities. Preserve other editor
-                  sessions, prior evidence, user assets and build caches; no project copies,
-                  worktrees, cache deletion or unrelated asset resaves.
+                  Retain compact durable evidence under validation/tickets/BW-097-T02/ in DOCS_ROOT;
+                  bounded raw task outputs remain under GAME_ROOT/artifacts/bw-097-t02. Preserve
+                  original editor sessions, user assets, preferences and build caches; no
+                  clones/worktrees/project copies, unrelated resaves or cleanup.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain rendered motion/still captures in both
-                directions and at the projection handoff, frame/landmark continuity results,
-                route/aim invariance assertions, chosen policy and UI configuration hashes. Native
-                automation covers deterministic interpolation/bounds/lifecycle; rendered evidence is
-                required for the actual projection result.
+                <strong>Required evidence:</strong> Executed QUICK and targeted NATIVE
+                Editor/UHT/link plus all five camera tests. Retained Metal motion/still captures,
+                exact held samples on both sides of the projection handoff, per-frame
+                route/aim/framing observations, native 30/60/120 FPS interpolation, editor setting
+                hashes and real save/restart/reload/default recovery are under
+                validation/tickets/BW-097-T02/. The native framing-matched 0.01-degree FOV/dolly
+                handoff measured at most 0.06626 pixels on forward/reverse held samples; it is a
+                finite approximation with a roughly 62 km default camera distance. Physical OS
+                wheel-device/capture routing, production-world occlusion/quality and performance
+                remain explicitly outside this evidence.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="../validation/tickets/BW-097-T02/review.json"
+                    >Five native camera tests and actual Metal rendering verify reversible genuine
+                    projection endpoints, &lt;0.5px held handoff (observed maximum 0.06626px), 240
+                    frame observations across three routes/windows, possessed continuous-aim
+                    invariance, live Unreal tuning, invalid-setting rejection and exact save/restart
+                    recovery. Narrow native FOV/dolly policy, historical failures, source/descriptor
+                    identities and capture-rate limitations are retained in the review.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision 4339aeeae46b49d4bc8fbf2d3ff7ee6cb423b5f3
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-097.html#BW-097">Parent epic and original criteria</a>;

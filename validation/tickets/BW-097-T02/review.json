@@ -1,0 +1,274 @@
+{
+  "ticket": "BW-097-T02",
+  "status": "Complete",
+  "reviewed_at_utc": "2026-10-23T01:43:08.979061+00:00",
+  "game_revision": "4339aeeae46b49d4bc8fbf2d3ff7ee6cb423b5f3",
+  "game_main_base": "0a4669a0ef65e3e21d30830cea7c11f3f34956b0",
+  "docs_main_base": "e51e79400d7b684bad56acfb0fbf1de77794eee5",
+  "tested_identity": {
+    "native_source_sha256": "d491d6e908bf11526dcbbf9a1cfa6fb2a9959d79df7852fc2d001638e099b0af",
+    "module_sha256": "5b4c5cbb4fa89c6f95c45dc0fc814aada787a8fa8c951d24b5a369da32db590f",
+    "execution_git_head": "0a4669a0ef65e3e21d30830cea7c11f3f34956b0",
+    "execution_had_uncommitted_task_changes": true,
+    "reuse_after_commit": "The tested task inputs are committed unchanged at game_revision. Source identity includes the unchanged pre-existing local project descriptor overlay, which is preserved and omitted from the game PR. A commit-only revision advance invalidates no relevant input.",
+    "preexisting_project_descriptor_sha256": "26ba45de235ee95b8e2edfa22ec2c2783671c2605f979c6aa93e1960cdb7450e",
+    "preexisting_project_descriptor_index_blob": "321555c7f1e8cb33424a5ec73f2000296539d8e4",
+    "reference_map_sha256": "acfa434889a69b9df76ef9546beb07c3b7b6b2371b02c6972e9270aeaf07d831",
+    "configuration_asset_sha256": "afb64859aeb6b35c0015b85f214862ae3b695af568dc853d3b55cb36ca808a0b",
+    "reference_defaults_sha256": "074f06b5a97cf6e086cbd06125bb4f0915e051fa73dd63d5b6e8eb68882bcefb"
+  },
+  "environment": {
+    "engine": {
+      "MajorVersion": 5,
+      "MinorVersion": 8,
+      "PatchVersion": 3,
+      "Changelist": 58210709,
+      "CompatibleChangelist": 55116800,
+      "IsLicenseeVersion": 0,
+      "IsPromotedBuild": 1,
+      "BranchName": "++UE5+Release-5.8"
+    },
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "os": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "python": "3.14.0",
+    "engine_root": "/Users/Shared/Epic Games/UE_5.8",
+    "installed_engine": true,
+    "engine_source_revision": null
+  },
+  "host": "Apple M2 Max, 12 CPU/38 GPU cores, 32 GiB; internal 2x display. Native environment was rechecked; hardware/display context is retained from T01 on the same host.",
+  "chosen_policy": {
+    "owner": "FReferenceCameraSettings.Sample and UReferenceCameraRig; FReferenceCameraZoom owns per-instance bounded smoothing. Existing native camera/spring arm and Data Asset are reused.",
+    "projection": "Native orthographic through zoom 0.5; native perspective beyond that point. Smooth pitch/focus/logarithmic width interpolation, narrow-FOV matched-distance dolly, exact critically damped zoom and independent exponential follow.",
+    "handoff_horizontal_fov_degrees": 0.01,
+    "handoff_distance_cm": 6214278.0,
+    "finite_approximation": true,
+    "reason": "The 70-degree framing-matched native switch failed. A narrow native FOV met the observed tolerance, so no custom view extension, generic blend, matrix override or new projection protocol was necessary.",
+    "tradeoff": "Default handoff is about 62 km from focus; physical camera distance is not monotonic while the displayed zoom closes. Long collision sweeps, production-world precision/occlusion/LOD/shadow behavior and performance remain T05/T06 acceptance."
+  },
+  "criteria": [
+    {
+      "criterion": 1,
+      "result": "Passed",
+      "evidence": [
+        "observations.json",
+        "endpoints.png",
+        "hold-ortho.png",
+        "hold-perspective.png",
+        "stationary-1280x720-30-final.gif"
+      ],
+      "summary": "Fresh native orthographic overview follows the pawn; the same detent command reaches close perspective and returns. Actual Metal held samples straddle the projection switch in both directions. Maximum projected landmark residual is 0.066258442 px versus 0.5 px; overview round-trip is 0.000205994 px. Some landmark projections are outside the zoomed viewport."
+    },
+    {
+      "criterion": 2,
+      "result": "Passed",
+      "evidence": [
+        "frames.csv",
+        "observations.json",
+        "axial-1920x1080-60-final.gif",
+        "diagonal-1280x960-120-final.gif"
+      ],
+      "summary": "240 actual rendered frame observations cover stationary/axial/diagonal routes, endpoints and rapid reversals in three physical viewport sizes. Foot/head remain within the 5% viewport margins; reference floor Z and aim are unchanged. Native possessed-pawn callbacks preserve route, transform and arbitrary controller aim (-3.7,37.25,0); deterministic interpolation agrees at 30/60/120 FPS. Caps are distinguished from slower observed rendered rates."
+    },
+    {
+      "criterion": 3,
+      "result": "Passed",
+      "evidence": [
+        "configuration-review.json"
+      ],
+      "summary": "Real reflected editor-property callbacks changed endpoints, widths/FOV, focus, transition/follow, wheel and clipping controls on the same Data Asset. Authored values saved and recovered exactly after a real editor restart; live close distance 360/FOV75/pitch-20/focus(10,15,125) was inspected. Invalid handoff FOV rejected atomically with a visible reason. Defaults restored exactly and recovered after another restart; native invalid/serialization/bounds coverage passes."
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 tools/validate.py --mode native --suite camera --output artifacts/bw-097-t02/native-05",
+      "result": "Passed",
+      "seconds": 113.636,
+      "scope": "Incremental Editor/UHT/link, import-dependent Python regressions, source/whitespace checks, five registered native camera tests.",
+      "tests": [
+        "Briarwake.Camera.Configuration",
+        "Briarwake.Camera.Projection",
+        "Briarwake.Camera.Routes",
+        "Briarwake.Camera.SceneLifecycle",
+        "Briarwake.Camera.Zoom"
+      ],
+      "source_stable": true,
+      "budget": "113.636s exceeds the preferred warm 60s budget; reflected rebuild was 49.810s and the actual engine automation process 58.995s while editor instances were present. No comprehensive run or package was selected."
+    },
+    {
+      "command": "python3 tools/validate.py --output artifacts/bw-097-t02/quick-final",
+      "result": "Passed",
+      "seconds": 4.58,
+      "scope": "QUICK only. The runner also reports the unrelated staged descriptor impact; selected checks do not certify that unrelated work."
+    },
+    {
+      "command": "Metal PIE with retained capture.py; three motion cases plus exact typed wheel-command held samples",
+      "result": "Passed",
+      "scope": "Actual native projection/rendering and player-controller world-to-screen coordinates, separate from NullRHI automation."
+    },
+    {
+      "command": "Unreal MCP editor-property changes, invalid edit, save/restart/reload/live comparison/default restore",
+      "result": "Passed",
+      "scope": "One existing reference Data Asset and explicitly placed pawn; no generated asset/map changes retained."
+    }
+  ],
+  "rendered_evidence_reuse": {
+    "motion_source_sha256": "0f955c8ad287ad996fa9a0dee1dba6e6b28bba665cdfc8d03ef20b055050afab",
+    "final_source_sha256": "d491d6e908bf11526dcbbf9a1cfa6fb2a9959d79df7852fc2d001638e099b0af",
+    "only_native_input_difference": "ReferenceCameraRig.h adds BlueprintCallable metadata to existing input methods so exact held samples can be requested. Runtime presentation bodies and native tests are unchanged. Motion cases remain applicable; exact held samples executed against the final rebuilt module.",
+    "physical_viewports": [
+      [
+        1280,
+        720
+      ],
+      [
+        1920,
+        1080
+      ],
+      [
+        1280,
+        960
+      ]
+    ],
+    "requested_caps": [
+      30,
+      60,
+      120
+    ],
+    "observed_median_fps": [
+      29.984988932487727,
+      15.796851545450671,
+      28.402198615395832
+    ]
+  },
+  "superseded_failures": [
+    {
+      "result": "Failed",
+      "experiment": "70-degree focus-framing-matched native handoff",
+      "evidence": [
+        "failed-native-70-degree-handoff.png",
+        "native-handoff-measurement.json"
+      ],
+      "summary": "Rendered floor/body/landmarks jump; idealized native projection equations also show depth-dependent residuals well above 0.5 px. Superseded by the verified 0.01-degree handoff. This diagnostic is not passing game acceptance."
+    },
+    {
+      "result": "Failed",
+      "criterion": 2,
+      "source_sha256": "c7fade210318e677dba60a37382eba12e50b667c3a1ff764cba5400b3508676e",
+      "case": "stationary-1280x720-30-v2",
+      "observed_base_aim_pitch_range": [
+        -54.999999991973,
+        -15.000002861022946
+      ],
+      "summary": "A real possessed pawn exposed APawn human-player base aim following camera rotation. Fixed by reading the existing controller rotation and verified by the possessed-pawn native regression plus all current rendered cases. Historical failure; no failing current evidence remains."
+    }
+  ],
+  "manual_record": {
+    "purpose": "Verify genuine native endpoints, reversible rendered continuity, following, input invariance and saved UI tuning.",
+    "prerequisites": "Pinned Editor build, existing reference map/Data Asset, standalone Development fixture or PIE, rendering enabled. Unreal MCP initialized/discovered and correct project confirmed.",
+    "setup": "GAME_ROOT; existing build directories and task branch. Launch reference map with -BriarwakeCameraReference. Temporary owned editor instances enabled PythonScriptPlugin on the command line for observation; project plugin preferences were preserved.",
+    "execution": "Run native camera suite; actual Metal PIE motion on three routes/windows; type the same wheel command for exact held fractions 0.5/0.500002; edit existing asset through editor callbacks, save/restart/recover, reject FOV0 and restore defaults. See README.md.",
+    "expected_results": "Native endpoints and body framing remain valid; held switch residual <0.5 px; bound camera commands preserve route/transform/continuous controller aim; one asset validates and reproduces tuning.",
+    "negative_cases": "Nonfinite/range/unknown-policy/sample bounds, invalid handoff edit, input bounds/rapid reversal, ended-rig rejection/reinitialize, arbitrary possessed controller aim and serialization. Historical failures are retained above.",
+    "cleanup": "Stopped only owned PIE/editor instances; restored original play-window preferences and camera defaults. Original editor remains open. Pre-existing staged Briarwake.uproject blob is unchanged; map and configuration asset bytes are unchanged. The original editor was returned to its initial /Engine/Maps/Entry level; its task-created asset dirty flag was cleared with byte-identical save.",
+    "evidence": "review.json, observations.json, frames.csv, configuration-review.json, exact held PNG pair, endpoint image and three sampled-motion GIFs.",
+    "limitations": "Physical OS wheel-device/focus/capture routing was not certified by the available UI surface; native bound callbacks and rendered typed commands are explicit. T03/T05 own orbit/pointer capture. Rendered caps were not achieved under screenshot overhead. Production movement/aim, world picking/privacy, occlusion, representative art, accessibility, cooked reference map, production hardware and performance are outside T02."
+  },
+  "log_review": "No compiler/UHT failure or camera missing-asset/runtime rejection remains. The pre-existing local AllToolsets-enabled descriptor emits GameFeatureData configuration and UnifiedErrorTest startup diagnostics; those are retained in local logs and were not suppressed or changed. They are outside this task and prevent a blanket clean-plugin-startup claim.",
+  "parent_review": {
+    "epic": "BW-097",
+    "status": "In Progress",
+    "hard_dependencies": {
+      "BW-001": "Complete",
+      "BW-003": "Complete"
+    },
+    "T01": "Complete; unchanged setup/reference owners and retained evidence remain applicable.",
+    "T02": "Complete",
+    "remaining": {
+      "AC2": "Camera behavior verified here; final independently scaled UI/high-DPI readability remains T04.",
+      "AC3": "Middle-mouse yaw/pitch, release/focus/capture behavior remains T03.",
+      "AC4": "Representative art/equipment/terrain/lighting readability remains T04.",
+      "AC5": "World picking, previews, UI pointer ownership, occlusion and privacy remain T05.",
+      "AC6": "Versioned cooked scene, declared quality/accessibility decisions, CPU/GPU/memory measurements remain T04/T06."
+    },
+    "readiness": "T03 has its T02 prerequisite satisfied; T04/T05 still await T03 and T06 awaits them. BW-097 remains Dependency-ready/In Progress; BW-098 remains Not Started awaiting BW-095/BW-097. Foundation phase/milestone remain In Progress.",
+    "AC1": "Passed with current reference-scene settings/input/environment records; prior T01 evidence is preserved."
+  },
+  "review_checklist": "Scope, canonical contracts/owners, typed C++ header/source separation, GC/lifetime/input teardown, asset identity, authority boundary, tests/logs, preserved user index, bounded artifacts and final diff reviewed. Networking/storage/production gameplay changes are N/A; no protected standards changed.",
+  "not_run": [
+    "Physical OS wheel-device routing/focus/capture",
+    "Middle-mouse orbit (T03)",
+    "Production picking/occlusion/privacy (T05)",
+    "Representative-art/accessibility acceptance (T04)",
+    "Camera-map cook and CPU/GPU/memory/performance certification (T06)",
+    "Unrelated platform/Shipping/peer/storage integration; no affected gameplay/network boundary"
+  ],
+  "artifact_hashes": {
+    "README.md": "bb3665d0684fa9d4b6edfc4bb2efbac37e25cc9212ae0f7a3d20abe884792db3",
+    "axial-1920x1080-60-final.gif": "21899956b0284c943443899e49ac5b2b2cb0204ff47cf3ea2cde782799e8ebf9",
+    "capture.py": "0b34f3475ebfd30ef210a021cba77d8fbb4a458a1fdc2a253c1d3258dff015e9",
+    "configuration-review.json": "a37912be3f2f9da828c66710b46431b600c149b94ef5de583b9e371a7dac8d6a",
+    "diagonal-1280x960-120-final.gif": "492d145971c2a1ad80b5567983a517a4e00494bd08469865f93d3f0c04f64762",
+    "endpoints.png": "2790d5d128f36e70a5597656c5bb4c946505bd260a3689f164690ef80245df5d",
+    "failed-native-70-degree-handoff.png": "112d317dbde18d66fae1588621d7c532e9d57f96dfd087804a81a6b240dc460a",
+    "frames.csv": "61b0eda1aa9ca86b11f70e4286f4c3ce3ddf554c4b7ee38461ae5bd271e70d10",
+    "hold-ortho.png": "314af0ebe66b87ffb62bb6f26c809dce462cf79155f911295958321ae882aa59",
+    "hold-perspective.png": "8a4f0643e7a8f000ed92b17954cf123ae62d016012be0a4c43dd3b7c1f7ecc5e",
+    "native-handoff-measurement.json": "5d41c16bb029674c73e1a835b9b75bb8d863f69daf4d1d28481f8d09763bcfc7",
+    "observations.json": "1c3a067d9b73cb86e410f0bc8faf33d6df192a567d4be5c3371608a726bba2a7",
+    "stationary-1280x720-30-final.gif": "b69de8ddb69c62cd667eed6b5e88a710b0daefa6a2d889dff7db70ac792db3ab"
+  },
+  "generated_views_review": {
+    "ticket_epic_pages": {
+      "BW-097-T02": "Complete",
+      "BW-097": "In Progress",
+      "BW-097-T03": "Not Started",
+      "BW-098": "Not Started"
+    },
+    "overall": {
+      "total": 97,
+      "complete": 3,
+      "percentage": 3.1,
+      "status": "In Progress",
+      "counts": {
+        "Not Started": 93,
+        "In Progress": 1,
+        "Blocked": 0,
+        "Complete": 3
+      }
+    },
+    "foundations": {
+      "total": 6,
+      "complete": 3,
+      "percentage": 50.0,
+      "status": "In Progress",
+      "counts": {
+        "Not Started": 2,
+        "In Progress": 1,
+        "Blocked": 0,
+        "Complete": 3
+      }
+    },
+    "foundation_milestone": {
+      "total": 6,
+      "complete": 3,
+      "percentage": 50.0,
+      "status": "In Progress",
+      "counts": {
+        "Not Started": 2,
+        "In Progress": 1,
+        "Blocked": 0,
+        "Complete": 3
+      }
+    },
+    "ready_epics": [
+      "BW-097",
+      "BW-095",
+      "BW-018",
+      "BW-004",
+      "BW-005",
+      "BW-006"
+    ],
+    "search_navigation_inventory": "Canonical target identities/links preserved; T02 search text says Complete, two planning-review fingerprints refreshed, manifest/navigation/schema/count bytes unchanged."
+  }
+}
