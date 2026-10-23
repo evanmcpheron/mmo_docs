@@ -158,7 +158,7 @@
             </nav>
             <article class="roadmap-ticket" id="BW-095-T01">
               <p>
-                <span class="badge">Not Started</span> · Parent epic:
+                <span class="badge">In Progress</span> · Parent epic:
                 <a href="roadmap-bw-095.html#BW-095"
                   >BW-095 · Versioned content authoring and import workflow</a
                 >
@@ -259,47 +259,56 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Not Run — Manual QA Pending. From the existing game workspace, use the import/export commands and bounded sample paths documented by BW-095-T01 after implementation. That entry point does not exist at planning time; implementation must record exact runnable commands before handoff. This is offline content tooling: no gameplay map, mouse controls or editor execution is required.</code></pre>
+              <pre><code>Not Run — Manual QA Pending. From the existing game root with its built pinned macOS ARM64 UE 5.8.3 Editor: &#x27;/Users/Shared/Epic Games/UE_5.8/Engine/Binaries/Mac/UnrealEditor-Cmd&#x27; &quot;$PWD/Briarwake.uproject&quot; -run=ContentAuthoring -Source=&quot;$PWD/fixtures/content_authoring/reviewed-sample.json&quot; -unattended -nop4 -NullRHI -nosound -NoShaderCompile -SkipAssetScan. Exact export/reimport/rejection commands: https://github.com/evanmcpheron/BriarwakeUnreal/blob/b0c983db1284c51e35c6ae4171c05c3e57baef14/docs/content-authoring.md. No map, controls, database or editor MCP is needed.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Use the existing game checkout, pinned UE 5.8.3/toolchain and canonical mmo_docs
-                  sources. Use only task-owned sample/output directories beneath ignored game
-                  artifacts/; preserve source assets, prior accepted output and historical evidence.
+                  Use the existing game/docs checkouts and built task revision
+                  b0c983db1284c51e35c6ae4171c05c3e57baef14. Prerequisites BW-001/BW-002/BW-003
+                  remain Complete within their recorded boundaries; no historical FULL rerun is
+                  required.
                 </li>
                 <li>
-                  Prerequisites BW-001/BW-002/BW-003 are Complete within their recorded boundaries.
-                  The importer CLI and runbook are missing; their creation and exact executable
-                  invocation belong to this ticket.
+                  Follow the runbook to create a fresh task-owned directory beneath ignored
+                  artifacts/. Use absolute paths and -SkipAssetScan for the JSON-only command;
+                  preserve source assets, user changes, prior valid output and historical evidence.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Following the delivered runbook, import the reviewed linked sample, export it,
-                  reimport into a fresh output and compare IDs, values and revisions.
+                  Import/validate fixtures/content_authoring/reviewed-sample.json, export to a new
+                  export.json, then import that file and export to reimport.json. Compare both
+                  exports with cmp and inspect IDs, canonical values, absent runtime_binding, null
+                  resource fields and separate content/rules/database revisions.
                 </li>
                 <li>
-                  In task-owned sample copies, break a resource/target reference, reuse an ID and
-                  supply an unsupported family; run the same command and inspect its exit status and
-                  source-mapped findings.
+                  Use the runbook to create task-owned resource-reference, duplicate-ID and
+                  unsupported-family copies. Run each with the same existing export.json destination
+                  and record its exit status, source/record/field findings and comparison of the
+                  retained valid outputs.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Valid records round-trip through native admission. Invalid candidates return
-                  nonzero with exact file/record/field diagnostics and leave the previously admitted
-                  selection unchanged; no authored gate becomes runtime-ready.
+                  Valid imports/exports exit 0 and preserve all 18 sample records and revision
+                  domains; both exports compare byte for byte and log ready_abilities=0. No authored
+                  gate or expected finding creates gameplay capability or runtime evidence.
+                </li>
+                <li>
+                  Rejected copies exit nonzero with resource_alias, duplicate_id or
+                  unsupported_family and actionable source locations. The prior valid export remains
+                  byte-identical; no partial destination is published.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Let the bounded command exit; use a fresh task-owned output directory for the next
-                  run. Restore only the sample edits made during this procedure; retain the prior
-                  valid output and concise actual result. Never reset the checkout, resave unrelated
-                  assets or overwrite historical evidence.
+                  Let the bounded commandlets exit. Retain the prior valid exports and a short
+                  actual result, restore only edits made to task-owned sample copies, and remove
+                  only that task-owned output directory when no longer needed. Do not reset the
+                  checkout or resave unrelated assets.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
@@ -311,10 +320,49 @@
                 command replay as Not Run until performed.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
-              <p>
-                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
-                pass.
-              </p>
+              <ul>
+                <li>
+                  <a href="https://github.com/evanmcpheron/BriarwakeUnreal/pull/27"
+                    >2026-10-23 automated implementation evidence. Game branch starts from
+                    fetched/rechecked main 1f705e797fae5507fe477deb85529f047f2ddd63. python3
+                    tools/validate.py --mode native --suite admission --suite authoring --output
+                    artifacts/bw-095-t01-native-final passed pinned macOS ARM64 UE 5.8.3 Editor
+                    compilation/UHT/link, eight adjacent Python tests, structured inputs, the
+                    unchanged 98-definition canonical snapshot, 1,284 existing native admission
+                    assertions and 30 focused adapter assertions. Actual ContentAuthoring commandlet
+                    export and reimport with -SkipAssetScan exited 0; a broken resource reference
+                    exited 1 with source-mapped resource_alias; valid exports remained
+                    byte-identical and ready_abilities stayed zero. The adapter preserves
+                    IDs/values/optional-null/revision domains, rejects
+                    bounds/duplicates/incompatible references/target fields/unsupported
+                    families/authored policy-evidence and retains the selection/output on rejection.
+                    Native source SHA-256
+                    0fb2c9e0d26d459c2357186026ba2a1a28c68de15ec6cf748cd89b1467a3ac1b; reviewed
+                    sample SHA-256 de60b9e4d57e80e743570b4719c36c5a5cf9bc40f6af34d0c6cb3319fcf1d948.
+                    Identical native inputs were tested before the task commit; unrelated staged
+                    descriptor plugin settings were preserved/excluded (local descriptor SHA-256
+                    26ba45de235ee95b8e2edfa22ec2c2783671c2605f979c6aa93e1960cdb7450e). The JSON-only
+                    command uses -SkipAssetScan after the initial invocation exposed unrelated
+                    GameFeature asset-scan configuration errors; no project setting or error
+                    suppression was changed. This proves offline tooling, not gameplay/runtime
+                    readiness, deployment or persistence.</a
+                  >
+                  — AC 1, 2, 3; Passed; revision b0c983db1284c51e35c6ae4171c05c3e57baef14
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/evanmcpheron/BriarwakeUnreal/blob/b0c983db1284c51e35c6ae4171c05c3e57baef14/docs/content-authoring.md"
+                    >Not Run — Manual QA Pending. A person must replay the runbook
+                    import/export/reimport and resource-reference, duplicate-ID and
+                    unsupported-family rejections, record actual exit statuses/source-mapped
+                    findings and byte comparisons, and confirm prior output retention and zero ready
+                    abilities. Automated coverage passed; human acceptance has not been performed.
+                    BW-095-T01 remains In Progress; no parent or downstream completion is
+                    asserted.</a
+                  >
+                  — AC 1, 2, 3; Not Run; revision b0c983db1284c51e35c6ae4171c05c3e57baef14
+                </li>
+              </ul>
               <h2 id="documentation">Related documentation</h2>
               <p>
                 <a href="../guide/roadmap-bw-095.html#BW-095">Parent epic and acceptance criteria</a
