@@ -171,30 +171,42 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Reuse T02 connection-derived CommandContext and CommandResponse, existing typed
-                  command decoding and the domain dispatch boundary.
+                  Owner: one server command-admission policy consuming T02 connection-derived
+                  identity/epoch and canonical CommandContext/CommandResponse. Keep transport
+                  handlers thin and leave effects with explicitly wired domain owners; T04 exposes
+                  this policy through bounded owned RPC routing. No externally callable gameplay
+                  route is enabled by this ticket alone.
                 </li>
                 <li>
-                  Own accepted/rejected command identity and bounded retry-result retention in one
-                  server command-admission path. Return the prior outcome/reference for identical
-                  epoch/sequence retries; reject conflicting payload reuse and stale epochs. Domain
-                  owners consume the accepted root identity rather than keeping competing generic
-                  replay ledgers.
+                  Reuse FContentContracts::DecodeAbilityCommand and canonical value comparison for
+                  validated requests. Within the authenticated owner scope, an identical
+                  (session_epoch, command_sequence) resolves to the same accepted/rejected
+                  action/result identity; conflicting semantic payload reuse rejects without
+                  replacing it. Exact retries are checked as retries rather than automatically
+                  rejected as old sequences.
                 </li>
                 <li>
-                  Extend the existing native automation/report path with focused behavior and
-                  failure cases; retain exact engine/source/content/rules/configuration identities
-                  and actual assertions. Reuse FContentContracts and its canonical
-                  extractor/reference closure where these contracts cross a boundary; a schema does
-                  not require a separate UObject or new wire protocol. Do not duplicate admission,
-                  replay or domain rules in UI/transport.
+                  Bound retained outcomes, sequence ranges and in-flight work explicitly;
+                  epochs/sequences cannot wrap or be reused. Eviction, timeout and reconnect cannot
+                  authorize re-execution of an old identity. Preserve the prior rejection and any
+                  later completion reference, with documented behavior when a retained response
+                  expires. Do not add pending enum tokens to the canonical accepted/rejected
+                  CommandOutcome.
+                </li>
+                <li>
+                  Use deterministic native tests of this actual policy with a test-only counted
+                  dispatch/effect boundary, not the Editor-only FRuntimeFixtureContext
+                  AcceptedActions set as production authority. BW-003 only proves a local
+                  logical-recipient probe. BW-018 operation-key receipts and durable economic retry
+                  remain separate responsibilities; do not copy their storage ledger into session
+                  command admission.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Durable economic receipts/persistence and independent movement, cast or combat
-                  rule implementations.
+                  RPC transport/size/rate integration (T04), durable receipts, database recovery,
+                  movement/cast/combat outcomes and a second generic replay framework.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -209,43 +221,47 @@
                 <li id="BW-004-T03-AC-1">
                   <a href="#BW-004-T03-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    A retry before or after completion returns a consistent
-                    acceptance/rejection/result reference and causes one accepted action/effect at
-                    most. A conflicting reuse rejects without replacing the original outcome.
+                    Identical retries while an accepted action is unresolved and after completion
+                    reuse its action identity and consistent response/result reference; a rejected
+                    command repeats its recorded rejection. Tests count at most one dispatch and one
+                    test effect. Conflicting reuse rejects while leaving the original outcome
+                    intact.
                   </p>
                 </li>
                 <li id="BW-004-T03-AC-2">
                   <a href="#BW-004-T03-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Retries, reordered input, disconnect/rejoin and stale ownership epochs cannot
-                    dispatch another accepted action or expose foreign result references. Configured
-                    retention/sequence bounds and expired-result behavior remain explicit and never
-                    authorize re-execution.
+                    Reordered unknown sequences, stale epochs, foreign session identities and
+                    sequence overflow cannot dispatch another action or disclose another owner
+                    result. Retention bounds, expiry and reconnect do not permit an old command to
+                    execute again.
                   </p>
                 </li>
                 <li id="BW-004-T03-AC-3">
                   <a href="#BW-004-T03-AC-3" class="roadmap-criterion-link">AC 3</a>
                   <p>
-                    Reliable delivery and transport acknowledgments are not described as
-                    exactly-once gameplay execution; domain mutation remains with its owner and
-                    tests count actual commits.
+                    Focused native tests execute the actual policy for accepted/rejected/conflicting
+                    retries, unresolved/completed results and the distinct retention/owner failure
+                    boundaries. Transport acknowledgments or an in-memory fixture assertion are not
+                    described as durable exactly-once gameplay.
                   </p>
                 </li>
               </ol>
               <h2 id="manual-test">Manual verification</h2>
               <p>
-                This outcome is verified by executed headless native automation at the owning rule
-                boundary. Its fixture setup, negative cases and teardown are part of the ticket;
-                documentation checks alone do not verify it.
+                This ticket adds a server policy exercised at its actual native boundary with
+                deterministic trusted-session inputs and a counted test-only dispatch/effect sink.
+                Run focused Unreal Automation with affected compilation using the existing harness;
+                document the actual test name/command in the implementation PR. T04 verifies
+                connected RPC wiring, so this ticket does not duplicate two-client scenarios or
+                claim transport evidence.
               </p>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain attributable executed positive/negative
-                results for every ticket criterion, the actual build/launch/reset procedure, tested
-                input identities and applicable focused regressions. Use the existing native
-                automation harness with deterministic boundary fixtures; no manual UI proof is
-                required. Report unexecuted prerequisites explicitly; documentation validation and
-                engine API availability cannot satisfy runtime evidence.
+                <strong>Required evidence:</strong> One concise PR/result summary with executed
+                deterministic native policy assertions and affected compilation, tested revision and
+                explicit retention/sequence settings. T04 supplies connected routing evidence; no
+                browser/editor/manual UI execution is required for this policy ticket.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
@@ -254,17 +270,21 @@
               </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-004.html#BW-004">Parent epic and original criteria</a>;
-                <a href="../guide/roadmap-maintenance.html#maintenance"
-                  >Capability assessment and source/evidence baseline</a
+                <a href="../guide/roadmap-bw-004.html#BW-004"
+                  >Parent epic and exact acceptance criteria</a
                 >; <a href="../guide/networking.html">Authority and networking</a>;
                 <a href="../guide/testing.html">Verification requirements</a>;
                 <a href="../guide/data-inventory.html#shared-CommandContext">CommandContext</a>;
-                <a href="../guide/data-inventory.html#command-response">CommandResponse</a>
+                <a href="../guide/data-inventory.html#command-response">CommandResponse</a>;
+                <a href="../guide/data-inventory.html#ability-command-v2">ability_command_v2</a>;
+                <a href="../guide/execution.html#ability-command"
+                  >Command identity and retry contract</a
+                >
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
-              <a href="roadmap-bw-004-t02.html#BW-004-T02">Previous: BW-004-T02</a>
+              <a href="roadmap-bw-004-t02.html#BW-004-T02">Previous: BW-004-T02</a
+              ><a href="roadmap-bw-004-t04.html#BW-004-T04">Next: BW-004-T04</a>
             </nav>
           </div>
           <footer class="page-footer">

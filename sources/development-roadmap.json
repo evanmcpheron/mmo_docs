@@ -7049,39 +7049,36 @@
     {
       "id": "BW-004-T01",
       "parent_epic": "BW-004",
-      "title": "Integrate a dedicated-safe session and travel route",
+      "title": "Connect two clients to a dedicated server and expose lifecycle failures",
       "status": "Not Started",
       "epic_criteria": [
         "BW-004-AC-1",
         "BW-004-AC-4"
       ],
       "scope": [
-        "Reuse UMultiplayerSessionsSubsystem create/find/join/destroy methods and completion delegates, native IOnlineSession and GameMode connection lifecycles; inspect actual default subsystem/configuration and pinned plugin source before changing it.",
-        "Deliver one headless-safe connection/session route plus observable disconnect/travel recovery. Verify supplied session calls before extending only necessary gaps: local-player assumptions, asynchronous destroy/recreate ordering, failed join/address resolution, callback teardown and the empty start path if required. Record Steam versus NULL/direct coverage separately; adapt the existing owner instead of introducing another session subsystem.",
-        "Extend the existing native automation/report path with focused behavior and failure cases; retain exact engine/source/content/rules/configuration identities and actual assertions. Reuse FContentContracts and its canonical extractor/reference closure where these contracts cross a boundary; a schema does not require a separate UObject or new wire protocol. Do not duplicate admission, replay or domain rules in UI/transport.",
-        "Deliver a bounded dedicated-server/two-client scenario using the existing process/evidence utilities, with exact verified executable/map/setup/reset instructions. No project gameplay map currently exists; use a ticket-owned minimal fixture or transient world on the verified /Engine/Maps/Entry bootstrap as appropriate. Keep scenario controls test-only and extend the existing validation entrypoint without a second runner framework."
+        "Inspected 2026-10-23: game origin/main 92817f556aa326c57edec88bf18d97aadee7afc5 (same tree as checkout 21776e507f817245f23d104e5dfc55c28c43d055), docs base bf75815db6907203ce8c51cc9f74f41d8fb7d5a5. tools/toolchain.lock.json pins UE 5.8.3, Xcode 27A266a and Mac ARM64; native Game/Editor/Client/Server targets exist. BW-001 certifies bootstrap, BW-002 contracts/admission and BW-003 a local logical-recipient probe, not connected clients. Config/DefaultEngine.ini uses /Engine/Maps/Entry; the only project map is the camera-reference test map.",
+        "Use native dedicated networking, GameMode connection lifecycle, owned PlayerControllers and UEngine network/travel failure delegates. Implement one explicit local test route (native IP/direct or NULL) without a server local player or widget dependency. A small opt-in connection scenario on /Engine/Maps/Entry is justified by parent AC1; keep scenario controls separate from gameplay commands. Until T02 admits identity, connections cannot spawn an authorized gameplay character or dispatch gameplay commands.",
+        "Reuse the supplied UMultiplayerSessionsSubsystem if the selected route needs online sessions; do not add another session subsystem. Source inspection found unchecked local-player dereferences, create continuing after asynchronous destroy, unchecked join/address travel in UMenu and empty StartSession. Adapt only paths needed by the chosen route. Native IOnlineSession exposes hosting-user overloads and completion delegates, but API availability and existing plugin compilation prove neither dedicated nor Steam operation. Record actual backend/plugin activation; native direct connectivity need not repair unused Steam/menu paths.",
+        "Reuse tools/check_baseline.py process ownership/timeouts and the existing Unreal Automation harness for focused lifecycle rules. Compile affected targets only; document a bounded dedicated/two-client invocation and client-visible status control in the implementation runbook. No new map asset, package, capture framework, all-suite run or automatic editor execution is required."
       ],
       "out_of_scope": [
-        "Public accounts/provider implementation (BW-019), gameplay authority, replication/prediction and a replacement session framework."
+        "Trusted identity/protocol admission (T02), command replay (T03), bounded gameplay command routing/traffic classes (T04), movement/combat rules, public account providers (BW-019) and Steam certification.",
+        "Full create/find/join/start/destroy coverage for unused backends, unrelated plugin/menu repair, production reconnect/transfer or economic ownership."
       ],
       "dependencies": [
         "BW-001",
         "BW-002"
       ],
       "acceptance_criteria": [
-        "Two separate clients reach one dedicated process without a server local player or menu/widget dependency; logs identify the backend and session/connection lifecycle. Trusted credential/character admission remains T02 and is required before parent AC1 completion.",
-        "For the selected backend, successful and failed create/find/join/destroy, empty results, replacement, disconnect, shutdown and travel failure have bounded observable outcomes and a clean rejoin; failed joins never travel to an unchecked address. Preserve adequate existing calls/delegates.",
-        "Record pinned Editor/Game/source-Server compilation and runtime coverage. Explicitly distinguish listen example behavior from dedicated results and Steam-account tests from NULL/direct tests; missing Steam access remains an unverified limitation rather than a successful Steam claim."
+        "Two separately running clients reach the same headless dedicated process on the recorded backend, with zero server local players and no menu/widget dependency. This establishes only the transport portion of parent AC1; distinct authorized sessions require T02.",
+        "Unreachable server, disconnect, server shutdown and travel failure produce bounded, redacted client-visible failure states; a fresh connection succeeds after cleanup. When online-session APIs are used, the selected create/join/destroy path handles failure, replacement and callback teardown without unchecked travel or local-player access.",
+        "The runbook identifies actual map/GameMode/Controller, executable/build revisions, backend and exact launch/status/reset controls. Executed unit/native and dedicated/two-client results are distinguished from authored expectations and unavailable Steam tests."
       ],
-      "completion_evidence": "Retain attributable executed positive/negative results for every ticket criterion, the actual build/launch/reset procedure, tested input identities and applicable focused regressions. Include correlated dedicated-server and two-client traces, recipient observations and reset/recovery evidence. Report unexecuted prerequisites explicitly; documentation validation and engine API availability cannot satisfy runtime evidence.",
+      "completion_evidence": "One concise implementation PR/result summary with affected compilation, focused lifecycle assertions and actual dedicated/two-client observations, backend and source/build/configuration identities. Missing peer execution or human observation remains Not Run; the existing three-tick smoke is not connection evidence.",
       "related_docs": [
         {
-          "label": "Parent epic and original criteria",
+          "label": "Parent epic and exact acceptance criteria",
           "href": "guide/roadmap-bw-004.html#BW-004"
-        },
-        {
-          "label": "Capability assessment and source/evidence baseline",
-          "href": "guide/roadmap-maintenance.html#maintenance"
         },
         {
           "label": "Authority and networking",
@@ -7096,28 +7093,25 @@
           "href": "guide/data-inventory.html#server-configuration"
         },
         {
-          "label": "SessionOwnershipRecord",
-          "href": "guide/data-inventory.html#session-ownership-record"
+          "label": "Native reuse guidance",
+          "href": "guide/roadmap-maintenance.html#maintenance"
         }
       ],
       "manual_test": {
-        "launch": "Future scenario, unverified: run the exact bounded server/client invocation delivered and documented by this ticket from GAME_ROOT, the checkout containing Briarwake.uproject. Existing final game gate: python3 tools/validate.py. Its current implementation does not yet test this feature; do not invent unsupported suite flags or treat the three-tick bootstrap smoke as connected proof.",
+        "launch": "Not Run — Manual QA Pending. From GAME_ROOT (the checkout containing Briarwake.uproject), follow the implementation PR/runbook for the exact existing Development server/client executables, ports and launch options. /Engine/Maps/Entry is the current server/default map. The required native connection GameMode/Controller and scenario controls do not exist yet; their actual names, commands and cleanup must be documented before this procedure is executable. Do not use the listen-menu example or camera-reference map as dedicated connection evidence.",
         "setup": [
-          "Recheck the dated capability assessment against the current game, pinned tools and completed dependencies. Build affected existing targets in place. Use two separate authorized test clients and a dedicated server with the ticket-delivered finite fixture/configuration; record the actual backend, identities, workload and active display settings.",
-          "Use no example lobby path or unverified project map. Supply the fixture/controls and exact launch options in this ticket; no production account integration, persistence or unrelated assets are prerequisites."
+          "Use the existing pinned Mac ARM64 toolchain and completed BW-001/BW-002 prerequisites. Build affected targets in place; launch one dedicated process and two separate clients using the documented local route and task-owned ports. No Steam account or public account provider is required for this restricted proof.",
+          "Use the delivered connection status display/control and native lifecycle diagnostics. The current tools/smoke_server.py checks zero controllers/pawns and exits after three ticks, so it cannot drive this connected scenario; do not pass invented connectivity suite flags to tools/validate.py."
         ],
         "actions": [
-          "Run the delivered dedicated/two-client connection fixture and inspect backend selection, local-player count and travel destinations.",
-          "Exercise each lifecycle success/failure case, including existing-session replacement, unavailable backend, failed address resolution and callback teardown; reconnect after clean recovery.",
-          "Where authorized Steam test configuration/accounts are available, repeat the session cases and retain separate Steam evidence; otherwise record the exact external gap."
+          "Connect both clients to the same endpoint. Inspect distinct client process identities, the dedicated process and server local-player count; confirm no authorized gameplay character/command exists before T02.",
+          "Disconnect one client, attempt an unreachable endpoint, stop the task-owned server and exercise the delivered travel-failure control. Observe each client status, then restart/reconnect using the same documented procedure. Exercise selected online-session failure/replacement only if that route uses it."
         ],
         "expected_results": [
-          "Two separate clients reach one dedicated process without a server local player or menu/widget dependency; logs identify the backend and session/connection lifecycle. Trusted credential/character admission remains T02 and is required before parent AC1 completion.",
-          "For the selected backend, successful and failed create/find/join/destroy, empty results, replacement, disconnect, shutdown and travel failure have bounded observable outcomes and a clean rejoin; failed joins never travel to an unchecked address. Preserve adequate existing calls/delegates.",
-          "Record pinned Editor/Game/source-Server compilation and runtime coverage. Explicitly distinguish listen example behavior from dedicated results and Steam-account tests from NULL/direct tests; missing Steam access remains an unverified limitation rather than a successful Steam claim."
+          "Both peers connect to one dedicated process with zero server local players. Failure reaches the affected client with a safe reason; no unchecked address is used and clean rejoin works. Log-only observations do not establish the client-visible failure criterion."
         ],
         "reset": [
-          "Stop only the scenario-owned processes, restore test-only emulation/input settings and destroy test-owned state. Start fresh sessions/worlds and repeat a clean recovery into new bounded outputs. Preserve prior evidence, assets, user changes and build directories."
+          "Stop only the task-owned server/clients, release their ports and remove only disposable scenario state beneath ignored artifacts/. Restore any task-local network emulation. Preserve existing assets, configuration, build directories, databases and prior evidence."
         ]
       },
       "blockers": [],
@@ -7126,21 +7120,20 @@
     {
       "id": "BW-004-T02",
       "parent_epic": "BW-004",
-      "title": "Bind trusted test identity and enforce command admission",
+      "title": "Bind compatible trusted test credentials to distinct sessions",
       "status": "Not Started",
       "epic_criteria": [
         "BW-004-AC-1",
-        "BW-004-AC-2",
-        "BW-004-AC-4"
+        "BW-004-AC-2"
       ],
       "scope": [
-        "Reuse native PreLogin/Login/PostLogin/Logout/owned RPC routing, FContentContracts typed decoding and independent revision checks; keep sessions in the T01 owner.",
-        "Add the missing server-owned trusted test admission and bounded command boundary. Bind session/character identity and ownership epoch from verified test credentials, negotiate compatible protocol/content and apply configured payload/array/rate/sequence/ownership checks before domain dispatch. Make connection failures and traffic classes observable without inventing independent network channels.",
-        "Extend the existing native automation/report path with focused behavior and failure cases; retain exact engine/source/content/rules/configuration identities and actual assertions. Reuse FContentContracts and its canonical extractor/reference closure where these contracts cross a boundary; a schema does not require a separate UObject or new wire protocol. Do not duplicate admission, replay or domain rules in UI/transport.",
-        "Deliver a bounded dedicated-server/two-client scenario using the existing process/evidence utilities, with exact verified executable/map/setup/reset instructions. No project gameplay map currently exists; use a ticket-owned minimal fixture or transient world on the verified /Engine/Maps/Entry bootstrap as appropriate. Keep scenario controls test-only and extend the existing validation entrypoint without a second runner framework."
+        "Owner: a server-owned restricted test admission policy wired explicitly through native GameMode PreLogin/PreLoginAsync, Login/PostLogin and Logout; the T01 route remains transport only. UE 5.8.3 source warns that PreLogin and Login may be separated by significant time and asynchronous admission must complete its callback. Revalidate expiry/ownership at final admission and complete all success/failure paths without blocking the game thread.",
+        "Use a private configured test adapter with server-registered opaque one-use proofs and server-owned identity, purpose/audience, expiry and revocation state. Bind account/character, process and epoch to the accepted connection, never to URL/payload identity or an OnlineSubsystem ID alone. Issue/validate canonical opaque SessionToken handles; revoke stale handles/epochs on logout or replacement. Test material and adapter controls are not public gameplay endpoints or distributed credentials.",
+        "Reuse FContentContracts and canonical extraction for the needed SessionAuthority, SessionToken, SecurityPolicy and CommandContext closure. Negotiate existing engine/message compatibility and supported content/rules revisions using FContentCompatibility where appropriate; do not invent a parallel wire protocol or equate content, rules, client build and database revisions. Required positive lifetimes and request limits come from explicit fixture configuration; missing configuration disables admission.",
+        "Current FContentContracts::DecodeAbilityCommand and FContentCompatibility provide structural/revision checks, not connection authentication. FSqliteProbeStore already implements durable ClaimOwnership/RevokeOwnership and receipts within BW-018; preserve that owner and accepted evidence, without making SQLite or production handoff a dependency of this transient non-economic test session. Keep all gameplay command routes disabled until the T03/T04 boundary is wired."
       ],
       "out_of_scope": [
-        "Public account integration, durable character ownership/handoff and per-domain gameplay legality. Replay outcomes are T03."
+        "Public credential/provider integration, economic characters, durable exclusive sessions/transfer/recovery (BW-019/BW-018), gameplay legality, command limits beyond admission and a new authentication protocol or persistence abstraction."
       ],
       "dependencies": [
         "BW-001",
@@ -7148,19 +7141,15 @@
         "BW-004-T01"
       ],
       "acceptance_criteria": [
-        "Accepted compatible test credentials give two clients distinct authorized sessions; unauthenticated, expired or incompatible admission cannot create an authorized character/session. Old ownership epochs and payload-selected actors do not grant access.",
-        "Oversized, malformed, out-of-sequence, wrong-owner and rate/array-limit violations reject before domain mutation with bounded safe reasons. Missing required endpoint limits fail closed; static decoding does not stand in for runtime authorization.",
-        "Movement, combat/control and reliable state traffic are distinguishable in traces; disconnect and negotiation failure reach the requesting client without leaking credentials or another session identity."
+        "Two separate clients with accepted compatible test proofs receive distinct server-bound authorized sessions and opaque handles. Each connection resolves only its server-assigned test identity and epoch; client-supplied IDs, roles, expiry or consumed flags cannot grant authority.",
+        "Missing, unknown, expired, reused, wrong-purpose/audience and incompatible proofs/versions reject before an authorized character/session or gameplay mutation is created. Expiry between preliminary and final admission rejects; missing required configuration and asynchronous failures complete with a bounded safe client reason.",
+        "Logout/replacement revokes the prior handle and epoch; a stale or foreign handle cannot act as another session. Credentials and provider material stay out of client artifacts, logs, travel diagnostics and other-client responses. Actual connected observations establish parent AC1; pure policy tests alone do not."
       ],
-      "completion_evidence": "Retain attributable executed positive/negative results for every ticket criterion, the actual build/launch/reset procedure, tested input identities and applicable focused regressions. Include correlated dedicated-server and two-client traces, recipient observations and reset/recovery evidence. Report unexecuted prerequisites explicitly; documentation validation and engine API availability cannot satisfy runtime evidence.",
+      "completion_evidence": "One concise PR/result summary: deterministic admission/expiry/ownership rejection tests, affected compilation and the T01 two-client scenario extended only for credential/negotiation cases. Record server-authorized session identities without token material, client failure observations and exact revisions/settings. No executed test or passing evidence exists from this split.",
       "related_docs": [
         {
-          "label": "Parent epic and original criteria",
+          "label": "Parent epic and exact acceptance criteria",
           "href": "guide/roadmap-bw-004.html#BW-004"
-        },
-        {
-          "label": "Capability assessment and source/evidence baseline",
-          "href": "guide/roadmap-maintenance.html#maintenance"
         },
         {
           "label": "Authority and networking",
@@ -7171,40 +7160,36 @@
           "href": "guide/testing.html"
         },
         {
-          "label": "SecurityPolicy",
-          "href": "guide/data-inventory.html#security-policy"
-        },
-        {
           "label": "SessionAuthority",
           "href": "guide/data-inventory.html#session-authority"
         },
         {
-          "label": "CommandContext",
-          "href": "guide/data-inventory.html#shared-CommandContext"
+          "label": "SessionToken",
+          "href": "guide/data-inventory.html#session-token"
         },
         {
-          "label": "ability_command_v2",
-          "href": "guide/data-inventory.html#ability-command-v2"
+          "label": "SecurityPolicy",
+          "href": "guide/data-inventory.html#security-policy"
+        },
+        {
+          "label": "CommandContext",
+          "href": "guide/data-inventory.html#shared-CommandContext"
         }
       ],
       "manual_test": {
-        "launch": "Future scenario, unverified: run the exact bounded server/client invocation delivered and documented by this ticket from GAME_ROOT, the checkout containing Briarwake.uproject. Existing final game gate: python3 tools/validate.py. Its current implementation does not yet test this feature; do not invent unsupported suite flags or treat the three-tick bootstrap smoke as connected proof.",
+        "launch": "Not Run — Manual QA Pending. Reuse the exact T01 dedicated/two-client runbook after T02 documents the private test-proof setup, credential-safe admission control and session-status display. These controls are future implementation; no current command is claimed to authenticate a client.",
         "setup": [
-          "Recheck the dated capability assessment against the current game, pinned tools and completed dependencies. Build affected existing targets in place. Use two separate authorized test clients and a dedicated server with the ticket-delivered finite fixture/configuration; record the actual backend, identities, workload and active display settings.",
-          "Use no example lobby path or unverified project map. Supply the fixture/controls and exact launch options in this ticket; no production account integration, persistence or unrelated assets are prerequisites."
+          "Complete T01 and use its same /Engine/Maps/Entry connection scenario, pinned executables and local backend. Configure the trusted test adapter privately with two distinct test identities, explicit lifetimes/limits and compatible revisions; keep proof material out of command lines and logs."
         ],
         "actions": [
-          "Connect two clients with valid compatible test credentials, then try missing/expired/incompatible credentials and stale ownership epochs.",
-          "Submit payload/array/rate/sequence/owner boundary cases and compare before/after authoritative state and redacted rejection traces.",
-          "Drop a connection during each traffic class and inspect client-visible failure/recovery."
+          "Admit both clients using separate valid proofs and inspect redacted session/epoch ownership. Attempt a second use, missing/expired proof, wrong purpose/audience and incompatible protocol/content; expire a proof between preliminary and final admission using the delivered bounded control.",
+          "Logout/rejoin or replace a test session, then try its old handle and another client identity. Remove a required admission setting for a separate bounded attempt; inspect client rejection and unchanged authoritative state, then restore only task-local configuration."
         ],
         "expected_results": [
-          "Accepted compatible test credentials give two clients distinct authorized sessions; unauthenticated, expired or incompatible admission cannot create an authorized character/session. Old ownership epochs and payload-selected actors do not grant access.",
-          "Oversized, malformed, out-of-sequence, wrong-owner and rate/array-limit violations reject before domain mutation with bounded safe reasons. Missing required endpoint limits fail closed; static decoding does not stand in for runtime authorization.",
-          "Movement, combat/control and reliable state traffic are distinguishable in traces; disconnect and negotiation failure reach the requesting client without leaking credentials or another session identity."
+          "Only accepted compatible proofs create distinct authorized test sessions. Invalid attempts and stale/foreign handles create no authority or gameplay mutations; errors reach the affected client without disclosing credentials or another session. The delivered runbook records actual values and observations."
         ],
         "reset": [
-          "Stop only the scenario-owned processes, restore test-only emulation/input settings and destroy test-owned state. Start fresh sessions/worlds and repeat a clean recovery into new bounded outputs. Preserve prior evidence, assets, user changes and build directories."
+          "Stop only the task-owned server/clients, release their ports and remove only disposable scenario state beneath ignored artifacts/. Restore any task-local network emulation. Preserve existing assets, configuration, build directories, databases and prior evidence."
         ]
       },
       "blockers": [],
@@ -7220,12 +7205,13 @@
         "BW-004-AC-3"
       ],
       "scope": [
-        "Reuse T02 connection-derived CommandContext and CommandResponse, existing typed command decoding and the domain dispatch boundary.",
-        "Own accepted/rejected command identity and bounded retry-result retention in one server command-admission path. Return the prior outcome/reference for identical epoch/sequence retries; reject conflicting payload reuse and stale epochs. Domain owners consume the accepted root identity rather than keeping competing generic replay ledgers.",
-        "Extend the existing native automation/report path with focused behavior and failure cases; retain exact engine/source/content/rules/configuration identities and actual assertions. Reuse FContentContracts and its canonical extractor/reference closure where these contracts cross a boundary; a schema does not require a separate UObject or new wire protocol. Do not duplicate admission, replay or domain rules in UI/transport."
+        "Owner: one server command-admission policy consuming T02 connection-derived identity/epoch and canonical CommandContext/CommandResponse. Keep transport handlers thin and leave effects with explicitly wired domain owners; T04 exposes this policy through bounded owned RPC routing. No externally callable gameplay route is enabled by this ticket alone.",
+        "Reuse FContentContracts::DecodeAbilityCommand and canonical value comparison for validated requests. Within the authenticated owner scope, an identical (session_epoch, command_sequence) resolves to the same accepted/rejected action/result identity; conflicting semantic payload reuse rejects without replacing it. Exact retries are checked as retries rather than automatically rejected as old sequences.",
+        "Bound retained outcomes, sequence ranges and in-flight work explicitly; epochs/sequences cannot wrap or be reused. Eviction, timeout and reconnect cannot authorize re-execution of an old identity. Preserve the prior rejection and any later completion reference, with documented behavior when a retained response expires. Do not add pending enum tokens to the canonical accepted/rejected CommandOutcome.",
+        "Use deterministic native tests of this actual policy with a test-only counted dispatch/effect boundary, not the Editor-only FRuntimeFixtureContext AcceptedActions set as production authority. BW-003 only proves a local logical-recipient probe. BW-018 operation-key receipts and durable economic retry remain separate responsibilities; do not copy their storage ledger into session command admission."
       ],
       "out_of_scope": [
-        "Durable economic receipts/persistence and independent movement, cast or combat rule implementations."
+        "RPC transport/size/rate integration (T04), durable receipts, database recovery, movement/cast/combat outcomes and a second generic replay framework."
       ],
       "dependencies": [
         "BW-001",
@@ -7233,19 +7219,15 @@
         "BW-004-T02"
       ],
       "acceptance_criteria": [
-        "A retry before or after completion returns a consistent acceptance/rejection/result reference and causes one accepted action/effect at most. A conflicting reuse rejects without replacing the original outcome.",
-        "Retries, reordered input, disconnect/rejoin and stale ownership epochs cannot dispatch another accepted action or expose foreign result references. Configured retention/sequence bounds and expired-result behavior remain explicit and never authorize re-execution.",
-        "Reliable delivery and transport acknowledgments are not described as exactly-once gameplay execution; domain mutation remains with its owner and tests count actual commits."
+        "Identical retries while an accepted action is unresolved and after completion reuse its action identity and consistent response/result reference; a rejected command repeats its recorded rejection. Tests count at most one dispatch and one test effect. Conflicting reuse rejects while leaving the original outcome intact.",
+        "Reordered unknown sequences, stale epochs, foreign session identities and sequence overflow cannot dispatch another action or disclose another owner result. Retention bounds, expiry and reconnect do not permit an old command to execute again.",
+        "Focused native tests execute the actual policy for accepted/rejected/conflicting retries, unresolved/completed results and the distinct retention/owner failure boundaries. Transport acknowledgments or an in-memory fixture assertion are not described as durable exactly-once gameplay."
       ],
-      "completion_evidence": "Retain attributable executed positive/negative results for every ticket criterion, the actual build/launch/reset procedure, tested input identities and applicable focused regressions. Use the existing native automation harness with deterministic boundary fixtures; no manual UI proof is required. Report unexecuted prerequisites explicitly; documentation validation and engine API availability cannot satisfy runtime evidence.",
+      "completion_evidence": "One concise PR/result summary with executed deterministic native policy assertions and affected compilation, tested revision and explicit retention/sequence settings. T04 supplies connected routing evidence; no browser/editor/manual UI execution is required for this policy ticket.",
       "related_docs": [
         {
-          "label": "Parent epic and original criteria",
+          "label": "Parent epic and exact acceptance criteria",
           "href": "guide/roadmap-bw-004.html#BW-004"
-        },
-        {
-          "label": "Capability assessment and source/evidence baseline",
-          "href": "guide/roadmap-maintenance.html#maintenance"
         },
         {
           "label": "Authority and networking",
@@ -7262,10 +7244,106 @@
         {
           "label": "CommandResponse",
           "href": "guide/data-inventory.html#command-response"
+        },
+        {
+          "label": "ability_command_v2",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "Command identity and retry contract",
+          "href": "guide/execution.html#ability-command"
         }
       ],
       "manual_test": {
-        "not_applicable": "This outcome is verified by executed headless native automation at the owning rule boundary. Its fixture setup, negative cases and teardown are part of the ticket; documentation checks alone do not verify it."
+        "not_applicable": "This ticket adds a server policy exercised at its actual native boundary with deterministic trusted-session inputs and a counted test-only dispatch/effect sink. Run focused Unreal Automation with affected compilation using the existing harness; document the actual test name/command in the implementation PR. T04 verifies connected RPC wiring, so this ticket does not duplicate two-client scenarios or claim transport evidence."
+      },
+      "blockers": [],
+      "verified_evidence": []
+    },
+    {
+      "id": "BW-004-T04",
+      "parent_epic": "BW-004",
+      "title": "Enforce bounded owned commands and distinguish traffic classes",
+      "status": "Not Started",
+      "epic_criteria": [
+        "BW-004-AC-2",
+        "BW-004-AC-3",
+        "BW-004-AC-4"
+      ],
+      "scope": [
+        "Extend the T03 admission owner with explicitly configured SecurityPolicy per-request byte/array/rate limits and sequence/owner checks. Route only connection-owned requests through native Controller RPCs, resolving identity from T02 on every request before dispatch. Enforce byte bounds before decoding/allocation and validate arrays, unknown fields/tokens, finite values and exact integer ranges using the existing canonical decoder. RPC ownership is necessary but does not replace authorization.",
+        "Missing required endpoint configuration fails closed; a zero request count disables its family, windows are positive and rate enforcement is independent of GCD. Select explicit test limits in the implementation configuration and test at/beyond each bound; no production tuning values are chosen here. Preserve the original T03 retry outcome under throttling; transport flood rejection cannot replace a prior action result or turn an identical retry into a new action.",
+        "Use the canonical NetworkTrafficChannel values movement_snapshots, combat_control_events and reliable_state_operations for observable classification. Map each enabled path to actual native RPC/property freshness, recipient and reliability behavior; do not invent independent network channels. Exercise representative test-only traffic without implementing movement, combat, entity replication or economic operations. A reliable response must not imply durable transaction completion.",
+        "Reuse the T01/T02 connected scenario for the real boundary: two clients, one dedicated authority, a server-owned test-only counted dispatch/effect sink and recipient observations. Add only required controls through the existing harness/process helpers. Run deterministic policy/decoder failures first, affected C++ compilation and a focused connected human QA handoff; missing native peer execution remains unverified. Reuse T03 unit evidence and prior lifecycle results rather than rerunning all suites."
+      ],
+      "out_of_scope": [
+        "Per-domain gameplay legality (BW-005/BW-010 and successors), public entity/privacy replication (BW-007/BW-013), durable transactions (BW-018), production account/session features (BW-019), capacity benchmarks, packet/configuration matrices, packages and new runner frameworks."
+      ],
+      "dependencies": [
+        "BW-001",
+        "BW-002",
+        "BW-004-T03"
+      ],
+      "acceptance_criteria": [
+        "Valid in-bound requests route only for their authenticated owner. Unauthenticated/expired sessions, oversized/malformed payloads, excessive arrays/rates, incompatible versions, unauthorized identity/epoch and out-of-sequence input reject before domain dispatch with safe bounded feedback and unchanged state. Tests cover the exact configured bound and the first invalid value, including missing limits and disabled families.",
+        "Across the real dedicated/two-client connection, identical accepted/rejected action identities return their consistent prior outcome and count at most one dispatch/effect. Conflicting reuse, reordered input, stale reconnect identity and cross-client requests never create a second action or disclose another owner result. Native policy tests alone do not establish this routing behavior.",
+        "The three canonical traffic classes are distinguishable in actual server/client observations with documented native delivery/freshness behavior. Stop/disconnect or a focused dropped/reordered-message case reaches the affected client visibly and permits a clean rejoin; loss cannot promote client data to authority or turn transport acknowledgment into durable success. Existing T01 failure observations may be reused where unchanged."
+      ],
+      "completion_evidence": "One concise PR/result summary linking reused T01/T02/T03 evidence, executed boundary tests and affected compilation, actual two-client routing/count/traffic observations, configured limits and source/build/configuration identities. Record client-visible QA or connected execution not performed as Not Run — Manual QA Pending. Do not claim gameplay, Steam, persistence or capacity from test traffic.",
+      "related_docs": [
+        {
+          "label": "Parent epic and exact acceptance criteria",
+          "href": "guide/roadmap-bw-004.html#BW-004"
+        },
+        {
+          "label": "Authority and networking",
+          "href": "guide/networking.html"
+        },
+        {
+          "label": "Verification requirements",
+          "href": "guide/testing.html"
+        },
+        {
+          "label": "SecurityPolicy",
+          "href": "guide/data-inventory.html#security-policy"
+        },
+        {
+          "label": "RateLimit",
+          "href": "guide/data-inventory.html#shared-RateLimit"
+        },
+        {
+          "label": "ability_command_v2",
+          "href": "guide/data-inventory.html#ability-command-v2"
+        },
+        {
+          "label": "CommandResponse",
+          "href": "guide/data-inventory.html#command-response"
+        },
+        {
+          "label": "NetworkTrafficChannel",
+          "href": "guide/data-inventory.html#network-traffic-channel"
+        },
+        {
+          "label": "Traffic and native transport semantics",
+          "href": "guide/networking.html#movement-and-traffic"
+        }
+      ],
+      "manual_test": {
+        "launch": "Not Run — Manual QA Pending. Use the T01/T02 runbook and its /Engine/Maps/Entry connection scenario after T04 documents the exact request/traffic controls, configured limits and counted server observation. No connectivity/command suite exists in tools/validate.py today; implementation must document real supported commands.",
+        "setup": [
+          "Complete T01–T03 and reuse their actual backend, trusted test identities, pinned executables and task-owned ports. Configure explicit SecurityPolicy byte/array/rate windows and bounded retry retention. The request controls and test-only counted dispatch/effect sink are not implemented yet."
+        ],
+        "actions": [
+          "From each client submit one valid request, exact retries before/after its response, conflicting identity reuse and a request naming the other client. Compare redacted response identities and server dispatch/effect counts, then try stale credentials after logout/rejoin.",
+          "Exercise delivered malformed, oversized, array, rate/window and sequence controls at the configured boundary and first invalid value; disable one endpoint by removing its limit or setting its request count to zero. Check authoritative state before/after and restore task-local settings.",
+          "Observe each of movement_snapshots, combat_control_events and reliable_state_operations on the actual peers. Disconnect/stop the task-owned server or use one documented bounded message-impairment case where needed for delivery behavior; inspect client-visible failure and a clean rejoin. Reuse unchanged T01 lifecycle evidence."
+        ],
+        "expected_results": [
+          "Only valid owner requests dispatch; invalid cases leave game/test-effect state unchanged with safe client feedback. Retried identities never add an action/effect, conflicting/foreign attempts cannot replace or read the original result, all three traffic labels map to actual native behavior, and failures remain visible to the client."
+        ],
+        "reset": [
+          "Stop only the task-owned server/clients, release their ports and remove only disposable scenario state beneath ignored artifacts/. Restore any task-local network emulation. Preserve existing assets, configuration, build directories, databases and prior evidence."
+        ]
       },
       "blockers": [],
       "verified_evidence": []
