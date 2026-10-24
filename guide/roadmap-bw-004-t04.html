@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Implementation ticket for BW-004." />
+    <title>
+      BW-004-T04 · Enforce bounded owned commands and distinguish traffic classes · Briarwake
+      Development Roadmap
+    </title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <link rel="stylesheet" href="../assets/roadmap.css" />
+    <script defer src="../assets/search-index.js"></script>
+    <script defer src="../assets/app.js"></script>
+  </head>
+  <body data-root="../">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="navigation">
+      <a class="brand" href="../index.html"
+        ><span class="brand-mark">M</span
+        ><span>MMORPG<span class="brand-sub">GAMEPLAY REFERENCE</span></span></a
+      >
+      <div class="version">v2.0 · Mechanics only</div>
+      <nav aria-label="Reference navigation">
+        <a class="nav-home " href="../index.html">Overview</a
+        ><a data-roadmap-nav href="development-roadmap.html" aria-current="location"
+          >Development Roadmap</a
+        >
+        <div class="nav-group">
+          <p>Foundation</p>
+          <a href="../guide/decisions.html">Design decisions</a
+          ><a href="../guide/character-creation.html">Character creation &amp; beginner area</a
+          ><a href="../guide/races-factions.html">Races & faction rules</a
+          ><a href="../guide/progression.html">Levels & talent points</a
+          ><a href="../guide/playstyles.html">Specializations & playstyles</a>
+        </div>
+        <div class="nav-group">
+          <p>Combat</p>
+          <a href="../guide/attributes.html">Attributes & formulas</a
+          ><a href="../guide/combat.html">Combat mechanics</a
+          ><a href="../guide/status-effects.html">Statuses, control & summons</a
+          ><a href="../guide/execution.html">Ability execution contracts</a
+          ><a href="../guide/pvp-encounters.html">PvP & encounter rules</a>
+        </div>
+        <div class="nav-group">
+          <p>Economy</p>
+          <a href="../guide/items.html">Equipment & itemization</a
+          ><a href="../guide/professions.html">Profession system</a
+          ><a href="../guide/crafting-orders.html">Crafting & commissions</a
+          ><a href="../guide/economy.html">Bazaar & economy</a>
+        </div>
+        <div class="nav-group">
+          <p>Engineering</p>
+          <a href="../guide/networking.html">Unreal C++ &amp; networking</a
+          ><a href="../guide/interface.html">Interface & accessibility</a
+          ><a href="../guide/operations.html">Supporting gameplay</a>
+        </div>
+        <div class="nav-group">
+          <p>Validation</p>
+          <a href="../guide/audit.html">Audit & open gates</a
+          ><a href="../guide/testing.html">Validation & test plan</a
+          ><a href="../guide/sources.html">Sources & provenance</a
+          ><a href="../guide/glossary.html">Mechanics glossary</a>
+        </div>
+        <details class="nav-list">
+          <summary>Classes <span>12</span></summary>
+          <a href="../classes/warrior.html">Warrior</a><a href="../classes/paladin.html">Paladin</a
+          ><a href="../classes/cleric.html">Cleric</a><a href="../classes/mage.html">Mage</a
+          ><a href="../classes/necromancer.html">Necromancer</a
+          ><a href="../classes/bard.html">Bard</a><a href="../classes/rogue.html">Rogue</a
+          ><a href="../classes/ranger.html">Ranger</a><a href="../classes/druid.html">Druid</a
+          ><a href="../classes/shaman.html">Shaman</a><a href="../classes/monk.html">Monk</a
+          ><a href="../classes/warlock.html">Warlock</a>
+        </details>
+        <details class="nav-list">
+          <summary>Professions <span>16</span></summary>
+          <a href="../professions/blacksmithing.html">Blacksmithing</a
+          ><a href="../professions/leatherworking.html">Leatherworking</a
+          ><a href="../professions/tailoring.html">Tailoring</a
+          ><a href="../professions/alchemy.html">Alchemy</a
+          ><a href="../professions/enchanting.html">Enchanting</a
+          ><a href="../professions/engineering.html">Engineering</a
+          ><a href="../professions/woodworking.html">Woodworking</a
+          ><a href="../professions/jewelcrafting.html">Jewelcrafting</a
+          ><a href="../professions/inscription.html">Inscription</a
+          ><a href="../professions/mining.html">Mining</a
+          ><a href="../professions/herbalism.html">Herbalism</a
+          ><a href="../professions/skinning.html">Skinning</a
+          ><a href="../professions/forestry.html">Forestry</a
+          ><a href="../professions/cooking.html">Cooking</a
+          ><a href="../professions/fishing.html">Fishing</a
+          ><a href="../professions/first_aid.html">First Aid</a>
+        </details>
+        <div class="nav-group">
+          <p>Catalogs</p>
+          <a data-inventory-nav href="data-inventory.html">Data Inventory</a
+          ><a href="../catalog/abilities.html">Abilities</a
+          ><a href="../catalog/talents.html">Talents</a
+          ><a href="../catalog/recipes.html">Recipes</a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">Design proposal<br />Updated 16 October 2026</div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <button class="menu-button" aria-controls="navigation" aria-expanded="false">Menu</button
+        ><span class="section-label">Development planning</span>
+        <div class="search-wrap">
+          <label for="site-search" class="visually-hidden">Search all reference content</label
+          ><input
+            id="site-search"
+            type="search"
+            placeholder="Search rules, abilities, recipes…"
+            autocomplete="off"
+            aria-controls="search-results"
+            aria-expanded="false"
+          />
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button class="print-button" type="button">Print</button>
+      </header>
+      <div class="page-layout">
+        <main id="main" tabindex="-1">
+          <div class="breadcrumb">
+            <a href="../index.html">Reference</a><span>/</span
+            ><a href="development-roadmap.html">Development roadmap</a><span>/</span
+            ><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a
+            ><span>/</span><a href="roadmap-bw-004.html#BW-004">BW-004</a><span>/</span>BW-004-T04
+          </div>
+          <h1>BW-004-T04 · Enforce bounded owned commands and distinguish traffic classes</h1>
+          <p class="page-description">Implementation ticket for BW-004.</p>
+          <div class="article-body">
+            <nav class="roadmap-nav" aria-label="Development roadmap">
+              <a href="development-roadmap.html">Dashboard</a
+              ><a href="roadmap-milestones.html">Milestones</a
+              ><a href="roadmap-decisions.html">Sequencing decisions</a
+              ><a href="roadmap-coverage.html">Coverage and open decisions</a
+              ><a href="roadmap-maintenance.html">Updating progress</a
+              ><a href="roadmap-audit.html">Roadmap Audit</a>
+              <details class="roadmap-phase-picker">
+                <summary>All phases</summary>
+                <div>
+                  <a href="roadmap-foundations.html">1. Executable boundaries and risk probes</a
+                  ><a href="roadmap-first-action.html"
+                    >2. First authoritative multiplayer interaction</a
+                  ><a href="roadmap-persistent-character.html"
+                    >3. Recoverable combat and personal state</a
+                  ><a href="roadmap-opening.html">4. First complete persistent player journey</a
+                  ><a href="roadmap-extended-state.html"
+                    >5. Bounded mechanics and safe world evolution</a
+                  ><a href="roadmap-roster.html">6. Complete roster and beginner certification</a
+                  ><a href="roadmap-services.html">7. Player exchanges and profession services</a
+                  ><a href="roadmap-full-experiences.html"
+                    >8. Full progression, cooperative and competitive experiences</a
+                  ><a href="roadmap-release.html">9. Measured capacity and production acceptance</a>
+                </div>
+              </details>
+            </nav>
+            <article class="roadmap-ticket" id="BW-004-T04">
+              <p>
+                <span class="badge">Not Started</span> · Parent epic:
+                <a href="roadmap-bw-004.html#BW-004"
+                  >BW-004 · Dedicated connectivity and bounded command admission</a
+                >
+              </p>
+              <p>
+                <strong>Epic acceptance criteria:</strong>
+                <a href="roadmap-bw-004.html#BW-004-AC-2">BW-004-AC-2</a>,
+                <a href="roadmap-bw-004.html#BW-004-AC-3">BW-004-AC-3</a>,
+                <a href="roadmap-bw-004.html#BW-004-AC-4">BW-004-AC-4</a>
+              </p>
+              <h2 id="scope">Implementation scope</h2>
+              <ul>
+                <li>
+                  Extend the T03 admission owner with explicitly configured SecurityPolicy
+                  per-request byte/array/rate limits and sequence/owner checks. Route only
+                  connection-owned requests through native Controller RPCs, resolving identity from
+                  T02 on every request before dispatch. Enforce byte bounds before
+                  decoding/allocation and validate arrays, unknown fields/tokens, finite values and
+                  exact integer ranges using the existing canonical decoder. RPC ownership is
+                  necessary but does not replace authorization.
+                </li>
+                <li>
+                  Missing required endpoint configuration fails closed; a zero request count
+                  disables its family, windows are positive and rate enforcement is independent of
+                  GCD. Select explicit test limits in the implementation configuration and test
+                  at/beyond each bound; no production tuning values are chosen here. Preserve the
+                  original T03 retry outcome under throttling; transport flood rejection cannot
+                  replace a prior action result or turn an identical retry into a new action.
+                </li>
+                <li>
+                  Use the canonical NetworkTrafficChannel values movement_snapshots,
+                  combat_control_events and reliable_state_operations for observable classification.
+                  Map each enabled path to actual native RPC/property freshness, recipient and
+                  reliability behavior; do not invent independent network channels. Exercise
+                  representative test-only traffic without implementing movement, combat, entity
+                  replication or economic operations. A reliable response must not imply durable
+                  transaction completion.
+                </li>
+                <li>
+                  Reuse the T01/T02 connected scenario for the real boundary: two clients, one
+                  dedicated authority, a server-owned test-only counted dispatch/effect sink and
+                  recipient observations. Add only required controls through the existing
+                  harness/process helpers. Run deterministic policy/decoder failures first, affected
+                  C++ compilation and a focused connected human QA handoff; missing native peer
+                  execution remains unverified. Reuse T03 unit evidence and prior lifecycle results
+                  rather than rerunning all suites.
+                </li>
+              </ul>
+              <h3>Out of scope</h3>
+              <ul>
+                <li>
+                  Per-domain gameplay legality (BW-005/BW-010 and successors), public entity/privacy
+                  replication (BW-007/BW-013), durable transactions (BW-018), production
+                  account/session features (BW-019), capacity benchmarks, packet/configuration
+                  matrices, packages and new runner frameworks.
+                </li>
+              </ul>
+              <h2 id="dependencies">Dependencies</h2>
+              <p>
+                <strong>Hard prerequisites:</strong>
+                <a href="roadmap-bw-001.html#BW-001">BW-001</a>,
+                <a href="roadmap-bw-002.html#BW-002">BW-002</a>,
+                <a href="roadmap-bw-004-t03.html#BW-004-T03">BW-004-T03</a>
+              </p>
+              <h2 id="acceptance-criteria">Acceptance criteria</h2>
+              <ol class="roadmap-acceptance">
+                <li id="BW-004-T04-AC-1">
+                  <a href="#BW-004-T04-AC-1" class="roadmap-criterion-link">AC 1</a>
+                  <p>
+                    Valid in-bound requests route only for their authenticated owner.
+                    Unauthenticated/expired sessions, oversized/malformed payloads, excessive
+                    arrays/rates, incompatible versions, unauthorized identity/epoch and
+                    out-of-sequence input reject before domain dispatch with safe bounded feedback
+                    and unchanged state. Tests cover the exact configured bound and the first
+                    invalid value, including missing limits and disabled families.
+                  </p>
+                </li>
+                <li id="BW-004-T04-AC-2">
+                  <a href="#BW-004-T04-AC-2" class="roadmap-criterion-link">AC 2</a>
+                  <p>
+                    Across the real dedicated/two-client connection, identical accepted/rejected
+                    action identities return their consistent prior outcome and count at most one
+                    dispatch/effect. Conflicting reuse, reordered input, stale reconnect identity
+                    and cross-client requests never create a second action or disclose another owner
+                    result. Native policy tests alone do not establish this routing behavior.
+                  </p>
+                </li>
+                <li id="BW-004-T04-AC-3">
+                  <a href="#BW-004-T04-AC-3" class="roadmap-criterion-link">AC 3</a>
+                  <p>
+                    The three canonical traffic classes are distinguishable in actual server/client
+                    observations with documented native delivery/freshness behavior. Stop/disconnect
+                    or a focused dropped/reordered-message case reaches the affected client visibly
+                    and permits a clean rejoin; loss cannot promote client data to authority or turn
+                    transport acknowledgment into durable success. Existing T01 failure observations
+                    may be reused where unchanged.
+                  </p>
+                </li>
+              </ol>
+              <h2 id="manual-test">Manual verification</h2>
+              <p>
+                Run from the Briarwake implementation repository. The commands, test worlds and
+                fixtures below are deliverables of this ticket and its prerequisites; these are
+                unexecuted test instructions.
+              </p>
+              <h3>Launch command or scene</h3>
+              <pre><code>Not Run — Manual QA Pending. Use the T01/T02 runbook and its /Engine/Maps/Entry connection scenario after T04 documents the exact request/traffic controls, configured limits and counted server observation. No connectivity/command suite exists in tools/validate.py today; implementation must document real supported commands.</code></pre>
+              <h3>Setup</h3>
+              <ol>
+                <li>
+                  Complete T01–T03 and reuse their actual backend, trusted test identities, pinned
+                  executables and task-owned ports. Configure explicit SecurityPolicy
+                  byte/array/rate windows and bounded retry retention. The request controls and
+                  test-only counted dispatch/effect sink are not implemented yet.
+                </li>
+              </ol>
+              <h3>Actions</h3>
+              <ol>
+                <li>
+                  From each client submit one valid request, exact retries before/after its
+                  response, conflicting identity reuse and a request naming the other client.
+                  Compare redacted response identities and server dispatch/effect counts, then try
+                  stale credentials after logout/rejoin.
+                </li>
+                <li>
+                  Exercise delivered malformed, oversized, array, rate/window and sequence controls
+                  at the configured boundary and first invalid value; disable one endpoint by
+                  removing its limit or setting its request count to zero. Check authoritative state
+                  before/after and restore task-local settings.
+                </li>
+                <li>
+                  Observe each of movement_snapshots, combat_control_events and
+                  reliable_state_operations on the actual peers. Disconnect/stop the task-owned
+                  server or use one documented bounded message-impairment case where needed for
+                  delivery behavior; inspect client-visible failure and a clean rejoin. Reuse
+                  unchanged T01 lifecycle evidence.
+                </li>
+              </ol>
+              <h3>Expected results</h3>
+              <ol>
+                <li>
+                  Only valid owner requests dispatch; invalid cases leave game/test-effect state
+                  unchanged with safe client feedback. Retried identities never add an
+                  action/effect, conflicting/foreign attempts cannot replace or read the original
+                  result, all three traffic labels map to actual native behavior, and failures
+                  remain visible to the client.
+                </li>
+              </ol>
+              <h3>Reset</h3>
+              <ol>
+                <li>
+                  Stop only the task-owned server/clients, release their ports and remove only
+                  disposable scenario state beneath ignored artifacts/. Restore any task-local
+                  network emulation. Preserve existing assets, configuration, build directories,
+                  databases and prior evidence.
+                </li>
+              </ol>
+              <h2 id="verification">Completion evidence and blockers</h2>
+              <p>
+                <strong>Required evidence:</strong> One concise PR/result summary linking reused
+                T01/T02/T03 evidence, executed boundary tests and affected compilation, actual
+                two-client routing/count/traffic observations, configured limits and
+                source/build/configuration identities. Record client-visible QA or connected
+                execution not performed as Not Run — Manual QA Pending. Do not claim gameplay,
+                Steam, persistence or capacity from test traffic.
+              </p>
+              <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
+              <p>
+                <strong>Recorded evidence:</strong> None. Planning does not establish an executed
+                pass.
+              </p>
+              <h2 id="documentation">Related documentation</h2>
+              <p>
+                <a href="../guide/roadmap-bw-004.html#BW-004"
+                  >Parent epic and exact acceptance criteria</a
+                >; <a href="../guide/networking.html">Authority and networking</a>;
+                <a href="../guide/testing.html">Verification requirements</a>;
+                <a href="../guide/data-inventory.html#security-policy">SecurityPolicy</a>;
+                <a href="../guide/data-inventory.html#shared-RateLimit">RateLimit</a>;
+                <a href="../guide/data-inventory.html#ability-command-v2">ability_command_v2</a>;
+                <a href="../guide/data-inventory.html#command-response">CommandResponse</a>;
+                <a href="../guide/data-inventory.html#network-traffic-channel"
+                  >NetworkTrafficChannel</a
+                >;
+                <a href="../guide/networking.html#movement-and-traffic"
+                  >Traffic and native transport semantics</a
+                >
+              </p>
+            </article>
+            <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
+              <a href="roadmap-bw-004-t03.html#BW-004-T03">Previous: BW-004-T03</a>
+            </nav>
+          </div>
+          <footer class="page-footer">
+            <a href="development-roadmap.html">Roadmap dashboard</a
+            ><span>Planning reference · evidence required for completion</span
+            ><a href="#main">Back to top ↑</a>
+          </footer>
+        </main>
+        <aside class="page-toc" aria-label="On this page">
+          <p>ON THIS PAGE</p>
+          <a href="#scope">Implementation scope</a><a href="#dependencies">Dependencies</a
+          ><a href="#acceptance-criteria">Acceptance criteria</a
+          ><a href="#manual-test">Manual verification</a
+          ><a href="#verification">Completion evidence</a
+          ><a href="#documentation">Related documentation</a>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>

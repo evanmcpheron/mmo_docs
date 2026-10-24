@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-004." />
     <title>
-      BW-004-T01 · Integrate a dedicated-safe session and travel route · Briarwake Development
-      Roadmap
+      BW-004-T01 · Connect two clients to a dedicated server and expose lifecycle failures ·
+      Briarwake Development Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
@@ -127,7 +127,9 @@
             ><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a
             ><span>/</span><a href="roadmap-bw-004.html#BW-004">BW-004</a><span>/</span>BW-004-T01
           </div>
-          <h1>BW-004-T01 · Integrate a dedicated-safe session and travel route</h1>
+          <h1>
+            BW-004-T01 · Connect two clients to a dedicated server and expose lifecycle failures
+          </h1>
           <p class="page-description">Implementation ticket for BW-004.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -171,41 +173,51 @@
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Reuse UMultiplayerSessionsSubsystem create/find/join/destroy methods and
-                  completion delegates, native IOnlineSession and GameMode connection lifecycles;
-                  inspect actual default subsystem/configuration and pinned plugin source before
-                  changing it.
+                  Inspected 2026-10-23: game origin/main 92817f556aa326c57edec88bf18d97aadee7afc5
+                  (same tree as checkout 21776e507f817245f23d104e5dfc55c28c43d055), docs base
+                  bf75815db6907203ce8c51cc9f74f41d8fb7d5a5. tools/toolchain.lock.json pins UE 5.8.3,
+                  Xcode 27A266a and Mac ARM64; native Game/Editor/Client/Server targets exist.
+                  BW-001 certifies bootstrap, BW-002 contracts/admission and BW-003 a local
+                  logical-recipient probe, not connected clients. Config/DefaultEngine.ini uses
+                  /Engine/Maps/Entry; the only project map is the camera-reference test map.
                 </li>
                 <li>
-                  Deliver one headless-safe connection/session route plus observable
-                  disconnect/travel recovery. Verify supplied session calls before extending only
-                  necessary gaps: local-player assumptions, asynchronous destroy/recreate ordering,
-                  failed join/address resolution, callback teardown and the empty start path if
-                  required. Record Steam versus NULL/direct coverage separately; adapt the existing
-                  owner instead of introducing another session subsystem.
+                  Use native dedicated networking, GameMode connection lifecycle, owned
+                  PlayerControllers and UEngine network/travel failure delegates. Implement one
+                  explicit local test route (native IP/direct or NULL) without a server local player
+                  or widget dependency. A small opt-in connection scenario on /Engine/Maps/Entry is
+                  justified by parent AC1; keep scenario controls separate from gameplay commands.
+                  Until T02 admits identity, connections cannot spawn an authorized gameplay
+                  character or dispatch gameplay commands.
                 </li>
                 <li>
-                  Extend the existing native automation/report path with focused behavior and
-                  failure cases; retain exact engine/source/content/rules/configuration identities
-                  and actual assertions. Reuse FContentContracts and its canonical
-                  extractor/reference closure where these contracts cross a boundary; a schema does
-                  not require a separate UObject or new wire protocol. Do not duplicate admission,
-                  replay or domain rules in UI/transport.
+                  Reuse the supplied UMultiplayerSessionsSubsystem if the selected route needs
+                  online sessions; do not add another session subsystem. Source inspection found
+                  unchecked local-player dereferences, create continuing after asynchronous destroy,
+                  unchecked join/address travel in UMenu and empty StartSession. Adapt only paths
+                  needed by the chosen route. Native IOnlineSession exposes hosting-user overloads
+                  and completion delegates, but API availability and existing plugin compilation
+                  prove neither dedicated nor Steam operation. Record actual backend/plugin
+                  activation; native direct connectivity need not repair unused Steam/menu paths.
                 </li>
                 <li>
-                  Deliver a bounded dedicated-server/two-client scenario using the existing
-                  process/evidence utilities, with exact verified executable/map/setup/reset
-                  instructions. No project gameplay map currently exists; use a ticket-owned minimal
-                  fixture or transient world on the verified /Engine/Maps/Entry bootstrap as
-                  appropriate. Keep scenario controls test-only and extend the existing validation
-                  entrypoint without a second runner framework.
+                  Reuse tools/check_baseline.py process ownership/timeouts and the existing Unreal
+                  Automation harness for focused lifecycle rules. Compile affected targets only;
+                  document a bounded dedicated/two-client invocation and client-visible status
+                  control in the implementation runbook. No new map asset, package, capture
+                  framework, all-suite run or automatic editor execution is required.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Public accounts/provider implementation (BW-019), gameplay authority,
-                  replication/prediction and a replacement session framework.
+                  Trusted identity/protocol admission (T02), command replay (T03), bounded gameplay
+                  command routing/traffic classes (T04), movement/combat rules, public account
+                  providers (BW-019) and Steam certification.
+                </li>
+                <li>
+                  Full create/find/join/start/destroy coverage for unused backends, unrelated
+                  plugin/menu repair, production reconnect/transfer or economic ownership.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -219,28 +231,29 @@
                 <li id="BW-004-T01-AC-1">
                   <a href="#BW-004-T01-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    Two separate clients reach one dedicated process without a server local player
-                    or menu/widget dependency; logs identify the backend and session/connection
-                    lifecycle. Trusted credential/character admission remains T02 and is required
-                    before parent AC1 completion.
+                    Two separately running clients reach the same headless dedicated process on the
+                    recorded backend, with zero server local players and no menu/widget dependency.
+                    This establishes only the transport portion of parent AC1; distinct authorized
+                    sessions require T02.
                   </p>
                 </li>
                 <li id="BW-004-T01-AC-2">
                   <a href="#BW-004-T01-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    For the selected backend, successful and failed create/find/join/destroy, empty
-                    results, replacement, disconnect, shutdown and travel failure have bounded
-                    observable outcomes and a clean rejoin; failed joins never travel to an
-                    unchecked address. Preserve adequate existing calls/delegates.
+                    Unreachable server, disconnect, server shutdown and travel failure produce
+                    bounded, redacted client-visible failure states; a fresh connection succeeds
+                    after cleanup. When online-session APIs are used, the selected
+                    create/join/destroy path handles failure, replacement and callback teardown
+                    without unchecked travel or local-player access.
                   </p>
                 </li>
                 <li id="BW-004-T01-AC-3">
                   <a href="#BW-004-T01-AC-3" class="roadmap-criterion-link">AC 3</a>
                   <p>
-                    Record pinned Editor/Game/source-Server compilation and runtime coverage.
-                    Explicitly distinguish listen example behavior from dedicated results and
-                    Steam-account tests from NULL/direct tests; missing Steam access remains an
-                    unverified limitation rather than a successful Steam claim.
+                    The runbook identifies actual map/GameMode/Controller, executable/build
+                    revisions, backend and exact launch/status/reset controls. Executed unit/native
+                    and dedicated/two-client results are distinguished from authored expectations
+                    and unavailable Steam tests.
                   </p>
                 </li>
               </ol>
@@ -251,77 +264,61 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Future scenario, unverified: run the exact bounded server/client invocation delivered and documented by this ticket from GAME_ROOT, the checkout containing Briarwake.uproject. Existing final game gate: python3 tools/validate.py. Its current implementation does not yet test this feature; do not invent unsupported suite flags or treat the three-tick bootstrap smoke as connected proof.</code></pre>
+              <pre><code>Not Run — Manual QA Pending. From GAME_ROOT (the checkout containing Briarwake.uproject), follow the implementation PR/runbook for the exact existing Development server/client executables, ports and launch options. /Engine/Maps/Entry is the current server/default map. The required native connection GameMode/Controller and scenario controls do not exist yet; their actual names, commands and cleanup must be documented before this procedure is executable. Do not use the listen-menu example or camera-reference map as dedicated connection evidence.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Recheck the dated capability assessment against the current game, pinned tools and
-                  completed dependencies. Build affected existing targets in place. Use two separate
-                  authorized test clients and a dedicated server with the ticket-delivered finite
-                  fixture/configuration; record the actual backend, identities, workload and active
-                  display settings.
+                  Use the existing pinned Mac ARM64 toolchain and completed BW-001/BW-002
+                  prerequisites. Build affected targets in place; launch one dedicated process and
+                  two separate clients using the documented local route and task-owned ports. No
+                  Steam account or public account provider is required for this restricted proof.
                 </li>
                 <li>
-                  Use no example lobby path or unverified project map. Supply the fixture/controls
-                  and exact launch options in this ticket; no production account integration,
-                  persistence or unrelated assets are prerequisites.
+                  Use the delivered connection status display/control and native lifecycle
+                  diagnostics. The current tools/smoke_server.py checks zero controllers/pawns and
+                  exits after three ticks, so it cannot drive this connected scenario; do not pass
+                  invented connectivity suite flags to tools/validate.py.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Run the delivered dedicated/two-client connection fixture and inspect backend
-                  selection, local-player count and travel destinations.
+                  Connect both clients to the same endpoint. Inspect distinct client process
+                  identities, the dedicated process and server local-player count; confirm no
+                  authorized gameplay character/command exists before T02.
                 </li>
                 <li>
-                  Exercise each lifecycle success/failure case, including existing-session
-                  replacement, unavailable backend, failed address resolution and callback teardown;
-                  reconnect after clean recovery.
-                </li>
-                <li>
-                  Where authorized Steam test configuration/accounts are available, repeat the
-                  session cases and retain separate Steam evidence; otherwise record the exact
-                  external gap.
+                  Disconnect one client, attempt an unreachable endpoint, stop the task-owned server
+                  and exercise the delivered travel-failure control. Observe each client status,
+                  then restart/reconnect using the same documented procedure. Exercise selected
+                  online-session failure/replacement only if that route uses it.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Two separate clients reach one dedicated process without a server local player or
-                  menu/widget dependency; logs identify the backend and session/connection
-                  lifecycle. Trusted credential/character admission remains T02 and is required
-                  before parent AC1 completion.
-                </li>
-                <li>
-                  For the selected backend, successful and failed create/find/join/destroy, empty
-                  results, replacement, disconnect, shutdown and travel failure have bounded
-                  observable outcomes and a clean rejoin; failed joins never travel to an unchecked
-                  address. Preserve adequate existing calls/delegates.
-                </li>
-                <li>
-                  Record pinned Editor/Game/source-Server compilation and runtime coverage.
-                  Explicitly distinguish listen example behavior from dedicated results and
-                  Steam-account tests from NULL/direct tests; missing Steam access remains an
-                  unverified limitation rather than a successful Steam claim.
+                  Both peers connect to one dedicated process with zero server local players.
+                  Failure reaches the affected client with a safe reason; no unchecked address is
+                  used and clean rejoin works. Log-only observations do not establish the
+                  client-visible failure criterion.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Stop only the scenario-owned processes, restore test-only emulation/input settings
-                  and destroy test-owned state. Start fresh sessions/worlds and repeat a clean
-                  recovery into new bounded outputs. Preserve prior evidence, assets, user changes
-                  and build directories.
+                  Stop only the task-owned server/clients, release their ports and remove only
+                  disposable scenario state beneath ignored artifacts/. Restore any task-local
+                  network emulation. Preserve existing assets, configuration, build directories,
+                  databases and prior evidence.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain attributable executed positive/negative
-                results for every ticket criterion, the actual build/launch/reset procedure, tested
-                input identities and applicable focused regressions. Include correlated
-                dedicated-server and two-client traces, recipient observations and reset/recovery
-                evidence. Report unexecuted prerequisites explicitly; documentation validation and
-                engine API availability cannot satisfy runtime evidence.
+                <strong>Required evidence:</strong> One concise implementation PR/result summary
+                with affected compilation, focused lifecycle assertions and actual
+                dedicated/two-client observations, backend and source/build/configuration
+                identities. Missing peer execution or human observation remains Not Run; the
+                existing three-tick smoke is not connection evidence.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
@@ -330,15 +327,12 @@
               </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-004.html#BW-004">Parent epic and original criteria</a>;
-                <a href="../guide/roadmap-maintenance.html#maintenance"
-                  >Capability assessment and source/evidence baseline</a
+                <a href="../guide/roadmap-bw-004.html#BW-004"
+                  >Parent epic and exact acceptance criteria</a
                 >; <a href="../guide/networking.html">Authority and networking</a>;
                 <a href="../guide/testing.html">Verification requirements</a>;
                 <a href="../guide/data-inventory.html#server-configuration">ServerConfiguration</a>;
-                <a href="../guide/data-inventory.html#session-ownership-record"
-                  >SessionOwnershipRecord</a
-                >
+                <a href="../guide/roadmap-maintenance.html#maintenance">Native reuse guidance</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">

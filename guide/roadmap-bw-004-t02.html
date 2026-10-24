@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Implementation ticket for BW-004." />
     <title>
-      BW-004-T02 · Bind trusted test identity and enforce command admission · Briarwake Development
-      Roadmap
+      BW-004-T02 · Bind compatible trusted test credentials to distinct sessions · Briarwake
+      Development Roadmap
     </title>
     <link rel="stylesheet" href="../assets/styles.css" />
     <link rel="stylesheet" href="../assets/roadmap.css" />
@@ -127,7 +127,7 @@
             ><a href="roadmap-first-action.html">2. First authoritative multiplayer interaction</a
             ><span>/</span><a href="roadmap-bw-004.html#BW-004">BW-004</a><span>/</span>BW-004-T02
           </div>
-          <h1>BW-004-T02 · Bind trusted test identity and enforce command admission</h1>
+          <h1>BW-004-T02 · Bind compatible trusted test credentials to distinct sessions</h1>
           <p class="page-description">Implementation ticket for BW-004.</p>
           <div class="article-body">
             <nav class="roadmap-nav" aria-label="Development roadmap">
@@ -166,45 +166,51 @@
               <p>
                 <strong>Epic acceptance criteria:</strong>
                 <a href="roadmap-bw-004.html#BW-004-AC-1">BW-004-AC-1</a>,
-                <a href="roadmap-bw-004.html#BW-004-AC-2">BW-004-AC-2</a>,
-                <a href="roadmap-bw-004.html#BW-004-AC-4">BW-004-AC-4</a>
+                <a href="roadmap-bw-004.html#BW-004-AC-2">BW-004-AC-2</a>
               </p>
               <h2 id="scope">Implementation scope</h2>
               <ul>
                 <li>
-                  Reuse native PreLogin/Login/PostLogin/Logout/owned RPC routing, FContentContracts
-                  typed decoding and independent revision checks; keep sessions in the T01 owner.
+                  Owner: a server-owned restricted test admission policy wired explicitly through
+                  native GameMode PreLogin/PreLoginAsync, Login/PostLogin and Logout; the T01 route
+                  remains transport only. UE 5.8.3 source warns that PreLogin and Login may be
+                  separated by significant time and asynchronous admission must complete its
+                  callback. Revalidate expiry/ownership at final admission and complete all
+                  success/failure paths without blocking the game thread.
                 </li>
                 <li>
-                  Add the missing server-owned trusted test admission and bounded command boundary.
-                  Bind session/character identity and ownership epoch from verified test
-                  credentials, negotiate compatible protocol/content and apply configured
-                  payload/array/rate/sequence/ownership checks before domain dispatch. Make
-                  connection failures and traffic classes observable without inventing independent
-                  network channels.
+                  Use a private configured test adapter with server-registered opaque one-use proofs
+                  and server-owned identity, purpose/audience, expiry and revocation state. Bind
+                  account/character, process and epoch to the accepted connection, never to
+                  URL/payload identity or an OnlineSubsystem ID alone. Issue/validate canonical
+                  opaque SessionToken handles; revoke stale handles/epochs on logout or replacement.
+                  Test material and adapter controls are not public gameplay endpoints or
+                  distributed credentials.
                 </li>
                 <li>
-                  Extend the existing native automation/report path with focused behavior and
-                  failure cases; retain exact engine/source/content/rules/configuration identities
-                  and actual assertions. Reuse FContentContracts and its canonical
-                  extractor/reference closure where these contracts cross a boundary; a schema does
-                  not require a separate UObject or new wire protocol. Do not duplicate admission,
-                  replay or domain rules in UI/transport.
+                  Reuse FContentContracts and canonical extraction for the needed SessionAuthority,
+                  SessionToken, SecurityPolicy and CommandContext closure. Negotiate existing
+                  engine/message compatibility and supported content/rules revisions using
+                  FContentCompatibility where appropriate; do not invent a parallel wire protocol or
+                  equate content, rules, client build and database revisions. Required positive
+                  lifetimes and request limits come from explicit fixture configuration; missing
+                  configuration disables admission.
                 </li>
                 <li>
-                  Deliver a bounded dedicated-server/two-client scenario using the existing
-                  process/evidence utilities, with exact verified executable/map/setup/reset
-                  instructions. No project gameplay map currently exists; use a ticket-owned minimal
-                  fixture or transient world on the verified /Engine/Maps/Entry bootstrap as
-                  appropriate. Keep scenario controls test-only and extend the existing validation
-                  entrypoint without a second runner framework.
+                  Current FContentContracts::DecodeAbilityCommand and FContentCompatibility provide
+                  structural/revision checks, not connection authentication. FSqliteProbeStore
+                  already implements durable ClaimOwnership/RevokeOwnership and receipts within
+                  BW-018; preserve that owner and accepted evidence, without making SQLite or
+                  production handoff a dependency of this transient non-economic test session. Keep
+                  all gameplay command routes disabled until the T03/T04 boundary is wired.
                 </li>
               </ul>
               <h3>Out of scope</h3>
               <ul>
                 <li>
-                  Public account integration, durable character ownership/handoff and per-domain
-                  gameplay legality. Replay outcomes are T03.
+                  Public credential/provider integration, economic characters, durable exclusive
+                  sessions/transfer/recovery (BW-019/BW-018), gameplay legality, command limits
+                  beyond admission and a new authentication protocol or persistence abstraction.
                 </li>
               </ul>
               <h2 id="dependencies">Dependencies</h2>
@@ -219,27 +225,29 @@
                 <li id="BW-004-T02-AC-1">
                   <a href="#BW-004-T02-AC-1" class="roadmap-criterion-link">AC 1</a>
                   <p>
-                    Accepted compatible test credentials give two clients distinct authorized
-                    sessions; unauthenticated, expired or incompatible admission cannot create an
-                    authorized character/session. Old ownership epochs and payload-selected actors
-                    do not grant access.
+                    Two separate clients with accepted compatible test proofs receive distinct
+                    server-bound authorized sessions and opaque handles. Each connection resolves
+                    only its server-assigned test identity and epoch; client-supplied IDs, roles,
+                    expiry or consumed flags cannot grant authority.
                   </p>
                 </li>
                 <li id="BW-004-T02-AC-2">
                   <a href="#BW-004-T02-AC-2" class="roadmap-criterion-link">AC 2</a>
                   <p>
-                    Oversized, malformed, out-of-sequence, wrong-owner and rate/array-limit
-                    violations reject before domain mutation with bounded safe reasons. Missing
-                    required endpoint limits fail closed; static decoding does not stand in for
-                    runtime authorization.
+                    Missing, unknown, expired, reused, wrong-purpose/audience and incompatible
+                    proofs/versions reject before an authorized character/session or gameplay
+                    mutation is created. Expiry between preliminary and final admission rejects;
+                    missing required configuration and asynchronous failures complete with a bounded
+                    safe client reason.
                   </p>
                 </li>
                 <li id="BW-004-T02-AC-3">
                   <a href="#BW-004-T02-AC-3" class="roadmap-criterion-link">AC 3</a>
                   <p>
-                    Movement, combat/control and reliable state traffic are distinguishable in
-                    traces; disconnect and negotiation failure reach the requesting client without
-                    leaking credentials or another session identity.
+                    Logout/replacement revokes the prior handle and epoch; a stale or foreign handle
+                    cannot act as another session. Credentials and provider material stay out of
+                    client artifacts, logs, travel diagnostics and other-client responses. Actual
+                    connected observations establish parent AC1; pure policy tests alone do not.
                   </p>
                 </li>
               </ol>
@@ -250,73 +258,57 @@
                 unexecuted test instructions.
               </p>
               <h3>Launch command or scene</h3>
-              <pre><code>Future scenario, unverified: run the exact bounded server/client invocation delivered and documented by this ticket from GAME_ROOT, the checkout containing Briarwake.uproject. Existing final game gate: python3 tools/validate.py. Its current implementation does not yet test this feature; do not invent unsupported suite flags or treat the three-tick bootstrap smoke as connected proof.</code></pre>
+              <pre><code>Not Run — Manual QA Pending. Reuse the exact T01 dedicated/two-client runbook after T02 documents the private test-proof setup, credential-safe admission control and session-status display. These controls are future implementation; no current command is claimed to authenticate a client.</code></pre>
               <h3>Setup</h3>
               <ol>
                 <li>
-                  Recheck the dated capability assessment against the current game, pinned tools and
-                  completed dependencies. Build affected existing targets in place. Use two separate
-                  authorized test clients and a dedicated server with the ticket-delivered finite
-                  fixture/configuration; record the actual backend, identities, workload and active
-                  display settings.
-                </li>
-                <li>
-                  Use no example lobby path or unverified project map. Supply the fixture/controls
-                  and exact launch options in this ticket; no production account integration,
-                  persistence or unrelated assets are prerequisites.
+                  Complete T01 and use its same /Engine/Maps/Entry connection scenario, pinned
+                  executables and local backend. Configure the trusted test adapter privately with
+                  two distinct test identities, explicit lifetimes/limits and compatible revisions;
+                  keep proof material out of command lines and logs.
                 </li>
               </ol>
               <h3>Actions</h3>
               <ol>
                 <li>
-                  Connect two clients with valid compatible test credentials, then try
-                  missing/expired/incompatible credentials and stale ownership epochs.
+                  Admit both clients using separate valid proofs and inspect redacted session/epoch
+                  ownership. Attempt a second use, missing/expired proof, wrong purpose/audience and
+                  incompatible protocol/content; expire a proof between preliminary and final
+                  admission using the delivered bounded control.
                 </li>
                 <li>
-                  Submit payload/array/rate/sequence/owner boundary cases and compare before/after
-                  authoritative state and redacted rejection traces.
-                </li>
-                <li>
-                  Drop a connection during each traffic class and inspect client-visible
-                  failure/recovery.
+                  Logout/rejoin or replace a test session, then try its old handle and another
+                  client identity. Remove a required admission setting for a separate bounded
+                  attempt; inspect client rejection and unchanged authoritative state, then restore
+                  only task-local configuration.
                 </li>
               </ol>
               <h3>Expected results</h3>
               <ol>
                 <li>
-                  Accepted compatible test credentials give two clients distinct authorized
-                  sessions; unauthenticated, expired or incompatible admission cannot create an
-                  authorized character/session. Old ownership epochs and payload-selected actors do
-                  not grant access.
-                </li>
-                <li>
-                  Oversized, malformed, out-of-sequence, wrong-owner and rate/array-limit violations
-                  reject before domain mutation with bounded safe reasons. Missing required endpoint
-                  limits fail closed; static decoding does not stand in for runtime authorization.
-                </li>
-                <li>
-                  Movement, combat/control and reliable state traffic are distinguishable in traces;
-                  disconnect and negotiation failure reach the requesting client without leaking
-                  credentials or another session identity.
+                  Only accepted compatible proofs create distinct authorized test sessions. Invalid
+                  attempts and stale/foreign handles create no authority or gameplay mutations;
+                  errors reach the affected client without disclosing credentials or another
+                  session. The delivered runbook records actual values and observations.
                 </li>
               </ol>
               <h3>Reset</h3>
               <ol>
                 <li>
-                  Stop only the scenario-owned processes, restore test-only emulation/input settings
-                  and destroy test-owned state. Start fresh sessions/worlds and repeat a clean
-                  recovery into new bounded outputs. Preserve prior evidence, assets, user changes
-                  and build directories.
+                  Stop only the task-owned server/clients, release their ports and remove only
+                  disposable scenario state beneath ignored artifacts/. Restore any task-local
+                  network emulation. Preserve existing assets, configuration, build directories,
+                  databases and prior evidence.
                 </li>
               </ol>
               <h2 id="verification">Completion evidence and blockers</h2>
               <p>
-                <strong>Required evidence:</strong> Retain attributable executed positive/negative
-                results for every ticket criterion, the actual build/launch/reset procedure, tested
-                input identities and applicable focused regressions. Include correlated
-                dedicated-server and two-client traces, recipient observations and reset/recovery
-                evidence. Report unexecuted prerequisites explicitly; documentation validation and
-                engine API availability cannot satisfy runtime evidence.
+                <strong>Required evidence:</strong> One concise PR/result summary: deterministic
+                admission/expiry/ownership rejection tests, affected compilation and the T01
+                two-client scenario extended only for credential/negotiation cases. Record
+                server-authorized session identities without token material, client failure
+                observations and exact revisions/settings. No executed test or passing evidence
+                exists from this split.
               </p>
               <p><strong>Blockers:</strong> None recorded; see dependencies.</p>
               <p>
@@ -325,15 +317,14 @@
               </p>
               <h2 id="documentation">Related documentation</h2>
               <p>
-                <a href="../guide/roadmap-bw-004.html#BW-004">Parent epic and original criteria</a>;
-                <a href="../guide/roadmap-maintenance.html#maintenance"
-                  >Capability assessment and source/evidence baseline</a
+                <a href="../guide/roadmap-bw-004.html#BW-004"
+                  >Parent epic and exact acceptance criteria</a
                 >; <a href="../guide/networking.html">Authority and networking</a>;
                 <a href="../guide/testing.html">Verification requirements</a>;
-                <a href="../guide/data-inventory.html#security-policy">SecurityPolicy</a>;
                 <a href="../guide/data-inventory.html#session-authority">SessionAuthority</a>;
-                <a href="../guide/data-inventory.html#shared-CommandContext">CommandContext</a>;
-                <a href="../guide/data-inventory.html#ability-command-v2">ability_command_v2</a>
+                <a href="../guide/data-inventory.html#session-token">SessionToken</a>;
+                <a href="../guide/data-inventory.html#security-policy">SecurityPolicy</a>;
+                <a href="../guide/data-inventory.html#shared-CommandContext">CommandContext</a>
               </p>
             </article>
             <nav class="roadmap-epic-nav" aria-label="Tickets in execution order">
